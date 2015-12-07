@@ -1,0 +1,20 @@
+{
+	"jinglebell": {
+		"category": "neutral",
+		"sounds": [
+			"random/jinglebell"
+		]
+	},
+	"cord.creak": {
+		"category": "block",
+		"sounds": [
+			"random/cord_creak"
+		]
+	},
+	"cord.break": {
+		"category": "block",
+		"sounds": [
+			"random/cord_break"
+		]
+	}
+}

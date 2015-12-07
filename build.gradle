@@ -1,0 +1,56 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			name = 'forge'
+			url = 'http://files.minecraftforge.net/maven'
+		}
+		maven {
+			name = 'sonatype'
+			url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+	}
+}
+
+apply plugin: 'forge'
+
+version = "2.4.0"
+group= "com.pau101.fairylights"
+archivesBaseName = "fairylights"
+
+minecraft {
+	version = "1.8-11.14.1.1334" // 11.14.1.1334 | 11.14.3.1450
+	runDir = "run"
+
+	mappings = "snapshot_20151122"
+}
+
+dependencies {
+}
+
+processResources
+{
+	inputs.property "version", project.version
+	inputs.property "mcversion", project.minecraft.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
+				
+		expand 'version':project.version, 'mcversion':project.minecraft.version
+	}
+		
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'mcmod.info'
+	}
+}
+
+jar {
+	classifier = '1.8.8'
+	manifest {
+		attributes('FMLCorePlugin': 'com.pau101.fairylights.core.FairyLightsLoadingPlugin')
+		attributes('FMLCorePluginContainsFMLMod': 'true')
+	}
+}

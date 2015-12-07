@@ -1,0 +1,16 @@
+[
+	{
+		"modid": "fairylights",
+		"name": "Fairy Lights",
+		"description": "Adds fairy lights to Minecraft",
+		"version": "${version}",
+		"mcversion": "${mcversion}",
+		"url": "",
+		"updateUrl": "",
+		"authorList": [ "pau101", "TripleHeadedSheep" ],
+		"credits": "",
+		"logoFile": "logo.png",
+		"screenshots": [],
+		"dependencies": []
+	}
+]
