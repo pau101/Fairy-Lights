@@ -22,35 +22,39 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
 	protected int textureOffsetY;
 
-	protected boolean compiled;
+	public boolean compiled;
 
 	protected int displayList;
 
 	protected ModelBase modelBase;
 
-	protected float scaleX;
+	public float scaleX;
 
-	protected float scaleY;
+	public float scaleY;
 
-	protected float scaleZ;
+	public float scaleZ;
 
-	protected float aftMoveX;
+	public float aftMoveX;
 
-	protected float aftMoveY;
+	public float aftMoveY;
 
-	protected float aftMoveZ;
+	public float aftMoveZ;
 
-	protected RotationOrder rotationOrder;
+	public RotationOrder rotationOrder;
 
-	protected float secondaryRotateAngleX;
+	public float secondaryRotateAngleX;
 
-	protected float secondaryRotateAngleY;
+	public float secondaryRotateAngleY;
 
-	protected float secondaryRotateAngleZ;
+	public float secondaryRotateAngleZ;
 
 	protected RotationOrder secondaryRotationOrder;
 
 	public boolean isGlowing = false;
+
+	public boolean shouldntGlow;
+
+	public boolean isMeteorLightGlow;
 
 	public List<AdvancedModelRenderer> childModels;
 
@@ -100,6 +104,15 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		return this;
 	}
 
+	public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
+		cubeList.add(new Model3DTexture(this, textureOffsetX, textureOffsetY, width, height));
+		return this;
+	}
+
+	public void addMeteorLightBox(float posX, float posY, float posZ, int width, int height, int depth, int type) {
+		cubeList.add(new ModelMeteorLightBox(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height, depth, type));
+	}
+
 	@SideOnly(Side.CLIENT)
 	protected void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
@@ -124,8 +137,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
 				GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-				secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ
-					* MathUtils.RAD_TO_DEG);
+				secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 				GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 				GL11.glScalef(scaleX, scaleY, scaleZ);
 			}
@@ -133,23 +145,27 @@ public class AdvancedModelRenderer extends ModelRenderer {
 	}
 
 	private void baseRender(float scale) {
+		if (isGlowing && shouldntGlow) {
+			return;
+		}
 		if (isGlowing) {
 			List<ModelBox> boxModels = cubeList;
 			for (ModelBox box : boxModels) {
 				int bri = 1;
 				float expand = 0.45F;
+				float meteorExpandY = 0F;
 				for (int i = 0; i < bri; i++) {
 					float width = box.posX2 - box.posX1, height = box.posY2 - box.posY1, depth = box.posZ2 - box.posZ1;
 					float localExpand = expand * (i + 1);
+					float localMeteorExpandY = meteorExpandY * (i + 1);
 					float newWidth = width + 2 * localExpand;
-					float newHeight = height + 2 * localExpand;
+					float newHeight = height + 2 * (isMeteorLightGlow ? localMeteorExpandY : localExpand);
 					float newDepth = depth + 2 * localExpand;
 					float scaleX = newWidth / width;
 					float scaleY = newHeight / height;
 					float scaleZ = newDepth / depth;
 					GL11.glPushMatrix();
-					GL11.glTranslatef((box.posX1 - expand - scaleX * box.posX1) / 16, (box.posY1 - expand - scaleY * box.posY1) / 16,
-						(box.posZ1 - expand - scaleZ * box.posZ1) / 16);
+					GL11.glTranslatef((box.posX1 - expand - scaleX * box.posX1) / 16, (box.posY1 - expand - scaleY * box.posY1) / 16, (box.posZ1 - expand - scaleZ * box.posZ1) / 16);
 					GL11.glScalef(scaleX, scaleY, scaleZ);
 					box.render(Tessellator.instance, scale);
 					GL11.glPopMatrix();
@@ -184,15 +200,13 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					if (rotationPointX == 0 && rotationPointY == 0 && rotationPointZ == 0) {
 						if (scaleX == 1 && scaleY == 1 && scaleZ == 1) {
 							GL11.glPushMatrix();
-							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
-								secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 							GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 							baseRender(scale);
 							GL11.glPopMatrix();
 						} else {
 							GL11.glPushMatrix();
-							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
-								secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 							GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 							GL11.glScalef(scaleX, scaleY, scaleZ);
 
@@ -203,8 +217,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					} else {
 						GL11.glPushMatrix();
 						GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-						secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
-							secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+						secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 						GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 						GL11.glScalef(scaleX, scaleY, scaleZ);
 
@@ -217,8 +230,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
 					rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-					secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
-						secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+					secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 
 					GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 

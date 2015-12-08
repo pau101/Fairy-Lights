@@ -6,7 +6,6 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.AxisAlignedBB;
@@ -15,8 +14,10 @@ import net.minecraft.world.World;
 
 import com.google.common.base.Charsets;
 import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.connection.ConnectionType;
+import com.pau101.fairylights.item.ItemConnection;
 import com.pau101.fairylights.player.PlayerData;
-import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
+import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
 import com.pau101.fairylights.util.vectormath.Point3f;
 import com.pau101.fairylights.util.vectormath.Point3i;
 
@@ -31,12 +32,12 @@ public class ConnectionPlayer extends Connection {
 
 	private int prevStretchStage;
 
-	public ConnectionPlayer(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj) {
-		super(fairyLightsFastener, worldObj);
+	public ConnectionPlayer(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj) {
+		super(type, fairyLightsFastener, worldObj);
 	}
 
-	public ConnectionPlayer(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj, EntityPlayer player, NBTTagCompound tagCompound) {
-		super(fairyLightsFastener, worldObj, true, tagCompound);
+	public ConnectionPlayer(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj, EntityPlayer player, NBTTagCompound tagCompound) {
+		super(type, fairyLightsFastener, worldObj, true, tagCompound);
 		this.player = player;
 		setPlayerUUID(player.getUniqueID());
 		forceRemove = false;
@@ -106,20 +107,15 @@ public class ConnectionPlayer extends Connection {
 		shouldRecalculateCatenary = true;
 		super.update(from);
 		if (player == null) {
-			List<EntityPlayer> nearEntities = worldObj.getEntitiesWithinAABB(
-				EntityPlayer.class,
-				AxisAlignedBB.getBoundingBox(fairyLightsFastener.xCoord, fairyLightsFastener.yCoord, fairyLightsFastener.zCoord,
-					fairyLightsFastener.xCoord + 1, fairyLightsFastener.yCoord + 1, fairyLightsFastener.zCoord + 1).expand(FairyLights.MAX_LENGTH,
-					FairyLights.MAX_LENGTH, FairyLights.MAX_LENGTH));
+			List<EntityPlayer> nearEntities = worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(fastener.xCoord, fastener.yCoord, fastener.zCoord, fastener.xCoord + 1, fastener.yCoord + 1, fastener.zCoord + 1).expand(FairyLights.MAX_LENGTH, FairyLights.MAX_LENGTH, FairyLights.MAX_LENGTH));
 			for (EntityPlayer entity : nearEntities) {
 				// should do this differently? An online client has a
 				// different player UUID for the player instance on the
 				// server...
-				if (entity.getUniqueID().equals(getPlayerUUID())
-					|| UUID.nameUUIDFromBytes(("OfflinePlayer:" + entity.getGameProfile().getName()).getBytes(Charsets.UTF_8)).equals(getPlayerUUID())) {
+				if (entity.getUniqueID().equals(getPlayerUUID()) || UUID.nameUUIDFromBytes(("OfflinePlayer:" + entity.getGameProfile().getName()).getBytes(Charsets.UTF_8)).equals(getPlayerUUID())) {
 					player = entity;
 					PlayerData data = PlayerData.getPlayerData(entity);
-					data.setLastClicked(fairyLightsFastener.xCoord, fairyLightsFastener.yCoord, fairyLightsFastener.zCoord);
+					data.setLastClicked(fastener.xCoord, fastener.yCoord, fastener.zCoord);
 					return;
 				}
 			}
@@ -154,9 +150,7 @@ public class ConnectionPlayer extends Connection {
 					((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S12PacketEntityVelocity(player));
 				}
 			}
-			if (!(point.x == fairyLightsFastener.xCoord && point.y == fairyLightsFastener.yCoord && point.z == fairyLightsFastener.zCoord)
-				|| player.getHeldItem() == null || player.getHeldItem().getItem() != Item.getItemFromBlock(FairyLights.fairyLightsFastener)
-				|| player.getHeldItem().hasTagCompound() && !player.getHeldItem().getTagCompound().equals(details)) {
+			if (!(point.x == fastener.xCoord && point.y == fastener.yCoord && point.z == fastener.zCoord) || player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemConnection) || !((ItemConnection) player.getHeldItem().getItem()).getConnectionType().isConnectionThis(this) || player.getHeldItem().hasTagCompound() && !player.getHeldItem().getTagCompound().equals(details)) {
 				forceRemove = true;
 			}
 		}

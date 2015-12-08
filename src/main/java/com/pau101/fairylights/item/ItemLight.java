@@ -31,7 +31,7 @@ public class ItemLight extends Item {
 	public ItemLight() {
 		setHasSubtypes(true);
 		setMaxDamage(0);
-		setCreativeTab(FairyLights.fairyLights);
+		setCreativeTab(FairyLights.fairyLightsTab);
 	}
 
 	@Override

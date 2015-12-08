@@ -2,13 +2,14 @@ package com.pau101.fairylights;
 
 import net.minecraft.creativetab.CreativeTabs;
 
-import com.pau101.fairylights.block.BlockFairyLightsFastener;
-import com.pau101.fairylights.block.BlockFairyLightsFence;
+import com.pau101.fairylights.block.BlockConnectionFastener;
+import com.pau101.fairylights.block.BlockConnectionFastenerFence;
 import com.pau101.fairylights.config.Configurator;
+import com.pau101.fairylights.item.ItemConnection;
 import com.pau101.fairylights.item.ItemLight;
 import com.pau101.fairylights.network.FLNetworkManager;
 import com.pau101.fairylights.proxy.CommonProxy;
-import com.pau101.fairylights.util.calendarevents.CalendarEvent;
+import com.pau101.fairylights.util.CalendarEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -25,7 +26,7 @@ public class FairyLights {
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "0.3.0";
+	public static final String VERSION = "0.4.0";
 
 	public static final int MAX_LENGTH = 20;
 
@@ -37,13 +38,19 @@ public class FairyLights {
 
 	public static FLNetworkManager networkManager;
 
-	public static BlockFairyLightsFastener fairyLightsFastener;
+	public static BlockConnectionFastener connectionFastener;
 
-	public static BlockFairyLightsFence fairyLightsFence;
+	public static BlockConnectionFastenerFence fastenerFence;
 
 	public static ItemLight light;
 
-	public static CreativeTabs fairyLights;
+	public static ItemConnection fairyLights;
+
+	public static ItemConnection garland;
+
+	public static ItemConnection tinsel;
+
+	public static CreativeTabs fairyLightsTab;
 
 	public static CalendarEvent christmas;
 

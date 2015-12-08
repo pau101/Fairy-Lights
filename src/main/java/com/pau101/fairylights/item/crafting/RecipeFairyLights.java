@@ -64,7 +64,7 @@ public class RecipeFairyLights implements IRecipe {
 
 	public RecipeFairyLights() {
 		Object[] recipe = { "I-I", 'I', "ingotIron", '-', new Object[] { Items.string, "stickWood" } };
-		outputItem = Item.getItemFromBlock(FairyLights.fairyLightsFastener);
+		outputItem = FairyLights.fairyLights;
 
 		String recipeString = "";
 		int slot = 0;

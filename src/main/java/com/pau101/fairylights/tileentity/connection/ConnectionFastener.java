@@ -4,8 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import com.pau101.fairylights.block.BlockFairyLightsFastener;
-import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
+import com.pau101.fairylights.block.BlockConnectionFastener;
+import com.pau101.fairylights.connection.ConnectionType;
+import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
 import com.pau101.fairylights.util.vectormath.Point3f;
 
 public class ConnectionFastener extends Connection {
@@ -15,13 +16,13 @@ public class ConnectionFastener extends Connection {
 
 	private int toZ;
 
-	public ConnectionFastener(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj) {
-		super(fairyLightsFastener, worldObj);
+	public ConnectionFastener(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj) {
+		super(type, fairyLightsFastener, worldObj);
 	}
 
-	public ConnectionFastener(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj, int toX, int toY, int toZ, boolean isOrigin,
+	public ConnectionFastener(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj, int toX, int toY, int toZ, boolean isOrigin,
 		NBTTagCompound tagCompound) {
-		super(fairyLightsFastener, worldObj, isOrigin, tagCompound);
+		super(type, fairyLightsFastener, worldObj, isOrigin, tagCompound);
 		this.toX = toX;
 		this.toY = toY;
 		this.toZ = toZ;
@@ -30,10 +31,10 @@ public class ConnectionFastener extends Connection {
 	@Override
 	public Point3f getTo() {
 		Block toBlock = worldObj.getBlock(toX, toY, toZ);
-		if (!(toBlock instanceof BlockFairyLightsFastener)) {
+		if (!(toBlock instanceof BlockConnectionFastener)) {
 			return null;
 		}
-		Point3f point = ((BlockFairyLightsFastener) toBlock).getOffsetForData(worldObj.getBlockMetadata(toX, toY, toZ), 1 / 8f);
+		Point3f point = ((BlockConnectionFastener) toBlock).getOffsetForData(worldObj.getBlockMetadata(toX, toY, toZ), 1 / 8f);
 		point.x += toX;
 		point.y += toY;
 		point.z += toZ;
@@ -57,7 +58,7 @@ public class ConnectionFastener extends Connection {
 
 	@Override
 	public boolean shouldDisconnect() {
-		return worldObj.blockExists(toX, toY, toZ) && !(worldObj.getTileEntity(toX, toY, toZ) instanceof TileEntityFairyLightsFastener);
+		return worldObj.blockExists(toX, toY, toZ) && !(worldObj.getTileEntity(toX, toY, toZ) instanceof TileEntityConnectionFastener);
 	}
 
 	@Override

@@ -6,8 +6,8 @@ import net.minecraft.client.Minecraft;
 
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.config.Configurator;
+import com.pau101.fairylights.connection.Light;
 import com.pau101.fairylights.eggs.Jingle.PlayTick;
-import com.pau101.fairylights.util.Light;
 import com.pau101.fairylights.util.vectormath.Point3f;
 
 public class JinglePlayer {

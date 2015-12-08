@@ -8,9 +8,10 @@ import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
+import com.pau101.fairylights.connection.ConnectionLogicFairyLights;
 import com.pau101.fairylights.eggs.Jingle;
 import com.pau101.fairylights.network.FLPacket;
-import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
+import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
 import com.pau101.fairylights.tileentity.connection.Connection;
 
 public class S00FLPacketJingle extends FLPacket {
@@ -30,7 +31,7 @@ public class S00FLPacketJingle extends FLPacket {
 
 	public S00FLPacketJingle() {}
 
-	public S00FLPacketJingle(TileEntityFairyLightsFastener lightsFastener, UUID uuid, int lightOffset, Jingle jingle) {
+	public S00FLPacketJingle(TileEntityConnectionFastener lightsFastener, UUID uuid, int lightOffset, Jingle jingle) {
 		dimensionId = lightsFastener.getWorldObj().provider.dimensionId;
 		xCoord = lightsFastener.xCoord;
 		yCoord = lightsFastener.yCoord;
@@ -45,11 +46,11 @@ public class S00FLPacketJingle extends FLPacket {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.theWorld != null && dimensionId == mc.theWorld.provider.dimensionId) {
 			TileEntity tileEntity = mc.theWorld.getTileEntity(xCoord, yCoord, zCoord);
-			if (tileEntity instanceof TileEntityFairyLightsFastener) {
-				TileEntityFairyLightsFastener lightsFastener = (TileEntityFairyLightsFastener) tileEntity;
+			if (tileEntity instanceof TileEntityConnectionFastener) {
+				TileEntityConnectionFastener lightsFastener = (TileEntityConnectionFastener) tileEntity;
 				Connection connection = lightsFastener.getConnection(uuid);
-				if (connection != null) {
-					connection.play(Jingle.parse(jingle), lightOffset);
+				if (connection != null && connection.getLogic() instanceof ConnectionLogicFairyLights) {
+					((ConnectionLogicFairyLights) connection.getLogic()).play(Jingle.parse(jingle), lightOffset);
 				}
 			}
 		}

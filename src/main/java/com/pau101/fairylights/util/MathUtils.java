@@ -7,6 +7,8 @@ public class MathUtils {
 
 	public static final float PI = (float) StrictMath.PI;
 
+	public static final float HALF_PI = (float) (StrictMath.PI / 2);
+
 	public static final float TAU = (float) (2 * StrictMath.PI);
 
 	public static final float DEG_TO_RAD = (float) (StrictMath.PI / 180);

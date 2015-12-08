@@ -10,16 +10,13 @@ import net.minecraft.util.Timer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.block.BlockFairyLightsFastener;
-import com.pau101.fairylights.client.renderer.FairyLightsRenderer;
-import com.pau101.fairylights.client.renderer.tileentity.TileEntityFairyLightsFastenerRenderer;
-import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
+import com.pau101.fairylights.block.BlockConnectionFastener;
+import com.pau101.fairylights.client.renderer.ConnectionRenderer;
+import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
 import com.pau101.fairylights.tileentity.connection.Connection;
 import com.pau101.fairylights.util.vectormath.Point3f;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class ClientProxy extends CommonProxy {
 	public static Timer mcTimer;
@@ -34,13 +31,13 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public ItemStack getFairyLightsFastenerPickBlock(MovingObjectPosition target, World world, int x, int y, int z, BlockFairyLightsFastener block) {
+	public ItemStack getFairyLightsFastenerPickBlock(MovingObjectPosition target, World world, int x, int y, int z, BlockConnectionFastener block) {
 		ItemStack itemStack = new ItemStack(block.getItem(world, x, y, z));
 		NBTTagCompound tagCompound = new NBTTagCompound();
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		double playerX = Minecraft.getMinecraft().thePlayer.posX, playerY = Minecraft.getMinecraft().thePlayer.posY, playerZ = Minecraft.getMinecraft().thePlayer.posZ;
-		if (tileEntity instanceof TileEntityFairyLightsFastener) {
-			TileEntityFairyLightsFastener lightsFastener = (TileEntityFairyLightsFastener) tileEntity;
+		if (tileEntity instanceof TileEntityConnectionFastener) {
+			TileEntityConnectionFastener lightsFastener = (TileEntityConnectionFastener) tileEntity;
 			Connection closetConnection = null;
 			float smallestDistance = Float.MAX_VALUE;
 			for (Connection connection : lightsFastener.getConnections()) {
@@ -49,9 +46,8 @@ public class ClientProxy extends CommonProxy {
 					continue;
 				}
 				float tx = to.x, ty = to.y, tz = to.z;
-				Point3f offset = ((BlockFairyLightsFastener) lightsFastener.getBlockType()).getOffsetForData(lightsFastener.getBlockMetadata(), 0.125F);
-				float dist = (float) Math.abs((offset.x + tx) * (offset.x + tx) - playerX * playerX + (offset.y + ty) * (offset.y + ty) - playerY * playerY
-					+ (offset.z + tz) * (offset.z + tz) - playerZ * playerZ);
+				Point3f offset = ((BlockConnectionFastener) lightsFastener.getBlockType()).getOffsetForData(lightsFastener.getBlockMetadata(), 0.125F);
+				float dist = (float) Math.abs((offset.x + tx) * (offset.x + tx) - playerX * playerX + (offset.y + ty) * (offset.y + ty) - playerY * playerY + (offset.z + tz) * (offset.z + tz) - playerZ * playerZ);
 				if (dist < smallestDistance) {
 					smallestDistance = dist;
 					closetConnection = connection;
@@ -59,16 +55,18 @@ public class ClientProxy extends CommonProxy {
 			}
 			if (closetConnection != null) {
 				closetConnection.writeDetailsToNBT(tagCompound);
+				itemStack.func_150996_a(closetConnection.getType().getItem());
 			}
 		}
-		itemStack.setTagCompound(tagCompound);
+		if (!tagCompound.hasNoTags()) {
+			itemStack.setTagCompound(tagCompound);
+		}
 		return itemStack;
 	}
 
 	@Override
 	public void initRenders() {
-		MinecraftForge.EVENT_BUS.register(new FairyLightsRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFairyLightsFastener.class, new TileEntityFairyLightsFastenerRenderer());
-//		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(FairyLights.fairyLightsFastener), new ItemRendererFairyLights());
+		MinecraftForge.EVENT_BUS.register(new ConnectionRenderer());
+//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectionFastener.class, new TileEntityFairyLightsFastenerRenderer());
 	}
 }

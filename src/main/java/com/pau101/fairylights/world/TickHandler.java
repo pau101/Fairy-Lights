@@ -15,13 +15,14 @@ import net.minecraft.util.AxisAlignedBB;
 
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.config.Configurator;
+import com.pau101.fairylights.connection.ConnectionLogicFairyLights;
+import com.pau101.fairylights.connection.Light;
 import com.pau101.fairylights.eggs.Jingle;
 import com.pau101.fairylights.network.play.server.S00FLPacketJingle;
 import com.pau101.fairylights.player.PlayerData;
-import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
+import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
 import com.pau101.fairylights.tileentity.connection.Connection;
 import com.pau101.fairylights.tileentity.connection.ConnectionPlayer;
-import com.pau101.fairylights.util.Light;
 import com.pau101.fairylights.util.vectormath.Point3f;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -37,8 +38,7 @@ public class TickHandler {
 		random = new Random();
 	}
 
-	private List<Point3f> getPlayingLightSources(Map<TileEntityFairyLightsFastener, List<Entry<UUID, Connection>>> feasibleConnections,
-		TileEntityFairyLightsFastener fastener) {
+	private List<Point3f> getPlayingLightSources(Map<TileEntityConnectionFastener, List<Entry<UUID, Connection>>> feasibleConnections, TileEntityConnectionFastener fastener) {
 		List<Point3f> points = new ArrayList<Point3f>();
 		double expandAmount = Configurator.jingleAmplitude;
 		AxisAlignedBB listenerRegion = fastener.getBoundingBox().expand(expandAmount, expandAmount, expandAmount);
@@ -46,11 +46,12 @@ public class TickHandler {
 		boolean arePlayersNear = nearPlayers.size() > 0;
 		for (Entry<UUID, Connection> connectionEntry : fastener.getConnectionEntrySet()) {
 			Connection connection = connectionEntry.getValue();
-			if (connection.isOrigin() && !(connection instanceof ConnectionPlayer)) {
-				Light[] lightPoints = connection.getLightPoints();
+			if (connection.isOrigin() && !(connection instanceof ConnectionPlayer) && connection.getLogic() instanceof ConnectionLogicFairyLights) {
+				ConnectionLogicFairyLights connectionLogic = (ConnectionLogicFairyLights) connection.getLogic();
+				Light[] lightPoints = connectionLogic.getLightPoints();
 				int range = lightPoints == null ? 0 : lightPoints.length;
 				if (range >= Jingle.getMinRange()) {
-					if (connection.canCurrentlyPlayAJingle()) {
+					if (connectionLogic.canCurrentlyPlayAJingle()) {
 						if (arePlayersNear) {
 							if (feasibleConnections.containsKey(fastener)) {
 								feasibleConnections.get(fastener).add(connectionEntry);
@@ -71,7 +72,7 @@ public class TickHandler {
 		return points;
 	}
 
-	public boolean isTooCloseTo(TileEntityFairyLightsFastener fastener, Light[] lights, List<Point3f> playingSources) {
+	public boolean isTooCloseTo(TileEntityConnectionFastener fastener, Light[] lights, List<Point3f> playingSources) {
 		for (Light light : lights) {
 			for (Point3f point : playingSources) {
 				if (light.getAbsolutePoint(fastener).distance(point) <= Configurator.jingleAmplitude) {
@@ -102,24 +103,24 @@ public class TickHandler {
 			if (FairyLights.christmas.isOcurringNow() && Configurator.jingleEnabled && random.nextFloat() < jingleProbability) {
 				List<TileEntity> tileEntities = event.world.loadedTileEntityList;
 				List<Point3f> playingSources = new ArrayList<Point3f>();
-				Map<TileEntityFairyLightsFastener, List<Entry<UUID, Connection>>> feasibleConnections = new HashMap<TileEntityFairyLightsFastener, List<Entry<UUID, Connection>>>();
+				Map<TileEntityConnectionFastener, List<Entry<UUID, Connection>>> feasibleConnections = new HashMap<TileEntityConnectionFastener, List<Entry<UUID, Connection>>>();
 				for (TileEntity tileEntity : tileEntities) {
-					if (tileEntity instanceof TileEntityFairyLightsFastener) {
-						TileEntityFairyLightsFastener fastener = (TileEntityFairyLightsFastener) tileEntity;
+					if (tileEntity instanceof TileEntityConnectionFastener) {
+						TileEntityConnectionFastener fastener = (TileEntityConnectionFastener) tileEntity;
 						List<Point3f> newPlayingSources = getPlayingLightSources(feasibleConnections, fastener);
 						if (newPlayingSources != null && newPlayingSources.size() > 0) {
 							playingSources.addAll(newPlayingSources);
 						}
 					}
 				}
-				Iterator<TileEntityFairyLightsFastener> feasibleFasteners = feasibleConnections.keySet().iterator();
+				Iterator<TileEntityConnectionFastener> feasibleFasteners = feasibleConnections.keySet().iterator();
 				while (feasibleFasteners.hasNext()) {
-					TileEntityFairyLightsFastener fastener = feasibleFasteners.next();
+					TileEntityConnectionFastener fastener = feasibleFasteners.next();
 					List<Entry<UUID, Connection>> connections = feasibleConnections.get(fastener);
 					Iterator<Entry<UUID, Connection>> connectionIterator = connections.iterator();
 					while (connectionIterator.hasNext()) {
 						Connection connection = connectionIterator.next().getValue();
-						if (isTooCloseTo(fastener, connection.getLightPoints(), playingSources)) {
+						if (isTooCloseTo(fastener, ((ConnectionLogicFairyLights) connection.getLogic()).getLightPoints(), playingSources)) {
 							connectionIterator.remove();
 						}
 					}
@@ -130,21 +131,19 @@ public class TickHandler {
 				if (feasibleConnections.size() == 0) {
 					return;
 				}
-				TileEntityFairyLightsFastener fastener = feasibleConnections.keySet().toArray(new TileEntityFairyLightsFastener[0])[random
-					.nextInt(feasibleConnections.size())];
+				TileEntityConnectionFastener fastener = feasibleConnections.keySet().toArray(new TileEntityConnectionFastener[0])[random.nextInt(feasibleConnections.size())];
 				List<Entry<UUID, Connection>> connections = feasibleConnections.get(fastener);
 				Entry<UUID, Connection> connectionEntry = connections.get(random.nextInt(connections.size()));
 				UUID uuid = connectionEntry.getKey();
 				Connection connection = connectionEntry.getValue();
-				Light[] lightPoints = connection.getLightPoints();
+				Light[] lightPoints = ((ConnectionLogicFairyLights) connection.getLogic()).getLightPoints();
 				if (lightPoints != null) {
 					int lightOffset = lightPoints.length;
 					Jingle jingle = Jingle.getRandomJingle(lightOffset);
 					if (jingle != null) {
 						lightOffset = lightOffset / 2 - jingle.getRange() / 2;
-						connection.play(jingle, lightOffset);
-						FairyLights.networkManager.sendPacketToClientsWatchingChunk(fastener.xCoord, fastener.zCoord, event.world, new S00FLPacketJingle(
-							fastener, uuid, lightOffset, jingle));
+						((ConnectionLogicFairyLights) connection.getLogic()).play(jingle, lightOffset);
+						FairyLights.networkManager.sendPacketToClientsWatchingChunk(fastener.xCoord, fastener.zCoord, event.world, new S00FLPacketJingle(fastener, uuid, lightOffset, jingle));
 					}
 				}
 			}

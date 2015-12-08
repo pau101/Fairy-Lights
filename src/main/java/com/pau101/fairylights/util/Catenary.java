@@ -29,15 +29,17 @@ public class Catenary {
 	}
 
 	public static Catenary from(Vector3f direction, boolean tight) {
+		return from(direction, tight ? direction.length() : lengthFunc(direction.length()));
+	}
+
+	public static Catenary from(Vector3f direction, float length) {
 		Catenary catenary = new Catenary();
 		float rotation = (float) Math.atan2(direction.z, direction.x);
-		float length = tight ? direction.length() : lengthFunc(direction.length());
 		int vertexCount = (int) (length * CatenaryUtils.SEG_LENGTH);
-		if (vertexCount <= 1) {
-			vertexCount = 2;
+		if (vertexCount < 8) {
+			vertexCount = 8;
 		}
-		float[][] vertices2D = CatenaryUtils.catenary(new float[] { 0, 0 },
-			new float[] { MathHelper.sqrt_float(direction.x * direction.x + direction.z * direction.z), direction.y }, length, vertexCount);
+		float[][] vertices2D = CatenaryUtils.catenary(new float[] { 0, 0 }, new float[] { MathHelper.sqrt_float(direction.x * direction.x + direction.z * direction.z), direction.y }, length, vertexCount);
 		catenary.segments = new Segment[vertices2D[0].length - 1];
 		float[] xCoords = vertices2D[0];
 		float[] yCoords = vertices2D[1];
