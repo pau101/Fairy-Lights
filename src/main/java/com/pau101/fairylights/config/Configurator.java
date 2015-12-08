@@ -6,7 +6,6 @@ import net.minecraftforge.common.config.Configuration;
 
 import com.pau101.fairylights.FairyLights;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -54,13 +53,6 @@ public class Configurator {
 
 		if (config.hasChanged()) {
 			config.save();
-		}
-	}
-
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (FairyLights.MODID.equals(event.modID)) {
-			updateConfig();
 		}
 	}
 }

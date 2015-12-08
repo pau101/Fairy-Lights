@@ -11,7 +11,6 @@ import com.pau101.fairylights.network.FLNetworkManager;
 import com.pau101.fairylights.proxy.CommonProxy;
 import com.pau101.fairylights.util.CalendarEvent;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -26,7 +25,7 @@ public class FairyLights {
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "0.4.0";
+	public static final String VERSION = "1.4.0";
 
 	public static final int MAX_LENGTH = 20;
 
@@ -59,7 +58,6 @@ public class FairyLights {
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {
 		Configurator.initConfig(event);
-		FMLCommonHandler.instance().bus().register(Configurator.class);
 	}
 
 	@EventHandler

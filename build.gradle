@@ -17,12 +17,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.4.0"
+version = "1.4.0"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
 
 minecraft {
-	version = "1.7.10-10.13.4.1448-1.7.10"
+	version = "1.7.2-10.12.2.1147"
 	assetDir = "eclipse/assets"
 }
 
@@ -63,7 +63,7 @@ processResources
 }
 
 jar {
-	classifier = '1.7.10'
+	classifier = '1.7.2'
 	manifest {
 		attributes('FMLCorePlugin': 'com.pau101.fairylights.core.FairyLightsLoadingPlugin')
 		attributes('FMLCorePluginContainsFMLMod': 'true')
