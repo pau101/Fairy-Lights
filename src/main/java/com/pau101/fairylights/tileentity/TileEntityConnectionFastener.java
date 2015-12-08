@@ -33,6 +33,7 @@ import com.pau101.fairylights.tileentity.connection.Connection;
 import com.pau101.fairylights.tileentity.connection.ConnectionFastener;
 import com.pau101.fairylights.tileentity.connection.ConnectionPlayer;
 import com.pau101.fairylights.util.Catenary;
+import com.pau101.fairylights.util.MathUtils;
 import com.pau101.fairylights.util.Segment;
 import com.pau101.fairylights.util.vectormath.Point3f;
 
@@ -50,9 +51,12 @@ public class TileEntityConnectionFastener extends TileEntity implements IUpdateP
 	}
 
 	private void calculateBoundingBox() {
-		min = new Point3f();
-		max = new Point3f(1, 1, 1);
+		min = new Point3f(Float.NaN, 0, 0);
+		max = new Point3f(Float.NaN, 0, 0);
 		for (Connection connection : connections.values()) {
+			if (!connection.isOrigin()) {
+				continue;
+			}
 			Catenary catenary = connection.getCatenary();
 			if (catenary == null) {
 				continue;
@@ -61,22 +65,10 @@ public class TileEntityConnectionFastener extends TileEntity implements IUpdateP
 			for (int i = 0; i < segments.length; i++) {
 				Segment segment = segments[i];
 				Point3f vertex = segment.getVertex();
-				float x = vertex.x / 16, y = vertex.y / 16, z = vertex.z / 16;
-				min.x = x < min.x ? x : min.x;
-				min.y = y < min.y ? y : min.y;
-				min.z = z < min.z ? z : min.z;
-				max.x = x > max.x ? x : max.x;
-				max.y = y > max.y ? y : max.y;
-				max.z = z > max.z ? z : max.z;
+				MathUtils.minmax(min, max, vertex.x / 16, vertex.y / 16, vertex.z / 16);
 			}
 			Point3f vertex = segments[segments.length - 1].pointAt(1);
-			float x = vertex.x / 16, y = vertex.y / 16, z = vertex.z / 16;
-			min.x = x < min.x ? x : min.x;
-			min.y = y < min.y ? y : min.y;
-			min.z = z < min.z ? z : min.z;
-			max.x = x > max.x ? x : max.x;
-			max.y = y > max.y ? y : max.y;
-			max.z = z > max.z ? z : max.z;
+			MathUtils.minmax(min, max, vertex.x / 16, vertex.y / 16, vertex.z / 16);
 		}
 	}
 
@@ -131,7 +123,8 @@ public class TileEntityConnectionFastener extends TileEntity implements IUpdateP
 	}
 
 	public AxisAlignedBB getBoundingBox() {
-		return AxisAlignedBB.fromBounds(min.x, min.y, min.z, max.x, max.y, max.z).expand(0.5, 0.5, 0.5).offset(pos.getX(), pos.getY(), pos.getZ());
+		Point3f fromOffset = getConnectionPoint();
+		return AxisAlignedBB.fromBounds(min.x, min.y, min.z, max.x, max.y, max.z).expand(0.25F, 0.25F, 0.25F).offset(fromOffset.x, fromOffset.y, fromOffset.z);
 	}
 
 	@Override
@@ -174,7 +167,7 @@ public class TileEntityConnectionFastener extends TileEntity implements IUpdateP
 			}
 		}
 		Iterator<Connection> connectionIterator = connections.values().iterator();
-		Point3f fromOffset = getFrom();
+		Point3f fromOffset = getConnectionPoint();
 		boolean update = false, playerUpdateBoundingBox = false;
 		while (connectionIterator.hasNext()) {
 			Connection connection = connectionIterator.next();
@@ -196,10 +189,6 @@ public class TileEntityConnectionFastener extends TileEntity implements IUpdateP
 			markDirty();
 			worldObj.markBlockForUpdate(pos);
 		}
-	}
-
-	public Point3f getFrom() {
-		return ((BlockConnectionFastener) getBlockType()).getOffsetForData(getBlockType() instanceof BlockConnectionFastenerFence ? null : (EnumFacing) worldObj.getBlockState(pos).getValue(BlockConnectionFastener.FACING_PROP), 0.125f).add(pos);
 	}
 
 	@Override

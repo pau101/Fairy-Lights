@@ -30,7 +30,7 @@ public class ConnectionFastener extends Connection {
 		if (!(toBlock instanceof BlockConnectionFastener)) {
 			return null;
 		}
-		Point3f point = ((BlockConnectionFastener) toBlock).getOffsetForData(toBlock instanceof BlockConnectionFastenerFence ? null : (EnumFacing) worldObj.getBlockState(toPos).getValue(BlockConnectionFastener.FACING_PROP), 1 / 8f);
+		Point3f point = ((BlockConnectionFastener) toBlock).getOffsetForData(toBlock instanceof BlockConnectionFastenerFence ? null : (EnumFacing) worldObj.getBlockState(toPos).getValue(BlockConnectionFastener.FACING_PROP), 1 / 8F);
 		point.x += toPos.getX();
 		point.y += toPos.getY();
 		point.z += toPos.getZ();
