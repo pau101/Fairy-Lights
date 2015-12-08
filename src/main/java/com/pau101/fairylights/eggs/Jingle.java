@@ -12,8 +12,8 @@ public class Jingle {
 
 		private int length;
 
-		public PlayTick(int[] notes, int length) {
-			this.notes = notes;
+		public PlayTick(int[] note, int length) {
+			notes = note;
 			this.length = length;
 		}
 

@@ -3,11 +3,12 @@ package com.pau101.fairylights.config;
 import java.io.File;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.pau101.fairylights.FairyLights;
+
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class Configurator {
 	private static File configFile;
@@ -22,7 +23,7 @@ public class Configurator {
 
 	public static void initConfig(FMLPreInitializationEvent event) {
 		File configFolder = event.getModConfigurationDirectory();
-		configFile = new File(configFolder.getAbsolutePath() + File.separatorChar + FairyLights.MODID + ".cfg");
+		configFile = new File(configFolder.getAbsolutePath() + "/" + FairyLights.MODID + ".cfg");
 		config = new Configuration(configFile);
 		updateConfig();
 	}
@@ -48,9 +49,9 @@ public class Configurator {
 			// Let it Go
 			"4_4,4_8,9_8,9_8,4_8,4_8,9_8,11_13,9_4,11_8,9_8,11_8,13_8,14_8,16_8,9_13,4_4,4_8,9_8,9_8,4_8,9_8,4_4,11_31,13_8,14_62,11_4,13_4,14_26,9_4,9_4,16_26,14_4,11_4,11_8,11_4,11_4,11_8,13_8,14_8,16_4,14",
 			// Joy to the World
-			"12&20&8_13,20&12&8_10,19&15&8_3,17&13&8_20,15&12&8_6,13&10&5&1_13,12&8&3_6,3&1_6,10&7&1&3_20,8&15&0_6,15&13&8&0_20,17&13&8&1_6,17&13&8&1_20,19&10&3_6,19&10&3&8"
-		};
+			"12&20&8_13,20&12&8_10,19&15&8_3,17&13&8_20,15&12&8_6,13&10&5&1_13,12&8&3_6,3&1_6,10&7&1&3_20,8&15&0_6,15&13&8&0_20,17&13&8&1_6,17&13&8&1_20,19&10&3_6,19&10&3&8" };
 		jingles = config.get(Configuration.CATEGORY_GENERAL, "Jingles", defaultJingles, "The list of jingles that are chosen from.").getStringList();
+
 		if (config.hasChanged()) {
 			config.save();
 		}

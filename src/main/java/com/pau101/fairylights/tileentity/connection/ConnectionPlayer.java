@@ -6,21 +6,19 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.google.common.base.Charsets;
 import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.connection.ConnectionType;
-import com.pau101.fairylights.item.ItemConnection;
 import com.pau101.fairylights.player.PlayerData;
-import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
-import com.pau101.fairylights.util.MathUtils;
+import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
 import com.pau101.fairylights.util.vectormath.Point3f;
+import com.pau101.fairylights.util.vectormath.Point3i;
 
 public class ConnectionPlayer extends Connection {
 	private EntityPlayer player;
@@ -33,12 +31,12 @@ public class ConnectionPlayer extends Connection {
 
 	private int prevStretchStage;
 
-	public ConnectionPlayer(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj) {
-		super(type, fairyLightsFastener, worldObj);
+	public ConnectionPlayer(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj) {
+		super(fairyLightsFastener, worldObj);
 	}
 
-	public ConnectionPlayer(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj, EntityPlayer player, NBTTagCompound tagCompound) {
-		super(type, fairyLightsFastener, worldObj, true, tagCompound);
+	public ConnectionPlayer(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj, EntityPlayer player, NBTTagCompound tagCompound) {
+		super(fairyLightsFastener, worldObj, true, tagCompound);
 		this.player = player;
 		setPlayerUUID(player.getUniqueID());
 		forceRemove = false;
@@ -50,19 +48,37 @@ public class ConnectionPlayer extends Connection {
 			return null;
 		}
 		Point3f point = new Point3f((float) player.posX, (float) player.posY, (float) player.posZ);
-		point.x += MathHelper.cos((player.prevRenderYawOffset - 180) * MathUtils.DEG_TO_RAD) * 0.4F;
-		point.z += MathHelper.sin((player.prevRenderYawOffset - 180) * MathUtils.DEG_TO_RAD) * 0.4F;
-		point.y += 1;
+		point.x += MathHelper.cos((player.prevRenderYawOffset - 180) / 180 * (float) Math.PI) * 0.4F;
+		point.z += MathHelper.sin((player.prevRenderYawOffset - 180) / 180 * (float) Math.PI) * 0.4F;
+		point.y += FairyLights.proxy.getCatenaryOffset(player);
 		return point;
 	}
 
 	@Override
-	public BlockPos getToBlock() {
+	public int getToX() {
 		Point3f to = getTo();
 		if (to == null) {
-			return null;
+			return 0;
 		}
-		return new BlockPos(to.x, to.y, to.z);
+		return MathHelper.floor_float(to.x);
+	}
+
+	@Override
+	public int getToY() {
+		Point3f to = getTo();
+		if (to == null) {
+			return 0;
+		}
+		return MathHelper.floor_float(to.y);
+	}
+
+	@Override
+	public int getToZ() {
+		Point3f to = getTo();
+		if (to == null) {
+			return 0;
+		}
+		return MathHelper.floor_float(to.z);
 	}
 
 	@Override
@@ -90,22 +106,26 @@ public class ConnectionPlayer extends Connection {
 		shouldRecalculateCatenary = true;
 		super.update(from);
 		if (player == null) {
-			BlockPos pos = getFastener().getPos();
-			List<EntityPlayer> nearEntities = worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.fromBounds(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1).expand(FairyLights.MAX_LENGTH, FairyLights.MAX_LENGTH, FairyLights.MAX_LENGTH));
+			List<EntityPlayer> nearEntities = worldObj.getEntitiesWithinAABB(
+				EntityPlayer.class,
+				AxisAlignedBB.getBoundingBox(fairyLightsFastener.xCoord, fairyLightsFastener.yCoord, fairyLightsFastener.zCoord,
+					fairyLightsFastener.xCoord + 1, fairyLightsFastener.yCoord + 1, fairyLightsFastener.zCoord + 1).expand(FairyLights.MAX_LENGTH,
+					FairyLights.MAX_LENGTH, FairyLights.MAX_LENGTH));
 			for (EntityPlayer entity : nearEntities) {
 				// should do this differently? An online client has a
 				// different player UUID for the player instance on the
 				// server...
-				if (entity.getUniqueID().equals(getPlayerUUID()) || UUID.nameUUIDFromBytes(("OfflinePlayer:" + entity.getGameProfile().getName()).getBytes(Charsets.UTF_8)).equals(getPlayerUUID())) {
+				if (entity.getUniqueID().equals(getPlayerUUID())
+					|| UUID.nameUUIDFromBytes(("OfflinePlayer:" + entity.getGameProfile().getName()).getBytes(Charsets.UTF_8)).equals(getPlayerUUID())) {
 					player = entity;
 					PlayerData data = PlayerData.getPlayerData(entity);
-					data.setLastClicked(getFastener().getPos());
+					data.setLastClicked(fairyLightsFastener.xCoord, fairyLightsFastener.yCoord, fairyLightsFastener.zCoord);
 					return;
 				}
 			}
 		} else {
 			PlayerData data = PlayerData.getPlayerData(player);
-			BlockPos point = data.getLastClicked();
+			Point3i point = data.getLastClicked();
 			if (details == null) {
 				details = new NBTTagCompound();
 				writeDetailsToNBT(details);
@@ -134,7 +154,9 @@ public class ConnectionPlayer extends Connection {
 					((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S12PacketEntityVelocity(player));
 				}
 			}
-			if (!point.equals(getFastener().getPos()) || player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemConnection) || !((ItemConnection) player.getHeldItem().getItem()).getConnectionType().isConnectionThis(this) || player.getHeldItem().hasTagCompound() && !player.getHeldItem().getTagCompound().equals(details)) {
+			if (!(point.x == fairyLightsFastener.xCoord && point.y == fairyLightsFastener.yCoord && point.z == fairyLightsFastener.zCoord)
+				|| player.getHeldItem() == null || player.getHeldItem().getItem() != Item.getItemFromBlock(FairyLights.fairyLightsFastener)
+				|| player.getHeldItem().hasTagCompound() && !player.getHeldItem().getTagCompound().equals(details)) {
 				forceRemove = true;
 			}
 		}

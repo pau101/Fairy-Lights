@@ -7,24 +7,24 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLEventChannel;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.CustomPacketEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.HashBiMap;
 import com.pau101.fairylights.network.play.server.S00FLPacketJingle;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLEventChannel;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.CustomPacketEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public class FLNetworkManager {
 	private static final Logger logger = LogManager.getLogger();
@@ -35,6 +35,7 @@ public class FLNetworkManager {
 	}
 
 	private String channelName;
+
 	private FMLEventChannel channel;
 
 	public FLNetworkManager(String channelName) {
@@ -89,10 +90,10 @@ public class FLNetworkManager {
 
 	public void sendPacketToClientsWatchingChunk(int x, int z, World world, FLPacket packet, Entity... exceptions) {
 		int chunkX = x >> 4, chunkZ = z >> 4;
-		Iterator<EntityPlayer> players = MinecraftServer.getServer().getEntityWorld().playerEntities.iterator();
+		Iterator<EntityPlayerMP> players = MinecraftServer.getServer().getEntityWorld().playerEntities.iterator();
 
 		while (players.hasNext()) {
-			EntityPlayerMP player = (EntityPlayerMP) players.next();
+			EntityPlayerMP player = players.next();
 
 			boolean found = false;
 			if (exceptions != null) {

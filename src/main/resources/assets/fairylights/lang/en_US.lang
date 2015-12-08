@@ -1,16 +1,10 @@
 itemGroup.fairylights=Fairy Lights
 
-tile.fairy_lights.name=Connection Fastener
-
-item.fairy_lights.name=Fairy Lights
-item.garland.name=Garland
-item.tinsel.name=Tinsel
+tile.fairy_lights_fastener.name=Fairy Lights
 
 item.fairy_lights.pattern=Pattern:
 item.fairy_lights.tight=Uncurved
 item.fairy_lights.colored_light=%1$s %2$s
-
-item.tinsel.colored=%1$s %2$s
 
 item.light.fairy.name=Fairy Light
 item.light.paper.name=Paper Lantern
@@ -25,9 +19,6 @@ item.light.ghost.name=Ghost Light
 item.light.spider.name=Spider Light
 item.light.witch.name=Witch Light
 item.light.weedwood_lantern.name=Weedwood Lantern
-item.light.snowflake.name=Snowflake Light
-item.light.icicle.name=Icicle Lights
-item.light.meteor.name=Meteor Light
 
 item.light.weedwood_lantern.line.0=From a dark, hostile environment...
 item.light.weedwood_lantern.line.1=Information on The Betweenlands available here:

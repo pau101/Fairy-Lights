@@ -2,63 +2,78 @@ package com.pau101.fairylights.tileentity.connection;
 
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-import com.pau101.fairylights.block.BlockConnectionFastener;
-import com.pau101.fairylights.block.BlockConnectionFastenerFence;
-import com.pau101.fairylights.connection.ConnectionType;
-import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
+import com.pau101.fairylights.block.BlockFairyLightsFastener;
+import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
 import com.pau101.fairylights.util.vectormath.Point3f;
 
 public class ConnectionFastener extends Connection {
-	private BlockPos toPos;
+	private int toX;
 
-	public ConnectionFastener(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj) {
-		super(type, fairyLightsFastener, worldObj);
+	private int toY;
+
+	private int toZ;
+
+	public ConnectionFastener(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj) {
+		super(fairyLightsFastener, worldObj);
 	}
 
-	public ConnectionFastener(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj, BlockPos pos, boolean isOrigin, NBTTagCompound compound) {
-		super(type, fairyLightsFastener, worldObj, isOrigin, compound);
-		toPos = pos;
+	public ConnectionFastener(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj, int toX, int toY, int toZ, boolean isOrigin,
+		NBTTagCompound tagCompound) {
+		super(fairyLightsFastener, worldObj, isOrigin, tagCompound);
+		this.toX = toX;
+		this.toY = toY;
+		this.toZ = toZ;
 	}
 
 	@Override
 	public Point3f getTo() {
-		Block toBlock = worldObj.getBlockState(toPos).getBlock();
-		if (!(toBlock instanceof BlockConnectionFastener)) {
+		Block toBlock = worldObj.getBlock(toX, toY, toZ);
+		if (!(toBlock instanceof BlockFairyLightsFastener)) {
 			return null;
 		}
-		Point3f point = ((BlockConnectionFastener) toBlock).getOffsetForData(toBlock instanceof BlockConnectionFastenerFence ? null : (EnumFacing) worldObj.getBlockState(toPos).getValue(BlockConnectionFastener.FACING_PROP), 1 / 8f);
-		point.x += toPos.getX();
-		point.y += toPos.getY();
-		point.z += toPos.getZ();
+		Point3f point = ((BlockFairyLightsFastener) toBlock).getOffsetForData(worldObj.getBlockMetadata(toX, toY, toZ), 1 / 8f);
+		point.x += toX;
+		point.y += toY;
+		point.z += toZ;
 		return point;
 	}
 
 	@Override
-	public BlockPos getToBlock() {
-		return toPos;
+	public int getToX() {
+		return toX;
+	}
+
+	@Override
+	public int getToY() {
+		return toY;
+	}
+
+	@Override
+	public int getToZ() {
+		return toZ;
 	}
 
 	@Override
 	public boolean shouldDisconnect() {
-		return worldObj.isBlockLoaded(toPos, false) && !(worldObj.getTileEntity(toPos) instanceof TileEntityConnectionFastener);
+		return worldObj.blockExists(toX, toY, toZ) && !(worldObj.getTileEntity(toX, toY, toZ) instanceof TileEntityFairyLightsFastener);
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		compound.setInteger("x", toPos.getX());
-		compound.setInteger("y", toPos.getY());
-		compound.setInteger("z", toPos.getZ());
+		compound.setInteger("x", toX);
+		compound.setInteger("y", toY);
+		compound.setInteger("z", toZ);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		toPos = new BlockPos(compound.getInteger("x"), compound.getInteger("y"), compound.getInteger("z"));
+		toX = compound.getInteger("x");
+		toY = compound.getInteger("y");
+		toZ = compound.getInteger("z");
 	}
 
 }

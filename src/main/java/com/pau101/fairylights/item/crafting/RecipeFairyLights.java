@@ -64,7 +64,7 @@ public class RecipeFairyLights implements IRecipe {
 
 	public RecipeFairyLights() {
 		Object[] recipe = { "I-I", 'I', "ingotIron", '-', new Object[] { Items.string, "stickWood" } };
-		outputItem = FairyLights.fairyLights;
+		outputItem = Item.getItemFromBlock(FairyLights.fairyLightsFastener);
 
 		String recipeString = "";
 		int slot = 0;
@@ -216,7 +216,7 @@ public class RecipeFairyLights implements IRecipe {
 						Item item = itemStack.getItem();
 						if (item == FairyLights.light && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("color", 3)) {
 							NBTTagCompound patternCompound = new NBTTagCompound();
-							patternCompound.setInteger("light", itemStack.getMetadata());
+							patternCompound.setInteger("light", itemStack.getItemDamage());
 							patternCompound.setByte("color", (byte) itemStack.getTagCompound().getInteger("color"));
 							patternList.appendTag(patternCompound);
 						} else if (item == Items.glowstone_dust) {
@@ -281,17 +281,5 @@ public class RecipeFairyLights implements IRecipe {
 			getDetails(inventoryCrafting, world, true);
 		}
 		return recipeOutput != null;
-	}
-
-	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inventoryCrafting) {
-		ItemStack[] itemStack = new ItemStack[inventoryCrafting.getSizeInventory()];
-
-		for (int i = 0; i < itemStack.length; ++i) {
-			ItemStack itemstack = inventoryCrafting.getStackInSlot(i);
-			itemStack[i] = ForgeHooks.getContainerItem(itemstack);
-		}
-
-		return itemStack;
 	}
 }

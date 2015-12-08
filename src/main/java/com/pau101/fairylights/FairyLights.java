@@ -1,34 +1,31 @@
 package com.pau101.fairylights;
 
-import com.pau101.fairylights.block.BlockConnectionFastener;
-import com.pau101.fairylights.block.BlockConnectionFastenerFence;
+import net.minecraft.creativetab.CreativeTabs;
+
+import com.pau101.fairylights.block.BlockFairyLightsFastener;
+import com.pau101.fairylights.block.BlockFairyLightsFence;
 import com.pau101.fairylights.config.Configurator;
-import com.pau101.fairylights.item.ItemConnection;
 import com.pau101.fairylights.item.ItemLight;
 import com.pau101.fairylights.network.FLNetworkManager;
 import com.pau101.fairylights.proxy.CommonProxy;
-import com.pau101.fairylights.util.CalendarEvent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFence;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import com.pau101.fairylights.util.calendarevents.CalendarEvent;
 
-import java.util.List;
-import java.util.Map;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = FairyLights.MODID, name = FairyLights.NAME, version = FairyLights.VERSION)
 public class FairyLights {
 	public static final String MODID = "fairylights";
+
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "2.4.0";
+	public static final String VERSION = "0.3.0";
 
 	public static final int MAX_LENGTH = 20;
 
@@ -40,34 +37,22 @@ public class FairyLights {
 
 	public static FLNetworkManager networkManager;
 
-	public static BlockConnectionFastener connectionFastener;
+	public static BlockFairyLightsFastener fairyLightsFastener;
 
-	public static List<Block> fences;
-
-	public static BlockConnectionFastenerFence[] fastenerFences;
-
-	public static Map<BlockConnectionFastenerFence, BlockFence> fastenerFenceToNormalFenceMap;
-
-	public static Map<BlockFence, BlockConnectionFastenerFence> normalFenceToFastenerFenceMap;
+	public static BlockFairyLightsFence fairyLightsFence;
 
 	public static ItemLight light;
 
-	public static ItemConnection fairyLights;
-
-	public static ItemConnection garland;
-
-	public static ItemConnection tinsel;
-
-	public static CreativeTabs fairyLightsTab;
+	public static CreativeTabs fairyLights;
 
 	public static CalendarEvent christmas;
 
-	public static boolean isShadersModInstalled;
+	public static boolean isShadersModInstalled = false;
 
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {
 		Configurator.initConfig(event);
-		MinecraftForge.EVENT_BUS.register(Configurator.class);
+		FMLCommonHandler.instance().bus().register(Configurator.class);
 	}
 
 	@EventHandler

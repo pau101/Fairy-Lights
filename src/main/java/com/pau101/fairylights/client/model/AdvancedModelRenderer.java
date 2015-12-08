@@ -7,55 +7,50 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 import com.pau101.fairylights.util.MathUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class AdvancedModelRenderer extends ModelRenderer {
 	protected int textureOffsetX;
 
 	protected int textureOffsetY;
 
-	public boolean compiled;
+	protected boolean compiled;
 
-	public int displayList = -1;
+	protected int displayList;
 
 	protected ModelBase modelBase;
 
-	public float scaleX;
+	protected float scaleX;
 
-	public float scaleY;
+	protected float scaleY;
 
-	public float scaleZ;
+	protected float scaleZ;
 
-	public float aftMoveX;
+	protected float aftMoveX;
 
-	public float aftMoveY;
+	protected float aftMoveY;
 
-	public float aftMoveZ;
+	protected float aftMoveZ;
 
 	protected RotationOrder rotationOrder;
 
-	public float secondaryRotateAngleX;
+	protected float secondaryRotateAngleX;
 
-	public float secondaryRotateAngleY;
+	protected float secondaryRotateAngleY;
 
-	public float secondaryRotateAngleZ;
+	protected float secondaryRotateAngleZ;
 
 	protected RotationOrder secondaryRotationOrder;
 
-	public boolean isGlowing;
-
-	public boolean shouldntGlow;
-
-	public boolean isMeteorLightGlow;
+	public boolean isGlowing = false;
 
 	public List<AdvancedModelRenderer> childModels;
 
@@ -81,6 +76,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		if (childModels == null) {
 			childModels = Lists.newArrayList();
 		}
+
 		childModels.add(modelRenderer);
 	}
 
@@ -100,27 +96,17 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		name = boxName + "." + name;
 		TextureOffset textureoffset = modelBase.getTextureOffset(name);
 		setTextureOffset(textureoffset.textureOffsetX, textureoffset.textureOffsetY);
-		cubeList.add(new ModelBox(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height, depth, 0.0F).setBoxName(name));
+		cubeList.add(new ModelBox(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height, depth, 0.0F).func_78244_a(name));
 		return this;
-	}
-
-	public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
-		cubeList.add(new Model3DTexture(this, textureOffsetX, textureOffsetY, width, height));
-		return this;
-	}
-
-	public void addMeteorLightBox(float posX, float posY, float posZ, int width, int height, int depth, int type) {
-		cubeList.add(new ModelMeteorLightBox(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height, depth, type));
 	}
 
 	@SideOnly(Side.CLIENT)
 	protected void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(displayList, GL11.GL_COMPILE);
-		WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
 
 		for (int i = 0; i < cubeList.size(); i++) {
-			((ModelBox) cubeList.get(i)).render(renderer, scale);
+			((ModelBox) cubeList.get(i)).render(Tessellator.instance, scale);
 		}
 
 		GL11.glEndList();
@@ -136,45 +122,41 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					compileDisplayList(scale);
 				}
 
-				GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+				GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-				secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-				GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-				GlStateManager.scale(scaleX, scaleY, scaleZ);
+				secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ
+					* MathUtils.RAD_TO_DEG);
+				GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
+				GL11.glScalef(scaleX, scaleY, scaleZ);
 			}
 		}
 	}
 
 	private void baseRender(float scale) {
-		if (isGlowing && shouldntGlow) {
-			return;
-		}
 		if (isGlowing) {
 			List<ModelBox> boxModels = cubeList;
-			WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
 			for (ModelBox box : boxModels) {
 				int bri = 1;
 				float expand = 0.45F;
-				float meteorExpandY = 0F;
 				for (int i = 0; i < bri; i++) {
 					float width = box.posX2 - box.posX1, height = box.posY2 - box.posY1, depth = box.posZ2 - box.posZ1;
 					float localExpand = expand * (i + 1);
-					float localMeteorExpandY = meteorExpandY * (i + 1); 
 					float newWidth = width + 2 * localExpand;
-					float newHeight = height + 2 * (isMeteorLightGlow ? localMeteorExpandY : localExpand);
+					float newHeight = height + 2 * localExpand;
 					float newDepth = depth + 2 * localExpand;
 					float scaleX = newWidth / width;
 					float scaleY = newHeight / height;
 					float scaleZ = newDepth / depth;
-					GlStateManager.pushMatrix();
-					GlStateManager.translate((box.posX1 - expand - scaleX * box.posX1) / 16, (box.posY1 - (isMeteorLightGlow ? meteorExpandY : expand) - scaleY * box.posY1) / 16, (box.posZ1 - expand - scaleZ * box.posZ1) / 16 * (box instanceof Model3DTexture ? -1 : 1));
-					GlStateManager.scale(scaleX, scaleY, scaleZ);
-					box.render(wr, scale);
-					GlStateManager.popMatrix();
+					GL11.glPushMatrix();
+					GL11.glTranslatef((box.posX1 - expand - scaleX * box.posX1) / 16, (box.posY1 - expand - scaleY * box.posY1) / 16,
+						(box.posZ1 - expand - scaleZ * box.posZ1) / 16);
+					GL11.glScalef(scaleX, scaleY, scaleZ);
+					box.render(Tessellator.instance, scale);
+					GL11.glPopMatrix();
 				}
 			}
 		} else {
-			GlStateManager.callList(displayList);
+			GL11.glCallList(displayList);
 		}
 
 		if (childModels != null) {
@@ -195,55 +177,59 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					compileDisplayList(scale);
 				}
 
-				GlStateManager.translate(offsetX, offsetY, offsetZ);
+				GL11.glTranslatef(offsetX, offsetY, offsetZ);
 				int i;
 
 				if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
 					if (rotationPointX == 0 && rotationPointY == 0 && rotationPointZ == 0) {
 						if (scaleX == 1 && scaleY == 1 && scaleZ == 1) {
-							GlStateManager.pushMatrix();
-							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-							GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
+							GL11.glPushMatrix();
+							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
+								secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+							GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 							baseRender(scale);
-							GlStateManager.popMatrix();
+							GL11.glPopMatrix();
 						} else {
-							GlStateManager.pushMatrix();
-							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-							GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-							GlStateManager.scale(scaleX, scaleY, scaleZ);
+							GL11.glPushMatrix();
+							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
+								secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+							GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
+							GL11.glScalef(scaleX, scaleY, scaleZ);
 
 							baseRender(scale);
 
-							GlStateManager.popMatrix();
+							GL11.glPopMatrix();
 						}
 					} else {
-						GlStateManager.pushMatrix();
-						GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-						secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-						GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-						GlStateManager.scale(scaleX, scaleY, scaleZ);
+						GL11.glPushMatrix();
+						GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+						secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
+							secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+						GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
+						GL11.glScalef(scaleX, scaleY, scaleZ);
 
 						baseRender(scale);
 
-						GlStateManager.popMatrix();
+						GL11.glPopMatrix();
 					}
 				} else {
-					GlStateManager.pushMatrix();
-					GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+					GL11.glPushMatrix();
+					GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
 					rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-					secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+					secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG,
+						secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 
-					GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
+					GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 
-					GlStateManager.scale(scaleX, scaleY, scaleZ);
+					GL11.glScalef(scaleX, scaleY, scaleZ);
 
 					baseRender(scale);
 
-					GlStateManager.popMatrix();
+					GL11.glPopMatrix();
 				}
 
-				GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+				GL11.glTranslatef(-offsetX, -offsetY, -offsetZ);
 			}
 		}
 	}
@@ -257,15 +243,15 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					compileDisplayList(scale);
 				}
 
-				GlStateManager.pushMatrix();
-				GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+				GL11.glPushMatrix();
+				GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
 				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
 
-				GlStateManager.scale(scaleX, scaleY, scaleZ);
+				GL11.glScalef(scaleX, scaleY, scaleZ);
 
 				baseRender(scale);
-				GlStateManager.popMatrix();
+				GL11.glPopMatrix();
 			}
 		}
 	}

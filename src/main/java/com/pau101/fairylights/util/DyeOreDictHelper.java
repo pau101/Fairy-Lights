@@ -34,7 +34,7 @@ public class DyeOreDictHelper {
 	public static int getDyeMetadata(ItemStack itemStack) {
 		if (itemStack != null) {
 			if (itemStack.getItem() == Items.dye) {
-				return itemStack.getMetadata();
+				return itemStack.getItemDamage();
 			}
 			initDyeItemStacks();
 			for (int i = 0; i < DYE_NAMES.length; i++) {

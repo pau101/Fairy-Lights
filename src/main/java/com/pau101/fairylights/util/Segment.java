@@ -12,8 +12,6 @@ public class Segment {
 
 	private Vector3f rotation;
 
-	private Vector3f delta;
-
 	private float length;
 
 	public Segment(Point3f vertex) {
@@ -23,9 +21,9 @@ public class Segment {
 	public void connectTo(Point3f to) {
 		this.to = to;
 		length = start.distance(to);
-		delta = new Vector3f(start);
+		Point3f delta = new Point3f(start);
 		delta.sub(to);
-		float rotationYaw = (float) -Math.atan2(delta.z, delta.x) - MathUtils.HALF_PI;
+		float rotationYaw = (float) -Math.atan2(delta.z, delta.x) - CatenaryUtils.HALF_PI;
 		float rotationPitch = (float) Math.atan2(delta.y, MathHelper.sqrt_float(delta.x * delta.x + delta.z * delta.z));
 		rotation = new Vector3f(rotationYaw, rotationPitch, 0);
 	}
@@ -50,9 +48,5 @@ public class Segment {
 
 	public void setLength(float length) {
 		this.length = length;
-	}
-
-	public Vector3f getDelta() {
-		return new Vector3f(delta);
 	}
 }

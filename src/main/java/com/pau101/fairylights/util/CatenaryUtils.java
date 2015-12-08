@@ -119,6 +119,8 @@ public final class CatenaryUtils {
 
 	public static final int SEG_LENGTH = 3;
 
+	public static final float HALF_PI = MathUtils.PI / 2;
+
 	private static final int MAX_ITER = 100;
 
 	private static final float MIN_GRAD = 1e-10F;

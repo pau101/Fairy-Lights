@@ -3,26 +3,24 @@ package com.pau101.fairylights.tileentity.connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemDye;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-import com.pau101.fairylights.connection.ConnectionLogic;
-import com.pau101.fairylights.connection.ConnectionType;
-import com.pau101.fairylights.connection.Light;
-import com.pau101.fairylights.connection.PatternLightData;
 import com.pau101.fairylights.eggs.Jingle;
 import com.pau101.fairylights.eggs.JinglePlayer;
 import com.pau101.fairylights.item.LightVariant;
-import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
+import com.pau101.fairylights.tileentity.TileEntityFairyLightsFastener;
 import com.pau101.fairylights.util.Catenary;
+import com.pau101.fairylights.util.Light;
+import com.pau101.fairylights.util.PatternLightData;
+import com.pau101.fairylights.util.Segment;
 import com.pau101.fairylights.util.vectormath.Point3f;
 import com.pau101.fairylights.util.vectormath.Vector3f;
 
 public abstract class Connection {
-	private TileEntityConnectionFastener fastener;
+	protected TileEntityFairyLightsFastener fairyLightsFastener;
 
 	protected World worldObj;
 
@@ -32,31 +30,48 @@ public abstract class Connection {
 
 	private Catenary prevCatenary;
 
+	private Light[] lightPoints;
+
+	private Light[] prevLightPoints;
+
+	private List<PatternLightData> pattern;
+
+	private boolean twinkle;
+
+	private boolean tight;
+
 	protected boolean shouldRecalculateCatenary;
 
-	private BlockPos to;
+	public JinglePlayer jinglePlayer;
 
-	private BlockPos from;
+	private int toX;
+
+	private int toY;
+
+	private int toZ;
+
+	private int fromX;
+
+	private int fromY;
+
+	private int fromZ;
 
 	private boolean isDirty;
 
-	private final ConnectionType type;
-
-	private final ConnectionLogic logic;
-
-	public Connection(ConnectionType type, TileEntityConnectionFastener fairyLightsFastener, World worldObj) {
-		this(type, fairyLightsFastener, worldObj, false, null);
+	public Connection(TileEntityFairyLightsFastener fairyLightsFastener, World worldObj) {
+		this(fairyLightsFastener, worldObj, false, null);
 	}
 
-	public Connection(ConnectionType type, TileEntityConnectionFastener fastener, World worldObj, boolean isOrigin, NBTTagCompound compound) {
-		this.type = type;
-		this.fastener = fastener;
+	public Connection(TileEntityFairyLightsFastener tileEntityFairyLightsFastener, World worldObj, boolean isOrigin, NBTTagCompound tagCompound) {
+		fairyLightsFastener = tileEntityFairyLightsFastener;
 		setWorldObj(worldObj);
 		this.isOrigin = isOrigin;
+		tight = false;
+		twinkle = false;
 		shouldRecalculateCatenary = true;
-		logic = type.createLogic(this);
-		if (compound != null) {
-			readDetailsFromNBT(compound);
+		pattern = new ArrayList<PatternLightData>();
+		if (tagCompound != null) {
+			readDetailsFromNBT(tagCompound);
 		}
 	}
 
@@ -64,21 +79,29 @@ public abstract class Connection {
 		return catenary;
 	}
 
+	public Light[] getLightPoints() {
+		return lightPoints;
+	}
+
+	public List<PatternLightData> getPattern() {
+		return pattern;
+	}
+
 	public Catenary getPrevCatenary() {
 		return prevCatenary;
 	}
 
-	public final ConnectionType getType() {
-		return type;
-	}
-
-	public final ConnectionLogic getLogic() {
-		return logic;
+	public Light[] getPrevLightPoints() {
+		return prevLightPoints;
 	}
 
 	public abstract Point3f getTo();
 
-	public abstract BlockPos getToBlock();
+	public abstract int getToX();
+
+	public abstract int getToY();
+
+	public abstract int getToZ();
 
 	public void setWorldObj(World worldObj) {
 		this.worldObj = worldObj;
@@ -92,21 +115,34 @@ public abstract class Connection {
 		return isOrigin;
 	}
 
+	public boolean isTight() {
+		return tight;
+	}
+
 	public boolean shouldRecalculateCatenery() {
 		return shouldRecalculateCatenary;
 	}
 
-	public TileEntityConnectionFastener getFastener() {
-		return fastener;
+	public void onRemove() {}
+
+	public void play(Jingle jingle, int lightOffset) {
+		if (jinglePlayer == null) {
+			jinglePlayer = new JinglePlayer();
+		}
+		if (!jinglePlayer.isPlaying()) {
+			jinglePlayer.play(jingle, lightOffset);
+		}
 	}
 
-	public void onRemove() {}
+	public void setPatern(List<PatternLightData> pattern) {
+		this.pattern = pattern;
+	}
 
 	public abstract boolean shouldDisconnect();
 
 	public void update(Point3f from) {
 		prevCatenary = catenary;
-		logic.onUpdate();
+		prevLightPoints = lightPoints;
 		if (shouldRecalculateCatenary) {
 			Point3f to = getTo();
 			if (to == null) {
@@ -116,21 +152,101 @@ public abstract class Connection {
 			if (to.x == 0 && to.y == 0 && to.z == 0) {
 				return;
 			}
-			this.from = fastener.getPos();
-			this.to = getToBlock();
-			catenary = logic.createCatenary(to);
+			fromX = fairyLightsFastener.xCoord;
+			fromY = fairyLightsFastener.yCoord;
+			fromZ = fairyLightsFastener.zCoord;
+			toX = getToX();
+			toY = getToY();
+			toZ = getToZ();
+			catenary = Catenary.from(new Vector3f(to), tight);
+			updateLightVertices();
 			shouldRecalculateCatenary = false;
-			logic.onRecalculateCatenary();
 		}
-		logic.onUpdateEnd();
+		updateLights();
+	}
+
+	public void updateLights() {
+		if (lightPoints != null) {
+			for (int i = 0; i < lightPoints.length; i++) {
+				Light light = lightPoints[i];
+				if (pattern.size() > 0) {
+					PatternLightData lightData = pattern.get(i % pattern.size());
+					light.setVariant(lightData.getLightVariant());
+					// black is actually a little red, got to account for that
+					light.setColor(lightData.getColor() == 0 ? 0x1B1B1B : ItemDye.field_150922_c[lightData.getColor()]);
+				}
+				light.tick(this, twinkle);
+				if (jinglePlayer != null && getWorldObj().isRemote) {
+					jinglePlayer.play(i, fairyLightsFastener.getConnectionPoint(), light);
+				}
+			}
+			if (jinglePlayer != null && jinglePlayer.isPlaying()) {
+				jinglePlayer.tick();
+			}
+		}
+	}
+
+	private void updateLightVertices() {
+		if (catenary != null) {
+			float spacing = 16;
+			for (PatternLightData patternLightData : pattern) {
+				float lightSpacing = patternLightData.getLightVariant().getSpacing();
+				if (lightSpacing > spacing) {
+					spacing = lightSpacing;
+				}
+			}
+			float totalLength = catenary.getLength();
+			// simplified version of t / 2 - ((int) (t / s) - 1) * s / 2
+			float distance = (totalLength % spacing + spacing) / 2;
+			Segment[] segments = catenary.getSegments();
+			prevLightPoints = lightPoints;
+			lightPoints = new Light[(int) (totalLength / spacing)];
+			int lightIndex = 0;
+			for (int i = 0; i < segments.length; i++) {
+				Segment segment = segments[i];
+				float length = segment.getLength();
+				while (distance < length) {
+					Light light = new Light(segment.pointAt(distance / length));
+					if (prevLightPoints != null && lightIndex < prevLightPoints.length) {
+						light.setTwinkleTime(prevLightPoints[lightIndex].getTwinkleTime());
+					}
+					light.setRotation(segment.getRotation());
+					lightPoints[lightIndex++] = light;
+					distance += spacing;
+				}
+				distance -= length;
+			}
+		}
+	}
+
+	public boolean canCurrentlyPlayAJingle() {
+		return jinglePlayer == null || !jinglePlayer.isPlaying();
 	}
 
 	public void writeDetailsToNBT(NBTTagCompound compound) {
-		logic.writeToNBT(compound);
+		NBTTagList tagList = new NBTTagList();
+		for (PatternLightData b : pattern) {
+			NBTTagCompound patternCompound = new NBTTagCompound();
+			patternCompound.setInteger("light", b.getLightVariant().ordinal());
+			patternCompound.setByte("color", b.getColor());
+			tagList.appendTag(patternCompound);
+		}
+		compound.setTag("pattern", tagList);
+		compound.setBoolean("twinkle", twinkle);
+		compound.setBoolean("tight", tight);
 	}
 
-	public void readDetailsFromNBT(NBTTagCompound compound) {
-		logic.readFromNBT(compound);
+	public void readDetailsFromNBT(NBTTagCompound tagCompound) {
+		NBTTagList tagList = tagCompound.getTagList("pattern", 10);
+		pattern = new ArrayList<PatternLightData>();
+		for (int i = 0; i < tagList.tagCount(); i++) {
+			NBTTagCompound lightCompound = tagList.getCompoundTagAt(i);
+			LightVariant lightVariant = LightVariant.getLightVariant(lightCompound.getInteger("light"));
+			byte color = Byte.valueOf(lightCompound.getByte("color"));
+			pattern.add(new PatternLightData(lightVariant, color));
+		}
+		twinkle = tagCompound.getBoolean("twinkle");
+		tight = tagCompound.getBoolean("tight");
 	}
 
 	public void readFromNBT(NBTTagCompound compound) {

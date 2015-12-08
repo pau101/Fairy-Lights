@@ -6,18 +6,11 @@ import net.minecraft.client.Minecraft;
 
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.config.Configurator;
-import com.pau101.fairylights.connection.Light;
 import com.pau101.fairylights.eggs.Jingle.PlayTick;
+import com.pau101.fairylights.util.Light;
 import com.pau101.fairylights.util.vectormath.Point3f;
 
 public class JinglePlayer {
-	private static final String SOUND_FX = FairyLights.MODID + ":jinglebell";
-
-	private static final int NOT_PLAYING = -1;
-
-	// still play for 4 seconds after end
-	private static final int END_REST = 20 * 4;
-
 	private Jingle jingle;
 
 	private List<PlayTick> jinglePlayTicks;
@@ -27,6 +20,10 @@ public class JinglePlayer {
 	private int tick;
 
 	private int jingleLength;
+
+	private static final String SOUND_FX = FairyLights.MODID + ":jinglebell";
+
+	private static final int NOT_PLAYING = -1;
 
 	public JinglePlayer() {
 		tick = NOT_PLAYING;
@@ -70,6 +67,9 @@ public class JinglePlayer {
 			}
 			played += playTick.getLength();
 		}
+		if (tick >= jingleLength) {
+			tick = NOT_PLAYING;
+		}
 	}
 
 	public void setLightOffset(int lightOffset) {
@@ -78,8 +78,5 @@ public class JinglePlayer {
 
 	public void tick() {
 		tick++;
-		if (tick > jingleLength + END_REST) {
-			tick = NOT_PLAYING;
-		}
 	}
 }

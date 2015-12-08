@@ -3,12 +3,9 @@ package com.pau101.fairylights.util;
 import net.minecraft.util.MathHelper;
 
 public class MathUtils {
-	private MathUtils() {
-	}
+	private MathUtils() {}
 
 	public static final float PI = (float) StrictMath.PI;
-
-	public static final float HALF_PI = (float) (StrictMath.PI / 2);
 
 	public static final float TAU = (float) (2 * StrictMath.PI);
 

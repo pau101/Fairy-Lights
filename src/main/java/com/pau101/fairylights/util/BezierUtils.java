@@ -1,12 +1,11 @@
 package com.pau101.fairylights.util;
 
 public final class BezierUtils {
-	private BezierUtils() {
-	}
+	private BezierUtils() {}
 
 	/**
 	 * Compute the value of all nth degree Bernstein polynomials.
-	 * 
+	 *
 	 * @param curveDegree
 	 *            : degree of curve
 	 * @param t
@@ -31,9 +30,9 @@ public final class BezierUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * Compute point of nth degree Bezier curve.
-	 * 
+	 *
 	 * @param controlPoints
 	 *            : curveDegree + 1 control points
 	 * @param curveDegree
@@ -57,7 +56,7 @@ public final class BezierUtils {
 
 	/**
 	 * Compute an approximate length of a Bezier curve given the control points.
-	 * 
+	 *
 	 * @param controlPoints
 	 *            : control points of a Bezier curve
 	 * @return the approximate length

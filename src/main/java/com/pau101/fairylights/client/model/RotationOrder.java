@@ -1,7 +1,8 @@
 package com.pau101.fairylights.client.model;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumFacing.Axis;
+import org.lwjgl.opengl.GL11;
+
+import com.pau101.fairylights.util.mc.EnumFacing.Axis;
 
 public enum RotationOrder {
 	XYZ(Axis.X, Axis.Y, Axis.Z),
@@ -24,19 +25,19 @@ public enum RotationOrder {
 					if (x == 0) {
 						break;
 					}
-					GlStateManager.rotate(x, 1, 0, 0);
+					GL11.glRotatef(x, 1, 0, 0);
 					break;
 				case Y:
 					if (y == 0) {
 						break;
 					}
-					GlStateManager.rotate(y, 0, 1, 0);
+					GL11.glRotatef(y, 0, 1, 0);
 					break;
 				case Z:
 					if (z == 0) {
 						break;
 					}
-					GlStateManager.rotate(z, 0, 0, 1);
+					GL11.glRotatef(z, 0, 0, 1);
 					break;
 			}
 		}

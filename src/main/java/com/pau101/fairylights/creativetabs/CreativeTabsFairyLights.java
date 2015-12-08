@@ -12,6 +12,6 @@ public class CreativeTabsFairyLights extends CreativeTabs {
 
 	@Override
 	public Item getTabIconItem() {
-		return FairyLights.fairyLights;
+		return Item.getItemFromBlock(FairyLights.fairyLightsFastener);
 	}
 }
