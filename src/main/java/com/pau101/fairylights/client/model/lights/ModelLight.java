@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
+import com.pau101.fairylights.client.renderer.ConnectionRenderer;
 import com.pau101.fairylights.connection.Light;
 import com.pau101.fairylights.util.MathUtils;
 import com.pau101.fairylights.util.vectormath.Vector3f;
@@ -25,8 +26,8 @@ public abstract class ModelLight extends ModelBase {
 	protected AdvancedModelRenderer amutachromicParts;
 
 	public ModelLight() {
-		textureWidth = 128;
-		textureHeight = 128;
+		textureWidth = ConnectionRenderer.TEXTURE_WIDTH;
+		textureHeight = ConnectionRenderer.TEXTURE_HEIGHT;
 		colorableParts = new AdvancedModelRenderer(this);
 		colorableParts.setRotationOrder(RotationOrder.YXZ);
 		amutachromicParts = new AdvancedModelRenderer(this);

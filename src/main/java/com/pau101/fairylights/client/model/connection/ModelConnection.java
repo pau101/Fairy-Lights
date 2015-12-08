@@ -13,6 +13,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.pau101.fairylights.client.renderer.ConnectionRenderer;
 import com.pau101.fairylights.connection.ConnectionLogic;
 import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
 import com.pau101.fairylights.tileentity.connection.Connection;
@@ -23,7 +24,8 @@ import com.pau101.fairylights.util.vectormath.Vector3f;
 
 public abstract class ModelConnection<T extends ConnectionLogic> extends ModelBase {
 	public ModelConnection() {
-		textureWidth = textureHeight = 128;
+		textureWidth = ConnectionRenderer.TEXTURE_WIDTH;
+		textureHeight = ConnectionRenderer.TEXTURE_HEIGHT;
 	}
 
 	public void render(TileEntityConnectionFastener fastener, T logic, World world, int skylight, int moonlight, float delta) {

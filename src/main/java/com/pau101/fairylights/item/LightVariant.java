@@ -2,9 +2,7 @@ package com.pau101.fairylights.item;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import com.pau101.fairylights.FairyLights;
 

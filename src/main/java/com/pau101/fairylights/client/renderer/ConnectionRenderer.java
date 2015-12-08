@@ -46,15 +46,6 @@ import com.pau101.fairylights.util.vectormath.Vector3f;
 public class ConnectionRenderer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.MODID, "textures/entity/fairy_lights.png");
 
-	private static final Comparator<Vector3f> Y_AXIS_ANGLE_COMPARATOR = new Comparator<Vector3f>() {
-		@Override
-		public int compare(Vector3f a, Vector3f b) {
-			double angleA = Math.atan2(a.z, a.x);
-			double angleB = Math.atan2(b.z, b.x);
-			return angleA < angleB ? -1 : angleA > angleB ? 1 : 0;
-		}
-	};
-
 	public static final int TEXTURE_WIDTH = 128;
 
 	public static final int TEXTURE_HEIGHT = 128;
@@ -186,19 +177,19 @@ public class ConnectionRenderer {
 		float u2 = (u + width) / (float) TEXTURE_WIDTH;
 		float v1 = v / (float) TEXTURE_HEIGHT;
 		float v2 = (v + height) / (float) TEXTURE_HEIGHT;
-		GL11.glPushMatrix();
-		GL11.glScalef(width / 16F, height / 16F, 1);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(width / 16F, height / 16F, 1);
 		Tessellator tessellator = Tessellator.getInstance();
 		float depth = 0.0625F;
 		render.startDrawingQuads();
-		GL11.glNormal3f(0, 0, 1);
+		render.setNormal(0, 0, 1);
 		render.addVertexWithUV(0, 0, 0, u1, v2);
 		render.addVertexWithUV(1, 0, 0, u2, v2);
 		render.addVertexWithUV(1, 1, 0, u2, v1);
 		render.addVertexWithUV(0, 1, 0, u1, v1);
 		tessellator.draw();
 		render.startDrawingQuads();
-		GL11.glNormal3f(0, 0, -1);
+		render.setNormal(0, 0, -1);
 		render.addVertexWithUV(0, 1, -depth, u1, v1);
 		render.addVertexWithUV(1, 1, -depth, u2, v1);
 		render.addVertexWithUV(1, 0, -depth, u2, v2);
@@ -207,7 +198,7 @@ public class ConnectionRenderer {
 		float widthStretch = 0.5F * (u1 - u2) / width;
 		float heightStretch = 0.5F * (v2 - v1) / height;
 		render.startDrawingQuads();
-		GL11.glNormal3f(-1, 0, 0);
+		render.setNormal(-1, 0, 0);
 		for (int p = 0; p < width; p++) {
 			float x = (float) p / width;
 			float ui = u1 + (u2 - u1) * x - widthStretch;
@@ -218,7 +209,7 @@ public class ConnectionRenderer {
 		}
 		tessellator.draw();
 		render.startDrawingQuads();
-		GL11.glNormal3f(1, 0, 0);
+		render.setNormal(1, 0, 0);
 		for (int p = 0; p < width; p++) {
 			float xi = (float) p / width;
 			float ui = u1 + (u2 - u1) * xi - widthStretch;
@@ -230,7 +221,7 @@ public class ConnectionRenderer {
 		}
 		tessellator.draw();
 		render.startDrawingQuads();
-		GL11.glNormal3f(0, 1, 0);
+		render.setNormal(0, 1, 0);
 		for (int p = 0; p < height; p++) {
 			float yi = (float) p / height;
 			float vi = v2 + (v1 - v2) * yi - heightStretch;
@@ -242,7 +233,7 @@ public class ConnectionRenderer {
 		}
 		tessellator.draw();
 		render.startDrawingQuads();
-		GL11.glNormal3f(0, -1, 0);
+		render.setNormal(0, -1, 0);
 		for (int p = 0; p < height; p++) {
 			float y = (float) p / height;
 			float vi = v2 + (v1 - v2) * y - heightStretch;
@@ -252,6 +243,6 @@ public class ConnectionRenderer {
 			render.addVertexWithUV(1, y, -depth, u2, vi);
 		}
 		tessellator.draw();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

@@ -22,6 +22,11 @@ public class ItemConnectionFairyLights extends ItemConnection {
 	}
 
 	@Override
+	public ConnectionType getConnectionType() {
+		return ConnectionType.FAIRY_LIGHTS;
+	}
+
+	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer holder, List stringLines, boolean currentlyHeld) {
 		if (itemStack.hasTagCompound()) {
 			NBTTagCompound tagCompound = itemStack.getTagCompound();
@@ -59,10 +64,5 @@ public class ItemConnectionFairyLights extends ItemConnection {
 			}
 		}
 		return FairyLights.christmas.isOcurringNow() ? renderPass % 2 == 0 ? 0x993333 : 0x7FCC19 : 0xFFD584;
-	}
-
-	@Override
-	public ConnectionType getConnectionType() {
-		return ConnectionType.FAIRY_LIGHTS;
 	}
 }
