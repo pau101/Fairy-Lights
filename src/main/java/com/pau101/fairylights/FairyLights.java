@@ -26,7 +26,7 @@ public class FairyLights {
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "0.4.0";
+	public static final String VERSION = "1.4.0";
 
 	public static final int MAX_LENGTH = 20;
 
