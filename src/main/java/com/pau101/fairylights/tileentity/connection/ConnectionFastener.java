@@ -34,7 +34,7 @@ public class ConnectionFastener extends Connection {
 		if (!(toBlock instanceof BlockConnectionFastener)) {
 			return null;
 		}
-		Point3f point = ((BlockConnectionFastener) toBlock).getOffsetForData(worldObj.getBlockMetadata(toX, toY, toZ), 1 / 8f);
+		Point3f point = ((BlockConnectionFastener) toBlock).getOffsetForData(worldObj.getBlockMetadata(toX, toY, toZ), 0.125F);
 		point.x += toX;
 		point.y += toY;
 		point.z += toZ;

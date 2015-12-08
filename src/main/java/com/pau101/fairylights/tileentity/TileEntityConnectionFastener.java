@@ -89,7 +89,7 @@ public class TileEntityConnectionFastener extends TileEntity {
 
 	public Point3f getConnectionPoint() {
 		if (connectionPoint == null) {
-			connectionPoint = ((BlockConnectionFastener) getBlockType()).getOffsetForData(getBlockMetadata(), 0.125f).add(xCoord, yCoord, zCoord);
+			connectionPoint = ((BlockConnectionFastener) getBlockType()).getOffsetForData(getBlockMetadata(), 0.125F).add(xCoord, yCoord, zCoord);
 		}
 		return connectionPoint;
 	}
@@ -119,7 +119,7 @@ public class TileEntityConnectionFastener extends TileEntity {
 	}
 
 	public AxisAlignedBB getBoundingBox() {
-		Point3f fromOffset = ((BlockConnectionFastener) getBlockType()).getOffsetForData(getBlockMetadata(), 0.125f).add(xCoord, yCoord, zCoord);
+		Point3f fromOffset = getConnectionPoint();
 		return AxisAlignedBB.getBoundingBox(min.x, min.y, min.z, max.x, max.y, max.z).expand(0.25F, 0.25F, 0.25F).offset(fromOffset.x, fromOffset.y, fromOffset.z);
 	}
 
@@ -163,7 +163,7 @@ public class TileEntityConnectionFastener extends TileEntity {
 			}
 		}
 		Iterator<Connection> connectionIterator = connections.values().iterator();
-		Point3f fromOffset = ((BlockConnectionFastener) getBlockType()).getOffsetForData(getBlockMetadata(), 0.125f).add(xCoord, yCoord, zCoord);
+		Point3f fromOffset = getConnectionPoint();
 		boolean update = false, playerUpdateBoundingBox = false;
 		while (connectionIterator.hasNext()) {
 			Connection connection = connectionIterator.next();
