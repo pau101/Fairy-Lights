@@ -1,5 +1,7 @@
 package com.pau101.fairylights.util;
 
+import com.pau101.fairylights.util.vectormath.Point3f;
+
 import net.minecraft.util.MathHelper;
 
 public class MathUtils {
@@ -66,5 +68,24 @@ public class MathUtils {
 		x = (x >> 16 ^ x) * 0x45D9F3B;
 		x = x >> 16 ^ x;
 		return x;
+	}
+
+	public static void minmax(Point3f min, Point3f max, float x, float y, float z) {
+		if (min.x != min.x) {
+			min.x = x;
+			min.y = y;
+			min.z = z;
+		}
+		if (max.x != max.x) {
+			max.x = x;
+			max.y = y;
+			max.z = z;
+		}
+		min.x = x < min.x ? x : min.x;
+		min.y = y < min.y ? y : min.y;
+		min.z = z < min.z ? z : min.z;
+		max.x = x > max.x ? x : max.x;
+		max.y = y > max.y ? y : max.y;
+		max.z = z > max.z ? z : max.z;
 	}
 }

@@ -1,13 +1,10 @@
 package com.pau101.fairylights.player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 
 import com.pau101.fairylights.util.vectormath.Point3i;
 
@@ -21,18 +18,6 @@ public class PlayerData {
 		return data;
 	}
 
-	public static void takeOutTheGarbage(World world) {
-		Iterator<EntityPlayer> playerIterator = playerMap.keySet().iterator();
-		ArrayList<EntityPlayer> removeList = new ArrayList();
-		while (playerIterator.hasNext()) {
-			EntityPlayer player = playerIterator.next();
-			if (!world.playerEntities.contains(player) && player.worldObj == world) {
-				removeList.add(player);
-			}
-		}
-		playerMap.keySet().removeAll(removeList);
-	}
-
 	public static void update() {
 		for (Entry<EntityPlayer, PlayerData> dataEntry : playerMap.entrySet()) {
 			Point3i lastClicked = dataEntry.getValue().lastClicked;
@@ -42,7 +27,7 @@ public class PlayerData {
 		}
 	}
 
-	private static Map<EntityPlayer, PlayerData> playerMap = new HashMap<EntityPlayer, PlayerData>();
+	private static Map<EntityPlayer, PlayerData> playerMap = new WeakHashMap<EntityPlayer, PlayerData>();
 
 	private static final Point3i UNKNOWN = new Point3i();
 

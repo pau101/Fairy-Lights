@@ -24,7 +24,7 @@ public class BlockConnectionFastenerFence extends BlockConnectionFastener {
 		setHardness(2);
 		setResistance(5);
 		setStepSound(soundTypeWood);
-		setBlockBounds(0.375f, 0, 0.375f, 0.625f, 1, 0.625f);
+		setBlockBounds(0.375F, 0, 0.375F, 0.625F, 1, 0.625F);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class BlockConnectionFastenerFence extends BlockConnectionFastener {
 
 	@Override
 	public Point3f getOffsetForData(int data, float offset) {
-		return new Point3f(offset + 0.375f, offset + 0.375f, offset + 0.375f);
+		return new Point3f(offset + 0.375F, offset + 0.375F, offset + 0.375F);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class BlockConnectionFastenerFence extends BlockConnectionFastener {
 
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
-		setBlockBounds(0.375f, 0, 0.375f, 0.625f, 1, 0.625f);
+		setBlockBounds(0.375F, 0, 0.375F, 0.625F, 1, 0.625F);
 	}
 
 	@Override

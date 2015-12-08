@@ -55,7 +55,7 @@ public class JinglePlayer {
 						double x = coordinateOffset.x + lightPoint.x / 16;
 						double y = coordinateOffset.y + lightPoint.y / 16;
 						double z = coordinateOffset.z + lightPoint.z / 16;
-						mc.theWorld.playSound(x, y, z, SOUND_FX, Configurator.jingleAmplitude / 16F, (float) Math.pow(2, (note - 12) / 12F), true);
+						mc.theWorld.playSound(x, y, z, SOUND_FX, Configurator.jingleAmplitude / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
 						light.startSwaying();
 						break;
 					}
@@ -67,9 +67,6 @@ public class JinglePlayer {
 			}
 			played += playTick.getLength();
 		}
-		if (tick >= jingleLength) {
-			tick = NOT_PLAYING;
-		}
 	}
 
 	public void setLightOffset(int lightOffset) {
@@ -78,5 +75,8 @@ public class JinglePlayer {
 
 	public void tick() {
 		tick++;
+		if (tick >= jingleLength) {
+			tick = NOT_PLAYING;
+		}
 	}
 }

@@ -97,9 +97,6 @@ public class TickHandler {
 			return;
 		}
 		if (event.world != null) {
-			if (event.world.getTotalWorldTime() % 200 == 0) {
-				PlayerData.takeOutTheGarbage(event.world);
-			}
 			if (FairyLights.christmas.isOcurringNow() && Configurator.jingleEnabled && random.nextFloat() < jingleProbability) {
 				List<TileEntity> tileEntities = event.world.loadedTileEntityList;
 				List<Point3f> playingSources = new ArrayList<Point3f>();

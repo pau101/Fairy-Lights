@@ -46,7 +46,7 @@ public class BlockConnectionFastener extends BlockContainer {
 
 	public BlockConnectionFastener() {
 		super(Material.circuits);
-		setBlockBounds(0.375f, 0, 0.375f, 0.625f, 0.25f, 0.625f);
+		setBlockBounds(0.375F, 0, 0.375F, 0.625F, 0.25F, 0.625F);
 		setBlockTextureName(FairyLights.MODID + ":fastener");
 	}
 
@@ -61,9 +61,9 @@ public class BlockConnectionFastener extends BlockContainer {
 			return;
 		}
 		Iterator<Connection> connectionIterator = fastener.getConnections().iterator();
-		float offsetX = world.rand.nextFloat() * 0.8f + 0.1f;
-		float offsetY = world.rand.nextFloat() * 0.8f + 0.1f;
-		float offsetZ = world.rand.nextFloat() * 0.8f + 0.1f;
+		float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
+		float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
+		float offsetZ = world.rand.nextFloat() * 0.8F + 0.1F;
 		while (connectionIterator.hasNext()) {
 			Connection connection = connectionIterator.next();
 			if (!(connection instanceof ConnectionPlayer)) {
@@ -76,7 +76,7 @@ public class BlockConnectionFastener extends BlockContainer {
 				EntityItem entityItem = new EntityItem(world, x + offsetX, y + offsetY, z + offsetZ, itemStack);
 				float v = 0.05F;
 				entityItem.motionX = world.rand.nextGaussian() * v;
-				entityItem.motionY = world.rand.nextGaussian() * v + 0.2f;
+				entityItem.motionY = world.rand.nextGaussian() * v + 0.2F;
 				entityItem.motionZ = world.rand.nextGaussian() * v;
 				world.spawnEntityInWorld(entityItem);
 			}
@@ -109,22 +109,22 @@ public class BlockConnectionFastener extends BlockContainer {
 		Point3f offsetPoint = new Point3f(offset, offset, offset);
 		switch (data) {
 			case 2:
-				offsetPoint.y += 0.75f;
+				offsetPoint.y += 0.75F;
 			case 0:
-				offsetPoint.x += 0.375f;
-				offsetPoint.z += 0.375f;
+				offsetPoint.x += 0.375F;
+				offsetPoint.z += 0.375F;
 				break;
 			case 1:
-				offsetPoint.x += 0.75f;
+				offsetPoint.x += 0.75F;
 			case 3:
-				offsetPoint.z += 0.375f;
-				offsetPoint.y += 0.375f;
+				offsetPoint.z += 0.375F;
+				offsetPoint.y += 0.375F;
 				break;
 			case 12:
-				offsetPoint.z += 0.75f;
+				offsetPoint.z += 0.75F;
 			case 4:
-				offsetPoint.x += 0.375f;
-				offsetPoint.y += 0.375f;
+				offsetPoint.x += 0.375F;
+				offsetPoint.y += 0.375F;
 		}
 		return offsetPoint;
 	}
@@ -199,7 +199,7 @@ public class BlockConnectionFastener extends BlockContainer {
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
 		int data = world.getBlockMetadata(x, y, z);
 		Point3f offset = getOffsetForData(data, 0);
-		setBlockBounds(offset.x, offset.y, offset.z, offset.x + 0.25f, offset.y + 0.25f, offset.z + 0.25f);
+		setBlockBounds(offset.x, offset.y, offset.z, offset.x + 0.25F, offset.y + 0.25F, offset.z + 0.25F);
 	}
 
 	@Override
