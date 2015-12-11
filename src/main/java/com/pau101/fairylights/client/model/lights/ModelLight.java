@@ -40,25 +40,6 @@ public abstract class ModelLight extends ModelBase {
 		return false;
 	}
 
-	protected void resetModels() {
-		if (colorableParts.cubeList != null) {
-			colorableParts.cubeList.clear();
-		}
-		if (amutachromicParts.cubeList != null) {
-			amutachromicParts.cubeList.clear();
-		}
-		if (colorableParts.childModels != null) {
-			colorableParts.childModels.clear();
-		}
-		if (amutachromicParts.childModels != null) {
-			amutachromicParts.childModels.clear();
-		}
-		colorableParts.compiled = false;
-		amutachromicParts.compiled = false;
-	}
-
-	protected void devInitModels() {}
-
 	public void setRotationAngles(float x, float y, float z) {
 		colorableParts.rotateAngleX = x;
 		colorableParts.rotateAngleY = y;
@@ -115,12 +96,14 @@ public abstract class ModelLight extends ModelBase {
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b, moonlight);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		colorableParts.render(scale);
-
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight, moonlight);
-		GL11.glColor3f(b / 256F, b / 256F, b / 256F);
+		float c = b / 255;
+		if (c < 0.5F) {
+			c = 0.5F;
+		}
+		GL11.glColor3f(c, c, c);
 		amutachromicParts.render(scale);
 		GL11.glDisable(GL11.GL_LIGHTING);
-
 		// Assume that the shaderpack that is installed adds a glow to light sources
 		// so this 'glow' should be disabled
 		if (!FairyLights.isShadersModInstalled) {

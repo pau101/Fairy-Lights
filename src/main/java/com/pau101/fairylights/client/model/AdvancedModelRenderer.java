@@ -80,7 +80,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		if (childModels == null) {
 			childModels = Lists.newArrayList();
 		}
-
 		childModels.add(modelRenderer);
 	}
 
@@ -117,11 +116,9 @@ public class AdvancedModelRenderer extends ModelRenderer {
 	protected void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(displayList, GL11.GL_COMPILE);
-
 		for (int i = 0; i < cubeList.size(); i++) {
 			((ModelBox) cubeList.get(i)).render(Tessellator.instance, scale);
 		}
-
 		GL11.glEndList();
 		compiled = true;
 	}
@@ -134,7 +131,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
 				if (!compiled) {
 					compileDisplayList(scale);
 				}
-
 				GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
 				secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
@@ -153,7 +149,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 			for (ModelBox box : boxModels) {
 				int bri = 1;
 				float expand = 0.45F;
-				float meteorExpandY = 0F;
+				float meteorExpandY = 0;
 				for (int i = 0; i < bri; i++) {
 					float width = box.posX2 - box.posX1, height = box.posY2 - box.posY1, depth = box.posZ2 - box.posZ1;
 					float localExpand = expand * (i + 1);
@@ -165,7 +161,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					float scaleY = newHeight / height;
 					float scaleZ = newDepth / depth;
 					GL11.glPushMatrix();
-					GL11.glTranslatef((box.posX1 - expand - scaleX * box.posX1) / 16, (box.posY1 - expand - scaleY * box.posY1) / 16, (box.posZ1 - expand - scaleZ * box.posZ1) / 16);
+					GL11.glTranslatef((box.posX1 - expand - scaleX * box.posX1) / 16, (box.posY1 - (isMeteorLightGlow ? meteorExpandY : expand) - scaleY * box.posY1) / 16, (box.posZ1 - expand - scaleZ * box.posZ1) / 16);
 					GL11.glScalef(scaleX, scaleY, scaleZ);
 					box.render(Tessellator.instance, scale);
 					GL11.glPopMatrix();
@@ -174,7 +170,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		} else {
 			GL11.glCallList(displayList);
 		}
-
 		if (childModels != null) {
 			for (int i = 0; i < childModels.size(); i++) {
 				AdvancedModelRenderer modelRenderer = childModels.get(i);
@@ -192,10 +187,8 @@ public class AdvancedModelRenderer extends ModelRenderer {
 				if (!compiled) {
 					compileDisplayList(scale);
 				}
-
 				GL11.glTranslatef(offsetX, offsetY, offsetZ);
 				int i;
-
 				if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
 					if (rotationPointX == 0 && rotationPointY == 0 && rotationPointZ == 0) {
 						if (scaleX == 1 && scaleY == 1 && scaleZ == 1) {
@@ -209,9 +202,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 							GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 							GL11.glScalef(scaleX, scaleY, scaleZ);
-
 							baseRender(scale);
-
 							GL11.glPopMatrix();
 						}
 					} else {
@@ -220,27 +211,19 @@ public class AdvancedModelRenderer extends ModelRenderer {
 						secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 						GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
 						GL11.glScalef(scaleX, scaleY, scaleZ);
-
 						baseRender(scale);
-
 						GL11.glPopMatrix();
 					}
 				} else {
 					GL11.glPushMatrix();
 					GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-
 					rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
 					secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-
 					GL11.glTranslatef(aftMoveX, aftMoveY, aftMoveZ);
-
 					GL11.glScalef(scaleX, scaleY, scaleZ);
-
 					baseRender(scale);
-
 					GL11.glPopMatrix();
 				}
-
 				GL11.glTranslatef(-offsetX, -offsetY, -offsetZ);
 			}
 		}
@@ -254,14 +237,10 @@ public class AdvancedModelRenderer extends ModelRenderer {
 				if (!compiled) {
 					compileDisplayList(scale);
 				}
-
 				GL11.glPushMatrix();
 				GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-
 				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-
 				GL11.glScalef(scaleX, scaleY, scaleZ);
-
 				baseRender(scale);
 				GL11.glPopMatrix();
 			}

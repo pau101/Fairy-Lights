@@ -22,7 +22,7 @@ public enum LightVariant {
 	WEEDWOOD_LANTERN("weedwood_lantern", 32, new Object[] { " I ", "SDS", "IGI", 'I', "ingotIron", 'D', "dye", 'S', new ItemStack(Blocks.wooden_slab, 1, 5), 'G', "stickWood" }),
 	SNOWFLAKE("snowflake", new Object[] { " I ", "SDS", " G ", 'I', "ingotIron", 'S', Items.snowball, 'D', "dye", 'G', "paneGlassWhite" }),
 	ICICLE("icicle", new Object[] { " I ", "GDG", " B ", 'I', "ingotIron", 'G', "paneGlassColorless", 'D', "dye", 'B', Items.water_bucket }),
-	METEOR("meteor", 24, new Object[] { " I ", "DGD", "IPI", 'I', "ingotIron", 'D', Items.glowstone_dust, 'G', Items.gunpowder, 'P', Items.paper }, 0.02F, 100) {
+	METEOR("meteor", 24, new Object[] { " I ", "GDG", "IPI", 'I', "ingotIron", 'D', "dye", 'G', Items.glowstone_dust, 'P', Items.paper }, 0.02F, 100) {
 		@Override
 		public boolean alwaysDoTwinkleLogic() {
 			return true;
