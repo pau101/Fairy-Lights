@@ -44,7 +44,7 @@ public class TileEntityConnectionFastener extends TileEntity {
 	public TileEntityConnectionFastener() {
 		connections = new HashMap<UUID, Connection>();
 		min = new Point3f();
-		max = new Point3f(1, 1, 1);
+		max = new Point3f();
 	}
 
 	private void calculateBoundingBox() {
@@ -66,6 +66,10 @@ public class TileEntityConnectionFastener extends TileEntity {
 			}
 			Point3f vertex = segments[segments.length - 1].pointAt(1);
 			MathUtils.minmax(min, max, vertex.x / 16, vertex.y / 16, vertex.z / 16);
+		}
+		if (min.x != min.x) {
+			min.x = 0;
+			max.x = 0;
 		}
 	}
 
@@ -120,7 +124,7 @@ public class TileEntityConnectionFastener extends TileEntity {
 
 	public AxisAlignedBB getBoundingBox() {
 		Point3f fromOffset = getConnectionPoint();
-		return AxisAlignedBB.getBoundingBox(min.x, min.y, min.z, max.x, max.y, max.z).expand(0.25F, 0.25F, 0.25F).offset(fromOffset.x, fromOffset.y, fromOffset.z);
+		return AxisAlignedBB.getBoundingBox(min.x, min.y, min.z, max.x, max.y, max.z).expand(0.75F, 2, 0.75F).offset(fromOffset.x, fromOffset.y, fromOffset.z);
 	}
 
 	@Override

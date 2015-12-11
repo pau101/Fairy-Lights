@@ -24,13 +24,13 @@ public class FairyLightsClassTransformer implements IClassTransformer {
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 		boolean obf = false;
-		if ((obf = "blt".equals(name)) || "net.minecraft.client.renderer.EntityRenderer".equals(name)) {
+		if ((obf = "bll".equals(name)) || "net.minecraft.client.renderer.EntityRenderer".equals(name)) {
 			ClassNode classNode = new ClassNode();
 			ClassReader classReader = new ClassReader(basicClass);
 			classReader.accept(classNode, 0);
 
-			String entityRendererOwner = obf ? "blt" : "net/minecraft/client/renderer/EntityRenderer";
-			String frustumDesc = obf ? "Lbmx;" : "Lnet/minecraft/client/renderer/culling/Frustrum;";
+			String entityRendererOwner = obf ? "bll" : "net/minecraft/client/renderer/EntityRenderer";
+			String frustumDesc = obf ? "Lbmp;" : "Lnet/minecraft/client/renderer/culling/Frustrum;";
 
 			if (transformFrustumStore(obf, classNode.methods, entityRendererOwner, frustumDesc)) {
 				classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, fieldNameAddition, frustumDesc, null, null));

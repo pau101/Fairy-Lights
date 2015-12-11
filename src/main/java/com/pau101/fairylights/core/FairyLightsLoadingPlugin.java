@@ -6,8 +6,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
-@TransformerExclusions({ "com.pau101.fairylights.core.*" })
-@MCVersion("1.7.10")
+@TransformerExclusions({ "com.pau101.fairylights.core." })
+@MCVersion("1.7.2")
 public class FairyLightsLoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass() {

@@ -9,9 +9,11 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.culling.Frustrum;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -93,12 +95,29 @@ public class ConnectionRenderer {
 					GL11.glTranslated(x - TileEntityRendererDispatcher.staticPlayerX, y - TileEntityRendererDispatcher.staticPlayerY, z	- TileEntityRendererDispatcher.staticPlayerZ);
 					renderConnections(fastener, delta);
 					GL11.glPopMatrix();
+					if (RenderManager.debugBoundingBox) {
+						drawBoundingBox(fastener);	
+					}
 				}
 			}
 		}
 		GL11.glDisable(GL11.GL_FOG);
 		RenderHelper.disableStandardItemLighting();
 		mc.entityRenderer.disableLightmap(delta);
+	}
+
+	private void drawBoundingBox(TileEntityConnectionFastener fastener) {
+		RenderHelper.disableStandardItemLighting();
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPushMatrix();
+		GL11.glTranslated(-TileEntityRendererDispatcher.staticPlayerX, -TileEntityRendererDispatcher.staticPlayerY, -TileEntityRendererDispatcher.staticPlayerZ);
+		RenderGlobal.drawOutlinedBoundingBox(fastener.getRenderBoundingBox(), 0xFFFFFF);
+		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		RenderHelper.enableStandardItemLighting();
 	}
 
 	public void renderConnections(TileEntityConnectionFastener fastener, float delta) {

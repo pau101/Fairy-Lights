@@ -27,14 +27,14 @@ public class ModelLightMeteor extends ModelLight {
 		connector.addBox(-1, -0.5F, -1, 2, 2, 2, 0);
 		amutachromicParts.addChild(connector);
 		cap = new AdvancedModelRenderer(this, 77, 0);
-		cap.addBox(-1, -25.45F - 0.05F, -1, 2, 1, 2, 0);
+		cap.addBox(-1, -25.45F + 0.05F, -1, 2, 1, 2, 0);
 		amutachromicParts.addChild(cap);
 		int lightCount = 12;
 		lights = new AdvancedModelRenderer[lightCount];
 		float rodScale = 0.8F;
 		for (int i = 0; i < lightCount; i++) {
 			AdvancedModelRenderer light = new AdvancedModelRenderer(this, 37, 72);
-			light.addMeteorLightBox(-1, -i * 2 - 2.5F - 0.05F, -1, 2, 2, 2, i == 0 ? 0 : i == lightCount - 1 ? 1 : 2);
+			light.addMeteorLightBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, i == 0 ? 0 : i == lightCount - 1 ? 1 : 2);
 			light.isMeteorLightGlow = true;
 			lights[i] = light;
 			light.scaleX = light.scaleZ = rodScale;
