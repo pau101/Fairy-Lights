@@ -50,7 +50,7 @@ public class FairyLightsClassTransformer implements IClassTransformer {
 		return basicClass;
 	}
 
-	private boolean transformFrustumStore(boolean obf, List<MethodNode> methods, String entityRendererOwner, String frustumDesc, String frustumClazz) {
+	private boolean transformFrustumStore(boolean obf, List<MethodNode> methods, String entityRendererOwner, String frustumDesc, String frustumClass) {
 		boolean replacedASTORE8 = false;
 		for (MethodNode method : methods) {
 			if ("(IFJ)V".equals(method.desc)) {
@@ -80,7 +80,7 @@ public class FairyLightsClassTransformer implements IClassTransformer {
 								frustumSlot = ((VarInsnNode) instruction).var;
 							}
 						} else {
-							if (instruction.getOpcode() == Opcodes.NEW && ((TypeInsnNode) instruction).desc.equals(frustumClazz)) {
+							if (instruction.getOpcode() == Opcodes.NEW && ((TypeInsnNode) instruction).desc.equals(frustumClass)) {
 								pastedNewFrustum = true;
 							}
 						}

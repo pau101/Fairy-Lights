@@ -3,7 +3,6 @@ package com.pau101.fairylights.client.renderer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,12 +10,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -96,12 +96,29 @@ public class ConnectionRenderer {
 					GlStateManager.translate(pos.getX() - TileEntityRendererDispatcher.staticPlayerX, pos.getY() - TileEntityRendererDispatcher.staticPlayerY, pos.getZ() - TileEntityRendererDispatcher.staticPlayerZ);
 					renderConnections(fastener, delta);
 					GlStateManager.popMatrix();
+					if (mc.getRenderManager().isDebugBoundingBox()) {
+						drawBoundingBox(fastener);	
+					}
 				}
 			}
 		}
 		GlStateManager.disableFog();
 		RenderHelper.disableStandardItemLighting();
 		mc.entityRenderer.disableLightmap();
+	}
+
+	private void drawBoundingBox(TileEntityConnectionFastener fastener) {
+		RenderHelper.disableStandardItemLighting();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableCull();
+		GlStateManager.disableBlend();
+		GL11.glPushMatrix();
+		GL11.glTranslated(-TileEntityRendererDispatcher.staticPlayerX, -TileEntityRendererDispatcher.staticPlayerY, -TileEntityRendererDispatcher.staticPlayerZ);
+		RenderGlobal.drawOutlinedBoundingBox(fastener.getRenderBoundingBox(), 0xFFFFFF);
+		GL11.glPopMatrix();
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableCull();
+		RenderHelper.enableStandardItemLighting();
 	}
 
 	private void renderConnections(TileEntityConnectionFastener fastener, float delta) {

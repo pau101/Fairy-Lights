@@ -48,7 +48,7 @@ processResources
 }
 
 jar {
-	classifier = '1.8.8'
+	classifier = '1.8'
 	manifest {
 		attributes('FMLCorePlugin': 'com.pau101.fairylights.core.FairyLightsLoadingPlugin')
 		attributes('FMLCorePluginContainsFMLMod': 'true')

@@ -98,7 +98,6 @@ public abstract class ModelLight extends ModelBase {
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b, moonlight);
 		GlStateManager.enableLighting();
 		colorableParts.render(scale);
-
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight, moonlight);
 		float c = b / 255;
 		if (c < 0.5F) {
@@ -107,7 +106,6 @@ public abstract class ModelLight extends ModelBase {
 		GlStateManager.color(c, c, c);
 		amutachromicParts.render(scale);
 		GlStateManager.disableLighting();
-
 		// Assume that the shaderpack that is installed adds a glow to light sources
 		// so this 'glow' should be disabled
 		if (!FairyLights.isShadersModInstalled) {

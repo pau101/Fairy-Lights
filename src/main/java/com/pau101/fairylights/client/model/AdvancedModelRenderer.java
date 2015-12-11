@@ -118,11 +118,9 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		displayList = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(displayList, GL11.GL_COMPILE);
 		WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-
 		for (int i = 0; i < cubeList.size(); i++) {
 			((ModelBox) cubeList.get(i)).render(renderer, scale);
 		}
-
 		GL11.glEndList();
 		compiled = true;
 	}
@@ -135,7 +133,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
 				if (!compiled) {
 					compileDisplayList(scale);
 				}
-
 				GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
 				secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
@@ -155,7 +152,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 			for (ModelBox box : boxModels) {
 				int bri = 1;
 				float expand = 0.45F;
-				float meteorExpandY = 0F;
+				float meteorExpandY = 0;
 				for (int i = 0; i < bri; i++) {
 					float width = box.posX2 - box.posX1, height = box.posY2 - box.posY1, depth = box.posZ2 - box.posZ1;
 					float localExpand = expand * (i + 1);
@@ -176,7 +173,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		} else {
 			GlStateManager.callList(displayList);
 		}
-
 		if (childModels != null) {
 			for (int i = 0; i < childModels.size(); i++) {
 				AdvancedModelRenderer modelRenderer = childModels.get(i);
@@ -194,10 +190,8 @@ public class AdvancedModelRenderer extends ModelRenderer {
 				if (!compiled) {
 					compileDisplayList(scale);
 				}
-
 				GlStateManager.translate(offsetX, offsetY, offsetZ);
 				int i;
-
 				if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
 					if (rotationPointX == 0 && rotationPointY == 0 && rotationPointZ == 0) {
 						if (scaleX == 1 && scaleY == 1 && scaleZ == 1) {
@@ -211,9 +205,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 							GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
 							GlStateManager.scale(scaleX, scaleY, scaleZ);
-
 							baseRender(scale);
-
 							GlStateManager.popMatrix();
 						}
 					} else {
@@ -222,27 +214,19 @@ public class AdvancedModelRenderer extends ModelRenderer {
 						secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
 						GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
 						GlStateManager.scale(scaleX, scaleY, scaleZ);
-
 						baseRender(scale);
-
 						GlStateManager.popMatrix();
 					}
 				} else {
 					GlStateManager.pushMatrix();
 					GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-
 					rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
 					secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-
 					GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-
 					GlStateManager.scale(scaleX, scaleY, scaleZ);
-
 					baseRender(scale);
-
 					GlStateManager.popMatrix();
 				}
-
 				GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
 			}
 		}
@@ -256,14 +240,10 @@ public class AdvancedModelRenderer extends ModelRenderer {
 				if (!compiled) {
 					compileDisplayList(scale);
 				}
-
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-
 				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-
 				GlStateManager.scale(scaleX, scaleY, scaleZ);
-
 				baseRender(scale);
 				GlStateManager.popMatrix();
 			}
