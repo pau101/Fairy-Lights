@@ -97,11 +97,11 @@ duration of the applicable copyright) license to exercise the rights in the Work
 as stated below:
 
   a. to Reproduce the Work, to incorporate the Work into one or more
-  Collect-ions, and to Reproduce the Work as incorporated in the Collections;
-  and,
+     Collections, and to Reproduce the Work as incorporated in the Collections;
+     and,
 
   b. to Distribute and Publicly Perform the Work including as incorporated in
-  Collections.
+     Collections.
 
 The above rights may be exercised in all media and formats whether now known or
 hereafter devised. The above rights include the right to make such modifications
