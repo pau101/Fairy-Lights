@@ -1,10 +1,7 @@
 buildscript {
 	repositories {
 		jcenter()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
+		maven { url = "http://files.minecraftforge.net/maven" }
 	}
 	dependencies {
 		classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
@@ -20,21 +17,21 @@ repositories {
 apply plugin: "net.minecraftforge.gradle.forge"
 
 ext.modVersion = "2.0.0"
-version = "${modVersion}-1.10.2"
+version = "${modVersion}-1.11"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-	version = "1.10.2-12.18.2.2123"
+	version = "1.11-13.19.0.2149"
 	runDir = "run"
-	mappings = "snapshot_20160518"
+	mappings = "snapshot_20161111"
 	makeObfSourceJar = false
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.10.2:3.12.8.323:api"
-	runtime "mezz.jei:jei_1.10.2:3.12.8.323"
+	deobfCompile "mezz.jei:jei_1.11:4.0.1.191:api"
+	runtime "mezz.jei:jei_1.11:4.0.1.191"
 }
 
 processResources {

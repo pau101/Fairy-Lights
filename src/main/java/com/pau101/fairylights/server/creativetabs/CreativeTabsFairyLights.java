@@ -1,7 +1,7 @@
 package com.pau101.fairylights.server.creativetabs;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import com.pau101.fairylights.FairyLights;
 
@@ -11,7 +11,7 @@ public final class CreativeTabsFairyLights extends CreativeTabs {
 	}
 
 	@Override
-	public Item getTabIconItem() {
-		return FairyLights.hangingLights;
+	public ItemStack getTabIconItem() {
+		return new ItemStack(FairyLights.hangingLights);
 	}
 }

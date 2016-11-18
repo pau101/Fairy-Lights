@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -117,8 +118,8 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	}
 
 	public void initEntities() {
-		GameRegistry.registerTileEntity(BlockEntityFastener.class, "Fastener");
-		EntityRegistry.registerModEntity(EntityFenceFastener.class, "Fastener", 0, FairyLights.instance, 160, Integer.MAX_VALUE, false);
+		GameRegistry.registerTileEntity(BlockEntityFastener.class, FairyLights.ID + ":fastener");
+		EntityRegistry.registerModEntity(new ResourceLocation(FairyLights.ID, "fastener"), EntityFenceFastener.class, "fastener", 0, FairyLights.instance, 160, Integer.MAX_VALUE, false);
 	}
 
 	public void initHandlers() {

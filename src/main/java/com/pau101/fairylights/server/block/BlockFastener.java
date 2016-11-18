@@ -130,7 +130,7 @@ public final class BlockFastener extends BlockContainer {
 	@Nullable
 	@Override
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-		return null;
+		return ItemStack.field_190927_a;
 	}
 	@Nullable
 	@Override
@@ -164,7 +164,7 @@ public final class BlockFastener extends BlockContainer {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos neighborPos) {
 		EnumFacing facing = state.getValue(FACING);
 		BlockPos blockOnPos = pos.offset(facing.getOpposite());
 		if (!canPlaceBlockOnSide(world, blockOnPos, facing)) {

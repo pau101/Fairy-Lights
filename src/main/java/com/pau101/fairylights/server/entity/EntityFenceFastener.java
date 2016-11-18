@@ -152,7 +152,8 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, @Nullable ItemStack stack, EnumHand hand) {
+	public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		if (stack != null && stack.getItem() instanceof ItemConnection) {
 			if (worldObj.isRemote) {
 				player.swingArm(hand);
@@ -161,7 +162,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 			}
 			return true;
 		}
-		return super.processInitialInteract(player, stack, hand);
+		return super.processInitialInteract(player, hand);
 	}
 
 	@Override

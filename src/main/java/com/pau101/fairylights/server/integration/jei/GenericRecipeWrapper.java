@@ -100,14 +100,9 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		return recipe.getHeight();
 	}
 
-	@Override
-	public List<List<ItemStack>> getInputs() {
-		return inputs;
-	}
-
 	public List<List<ItemStack>> getInputs(ItemStack focus) {
 		if (subtypeIndex == -1) {
-			return getInputs();	
+			return inputs;	
 		}
 		List<ItemStack> variants = new ArrayList<>();
 		forOutputMatches((variant, output) -> {
@@ -121,11 +116,6 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		List<List<ItemStack>> inputs = new ArrayList<>(this.inputs);
 		inputs.set(subtypeIndex, variants);
 		return inputs;
-	}
-
-	@Override
-	public List<ItemStack> getOutputs() {
-		return outputs;
 	}
 
 	@Override

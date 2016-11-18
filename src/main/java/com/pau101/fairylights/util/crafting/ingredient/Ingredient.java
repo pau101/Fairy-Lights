@@ -1,6 +1,5 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResult;
 
@@ -28,7 +28,7 @@ public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 
 	default List<ItemStack> getMatchingSubtypes(ItemStack stack) {
 		Objects.requireNonNull(stack, "stack");
-		List<ItemStack> subtypes = new ArrayList<>();
+		NonNullList<ItemStack> subtypes = NonNullList.func_191196_a();
 		Item item = stack.getItem();
 		for (CreativeTabs tab : item.getCreativeTabs()) {
 			item.getSubItems(item, tab, subtypes);

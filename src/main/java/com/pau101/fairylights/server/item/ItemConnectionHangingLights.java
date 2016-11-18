@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -44,7 +45,7 @@ public final class ItemConnectionHangingLights extends ItemConnection {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {}
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {}
 
 	/*@Override
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {

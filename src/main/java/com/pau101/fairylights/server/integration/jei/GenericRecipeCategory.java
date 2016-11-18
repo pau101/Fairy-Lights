@@ -58,7 +58,7 @@ public final class GenericRecipeCategory extends BlankRecipeCategory<GenericReci
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout layout, GenericRecipeWrapper wrapper) {
+	public void setRecipe(IRecipeLayout layout, GenericRecipeWrapper wrapper, IIngredients ingredients) {
 		IGuiItemStackGroup isg = layout.getItemStacks();
 		isg.init(CRAFT_OUTPUT_SLOT, false, 94, 18);
 		for (int y = 0; y < 3; y++) {
@@ -76,10 +76,5 @@ public final class GenericRecipeCategory extends BlankRecipeCategory<GenericReci
 		}
 		craftingGridHelper.setInputStacks(isg, inputs, wrapper.getWidth(), wrapper.getHeight());
 		craftingGridHelper.setOutput(isg, wrapper.getOutputs());
-	}
-
-	@Override
-	public void setRecipe(IRecipeLayout layout, GenericRecipeWrapper wrapper, IIngredients ingredients) {
-		setRecipe(layout, wrapper);
 	}
 }

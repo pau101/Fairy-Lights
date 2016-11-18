@@ -1,13 +1,12 @@
 package com.pau101.fairylights.server.item;
 
-import java.util.List;
-
 import com.pau101.fairylights.FairyLights;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 
 public final class ItemLight extends Item {
@@ -26,7 +25,7 @@ public final class ItemLight extends Item {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
+	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		LightVariant[] variants = LightVariant.values();
 		for (int variant = 0; variant < variants.length; variant++) {
 			if (variants[variant] == LightVariant.LUXO_BALL) {

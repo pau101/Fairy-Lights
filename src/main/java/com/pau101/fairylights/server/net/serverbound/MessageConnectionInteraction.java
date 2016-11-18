@@ -98,11 +98,11 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 
 	private void updateItem(EntityPlayer player, ItemStack oldStack, @Nullable ItemStack stack, EnumHand hand) {
 		if (stack != null && stack == player.getHeldItem(hand)) {
-			if (stack.stackSize <= 0 && !player.capabilities.isCreativeMode) {
+			if (stack.func_190916_E() <= 0 && !player.capabilities.isCreativeMode) {
 				ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
 				player.setHeldItem(hand, null);
-			} else if (stack.stackSize < oldStack.stackSize && player.capabilities.isCreativeMode) {
-				stack.stackSize = oldStack.stackSize;
+			} else if (stack.func_190916_E() < oldStack.func_190916_E() && player.capabilities.isCreativeMode) {
+				stack.func_190920_e(oldStack.func_190916_E());
 			}
 		}
 	}

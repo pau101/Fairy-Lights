@@ -82,7 +82,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 			if (light.getColor() != color) {
 				pattern.set(index, light.withColor(color));
 				dataUpdateState = true;
-				heldStack.stackSize--;
+				heldStack.func_190918_g(1);
 				world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.FEATURE_COLOR_CHANGE, SoundCategory.BLOCKS, 1, 1);
 				return true;
 			}

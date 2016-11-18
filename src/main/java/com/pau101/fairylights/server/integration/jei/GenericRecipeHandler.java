@@ -12,11 +12,6 @@ public final class GenericRecipeHandler implements IRecipeHandler<GenericRecipe>
 	}
 
 	@Override
-	public String getRecipeCategoryUid() {
-		return GenericRecipeCategory.UID;
-	}
-
-	@Override
 	public String getRecipeCategoryUid(GenericRecipe recipe) {
 		return GenericRecipeCategory.UID;
 	}

@@ -38,8 +38,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public void neighborChanged(World world, BlockPos pos, Block block) {
-		state.neighborChanged(world, pos, block);
+	public void neighborChanged(World world, BlockPos pos, Block block, BlockPos neighborPos) {
+		state.neighborChanged(world, pos, block, neighborPos);
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public boolean func_189884_a(Entity entity) {
-		return state.func_189884_a(entity);
+	public boolean canEntitySpawn(Entity entity) {
+		return state.canEntitySpawn(entity);
 	}
 
 	@Override
@@ -193,7 +193,7 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos) {
+	public AxisAlignedBB getCollisionBoundingBox(IBlockAccess world, BlockPos pos) {
 		return state.getCollisionBoundingBox(world, pos);
 	}
 
@@ -260,5 +260,20 @@ public class ForwardingBlockState implements IBlockState {
 	@Override
 	public String toString() {
 		return state.toString();
+	}
+
+	@Override
+	public boolean func_191057_i() {
+		return state.func_191057_i();
+	}
+
+	@Override
+	public Vec3d func_191059_e(IBlockAccess world, BlockPos pos) {
+		return state.func_191059_e(world, pos);
+	}
+
+	@Override
+	public boolean func_191058_s() {
+		return state.func_191058_s();
 	}
 }

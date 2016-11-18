@@ -13,6 +13,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -169,7 +170,7 @@ public final class GenericRecipe implements IRecipe {
 	public ItemStack getCraftingResult(InventoryCrafting inventory) {
 		ItemStack result = this.result.get();
 		if (result == null) {
-			return null;
+			return ItemStack.field_190927_a;
 		}
 		return result.copy();
 	}
@@ -185,7 +186,7 @@ public final class GenericRecipe implements IRecipe {
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inventory) {
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inventory) {
 		return ForgeHooks.defaultRecipeGetRemainingItems(inventory);
 	}
 

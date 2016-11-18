@@ -34,7 +34,8 @@ public abstract class ItemConnection extends Item {
 	public abstract ConnectionType getConnectionType();
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer user, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(EntityPlayer user, World world, BlockPos pos, EnumHand hand, EnumFacing side, float facing, float hitX, float hitY) {
+		ItemStack stack = user.getHeldItem(hand);
 		if (isConnectionInOtherHand(world, user, stack)) {
 			return EnumActionResult.PASS;
 		}
@@ -115,7 +116,7 @@ public abstract class ItemConnection extends Item {
 				playConnectSound = false;
 			} else {
 				c.onConnect(world, user, stack);
-				stack.stackSize--;
+				stack.func_190918_g(1);
 			}
 		}
 		if (playConnectSound) {

@@ -206,7 +206,7 @@ public abstract class Connection implements NBTSerializable {
 			if (shouldDrop()) {
 				player.inventory.addItemStackToInventory(getItemStack());
 			}
-			heldStack.stackSize--;
+			heldStack.func_190918_g(1);
 			NBTTagCompound data = Objects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
 			ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
 			fastener.connectWith(world, dest, type, data).onConnect(player.worldObj, player, heldStack);
