@@ -1,14 +1,13 @@
 package com.pau101.fairylights.client.model.lights;
 
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
-import com.pau101.fairylights.connection.Light;
-import com.pau101.fairylights.util.MathUtils;
-import com.pau101.fairylights.util.vectormath.Vector3f;
+import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
+import com.pau101.fairylights.util.Mth;
 
-public class ModelLightIcicle extends ModelLight {
+public final class ModelLightIcicle extends ModelLight {
 	private AdvancedModelRenderer wireMiddle, wireBottom, wireEnd;
 
 	private AdvancedModelRenderer light2, light3, light4;
@@ -86,18 +85,13 @@ public class ModelLightIcicle extends ModelLight {
 	}
 
 	@Override
-	public boolean shouldParallelCord() {
-		return false;
-	}
-
-	@Override
 	public boolean hasRandomRotatation() {
 		return true;
 	}
 
 	@Override
-	public void render(World world, Light light, float scale, Vector3f color, int moonlight, int sunlight, float brightness, int index, float partialRenderTicks) {
-		int which = MathUtils.modi(MathUtils.hash(index), 4);
+	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float brightness, int index, float partialRenderTicks) {
+		int which = Mth.mod(Mth.hash(index), 4);
 		if (which == 0) {
 			which = index % 3;
 		}

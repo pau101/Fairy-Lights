@@ -1,6 +1,9 @@
 package com.pau101.fairylights.client.model;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
@@ -9,16 +12,13 @@ import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.VertexBuffer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.collect.Lists;
-import com.pau101.fairylights.util.MathUtils;
+import com.pau101.fairylights.util.Mth;
 
-public class AdvancedModelRenderer extends ModelRenderer {
+public final class AdvancedModelRenderer extends ModelRenderer {
 	protected int textureOffsetX;
 
 	protected int textureOffsetY;
@@ -57,10 +57,13 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
 	public boolean isMeteorLightGlow;
 
+	@Nullable
 	public List<AdvancedModelRenderer> childModels;
 
+	public float glowExpandAmount = 0.7F;
+
 	public AdvancedModelRenderer(ModelBase modelBase) {
-		this(modelBase, (String) null);
+		this(modelBase, null);
 	}
 
 	public AdvancedModelRenderer(ModelBase modelBase, int textureOffsetX, int textureOffsetY) {
@@ -79,7 +82,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
 	public void addChild(AdvancedModelRenderer modelRenderer) {
 		if (childModels == null) {
-			childModels = Lists.newArrayList();
+			childModels = new ArrayList<>();
 		}
 		childModels.add(modelRenderer);
 	}
@@ -105,7 +108,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 	}
 
 	public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
-		cubeList.add(new Model3DTexture(this, textureOffsetX, textureOffsetY, width, height));
+		cubeList.add(new Model3DTexture(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height));
 		return this;
 	}
 
@@ -113,32 +116,28 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		cubeList.add(new ModelMeteorLightBox(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height, depth, type));
 	}
 
-	@SideOnly(Side.CLIENT)
 	protected void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
-		GL11.glNewList(displayList, GL11.GL_COMPILE);
-		WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-		for (int i = 0; i < cubeList.size(); i++) {
-			((ModelBox) cubeList.get(i)).render(renderer, scale);
+		GlStateManager.glNewList(displayList, GL11.GL_COMPILE);
+		VertexBuffer buf = Tessellator.getInstance().getBuffer();
+		for (ModelBox box : cubeList) {
+			box.render(buf, scale);
 		}
-		GL11.glEndList();
+		GlStateManager.glEndList();
 		compiled = true;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void postRender(float scale) {
-		if (!isHidden) {
-			if (showModel) {
-				if (!compiled) {
-					compileDisplayList(scale);
-				}
-				GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-				secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-				GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-				GlStateManager.scale(scaleX, scaleY, scaleZ);
+		if (!isHidden && showModel) {
+			if (!compiled) {
+				compileDisplayList(scale);
 			}
+			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+			rotationOrder.rotate(rotateAngleX * Mth.RAD_TO_DEG, rotateAngleY * Mth.RAD_TO_DEG, rotateAngleZ * Mth.RAD_TO_DEG);
+			secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
+			GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
+			GlStateManager.scale(scaleX, scaleY, scaleZ);
 		}
 	}
 
@@ -148,14 +147,13 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		}
 		if (isGlowing) {
 			List<ModelBox> boxModels = cubeList;
-			WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+			VertexBuffer buf = Tessellator.getInstance().getBuffer();
 			for (ModelBox box : boxModels) {
 				int bri = 1;
-				float expand = 0.45F;
 				float meteorExpandY = 0;
 				for (int i = 0; i < bri; i++) {
 					float width = box.posX2 - box.posX1, height = box.posY2 - box.posY1, depth = box.posZ2 - box.posZ1;
-					float localExpand = expand * (i + 1);
+					float localExpand = glowExpandAmount * (i + 1);
 					float localMeteorExpandY = meteorExpandY * (i + 1); 
 					float newWidth = width + 2 * localExpand;
 					float newHeight = height + 2 * (isMeteorLightGlow ? localMeteorExpandY : localExpand);
@@ -164,15 +162,16 @@ public class AdvancedModelRenderer extends ModelRenderer {
 					float scaleY = newHeight / height;
 					float scaleZ = newDepth / depth;
 					GlStateManager.pushMatrix();
-					GlStateManager.translate((box.posX1 - expand - scaleX * box.posX1) / 16, (box.posY1 - (isMeteorLightGlow ? meteorExpandY : expand) - scaleY * box.posY1) / 16, (box.posZ1 - expand - scaleZ * box.posZ1) / 16 * (box instanceof Model3DTexture ? -1 : 1));
+					GlStateManager.translate((box.posX1 - glowExpandAmount - scaleX * box.posX1) / 16, (box.posY1 - (isMeteorLightGlow ? meteorExpandY : glowExpandAmount) - scaleY * box.posY1) / 16, (box.posZ1 - glowExpandAmount - scaleZ * box.posZ1) / 16 * (box instanceof Model3DTexture ? -1 : 1));
 					GlStateManager.scale(scaleX, scaleY, scaleZ);
-					box.render(wr, scale);
+					box.render(buf, scale);
 					GlStateManager.popMatrix();
 				}
 			}
 		} else {
 			GlStateManager.callList(displayList);
 		}
+
 		if (childModels != null) {
 			for (int i = 0; i < childModels.size(); i++) {
 				AdvancedModelRenderer modelRenderer = childModels.get(i);
@@ -183,35 +182,23 @@ public class AdvancedModelRenderer extends ModelRenderer {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void render(float scale) {
-		if (!isHidden) {
-			if (showModel) {
-				if (!compiled) {
-					compileDisplayList(scale);
-				}
-				GlStateManager.translate(offsetX, offsetY, offsetZ);
-				int i;
-				if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
-					if (rotationPointX == 0 && rotationPointY == 0 && rotationPointZ == 0) {
-						if (scaleX == 1 && scaleY == 1 && scaleZ == 1) {
-							GlStateManager.pushMatrix();
-							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-							GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-							baseRender(scale);
-							GlStateManager.popMatrix();
-						} else {
-							GlStateManager.pushMatrix();
-							secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
-							GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-							GlStateManager.scale(scaleX, scaleY, scaleZ);
-							baseRender(scale);
-							GlStateManager.popMatrix();
-						}
+		if (!isHidden && showModel) {
+			if (!compiled) {
+				compileDisplayList(scale);
+			}
+			GlStateManager.translate(offsetX, offsetY, offsetZ);
+			if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
+				if (rotationPointX == 0 && rotationPointY == 0 && rotationPointZ == 0) {
+					if (scaleX == 1 && scaleY == 1 && scaleZ == 1) {
+						GlStateManager.pushMatrix();
+						secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
+						GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
+						baseRender(scale);
+						GlStateManager.popMatrix();
 					} else {
 						GlStateManager.pushMatrix();
-						GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-						secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+						secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
 						GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
 						GlStateManager.scale(scaleX, scaleY, scaleZ);
 						baseRender(scale);
@@ -220,47 +207,50 @@ public class AdvancedModelRenderer extends ModelRenderer {
 				} else {
 					GlStateManager.pushMatrix();
 					GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-					rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
-					secondaryRotationOrder.rotate(secondaryRotateAngleX * MathUtils.RAD_TO_DEG, secondaryRotateAngleY * MathUtils.RAD_TO_DEG, secondaryRotateAngleZ * MathUtils.RAD_TO_DEG);
+					secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
 					GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
 					GlStateManager.scale(scaleX, scaleY, scaleZ);
 					baseRender(scale);
 					GlStateManager.popMatrix();
 				}
-				GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
-			}
-		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderWithRotation(float scale) {
-		if (!isHidden) {
-			if (showModel) {
-				if (!compiled) {
-					compileDisplayList(scale);
-				}
+			} else {
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-				rotationOrder.rotate(rotateAngleX * MathUtils.RAD_TO_DEG, rotateAngleY * MathUtils.RAD_TO_DEG, rotateAngleZ * MathUtils.RAD_TO_DEG);
+				rotationOrder.rotate(rotateAngleX * Mth.RAD_TO_DEG, rotateAngleY * Mth.RAD_TO_DEG, rotateAngleZ * Mth.RAD_TO_DEG);
+				secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
+				GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
 				GlStateManager.scale(scaleX, scaleY, scaleZ);
 				baseRender(scale);
 				GlStateManager.popMatrix();
 			}
+			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
 		}
 	}
 
 	@Override
-	public void setRotationPoint(float rotationPointX, float rotationPointY, float rotationPointZ) {
-		this.rotationPointX = rotationPointX;
-		this.rotationPointY = rotationPointY;
-		this.rotationPointZ = rotationPointZ;
+	public void renderWithRotation(float scale) {
+		if (!isHidden && showModel) {
+			if (!compiled) {
+				compileDisplayList(scale);
+			}
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+			rotationOrder.rotate(rotateAngleX * Mth.RAD_TO_DEG, rotateAngleY * Mth.RAD_TO_DEG, rotateAngleZ * Mth.RAD_TO_DEG);
+			secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
+			GlStateManager.scale(scaleX, scaleY, scaleZ);
+			baseRender(scale);
+			GlStateManager.popMatrix();
+		}
 	}
 
-	public void setRotationAngles(float rotateAngleX, float rotateAngleY, float rotateAngleZ) {
-		this.rotateAngleX = rotateAngleX;
-		this.rotateAngleY = rotateAngleY;
-		this.rotateAngleZ = rotateAngleZ;
+	public void setRotationPoint(double rotationPointX, double rotationPointY, double rotationPointZ) {
+		setRotationPoint((float) rotationPointX, (float) rotationPointY, (float) rotationPointZ);
+	}
+
+	public void setRotationAngles(double rotateAngleX, double rotateAngleY, double rotateAngleZ) {
+		this.rotateAngleX = (float) rotateAngleX;
+		this.rotateAngleY = (float) rotateAngleY;
+		this.rotateAngleZ = (float) rotateAngleZ;
 	}
 
 	@Override
@@ -281,7 +271,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 		this.rotationOrder = rotationOrder;
 	}
 
-	public RotationOrder getRotationOrder() {
-		return rotationOrder;
+	public void setSecondaryRotationOrder(RotationOrder secondaryRotationOrder) {
+		this.secondaryRotationOrder = secondaryRotationOrder;
 	}
 }

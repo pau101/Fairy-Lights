@@ -1,0 +1,11 @@
+{
+	"variants": {
+		"facing=up":    { "model": "fairylights:fastener" },
+		"facing=down":  { "model": "fairylights:fastener", "x": 180 },
+		"facing=east":  { "model": "fairylights:fastener", "x": 90, "y": 90 },
+		"facing=west":  { "model": "fairylights:fastener", "x": 90, "y": 270 },
+		"facing=south": { "model": "fairylights:fastener", "x": 90, "y": 180 },
+		"facing=north": { "model": "fairylights:fastener", "x": 90 },
+		"fence":        { "model": "fairylights:fastener_fence" }
+    }
+}

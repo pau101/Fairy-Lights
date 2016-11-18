@@ -1,9 +1,9 @@
 package com.pau101.fairylights.client.model.lights;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
-import com.pau101.fairylights.util.MathUtils;
+import com.pau101.fairylights.util.Mth;
 
-public class ModelLightSpider extends ModelLight {
+public final class ModelLightSpider extends ModelLight {
 	public ModelLightSpider() {
 		AdvancedModelRenderer string = new AdvancedModelRenderer(this, 30, 6);
 		string.addBox(-1, 0, -1, 2, 2, 2, 0);
@@ -72,7 +72,7 @@ public class ModelLightSpider extends ModelLight {
 		leg3.addChild(leg3Lower);
 		leg4.addChild(leg4Lower);
 		AdvancedModelRenderer legs = new AdvancedModelRenderer(this);
-		legs.rotateAngleY = MathUtils.PI * side;
+		legs.rotateAngleY = Mth.PI * side;
 		legs.addChild(leg1);
 		legs.addChild(leg2);
 		legs.addChild(leg3);

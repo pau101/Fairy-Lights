@@ -1,0 +1,9 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "fairylights:items/letter_bunting_0",
+        "layer1": "fairylights:items/letter_bunting_1",
+        "layer2": "fairylights:items/letter_bunting_2",
+        "layer3": "fairylights:items/letter_bunting_3"
+    }
+}

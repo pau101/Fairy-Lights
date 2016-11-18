@@ -2,14 +2,12 @@ package com.pau101.fairylights.client.model;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.VertexBuffer;
 
-import org.lwjgl.opengl.GL11;
+import com.pau101.fairylights.client.renderer.FastenerRenderer;
 
-import com.pau101.fairylights.client.renderer.ConnectionRenderer;
-
-public class Model3DTexture extends ModelBox {
+public final class Model3DTexture extends ModelBox {
 	public int width;
 
 	public int height;
@@ -31,10 +29,10 @@ public class Model3DTexture extends ModelBox {
 	}
 
 	@Override
-	public void render(WorldRenderer render, float scale) {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(posX1 * scale, posY1 * scale, posZ1 * scale);
-		ConnectionRenderer.render3DTexture(render, width, height, textureOffsetX, textureOffsetY);
-		GL11.glPopMatrix();
+	public void render(VertexBuffer buf, float scale) {
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(posX1 * scale, posY1 * scale, posZ1 * scale);
+		FastenerRenderer.render3DTexture(width, height, textureOffsetX, textureOffsetY);
+		GlStateManager.popMatrix();
 	}
 }

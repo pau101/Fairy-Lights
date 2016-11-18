@@ -2,6 +2,8 @@ package com.pau101.fairylights.client.model.connection;
 
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
@@ -9,65 +11,63 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import com.pau101.fairylights.client.renderer.ConnectionRenderer;
-import com.pau101.fairylights.connection.ConnectionLogic;
-import com.pau101.fairylights.tileentity.TileEntityConnectionFastener;
-import com.pau101.fairylights.tileentity.connection.Connection;
-import com.pau101.fairylights.util.Catenary;
-import com.pau101.fairylights.util.Segment;
-import com.pau101.fairylights.util.vectormath.Point3f;
-import com.pau101.fairylights.util.vectormath.Vector3f;
+import com.pau101.fairylights.server.fastener.Fastener;
+import com.pau101.fairylights.server.fastener.connection.Catenary;
+import com.pau101.fairylights.server.fastener.connection.Segment;
+import com.pau101.fairylights.server.fastener.connection.type.Connection;
+import com.pau101.fairylights.util.Mth;
 
-public abstract class ModelConnection<T extends ConnectionLogic> extends ModelBase {
+public abstract class ModelConnection<T extends Connection> extends ModelBase {
 	public ModelConnection() {
-		textureWidth = ConnectionRenderer.TEXTURE_WIDTH;
-		textureHeight = ConnectionRenderer.TEXTURE_HEIGHT;
+		textureWidth = textureHeight = 128;
 	}
 
-	public void render(TileEntityConnectionFastener fastener, T logic, World world, int skylight, int moonlight, float delta) {
-		renderCord(logic, world, skylight, moonlight, delta);
+	public boolean hasTexturedRender() {
+		return false;
 	}
 
-	public void renderCord(T connectionLogic, World world, int sunlight, int moonlight, float delta) {
-		Connection connection = connectionLogic.getConnection();
-		Point3f to = connection.getTo();
-		int toBlockBrightness = world.getCombinedLight(new BlockPos(MathHelper.floor_float(to.x), MathHelper.floor_float(to.y), MathHelper.floor_float(to.z)), 0);
+	@Nullable
+	public ResourceLocation getAlternateTexture() {
+		return null;
+	}
+
+	public void render(Fastener<?> fastener, T connection, World world, int skylight, int moonlight, float delta) {
+		renderCord(connection, world, skylight, moonlight, delta);
+	}
+
+	public void renderTexturePass(Fastener<?> fastener, T connnection, World world, int skylight, int moonlight, float delta) {}
+
+	public void renderCord(T connection, World world, int sunlight, int moonlight, float delta) {
+		Catenary prevCatenary = connection.getPrevCatenary();
+		Vec3d to = connection.getDestination().get(world).getConnectionPoint();
+		int toBlockBrightness = world.getCombinedLight(new BlockPos(to), 0);
 		int toSunlight = toBlockBrightness % 65536;
 		int toMoonlight = toBlockBrightness / 65536;
 		Segment[] segments = connection.getCatenary().getSegments();
-		Catenary prevCatenary = connection.getPrevCatenary();
-		Segment[] segmentsOld = null;
-		if (prevCatenary != null) {
-			segmentsOld = prevCatenary.getSegments();
-		}
+		Segment[] segmentsOld = prevCatenary.getSegments();
 		GlStateManager.color(1, 1, 1);
 		GlStateManager.disableRescaleNormal();
-		for (int i = 0; i < segments.length; i++) {
+		for (int i = 0, count = Math.min(segments.length, segmentsOld.length); i < count; i++) {
 			float v = i / (float) segments.length;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight * (1 - v) + toSunlight * v, moonlight * (1 - v) + toMoonlight * v);
 			Segment segment = segments[i];
-			Vector3f rotation = segment.getRotation();
-			if (segmentsOld != null && i < segmentsOld.length) {
-				rotation.interpolate(segmentsOld[i].getRotation(), 1 - delta, true);
-			}
-			float length = segment.getLength();
-			if (segmentsOld != null && i < segmentsOld.length) {
-				length = length * delta + segmentsOld[i].getLength() * (1 - delta);
-			}
-			Point3f vertex = segment.getVertex();
-			if (segmentsOld != null && i < segmentsOld.length) {
-				vertex.interpolate(segmentsOld[i].getVertex(), 1 - delta);
-			}
-			renderSegment(connectionLogic, i,rotation.y, rotation.x, length, vertex.x, vertex.y, vertex.z, delta);
+			Vec3d rotation = segment.getRotation();
+			double length = segment.getLength();
+			Vec3d vertex = segment.getStart();
+			rotation = Mth.lerpAngles(rotation, segmentsOld[i].getRotation(), 1 - delta);
+			length = length * delta + segmentsOld[i].getLength() * (1 - delta);
+			vertex = Mth.lerp(vertex, segmentsOld[i].getStart(), 1 - delta);
+			renderSegment(connection, i, rotation.yCoord, rotation.xCoord, length, vertex.xCoord, vertex.yCoord, vertex.zCoord, delta);
 		}
 		GlStateManager.enableRescaleNormal();
 	}
 
-	protected abstract void renderSegment(T connectionLogic, int index, float angleX, float angleY, float length, float x, float y, float z, float delta);
+	protected abstract void renderSegment(T connection, int index, double angleX, double angleY, double length, double x, double y, double z, float delta);
 
 	@Override
 	public final ModelRenderer getRandomModelBox(Random rand) {

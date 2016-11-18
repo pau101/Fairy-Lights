@@ -2,7 +2,7 @@ package com.pau101.fairylights.client.model.lights;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 
-public class ModelLightWitch extends ModelLight {
+public final class ModelLightWitch extends ModelLight {
 	public ModelLightWitch() {
 		AdvancedModelRenderer rim = new AdvancedModelRenderer(this, 58, 7);
 		rim.setRotationPoint(0, -1, 0);

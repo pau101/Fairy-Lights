@@ -1,9 +1,9 @@
 package com.pau101.fairylights.client.model.lights;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
-import com.pau101.fairylights.util.MathUtils;
+import com.pau101.fairylights.util.Mth;
 
-public class ModelLightPaper extends ModelLight {
+public final class ModelLightPaper extends ModelLight {
 	public ModelLightPaper() {
 		amutachromicParts.setTextureOffset(34, 18);
 		amutachromicParts.addBox(-1, -0.5F, -1, 2, 2, 2); // point
@@ -18,18 +18,14 @@ public class ModelLightPaper extends ModelLight {
 			boolean straight = (i & 1) == 0;
 			AdvancedModelRenderer hSupport = new AdvancedModelRenderer(this, 28, 34);
 			hSupport.addBox(0, 0, -0.5F, straight ? 4 : 5, 7, 1);
-			hSupport.rotateAngleY = 45 * i * MathUtils.DEG_TO_RAD;
+			hSupport.rotateAngleY = 45 * i * Mth.DEG_TO_RAD;
 			hSupport.rotationPointY = -7;
 			amutachromicParts.addChild(hSupport);
 		}
 
 		colorableParts.setTextureOffset(0, 41);
 		colorableParts.addBox(-3.5F, -6.5F, -3.5F, 7, 6, 7); // orb
-	}
-
-	@Override
-	public boolean shouldParallelCord() {
-		return false;
+		colorableParts.glowExpandAmount = 0.3F;
 	}
 
 	@Override

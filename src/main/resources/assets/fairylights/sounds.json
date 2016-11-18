@@ -1,20 +1,34 @@
 {
-	"jinglebell": {
-		"category": "neutral",
-		"sounds": [
-			"random/jinglebell"
-		]
+	"jingle_bell": {
+		"sounds": [ "fairylights:jingle_bell" ],
+		"subtitle": "subtitles.block.jingleBell"
 	},
-	"cord.creak": {
-		"category": "block",
+	"cord.connect": {
 		"sounds": [
-			"random/cord_creak"
-		]
+			"entity/leashknot/place1",
+			"entity/leashknot/place2",
+			"entity/leashknot/place3"
+		],
+		"subtitle": "subtitles.block.cord.connect"
 	},
-	"cord.break": {
-		"category": "block",
+	"cord.disconnect": {
 		"sounds": [
-			"random/cord_break"
-		]
+			"entity/leashknot/break1",
+			"entity/leashknot/break2",
+			"entity/leashknot/break3"
+		],
+		"subtitle": "subtitles.block.cord.disconnect"
+	},
+	"cord.stretch": {
+		"sounds": [ "fairylights:cord_stretch" ],
+		"subtitle": "subtitles.block.cord.stretch"
+	},
+	"cord.snap": {
+		"sounds": [ "fairylights:cord_snap" ],
+		"subtitle": "subtitles.block.cord.snap"
+	},
+	"feature.color_change": {
+		"sounds": [ "minecraft:random/pop" ],
+		"subtitle": "subtitles.block.feature.colorChange"
 	}
 }

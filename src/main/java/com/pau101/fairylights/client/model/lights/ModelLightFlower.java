@@ -1,25 +1,24 @@
 package com.pau101.fairylights.client.model.lights;
 
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
-import com.pau101.fairylights.connection.Light;
-import com.pau101.fairylights.util.MathUtils;
-import com.pau101.fairylights.util.vectormath.Vector3f;
+import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
+import com.pau101.fairylights.util.Mth;
 
-public class ModelLightFlower extends ModelLight {
-	private static final float PEDDLE_ANGLE = -MathUtils.PI / 6;
+public final class ModelLightFlower extends ModelLight {
+	private static final float PEDDLE_ANGLE = -Mth.PI / 6;
 
-	private static final float[] MAGIC_ANGLES = MathUtils.toEuler(-1, 0, 1, PEDDLE_ANGLE);
+	private static final float[] MAGIC_ANGLES = Mth.toEulerYZX(-1, 0, 1, PEDDLE_ANGLE);
 
 	public ModelLightFlower() {
-		amutachromicParts.setTextureOffset(12, 0);
-		amutachromicParts.addBox(-1.5F, 0, -1.5F, 3, 2, 3);
+		amutachromicLitParts.setTextureOffset(12, 0);
+		amutachromicLitParts.addBox(-1.5F, -1, -1.5F, 3, 3, 3);
 		int peddleCount = 5;
 		for (int p = 0; p < peddleCount; p++) {
-			float theta = p * MathUtils.TAU / peddleCount;
+			float theta = p * Mth.TAU / peddleCount;
 			AdvancedModelRenderer peddleModel = new AdvancedModelRenderer(this, 24, 0);
 			peddleModel.setRotationOrder(RotationOrder.YZX);
 			peddleModel.addBox(0, 0, 0, 5, 1, 5);
@@ -37,8 +36,8 @@ public class ModelLightFlower extends ModelLight {
 	}
 
 	@Override
-	public void render(World world, Light light, float scale, Vector3f color, int moonlight, int sunlight, float brightness, int index, float partialRenderTicks) {
-		float randomTilt = MathUtils.modf(MathUtils.hash(index) * MathUtils.DEG_TO_RAD, MathUtils.TAU) / MathUtils.TAU * MathUtils.PI / 8 - MathUtils.PI / 16;
+	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float brightness, int index, float partialRenderTicks) {
+		float randomTilt = Mth.mod(Mth.hash(index) * Mth.DEG_TO_RAD, Mth.TAU) / Mth.TAU * Mth.PI / 8 - Mth.PI / 16;
 		colorableParts.rotateAngleZ += randomTilt;
 		amutachromicParts.rotateAngleZ += randomTilt;
 		super.render(world, light, scale, color, moonlight, sunlight, brightness, index, partialRenderTicks);

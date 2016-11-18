@@ -1,34 +1,69 @@
 itemGroup.fairylights=Fairy Lights
 
-tile.fairy_lights.name=Connection Fastener
+fairylights.config=Fairy Lights Configuration
 
-item.fairy_lights.name=Fairy Lights
+tile.fairyLights.name=Connection Fastener
+
+item.hangingLights.name=Hanging Lights
 item.garland.name=Vine Garland
 item.tinsel.name=Tinsel Garland
 
-item.fairy_lights.pattern=Pattern:
-item.fairy_lights.tight=Uncurved
-item.fairy_lights.colored_light=%1$s %2$s
+item.fairyLights.pattern=Pattern:
+item.fairyLights.twinkle=Twinkle
+item.fairyLights.tight=Uncurved
 
-item.tinsel.colored=%1$s %2$s
+item.pennantBunting.name=Pennant Bunting
+item.pennantBunting.colors=Colors:
 
+item.letterBunting.name=Letter Bunting
+
+item.pennant.name=Pennant
+
+item.light.name=Light
 item.light.fairy.name=Fairy Light
 item.light.paper.name=Paper Lantern
 item.light.orb.name=Orb Lantern
 item.light.flower.name=Flower Light
 item.light.ornate.name=Ornate Lantern
 item.light.oil.name=Oil Lantern
-item.light.luxo_ball.name=Luxo Ball
-item.light.jack_o_lantern.name=Jack o'Lantern
+item.light.luxoBall.name=Luxo Ball 
+item.light.jackOLantern.name=Jack o'Lantern
 item.light.skull.name=Skull Light
 item.light.ghost.name=Ghost Light
 item.light.spider.name=Spider Light
 item.light.witch.name=Witch Light
-item.light.weedwood_lantern.name=Weedwood Lantern
 item.light.snowflake.name=Snowflake Light
 item.light.icicle.name=Icicle Lights
 item.light.meteor.name=Meteor Light
 
-item.light.weedwood_lantern.line.0=From a dark, hostile environment...
-item.light.weedwood_lantern.line.1=Information on The Betweenlands available here:
-item.light.weedwood_lantern.line.2=http://bit.ly/TheBetweenlands
+entity.fairylights.Fastener.name=Fastener
+
+gui.editLetteredConnection.name=Set Bunting Text
+
+format.pattern.entry=  %1$s
+format.colored=%1$s %2$s
+format.text=Text: %1$s
+
+color.black.name=Black
+color.red.name=Red
+color.green.name=Green
+color.brown.name=Brown
+color.blue.name=Blue
+color.purple.name=Purple
+color.cyan.name=Cyan
+color.silver.name=Light Gray
+color.gray.name=Gray
+color.pink.name=Pink
+color.lime.name=Lime
+color.yellow.name=Yellow
+color.lightBlue.name=Light Blue
+color.magenta.name=Magenta
+color.orange.name=Orange
+color.white.name=White
+
+subtitles.block.jingleBell=Bell jingles
+subtitles.block.cord.connect=Cord connects
+subtitles.block.cord.disconnect=Cord disconnects
+subtitles.block.cord.stretch=Cord stretches
+subtitles.block.cord.snap=Cord snaps
+subtitles.block.feature.colorChange=Color plops

@@ -21,22 +21,19 @@ public enum RotationOrder {
 		for (int r = 0; r < order.length; r++) {
 			switch (order[r]) {
 				case X:
-					if (x == 0) {
-						break;
+					if (x != 0) {
+						GlStateManager.rotate(x, 1, 0, 0);
 					}
-					GlStateManager.rotate(x, 1, 0, 0);
 					break;
 				case Y:
-					if (y == 0) {
-						break;
+					if (y != 0) {
+						GlStateManager.rotate(y, 0, 1, 0);
 					}
-					GlStateManager.rotate(y, 0, 1, 0);
 					break;
 				case Z:
-					if (z == 0) {
-						break;
+					if (z != 0) {
+						GlStateManager.rotate(z, 0, 0, 1);
 					}
-					GlStateManager.rotate(z, 0, 0, 1);
 					break;
 			}
 		}

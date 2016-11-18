@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "fairylights:items/orb_0",
+        "layer1": "fairylights:items/orb_1"
+    }
+}

@@ -1,94 +1,88 @@
 package com.pau101.fairylights;
 
-import com.pau101.fairylights.block.BlockConnectionFastener;
-import com.pau101.fairylights.block.BlockConnectionFastenerFence;
-import com.pau101.fairylights.config.Configurator;
-import com.pau101.fairylights.item.ItemConnection;
-import com.pau101.fairylights.item.ItemLight;
-import com.pau101.fairylights.network.FLNetworkManager;
-import com.pau101.fairylights.proxy.CommonProxy;
+import com.pau101.fairylights.server.ServerProxy;
+import com.pau101.fairylights.server.block.BlockFastener;
+import com.pau101.fairylights.server.item.ItemConnection;
+import com.pau101.fairylights.server.item.ItemLight;
+import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.util.CalendarEvent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFence;
+
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
-import java.util.List;
-import java.util.Map;
-
-@Mod(modid = FairyLights.MODID, name = FairyLights.NAME, version = FairyLights.VERSION)
-public class FairyLights {
-	public static final String MODID = "fairylights";
+@Mod(
+	modid = FairyLights.ID,
+	name = FairyLights.NAME,
+	version = FairyLights.VERSION,
+	dependencies = "required-after:Forge@[12.18.1.2053,);",
+	guiFactory = "com.pau101.fairylights.client.gui.FairyLightsGuiFactory"
+)
+public final class FairyLights {
+	public static final String ID = "fairylights";
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "1.4.0";
+	public static final String VERSION = "2.0.0";
 
-	public static final int MAX_LENGTH = 20;
-
-	@Instance
+	@Instance(ID)
 	public static FairyLights instance;
 
-	@SidedProxy(clientSide = "com.pau101.fairylights.proxy.ClientProxy", serverSide = "com.pau101.fairylights.proxy.CommonProxy")
-	public static CommonProxy proxy;
+	@SidedProxy(
+		clientSide = "com.pau101.fairylights.client.ClientProxy",
+		serverSide = "com.pau101.fairylights.server.ServerProxy"
+	)
+	public static ServerProxy proxy;
 
-	public static FLNetworkManager networkManager;
+	public static SimpleNetworkWrapper network;
 
-	public static BlockConnectionFastener connectionFastener;
-
-	public static List<Block> fences;
-
-	public static BlockConnectionFastenerFence[] fastenerFences;
-
-	public static Map<BlockConnectionFastenerFence, BlockFence> fastenerFenceToNormalFenceMap;
-
-	public static Map<BlockFence, BlockConnectionFastenerFence> normalFenceToFastenerFenceMap;
+	public static BlockFastener fastener;
 
 	public static ItemLight light;
 
-	public static ItemConnection fairyLights;
+	public static ItemConnection hangingLights;
 
 	public static ItemConnection garland;
 
 	public static ItemConnection tinsel;
 
+	public static ItemConnection pennantBunting;
+
+	public static ItemConnection letterBunting;
+
+	public static Item pennant;
+
 	public static CreativeTabs fairyLightsTab;
 
 	public static CalendarEvent christmas;
 
-	public static boolean isShadersModInstalled;
+	public static JingleLibrary christmasJingles;
+
+	public static JingleLibrary randomJingles; 
 
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {
-		Configurator.initConfig(event);
-		MinecraftForge.EVENT_BUS.register(Configurator.class);
-	}
-
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
+		proxy.initConfig(event);
+		proxy.initSounds();
 		proxy.initGUI();
 		proxy.initBlocks();
 		proxy.initItems();
-		proxy.initCrafting();
 		proxy.initEntities();
 		proxy.initRenders();
-		proxy.initHandlers();
 		proxy.initNetwork();
 		proxy.initEggs();
 	}
 
 	@EventHandler
-	public void init(FMLPostInitializationEvent event) {
-		try {
-			Class.forName("shadersmod.client.Shaders");
-			isShadersModInstalled = true;
-		} catch (ClassNotFoundException e) {}
+	public void init(FMLInitializationEvent event) {
+		proxy.initHandlers();
+		proxy.initCrafting();
+		proxy.initRendersLate();
 	}
 }

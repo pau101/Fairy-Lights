@@ -1,33 +1,33 @@
 package com.pau101.fairylights.util;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Objects;
 
-public class CalendarEvent {
-	private long date;
-	private long lengthMillis;
+import com.google.common.base.Preconditions;
 
-	public CalendarEvent(Calendar calendar) {
-		date = calendar.getTimeInMillis();
+public final class CalendarEvent {
+	private final Month month;
+
+	private final int dayStart;
+
+	private final int dayEnd;
+
+	public CalendarEvent(Month month, int dayStart, int dayEnd) {
+		this.month = Objects.requireNonNull(month, "month");
+		int length = month.maxLength();
+		Preconditions.checkArgument(dayStart > 0 && dayStart <= length, "Illegal day for month");
+		Preconditions.checkArgument(dayEnd > 0 && dayEnd <= length, "Illegal day for month");
+		this.dayStart = dayStart;
+		this.dayEnd = dayEnd;
 	}
 
 	public boolean isOcurringNow() {
-		long now = System.currentTimeMillis();
-		return now >= date && now < date + lengthMillis;
-	}
-
-	public void setLengthDays(float lengthDays) {
-		setLengthMillis((long) (lengthDays * 86400000.0));
-	}
-
-	public void setLengthHours(float lengthHours) {
-		setLengthMillis((long) (lengthHours * 3600000.0));
-	}
-
-	public void setLengthMillis(long lengthMillis) {
-		this.lengthMillis = lengthMillis;
-	}
-
-	public long timeUntil() {
-		return date - System.currentTimeMillis();
+		LocalDate now = LocalDate.now();
+		if (now.getMonth() == month) {
+			int day = now.getDayOfMonth();
+			return day >= dayStart && day <= dayEnd;
+		}
+		return false;
 	}
 }

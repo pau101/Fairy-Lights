@@ -1,56 +1,54 @@
 buildscript {
 	repositories {
-		mavenCentral()
+		jcenter()
 		maven {
-			name = 'forge'
-			url = 'http://files.minecraftforge.net/maven'
-		}
-		maven {
-			name = 'sonatype'
-			url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+		classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
 	}
 }
 
-apply plugin: 'forge'
+repositories {
+	maven {
+		url "http://dvs1.progwml6.com/files/maven"
+	}
+}
 
-version = "1.4.0"
+apply plugin: "net.minecraftforge.gradle.forge"
+
+ext.modVersion = "2.0.0"
+version = "${modVersion}-1.10.2"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-	version = "1.8-11.14.1.1334" // 11.14.1.1334 | 11.14.3.1450
+	version = "1.10.2-12.18.2.2123"
 	runDir = "run"
-
-	mappings = "snapshot_20151122"
+	mappings = "snapshot_20160518"
+	makeObfSourceJar = false
 }
 
 dependencies {
+	deobfCompile "mezz.jei:jei_1.10.2:3.12.8.323:api"
+	runtime "mezz.jei:jei_1.10.2:3.12.8.323"
 }
 
-processResources
-{
-	inputs.property "version", project.version
+processResources {
+	inputs.property "version", project.modVersion
 	inputs.property "mcversion", project.minecraft.version
-
 	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-				
-		expand 'version':project.version, 'mcversion':project.minecraft.version
+		include "mcmod.info"
+		expand "version":project.version, "mcversion":project.minecraft.version
 	}
-		
 	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
+		exclude "mcmod.info"
 	}
 }
 
 jar {
-	classifier = '1.8'
-	manifest {
-		attributes('FMLCorePlugin': 'com.pau101.fairylights.core.FairyLightsLoadingPlugin')
-		attributes('FMLCorePluginContainsFMLMod': 'true')
-	}
+	exclude "shadersmod/**"
 }

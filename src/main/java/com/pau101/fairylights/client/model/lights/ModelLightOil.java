@@ -1,6 +1,6 @@
 package com.pau101.fairylights.client.model.lights;
 
-public class ModelLightOil extends ModelLight {
+public final class ModelLightOil extends ModelLight {
 	public ModelLightOil() {
 		amutachromicParts.setTextureOffset(10, 6);
 		amutachromicParts.addBox(-1, -0.5F, -1, 2, 2, 2); // point
@@ -28,11 +28,6 @@ public class ModelLightOil extends ModelLight {
 
 		colorableParts.setTextureOffset(6, 0);
 		colorableParts.addBox(-1, -1.5F, -1, 2, 1, 2); // glass top
-	}
-
-	@Override
-	public boolean shouldParallelCord() {
-		return false;
 	}
 
 	@Override
