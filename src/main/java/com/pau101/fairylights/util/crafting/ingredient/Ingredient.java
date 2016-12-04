@@ -4,14 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResult;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
-import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResult;
 
 public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 	List<ItemStack> getInputs();

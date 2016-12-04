@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.item.ItemStack;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
-import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
+
+import net.minecraft.item.ItemStack;
 
 public abstract class IngredientAuxiliaryList<A> implements IngredientAuxiliary<A> {
 	private final List<? extends IngredientAuxiliary<?>> ingredients;

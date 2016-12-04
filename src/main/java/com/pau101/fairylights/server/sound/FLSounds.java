@@ -1,10 +1,10 @@
 package com.pau101.fairylights.server.sound;
 
+import com.pau101.fairylights.FairyLights;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-
-import com.pau101.fairylights.FairyLights;
 
 public final class FLSounds {
 	private FLSounds() {}

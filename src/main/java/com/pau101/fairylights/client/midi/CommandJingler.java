@@ -21,6 +21,17 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Transmitter;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
+
+import com.mojang.realmsclient.gui.ChatFormatting;
+import com.pau101.fairylights.client.ClientEventHandler;
+import com.pau101.fairylights.server.fastener.Fastener;
+import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
+import com.pau101.fairylights.server.fastener.connection.type.Connection;
+import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
+import com.pau101.fairylights.util.Utils;
+
 import joptsimple.internal.Strings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -35,17 +46,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
-
-import com.mojang.realmsclient.gui.ChatFormatting;
-import com.pau101.fairylights.client.ClientEventHandler;
-import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
-import com.pau101.fairylights.server.fastener.connection.type.Connection;
-import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
-import com.pau101.fairylights.util.Utils;
 
 public final class CommandJingler extends CommandBase {
 	private static final List<String> OPTIONS = Arrays.asList("open", "close", "list");
@@ -213,6 +213,7 @@ public final class CommandJingler extends CommandBase {
 		DEVICES.add(device);
 		if (shutdownCloser == null) {
 			Runtime.getRuntime().addShutdownHook(shutdownCloser = new Thread("MIDI Device Closer") {
+				@Override
 				public void run() {
 					DEVICES.forEach(MidiDevice::close);
 					DEVICES.clear();

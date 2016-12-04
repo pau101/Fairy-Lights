@@ -6,16 +6,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import com.google.common.base.Objects;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -34,6 +24,16 @@ import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.server.net.serverbound.MessageConnectionInteraction;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.NBTSerializable;
+
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public abstract class Connection implements NBTSerializable {
 	public static final int MAX_LENGTH = 32;

@@ -5,14 +5,14 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import com.pau101.fairylights.server.fastener.connection.Feature;
+import com.pau101.fairylights.server.fastener.connection.FeatureType;
+import com.pau101.fairylights.util.Mth;
+
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-
-import com.pau101.fairylights.server.fastener.connection.Feature;
-import com.pau101.fairylights.server.fastener.connection.FeatureType;
-import com.pau101.fairylights.util.Mth;
 
 public final class FeatureCollisionTree implements Collidable {
 	private final FeatureType type;

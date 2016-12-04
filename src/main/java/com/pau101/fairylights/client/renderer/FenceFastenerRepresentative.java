@@ -1,10 +1,10 @@
 package com.pau101.fairylights.client.renderer;
 
+import com.pau101.fairylights.FairyLights;
+
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-
-import com.pau101.fairylights.FairyLights;
 
 public final class FenceFastenerRepresentative extends TileEntity {
 	private FenceFastenerRepresentative() {}

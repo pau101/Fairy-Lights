@@ -16,6 +16,11 @@ import static net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
 import static net.minecraft.util.text.TextFormatting.RED;
 import static net.minecraft.util.text.TextFormatting.WHITE;
 import static net.minecraft.util.text.TextFormatting.YELLOW;
+
+import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
+import com.pau101.fairylights.util.Mth;
+import com.pau101.fairylights.util.styledstring.StyledString;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -23,10 +28,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.util.text.TextFormatting;
-
-import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
-import com.pau101.fairylights.util.Mth;
-import com.pau101.fairylights.util.styledstring.StyledString;
 
 public class GuiButtonPalette extends GuiButton {
 	private static final int TEX_U = 0;

@@ -1,10 +1,10 @@
 package com.pau101.fairylights.client.model.lights;
 
-import net.minecraft.util.math.MathHelper;
-
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
 import com.pau101.fairylights.util.Mth;
+
+import net.minecraft.util.math.MathHelper;
 
 public final class ModelLightGhost extends ModelLight {
 	private static final float FIN_ANGLE = -Mth.PI / 3;

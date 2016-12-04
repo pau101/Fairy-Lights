@@ -3,10 +3,10 @@ package com.pau101.fairylights.util.styledstring;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.text.TextFormatting;
-
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Shorts;
+
+import net.minecraft.util.text.TextFormatting;
 
 public final class StyledStringBuilder implements Appendable, CharSequence {
 	private final StringBuilder strBldr;

@@ -2,14 +2,14 @@ package com.pau101.fairylights.server.fastener.connection.type;
 
 import java.util.function.Function;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.pau101.fairylights.server.fastener.connection.PlayerAction;
 import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
 import com.pau101.fairylights.util.styledstring.StyledString;
 import com.pau101.fairylights.util.styledstring.StylingPresence;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
 
 public interface Lettered {
 	int MAX_TEXT_LENGTH = 64;

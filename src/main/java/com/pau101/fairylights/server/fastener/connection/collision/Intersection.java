@@ -1,10 +1,10 @@
 package com.pau101.fairylights.server.fastener.connection.collision;
 
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
-
 import com.pau101.fairylights.server.fastener.connection.Feature;
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
+
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
 
 public final class Intersection {
 	private final RayTraceResult result;

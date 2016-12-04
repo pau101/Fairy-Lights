@@ -1,12 +1,12 @@
 package com.pau101.fairylights.server.config;
 
+import com.pau101.fairylights.FairyLights;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import com.pau101.fairylights.FairyLights;
 
 public final class Configurator {
 	private Configurator() {}

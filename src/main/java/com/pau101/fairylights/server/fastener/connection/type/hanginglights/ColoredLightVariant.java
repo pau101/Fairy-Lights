@@ -1,10 +1,10 @@
 package com.pau101.fairylights.server.fastener.connection.type.hanginglights;
 
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.pau101.fairylights.server.item.LightVariant;
 import com.pau101.fairylights.util.NBTSerializable;
+
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.nbt.NBTTagCompound;
 
 public final class ColoredLightVariant implements NBTSerializable {
 	private LightVariant variant;

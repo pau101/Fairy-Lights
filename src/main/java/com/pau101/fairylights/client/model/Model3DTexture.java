@@ -1,11 +1,11 @@
 package com.pau101.fairylights.client.model;
 
+import com.pau101.fairylights.client.renderer.FastenerRenderer;
+
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.VertexBuffer;
-
-import com.pau101.fairylights.client.renderer.FastenerRenderer;
 
 public final class Model3DTexture extends ModelBox {
 	public int width;

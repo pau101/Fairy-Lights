@@ -3,9 +3,9 @@ package com.pau101.fairylights.util.styledstring;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.util.text.TextFormatting;
-
 import com.google.common.base.Preconditions;
+
+import net.minecraft.util.text.TextFormatting;
 
 public final class Style {
 	private final TextFormatting color;

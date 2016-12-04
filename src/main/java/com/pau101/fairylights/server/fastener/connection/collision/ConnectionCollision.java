@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.Vec3d;
-
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
+
+import net.minecraft.util.math.Vec3d;
 
 public final class ConnectionCollision implements Collidable {
 	private List<Collidable> collision = Collections.EMPTY_LIST;

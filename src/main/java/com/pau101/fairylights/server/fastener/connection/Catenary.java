@@ -1,11 +1,11 @@
 package com.pau101.fairylights.server.fastener.connection;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.util.CatenaryUtils;
 import com.pau101.fairylights.util.CubicBezier;
+
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 public final class Catenary {
 	private static final CubicBezier SLACK_CURVE = new CubicBezier(0.495F, 0.505F, 0.495F, 0.505F);
@@ -63,7 +63,7 @@ public final class Catenary {
 			vertexCount = MIN_VERTEX_COUNT;
 		}
 		float endX = MathHelper.sqrt_double(direction.xCoord * direction.xCoord + direction.zCoord * direction.zCoord);
-		float[][] result = CatenaryUtils.catenary(0, 0, endX, (float) direction.yCoord, (float) ropeLength, vertexCount);
+		float[][] result = CatenaryUtils.catenary(0, 0, endX, (float) direction.yCoord, ropeLength, vertexCount);
 		float[] xCoords = result[0];
 		float[] yCoords = result[1];
 		Segment[] segments = new Segment[xCoords.length - 1];

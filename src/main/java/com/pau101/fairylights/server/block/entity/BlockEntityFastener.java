@@ -1,5 +1,10 @@
 package com.pau101.fairylights.server.block.entity;
 
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.block.BlockFastener;
+import com.pau101.fairylights.server.capability.CapabilityHandler;
+import com.pau101.fairylights.server.fastener.Fastener;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -10,11 +15,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.server.block.BlockFastener;
-import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.fastener.Fastener;
 
 public final class BlockEntityFastener extends TileEntity implements ITickable {
 	@Override

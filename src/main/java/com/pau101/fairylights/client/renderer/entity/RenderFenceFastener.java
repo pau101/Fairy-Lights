@@ -1,5 +1,10 @@
 package com.pau101.fairylights.client.renderer.entity;
 
+import com.pau101.fairylights.client.renderer.FastenerRenderer;
+import com.pau101.fairylights.client.renderer.block.FastenerStateMapper;
+import com.pau101.fairylights.server.capability.CapabilityHandler;
+import com.pau101.fairylights.server.entity.EntityFenceFastener;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
@@ -7,11 +12,6 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
-
-import com.pau101.fairylights.client.renderer.FastenerRenderer;
-import com.pau101.fairylights.client.renderer.block.FastenerStateMapper;
-import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.entity.EntityFenceFastener;
 
 public final class RenderFenceFastener extends Render<EntityFenceFastener> {
 	public RenderFenceFastener(RenderManager mgr) {

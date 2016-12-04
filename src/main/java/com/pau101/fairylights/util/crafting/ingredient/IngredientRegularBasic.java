@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-
-import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
 
 public class IngredientRegularBasic implements IngredientRegular {
 	protected final ItemStack ingredient;

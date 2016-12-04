@@ -6,6 +6,10 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
+import com.pau101.fairylights.server.fastener.connection.ConnectionType;
+import com.pau101.fairylights.server.fastener.connection.type.Connection;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -13,10 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-
-import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
-import com.pau101.fairylights.server.fastener.connection.ConnectionType;
-import com.pau101.fairylights.server.fastener.connection.type.Connection;
 
 public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<NBTTagCompound> {
 	@Override

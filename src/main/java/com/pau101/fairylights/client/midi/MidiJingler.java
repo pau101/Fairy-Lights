@@ -4,11 +4,11 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 
-import net.minecraft.client.Minecraft;
-
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
+
+import net.minecraft.client.Minecraft;
 
 public final class MidiJingler implements Receiver {
 	private ConnectionHangingLights connection;

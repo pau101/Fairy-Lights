@@ -2,10 +2,6 @@ package com.pau101.fairylights.server.fastener.connection;
 
 import java.util.UUID;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.model.connection.ModelConnection;
 import com.pau101.fairylights.client.model.connection.ModelConnectionGarland;
@@ -21,6 +17,10 @@ import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Conn
 import com.pau101.fairylights.server.fastener.connection.type.letter.ConnectionLetterBunting;
 import com.pau101.fairylights.server.fastener.connection.type.pennant.ConnectionPennantBunting;
 import com.pau101.fairylights.server.item.ItemConnection;
+
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 public enum ConnectionType {
 	HANGING_LIGHTS {

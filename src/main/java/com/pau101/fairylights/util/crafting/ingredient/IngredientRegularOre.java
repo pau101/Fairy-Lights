@@ -3,9 +3,9 @@ package com.pau101.fairylights.util.crafting.ingredient;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.minecraftforge.oredict.OreDictionary;
-
 import com.google.common.base.Preconditions;
+
+import net.minecraftforge.oredict.OreDictionary;
 
 public class IngredientRegularOre extends IngredientRegularList {
 	private final String name;
