@@ -23,7 +23,7 @@ archivesBaseName = "fairylights"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-	version = "1.11-13.19.0.2149"
+	version = "1.11-13.19.0.2153"
 	runDir = "run"
 	mappings = "snapshot_20161111"
 	makeObfSourceJar = false

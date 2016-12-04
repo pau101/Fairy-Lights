@@ -41,6 +41,16 @@ public final class Mth {
 		return (rangeMax - rangeMin) * (x - domainMin) / (domainMax - domainMin) + rangeMin;
 	}
 
+	public static double transform(double x, double domainMin, double domainMax, double rangeMin, double rangeMax) {
+		if (x <= domainMin) {
+			return rangeMin;
+		}
+		if (x >= domainMax) {
+			return rangeMax;
+		}
+		return (rangeMax - rangeMin) * (x - domainMin) / (domainMax - domainMin) + rangeMin;
+	}
+
 	public static float[] toEulerYZX(float x, float y, float z, float angle) {
 		float s = MathHelper.sin(angle);
 		float c = MathHelper.cos(angle);

@@ -58,6 +58,8 @@ public final class FairyLights {
 
 	public static Item pennant;
 
+	public static Item ladder;
+
 	public static CreativeTabs fairyLightsTab;
 
 	public static CalendarEvent christmas;

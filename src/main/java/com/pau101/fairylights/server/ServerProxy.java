@@ -4,6 +4,36 @@ import java.time.Month;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.CaseFormat;
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.block.BlockFastener;
+import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
+import com.pau101.fairylights.server.capability.CapabilityHandler;
+import com.pau101.fairylights.server.config.Configurator;
+import com.pau101.fairylights.server.creativetabs.CreativeTabsFairyLights;
+import com.pau101.fairylights.server.entity.EntityFenceFastener;
+import com.pau101.fairylights.server.entity.EntityLadder;
+import com.pau101.fairylights.server.item.ItemConnectionGarland;
+import com.pau101.fairylights.server.item.ItemConnectionHangingLights;
+import com.pau101.fairylights.server.item.ItemConnectionLetterBunting;
+import com.pau101.fairylights.server.item.ItemConnectionPennantBunting;
+import com.pau101.fairylights.server.item.ItemConnectionTinsel;
+import com.pau101.fairylights.server.item.ItemLadder;
+import com.pau101.fairylights.server.item.ItemLight;
+import com.pau101.fairylights.server.item.ItemPennant;
+import com.pau101.fairylights.server.item.LightVariant;
+import com.pau101.fairylights.server.item.crafting.Recipes;
+import com.pau101.fairylights.server.jingle.JingleLibrary;
+import com.pau101.fairylights.server.net.FLMessage;
+import com.pau101.fairylights.server.net.clientbound.MessageJingle;
+import com.pau101.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
+import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
+import com.pau101.fairylights.server.net.serverbound.MessageConnectionInteraction;
+import com.pau101.fairylights.server.net.serverbound.MessageEditLetteredConnection;
+import com.pau101.fairylights.server.sound.FLSounds;
+import com.pau101.fairylights.util.CalendarEvent;
+import com.pau101.fairylights.util.crafting.GenericRecipe;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,36 +63,10 @@ import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import com.google.common.base.CaseFormat;
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.server.block.BlockFastener;
-import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
-import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.config.Configurator;
-import com.pau101.fairylights.server.creativetabs.CreativeTabsFairyLights;
-import com.pau101.fairylights.server.entity.EntityFenceFastener;
-import com.pau101.fairylights.server.item.ItemConnectionGarland;
-import com.pau101.fairylights.server.item.ItemConnectionHangingLights;
-import com.pau101.fairylights.server.item.ItemConnectionLetterBunting;
-import com.pau101.fairylights.server.item.ItemConnectionPennantBunting;
-import com.pau101.fairylights.server.item.ItemConnectionTinsel;
-import com.pau101.fairylights.server.item.ItemLight;
-import com.pau101.fairylights.server.item.ItemPennant;
-import com.pau101.fairylights.server.item.LightVariant;
-import com.pau101.fairylights.server.item.crafting.Recipes;
-import com.pau101.fairylights.server.jingle.JingleLibrary;
-import com.pau101.fairylights.server.net.FLMessage;
-import com.pau101.fairylights.server.net.clientbound.MessageJingle;
-import com.pau101.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
-import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
-import com.pau101.fairylights.server.net.serverbound.MessageConnectionInteraction;
-import com.pau101.fairylights.server.net.serverbound.MessageEditLetteredConnection;
-import com.pau101.fairylights.server.sound.FLSounds;
-import com.pau101.fairylights.util.CalendarEvent;
-import com.pau101.fairylights.util.crafting.GenericRecipe;
-
 public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	private int nextMessageId;
+
+	private int nextEntityId;
 
 	public void initConfig(FMLPreInitializationEvent event ) {
 		Configurator.initConfig(event);
@@ -81,13 +85,14 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	}
 
 	public void initItems() {
-		FairyLights.light = registerItem(new ItemLight(), "light");
-		FairyLights.hangingLights = registerItem(new ItemConnectionHangingLights(), "hanging_lights");
-		FairyLights.garland = registerItem(new ItemConnectionGarland(), "garland");
-		FairyLights.tinsel = registerItem(new ItemConnectionTinsel(), "tinsel");
-		FairyLights.pennantBunting = registerItem(new ItemConnectionPennantBunting(), "pennant_bunting");
-		FairyLights.letterBunting = registerItem(new ItemConnectionLetterBunting(), "letter_bunting");
-		FairyLights.pennant = registerItem(new ItemPennant(), "pennant");
+		FairyLights.light = register(new ItemLight(), "light");
+		FairyLights.hangingLights = register(new ItemConnectionHangingLights(), "hanging_lights");
+		FairyLights.garland = register(new ItemConnectionGarland(), "garland");
+		FairyLights.tinsel = register(new ItemConnectionTinsel(), "tinsel");
+		FairyLights.pennantBunting = register(new ItemConnectionPennantBunting(), "pennant_bunting");
+		FairyLights.letterBunting = register(new ItemConnectionLetterBunting(), "letter_bunting");
+		FairyLights.pennant = register(new ItemPennant(), "pennant");
+		FairyLights.ladder = register(new ItemLadder(), "ladder");
 	}
 
 	public void initCrafting() {
@@ -102,6 +107,7 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 		GameRegistry.addRecipe(Recipes.PENNANT_BUNTING_AUGMENTATION);
 		GameRegistry.addRecipe(Recipes.PENNANT);
 		GameRegistry.addRecipe(Recipes.LETTER_BUNTING);
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(FairyLights.ladder), "#/", "#/", "#/", '#', Blocks.LADDER, '/', "stickWood"));
 		RecipeSorter.register(FairyLights.ID + ":generic", GenericRecipe.class, Category.SHAPED, "after:minecraft:shaped");
 	}
 
@@ -119,7 +125,8 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 
 	public void initEntities() {
 		GameRegistry.registerTileEntity(BlockEntityFastener.class, FairyLights.ID + ":fastener");
-		EntityRegistry.registerModEntity(new ResourceLocation(FairyLights.ID, "fastener"), EntityFenceFastener.class, "fastener", 0, FairyLights.instance, 160, Integer.MAX_VALUE, false);
+		registerEntity(EntityFenceFastener.class, "fastener", 160, Integer.MAX_VALUE, false);
+		registerEntity(EntityLadder.class, "ladder", 160, 3, true);
 	}
 
 	public void initHandlers() {
@@ -181,14 +188,17 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 		return (B) block.setUnlocalizedName(toUnlocalizedName(name));
 	}
 
-	private <T extends Item> T registerItem(T item, String name) {
+	private <T extends Item> T register(T item, String name) {
 		item.setRegistryName(name);
 		GameRegistry.register(item);
 		return (T) item.setUnlocalizedName(toUnlocalizedName(name));
 	}
 
+	private void registerEntity(Class<? extends Entity> clazz, String id, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates) {
+		EntityRegistry.registerModEntity(new ResourceLocation(FairyLights.ID, id), clazz, id, nextEntityId++, FairyLights.instance, trackingRange, updateFrequency, sendsVelocityUpdates);
+	}
+
 	private String toUnlocalizedName(String name) {
 		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, name);
 	}
-
 }
