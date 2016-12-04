@@ -5,13 +5,13 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import com.google.common.collect.Sets;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.server.jingle.Jingle.PlayTick;
+
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public final class JinglePlayer {
 	private static final int NOT_PLAYING = -2;
@@ -52,7 +52,7 @@ public final class JinglePlayer {
 		isPlaying = true;
 		currentTickIndex = 0;
 		rest = 0;
-		noteParticle = WITH_LOVE.contains(jingle.getId()) ? EnumParticleTypes.HEART : EnumParticleTypes.NOTE;
+		noteParticle = "playing_with_fire".equals(jingle.getId()) ? EnumParticleTypes.LAVA : WITH_LOVE.contains(jingle.getId()) ? EnumParticleTypes.HEART : EnumParticleTypes.NOTE;
 	}
 
 	private void stop() {
