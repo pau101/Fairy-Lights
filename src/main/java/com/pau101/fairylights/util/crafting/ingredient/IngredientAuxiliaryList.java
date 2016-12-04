@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
+import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
 
 public abstract class IngredientAuxiliaryList<A> implements IngredientAuxiliary<A> {
 	private final List<? extends IngredientAuxiliary<?>> ingredients;
@@ -38,21 +39,19 @@ public abstract class IngredientAuxiliaryList<A> implements IngredientAuxiliary<
 	@Override
 	public final MatchResultAuxiliary matches(ItemStack input, ItemStack output) {
 		MatchResultAuxiliary matchResult = null;
+		List<MatchResultAuxiliary> supplementaryResults = new ArrayList<>(ingredients.size());
 		for (IngredientAuxiliary<?> ingredient : ingredients) {
 			MatchResultAuxiliary result = ingredient.matches(input, output);
-			if (result.doesMatch()) {
-				if (matchResult == null) {
-					matchResult = result;
-				}
+			if (result.doesMatch() && matchResult == null) {
+				matchResult = result;
+			} else {
+				supplementaryResults.add(result);
 			}
 		}
 		if (matchResult == null) {
-			if (output != null) {
-				absent(output);
-			}
-			return new MatchResultAuxiliary(this, input, false);
+			return new MatchResultAuxiliary(this, input, false, supplementaryResults);
 		}
-		return matchResult.withParent(new MatchResultAuxiliary(this, input, true));
+		return matchResult.withParent(new MatchResultAuxiliary(this, input, true, supplementaryResults));
 	}
 
 	@Override

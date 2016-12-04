@@ -1,5 +1,6 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,11 +33,7 @@ public class IngredientRegularBasic implements IngredientRegular {
 
 	@Override
 	public final MatchResultRegular matches(ItemStack input, ItemStack output) {
-		MatchResultRegular result = new MatchResultRegular(this, input, OreDictionary.itemMatches(ingredient, input, false));
-		if (!result.doesMatch() && output != null) {
-			absent(output);
-		}
-		return result;
+		return new MatchResultRegular(this, input, OreDictionary.itemMatches(ingredient, input, false), Collections.EMPTY_LIST);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 		return false;
 	}
 
-	M matches(ItemStack input, @Nullable ItemStack output);
+	M matches(ItemStack input, ItemStack output);
 
 	default void present(ItemStack output) {}
 
@@ -35,7 +35,7 @@ public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 		}
 		Iterator<ItemStack> iter = subtypes.iterator();
 		while (iter.hasNext()) {
-			if (!matches(iter.next(), null).doesMatch()) {
+			if (!matches(iter.next(), ItemStack.field_190927_a).doesMatch()) {
 				iter.remove();
 			}
 		}
