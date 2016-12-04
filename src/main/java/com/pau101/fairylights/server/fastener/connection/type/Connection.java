@@ -144,7 +144,7 @@ public abstract class Connection implements NBTSerializable {
 	}
 
 	public ItemStack getItemStack() {
-		ItemStack stack = new ItemStack(getType().getItem(), 1);
+		ItemStack stack = new ItemStack(getType().getItem());
 		NBTTagCompound tagCompound = serializeLogic();
 		if (!tagCompound.hasNoTags()) {
 			stack.setTagCompound(tagCompound);

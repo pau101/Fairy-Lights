@@ -72,7 +72,7 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 	}
 
 	public boolean matchesStack(ItemStack stack) {
-		if (stack == null || !(stack.getItem() instanceof ItemConnection)) {
+		if (!(stack.getItem() instanceof ItemConnection)) {
 			return false;
 		}
 		if (!((ItemConnection) stack.getItem()).getConnectionType().isConnectionThis(getFirstConnection())) {
