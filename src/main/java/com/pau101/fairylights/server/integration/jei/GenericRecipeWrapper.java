@@ -67,10 +67,10 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		if (subtypeIndex == -1) {
 			for (int i = 0; i < inputStacks.size(); i++) {
 				List<ItemStack> stacks = inputStacks.get(i);
-				crafting.setInventorySlotContents(i, stacks.isEmpty() ? null : stacks.get(0));
+				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
 			}
 			if (recipe.matches(crafting, null)) {
-				outputConsumer.accept(null, recipe.getCraftingResult(crafting));
+				outputConsumer.accept(ItemStack.field_190927_a, recipe.getCraftingResult(crafting));
 			}
 		} else {
 			List<ItemStack> dictators = inputStacks.get(subtypeIndex);
@@ -81,7 +81,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 						crafting.setInventorySlotContents(i, subtype);
 					} else {
 						List<ItemStack> stacks = inputStacks.get(i);
-						crafting.setInventorySlotContents(i, stacks.isEmpty() ? null : stacks.get(0));
+						crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
 					}
 				}
 				if (recipe.matches(crafting, null)) {
@@ -117,6 +117,28 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		List<List<ItemStack>> inputs = new ArrayList<>(this.inputs);
 		inputs.set(subtypeIndex, variants);
 		return inputs;
+	}
+
+	public List<ItemStack> getOutput(List<List<ItemStack>> inputs) {
+		InventoryCrafting crafting = new InventoryCrafting(new Container() {
+			@Override
+			public boolean canInteractWith(EntityPlayer player) {
+				return false;
+			}
+
+			@Override
+			public void onCraftMatrixChanged(IInventory inventory) {}
+		}, getWidth(), getHeight());
+		for (int i = 0; i < inputs.size(); i++) {
+			List<ItemStack> stacks = inputs.get(i);
+			crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
+		}
+		if (recipe.matches(crafting, null)) {
+			return Collections.singletonList(recipe.getCraftingResult(crafting));
+		} else {
+			System.out.println("wot?");
+		}
+		return outputs;
 	}
 
 	@Override

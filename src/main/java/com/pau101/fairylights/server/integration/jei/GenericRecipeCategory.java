@@ -75,6 +75,6 @@ public final class GenericRecipeCategory extends BlankRecipeCategory<GenericReci
 			inputs = ingredients.getInputs(ItemStack.class);
 		}
 		craftingGridHelper.setInputStacks(isg, inputs, wrapper.getWidth(), wrapper.getHeight());
-		craftingGridHelper.setOutput(isg, ingredients.getOutputs(ItemStack.class).get(0));
+		craftingGridHelper.setOutput(isg, wrapper.getOutput(inputs));
 	}
 }
