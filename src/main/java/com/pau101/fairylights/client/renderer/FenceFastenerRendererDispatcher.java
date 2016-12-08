@@ -2,9 +2,9 @@ package com.pau101.fairylights.client.renderer;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
+import com.pau101.fairylights.util.WeakIdentityHashMap;
 import com.pau101.fairylights.util.WorldEventListener;
 
 import net.minecraft.client.Minecraft;
@@ -20,10 +20,10 @@ public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRend
 
 	public static final FenceFastenerRendererDispatcher INSTANCE = new FenceFastenerRendererDispatcher();
 
-	private Set<EntityFenceFastener> fences = Collections.EMPTY_SET;
+	private Set<EntityFenceFastener> fences = newSet();
 
 	public FenceFastenerRendererDispatcher init(World world) {
-		fences = Collections.newSetFromMap(new WeakHashMap<>());
+		fences = newSet();
 		return this;
 	}
 
@@ -52,9 +52,13 @@ public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRend
 		ICamera camera = new Frustum();
 		camera.setPosition(x, y, z);
 		for (EntityFenceFastener fence : fences) {
-			if (fence.isInRangeToRender3d(x, y, z) && (camera.isBoundingBoxInFrustum(fence.getRenderBoundingBox()))) {
+			if (fence.isInRangeToRender3d(x, y, z) && camera.isBoundingBoxInFrustum(fence.getRenderBoundingBox())) {
 				renderMgr.renderEntityStatic(fence, delta, false);
 			}
 		}
+	}
+
+	private static Set<EntityFenceFastener> newSet() {
+		return Collections.newSetFromMap(new WeakIdentityHashMap<>());
 	}
 }
