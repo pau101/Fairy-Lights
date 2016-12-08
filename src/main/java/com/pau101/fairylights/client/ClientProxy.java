@@ -13,9 +13,11 @@ import com.pau101.fairylights.client.renderer.FenceFastenerRepresentative;
 import com.pau101.fairylights.client.renderer.block.FastenerStateMapper;
 import com.pau101.fairylights.client.renderer.block.entity.BlockEntityFastenerRenderer;
 import com.pau101.fairylights.client.renderer.entity.RenderFenceFastener;
+import com.pau101.fairylights.client.renderer.entity.RenderLadder;
 import com.pau101.fairylights.server.ServerProxy;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
+import com.pau101.fairylights.server.entity.EntityLadder;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.item.LightVariant;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
@@ -57,6 +59,7 @@ public final class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(BlockEntityFastener.class, new BlockEntityFastenerRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(FenceFastenerRepresentative.class, FenceFastenerRendererDispatcher.INSTANCE);
 		RenderingRegistry.registerEntityRenderingHandler(EntityFenceFastener.class, RenderFenceFastener::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityLadder.class, RenderLadder::new);
 		LightVariant[] lightVariants = LightVariant.values();
 		for (int var = 0; var < lightVariants.length; var++) {
 			LightVariant variant = lightVariants[var];
@@ -73,6 +76,7 @@ public final class ClientProxy extends ServerProxy {
 		for (int meta = 0; meta < ItemLight.COLOR_COUNT; meta++) {
 			setModel(FairyLights.pennant, meta, "pennant");
 		}
+		setModel(FairyLights.ladder, "ladder");
 		ModelLoader.setCustomStateMapper(FairyLights.fastener, new FastenerStateMapper());
 	}
 

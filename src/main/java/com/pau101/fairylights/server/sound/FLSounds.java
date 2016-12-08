@@ -21,6 +21,14 @@ public final class FLSounds {
 
 	public static final SoundEvent FEATURE_COLOR_CHANGE = create("feature.color_change");
 
+	public static final SoundEvent LADDER_BREAK = create("entity.ladder.break");
+
+	public static final SoundEvent LADDER_FALL = create("entity.ladder.fall");
+
+	public static final SoundEvent LADDER_HIT = create("entity.ladder.hit");
+
+	public static final SoundEvent LADDER_PLACE = create("entity.ladder.place");
+
 	public static void init() {}
 
 	private static final SoundEvent create(String name) {

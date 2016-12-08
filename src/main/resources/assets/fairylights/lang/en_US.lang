@@ -36,7 +36,10 @@ item.light.snowflake.name=Snowflake Light
 item.light.icicle.name=Icicle Lights
 item.light.meteor.name=Meteor Light
 
-entity.fairylights.Fastener.name=Fastener
+item.ladder.name=Step-ladder
+
+entity.fairylights.fastener.name=Fastener
+entity.fairylights.ladder.name=Ladder
 
 gui.editLetteredConnection.name=Set Bunting Text
 

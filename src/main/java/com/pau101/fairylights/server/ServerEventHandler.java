@@ -16,6 +16,7 @@ import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.config.Configurator;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
+import com.pau101.fairylights.server.entity.EntityLadder;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerBlock;
 import com.pau101.fairylights.server.fastener.FastenerFence;
@@ -57,6 +58,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
@@ -69,6 +71,24 @@ public final class ServerEventHandler {
 
 	// Every 5 minutes on average a jingle will attempt to play
 	private float jingleProbability = 1F / (5 * 60 * 20);
+
+	@SubscribeEvent
+	public void onGetCollisionBoxes(GetCollisionBoxesEvent event) {
+		AxisAlignedBB bounds = event.getAabb();
+		List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.expandXyz(1));
+		List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
+		for (EntityLadder ladder : ladders) {
+			if (event.getEntity() == ladder) {
+				continue;
+			}
+			List<AxisAlignedBB> surfaces = ladder.getCollisionSurfaces();
+			for (AxisAlignedBB surface : surfaces) {
+				if (surface.intersectsWith(bounds)) {
+					boxes.add(surface);	
+				}
+			}
+		}
+	}
 
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event) {
