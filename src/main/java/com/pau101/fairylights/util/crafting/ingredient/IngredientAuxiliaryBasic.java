@@ -1,5 +1,6 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,12 +39,8 @@ public abstract class IngredientAuxiliaryBasic<A> implements IngredientAuxiliary
 	}
 
 	@Override
-	public final MatchResultAuxiliary matches(ItemStack input, ItemStack output) {
-		MatchResultAuxiliary result = new MatchResultAuxiliary(this, input, OreDictionary.itemMatches(ingredient, input, false));
-		if (!result.doesMatch() && output != null) {
-			absent(output);
-		}
-		return result;
+	public final MatchResultAuxiliary matches(ItemStack input, ItemStack output) { 
+		return new MatchResultAuxiliary(this, input, OreDictionary.itemMatches(ingredient, input, false), Collections.EMPTY_LIST);
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package com.pau101.fairylights.util.crafting;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -9,14 +11,8 @@ import java.util.function.IntUnaryOperator;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.math.IntMath;
@@ -24,6 +20,13 @@ import com.pau101.fairylights.util.crafting.ingredient.Ingredient;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularEmpty;
+
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public final class GenericRecipe implements IRecipe {
 	public static final IngredientRegularEmpty EMPTY = new IngredientRegularEmpty();
@@ -115,11 +118,13 @@ public final class GenericRecipe implements IRecipe {
 		}
 	}
 
+	@Nullable
 	private ItemStack getResult(InventoryCrafting inventory, ItemStack output, int originX, int originY, IntUnaryOperator funcX) {
 		MatchResultRegular[] match = new MatchResultRegular[ingredients.length];
-		Multimap<IngredientAuxiliary<?>, MatchResultAuxiliary> auxResults = LinkedListMultimap.create();
+		Multimap<IngredientAuxiliary<?>, MatchResultAuxiliary> auxMatchResults = LinkedListMultimap.create();
 		Map<IngredientAuxiliary<?>, Integer> auxMatchTotals = new HashMap<>();
 		Set<Ingredient<?, ?>> presentCalled = new HashSet<>();
+		List<MatchResultAuxiliary> auxResults = new ArrayList<>();
 		for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight(), auxCount = auxiliaryIngredients.length; i < size; i++) {
 			int x = i % w, y = i / w;
 			int ingX = x - originX;
@@ -145,16 +150,24 @@ public final class GenericRecipe implements IRecipe {
 						result.forMatch(presentCalled, output);
 						auxMatchTotals.merge(result.ingredient, 1, IntMath::checkedAdd);
 						nonAuxiliary = false;
-						result.propagate(auxResults);
+						result.propagate(auxMatchResults);
 					}
+					auxResults.add(result);
 				}
 				if (nonAuxiliary) {
 					return null;
 				}
 			}
 		}
+		Set<Ingredient<?, ?>> absentCalled = new HashSet<>();
+		for (MatchResultRegular result : match) {
+			result.notifyAbsence(presentCalled, absentCalled, output);
+		}
+		for (MatchResultAuxiliary result : auxResults) {
+			result.notifyAbsence(presentCalled, absentCalled, output);
+		}
 		for (IngredientAuxiliary<?> ingredient : auxiliaryIngredients) {
-			if (ingredient.process(auxResults, output)) {
+			if (ingredient.process(auxMatchResults, output)) {
 				return null;
 			}
 		}
@@ -199,6 +212,8 @@ public final class GenericRecipe implements IRecipe {
 
 		void forMatch(Set<Ingredient<?, ?>> called, ItemStack output);
 
+		void notifyAbsence(Set<Ingredient<?, ?>> presentCalled, Set<Ingredient<?, ?>> absentCalled, ItemStack output);
+
 		M withParent(M parent);
 	}
 
@@ -210,10 +225,13 @@ public final class GenericRecipe implements IRecipe {
 
 		protected final boolean doesMatch;
 
-		public MatchResultRegular(IngredientRegular ingredient, @Nullable ItemStack input, boolean doesMatch) {
+		protected final ImmutableList<MatchResultRegular> supplementaryResults;
+
+		public MatchResultRegular(IngredientRegular ingredient, @Nullable ItemStack input, boolean doesMatch, List<MatchResultRegular> supplementaryResults) {
 			this.ingredient = Objects.requireNonNull(ingredient, "ingredient");
 			this.input = input;
 			this.doesMatch = doesMatch;
+			this.supplementaryResults = ImmutableList.copyOf(supplementaryResults);
 		}
 
 		@Override
@@ -241,16 +259,27 @@ public final class GenericRecipe implements IRecipe {
 		}
 
 		@Override
+		public void notifyAbsence(Set<Ingredient<?, ?>> presentCalled, Set<Ingredient<?, ?>> absentCalled, ItemStack output) {
+			if (!presentCalled.contains(ingredient) && !absentCalled.contains(ingredient)) {
+				ingredient.absent(output);
+				absentCalled.add(ingredient);
+			}
+			for (MatchResultRegular result : supplementaryResults) {
+				result.notifyAbsence(presentCalled, absentCalled, output);
+			}
+		}
+
+		@Override
 		public MatchResultRegular withParent(MatchResultRegular parent) {
-			return new MatchResultParentedRegular(ingredient, input, doesMatch, parent);
+			return new MatchResultParentedRegular(ingredient, input, doesMatch, supplementaryResults, parent);
 		}
 	}
 
 	public static class MatchResultParentedRegular extends MatchResultRegular {
 		protected final MatchResultRegular parent;
 
-		public MatchResultParentedRegular(IngredientRegular ingredient, ItemStack input, boolean doesMatch, MatchResultRegular parent) {
-			super(ingredient, input, doesMatch);
+		public MatchResultParentedRegular(IngredientRegular ingredient, @Nullable ItemStack input, boolean doesMatch, List<MatchResultRegular> supplementaryResults, MatchResultRegular parent) {
+			super(ingredient, input, doesMatch, supplementaryResults);
 			this.parent = Objects.requireNonNull(parent, "parent");
 		}
 
@@ -261,8 +290,14 @@ public final class GenericRecipe implements IRecipe {
 		}
 
 		@Override
+		public void notifyAbsence(Set<Ingredient<?, ?>> presentCalled, Set<Ingredient<?, ?>> absentCalled, ItemStack output) {
+			super.notifyAbsence(presentCalled, absentCalled, output);
+			parent.notifyAbsence(presentCalled, absentCalled, output);
+		}
+
+		@Override
 		public MatchResultRegular withParent(MatchResultRegular parent) {
-			return this.parent.withParent(new MatchResultParentedRegular(getIngredient(), getInput(), doesMatch(), parent));
+			return this.parent.withParent(new MatchResultParentedRegular(ingredient, input, doesMatch, supplementaryResults, parent));
 		}
 	}
 
@@ -274,10 +309,13 @@ public final class GenericRecipe implements IRecipe {
 
 		protected final boolean doesMatch;
 
-		public MatchResultAuxiliary(IngredientAuxiliary ingredient, @Nullable ItemStack input, boolean doesMatch) {
+		protected final ImmutableList<MatchResultAuxiliary> supplementaryResults;
+
+		public MatchResultAuxiliary(IngredientAuxiliary ingredient, @Nullable ItemStack input, boolean doesMatch, List<MatchResultAuxiliary> supplementaryResults) {
 			this.ingredient = Objects.requireNonNull(ingredient, "ingredient");
 			this.input = input;
 			this.doesMatch = doesMatch;
+			this.supplementaryResults = ImmutableList.copyOf(supplementaryResults);
 		}
 
 		@Override
@@ -304,8 +342,19 @@ public final class GenericRecipe implements IRecipe {
 		}
 
 		@Override
+		public void notifyAbsence(Set<Ingredient<?, ?>> presentCalled, Set<Ingredient<?, ?>> absentCalled, ItemStack output) {
+			if (!presentCalled.contains(ingredient) && !absentCalled.contains(ingredient)) {
+				ingredient.absent(output);
+				absentCalled.add(ingredient);
+			}
+			for (MatchResultAuxiliary result : supplementaryResults) {
+				result.notifyAbsence(presentCalled, absentCalled, output);
+			}
+		}
+
+		@Override
 		public MatchResultAuxiliary withParent(MatchResultAuxiliary parent) {
-			return new MatchResultParentedAuxiliary(ingredient, input, doesMatch, parent);
+			return new MatchResultParentedAuxiliary(ingredient, input, doesMatch, supplementaryResults, parent);
 		}
 
 		public boolean isAtLimit(int count) {
@@ -320,8 +369,8 @@ public final class GenericRecipe implements IRecipe {
 	public static class MatchResultParentedAuxiliary extends MatchResultAuxiliary {
 		protected final MatchResultAuxiliary parent;
 
-		public MatchResultParentedAuxiliary(IngredientAuxiliary ingredient, ItemStack input, boolean doesMatch, MatchResultAuxiliary parent) {
-			super(ingredient, input, doesMatch);
+		public MatchResultParentedAuxiliary(IngredientAuxiliary ingredient, @Nullable ItemStack input, boolean doesMatch, List<MatchResultAuxiliary> supplementaryResults, MatchResultAuxiliary parent) {
+			super(ingredient, input, doesMatch, supplementaryResults);
 			this.parent = Objects.requireNonNull(parent, "parent");
 		}
 
@@ -332,8 +381,14 @@ public final class GenericRecipe implements IRecipe {
 		}
 
 		@Override
+		public void notifyAbsence(Set<Ingredient<?, ?>> presentCalled, Set<Ingredient<?, ?>> absentCalled, ItemStack output) {
+			super.notifyAbsence(presentCalled, absentCalled, output);
+			parent.notifyAbsence(presentCalled, absentCalled, output);
+		}
+
+		@Override
 		public MatchResultAuxiliary withParent(MatchResultAuxiliary parent) {
-			return this.parent.withParent(new MatchResultParentedAuxiliary(getIngredient(), getInput(), doesMatch(), parent));
+			return this.parent.withParent(new MatchResultParentedAuxiliary(ingredient, input, doesMatch, supplementaryResults, parent));
 		}
 
 		@Override

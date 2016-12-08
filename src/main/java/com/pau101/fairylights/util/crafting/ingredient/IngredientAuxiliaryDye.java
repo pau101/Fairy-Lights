@@ -1,11 +1,12 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
+import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.item.ItemStack;
 
 import com.pau101.fairylights.util.DyeOreDictUtils;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
+
+import net.minecraft.item.ItemStack;
 
 public abstract class IngredientAuxiliaryDye<A> implements IngredientAuxiliary<A> {
 	private final boolean isRequired;
@@ -29,11 +30,7 @@ public abstract class IngredientAuxiliaryDye<A> implements IngredientAuxiliary<A
 
 	@Override
 	public MatchResultAuxiliary matches(ItemStack input, ItemStack output) {
-		MatchResultAuxiliary result = new MatchResultAuxiliary(this, input, DyeOreDictUtils.isDye(input));
-		if (!result.doesMatch() && output != null) {
-			absent(output);
-		}
-		return result;
+		return new MatchResultAuxiliary(this, input, DyeOreDictUtils.isDye(input), Collections.EMPTY_LIST);
 	}
 
 	@Override

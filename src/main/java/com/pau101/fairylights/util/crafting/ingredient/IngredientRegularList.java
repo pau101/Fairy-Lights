@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.item.ItemStack;
-
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
+
+import net.minecraft.item.ItemStack;
 
 public class IngredientRegularList implements IngredientRegular {
 	private final List<IngredientRegular> ingredients;
@@ -23,21 +23,19 @@ public class IngredientRegularList implements IngredientRegular {
 	@Override
 	public final MatchResultRegular matches(ItemStack input, ItemStack output) {
 		MatchResultRegular matchResult = null;
+		List<MatchResultRegular> supplementaryResults = new ArrayList<>(ingredients.size());
 		for (IngredientRegular ingredient : ingredients) {
 			MatchResultRegular result = ingredient.matches(input, output);
-			if (result.doesMatch()) {
-				if (matchResult == null) {
-					matchResult = result;
-				}
+			if (result.doesMatch() && matchResult == null) {
+				matchResult = result;
+			} else {
+				supplementaryResults.add(result);
 			}
 		}
 		if (matchResult == null) {
-			if (output != null) {
-				absent(output);
-			}
-			return new MatchResultRegular(this, input, false);
+			return new MatchResultRegular(this, input, false, supplementaryResults);
 		}
-		return matchResult.withParent(new MatchResultRegular(this, input, true));
+		return matchResult.withParent(new MatchResultRegular(this, input, true, supplementaryResults));
 	}
 
 	@Override
