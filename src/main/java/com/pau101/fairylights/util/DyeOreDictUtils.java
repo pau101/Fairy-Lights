@@ -20,8 +20,8 @@ public final class DyeOreDictUtils {
 	@Nullable
 	private static List<ItemStack> allDyeItemStacks;
 
-	public static boolean isDye(@Nullable ItemStack stack) {
-		if (stack != null) {
+	public static boolean isDye(ItemStack stack) {
+		if (!stack.func_190926_b()) {
 			if (stack.getItem() == Items.DYE) {
 				return true;
 			}
@@ -35,8 +35,8 @@ public final class DyeOreDictUtils {
 		return false;
 	}
 
-	public static int getDyeMetadata(@Nullable ItemStack stack) {
-		if (stack != null) {
+	public static int getDyeMetadata(ItemStack stack) {
+		if (!stack.func_190926_b()) {
 			if (stack.getItem() == Items.DYE) {
 				return stack.getMetadata();
 			}

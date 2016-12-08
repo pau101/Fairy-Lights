@@ -7,6 +7,7 @@ import java.util.List;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.Mth;
+import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.matrix.Matrix;
 
 import io.netty.buffer.ByteBuf;
@@ -115,6 +116,11 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 		final float thm = 4F / 16;
 		bounds.add(new AxisAlignedBB(posX - thm, posY + tym - bvm, posZ - thm, posX + thm, posY + tym + bvm, posZ + thm));
 		return bounds;
+	}
+
+	@Override
+	public String getName() {
+		return Utils.getEntityName(this);
 	}
 
 	@Override

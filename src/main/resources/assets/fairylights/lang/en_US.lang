@@ -39,7 +39,7 @@ item.light.meteor.name=Meteor Light
 item.ladder.name=Step-ladder
 
 entity.fairylights.fastener.name=Fastener
-entity.fairylights.ladder.name=Ladder
+entity.fairylights.ladder.name=Step-ladder
 
 gui.editLetteredConnection.name=Set Bunting Text
 

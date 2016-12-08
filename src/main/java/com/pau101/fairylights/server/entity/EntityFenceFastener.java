@@ -11,6 +11,7 @@ import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
+import com.pau101.fairylights.util.Utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -114,6 +115,11 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
+	public String getName() {
+		return Utils.getEntityName(this);
+	}
+
+	@Override
 	public void onBroken(@Nullable Entity breaker) {
 		getFastener().dropItems(worldObj, hangingPosition);
 		if (breaker != null) {
@@ -171,7 +177,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	@Override
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (stack != null && stack.getItem() instanceof ItemConnection) {
+		if (stack.getItem() instanceof ItemConnection) {
 			if (worldObj.isRemote) {
 				player.swingArm(hand);
 			} else {

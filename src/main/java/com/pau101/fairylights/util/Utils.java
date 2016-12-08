@@ -6,6 +6,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import com.pau101.fairylights.FairyLights;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
@@ -50,5 +54,16 @@ public final class Utils {
 
 	public static String formatColored(EnumDyeColor color, String name) {
 		return I18n.translateToLocalFormatted("format.colored", I18n.translateToLocal("color." + color.getUnlocalizedName() + ".name"), name);
+	}
+
+	public static String getEntityName(Entity e) {
+		if (e.hasCustomName()) {
+			return e.getCustomNameTag();
+		}
+		String s = EntityList.getEntityString(e);
+		if (s == null) {
+			s = "generic";
+		}
+		return I18n.translateToLocal("entity." + FairyLights.ID + "." + s + ".name");
 	}
 }
