@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorFence;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorPlayer;
+
+import net.minecraft.nbt.NBTTagCompound;
 
 public enum FastenerType {
 	BLOCK(FastenerAccessorBlock::new),

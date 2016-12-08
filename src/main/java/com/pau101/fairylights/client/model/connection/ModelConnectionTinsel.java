@@ -1,13 +1,13 @@
 package com.pau101.fairylights.client.model.connection;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.server.fastener.connection.type.garland.ConnectionGarlandTinsel;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.RandomArray;
+
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 public final class ModelConnectionTinsel extends ModelConnection<ConnectionGarlandTinsel> {
 	private static final RandomArray RAND = new RandomArray(9171, 32);

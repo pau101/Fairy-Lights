@@ -1,17 +1,17 @@
 package com.pau101.fairylights.server.fastener.connection.type.hanginglights;
 
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import com.pau101.fairylights.server.config.Configurator;
 import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingFeature.HangingFeature;
 import com.pau101.fairylights.server.item.LightVariant;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.CubicBezier;
 import com.pau101.fairylights.util.Mth;
+
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public final class Light extends HangingFeature<Light> {
 	private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
@@ -88,6 +88,7 @@ public final class Light extends HangingFeature<Light> {
 		return twinkleTime;
 	}
 
+	@Override
 	public void inherit(Light parent) {
 		super.inherit(parent);
 		twinkleTime = parent.twinkleTime;

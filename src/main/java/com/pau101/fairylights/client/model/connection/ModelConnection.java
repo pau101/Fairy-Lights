@@ -4,6 +4,12 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import com.pau101.fairylights.server.fastener.Fastener;
+import com.pau101.fairylights.server.fastener.connection.Catenary;
+import com.pau101.fairylights.server.fastener.connection.Segment;
+import com.pau101.fairylights.server.fastener.connection.type.Connection;
+import com.pau101.fairylights.util.Mth;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
@@ -15,12 +21,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.fastener.connection.Catenary;
-import com.pau101.fairylights.server.fastener.connection.Segment;
-import com.pau101.fairylights.server.fastener.connection.type.Connection;
-import com.pau101.fairylights.util.Mth;
 
 public abstract class ModelConnection<T extends Connection> extends ModelBase {
 	public ModelConnection() {

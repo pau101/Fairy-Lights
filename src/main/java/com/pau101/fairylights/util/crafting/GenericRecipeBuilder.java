@@ -8,11 +8,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
-
 import com.google.common.base.Strings;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryBasicInert;
@@ -21,6 +16,11 @@ import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularBasic;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularList;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularOre;
+
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public final class GenericRecipeBuilder {
 	private static final char EMPTY_SPACE = ' ';

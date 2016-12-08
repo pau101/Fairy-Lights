@@ -1,10 +1,5 @@
 package com.pau101.fairylights.client.model.connection;
 
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
@@ -12,6 +7,11 @@ import com.pau101.fairylights.client.renderer.FastenerRenderer;
 import com.pau101.fairylights.server.fastener.connection.type.garland.ConnectionGarlandVine;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.RandomArray;
+
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 public final class ModelConnectionGarland extends ModelConnection<ConnectionGarlandVine> {
 	private static final int RING_COUNT = 8;

@@ -2,17 +2,17 @@ package com.pau101.fairylights.client.model.lights;
 
 import java.awt.Color;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public final class ModelLightMeteor extends ModelLight {
 	private AdvancedModelRenderer[] lights;
@@ -53,6 +53,7 @@ public final class ModelLightMeteor extends ModelLight {
 		return true;
 	}
 
+	@Override
 	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float normalBrightness, int index, float delta) {
 		if (hasRandomRotatation()) {
 			float randomOffset = Mth.mod(Mth.hash(index) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4;

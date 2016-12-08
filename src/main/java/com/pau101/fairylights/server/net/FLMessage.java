@@ -1,14 +1,13 @@
 package com.pau101.fairylights.server.net;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 
+import com.google.common.base.Throwables;
+
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import com.google.common.base.Throwables;
 
 public abstract class FLMessage implements IMessage {
 	@Override

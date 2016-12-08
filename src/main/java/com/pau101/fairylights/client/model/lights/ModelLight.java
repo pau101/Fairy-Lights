@@ -2,19 +2,19 @@ package com.pau101.fairylights.client.model.lights;
 
 import java.awt.Color;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public abstract class ModelLight extends ModelBase {
 	protected final AdvancedModelRenderer colorableParts;

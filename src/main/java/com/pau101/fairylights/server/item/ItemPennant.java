@@ -2,12 +2,12 @@ package com.pau101.fairylights.server.item;
 
 import java.util.List;
 
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.util.Utils;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.util.Utils;
 
 public class ItemPennant extends Item {
 	public ItemPennant() {

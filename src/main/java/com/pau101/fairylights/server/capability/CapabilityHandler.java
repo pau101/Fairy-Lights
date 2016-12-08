@@ -1,5 +1,8 @@
 package com.pau101.fairylights.server.capability;
 
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.fastener.Fastener;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -8,9 +11,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.server.fastener.Fastener;
 
 public final class CapabilityHandler {
 	private CapabilityHandler() {}

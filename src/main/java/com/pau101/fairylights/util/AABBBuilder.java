@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-
-import com.google.common.base.Preconditions;
 
 public final class AABBBuilder {
     private double minX;

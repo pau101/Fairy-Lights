@@ -3,7 +3,6 @@ package com.pau101.fairylights.util.styledstring;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 

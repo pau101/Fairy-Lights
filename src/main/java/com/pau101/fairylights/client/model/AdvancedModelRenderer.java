@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.opengl.GL11;
+
+import com.pau101.fairylights.util.Mth;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -13,10 +17,6 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
-
-import org.lwjgl.opengl.GL11;
-
-import com.pau101.fairylights.util.Mth;
 
 public final class AdvancedModelRenderer extends ModelRenderer {
 	protected int textureOffsetX;

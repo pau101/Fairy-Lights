@@ -1,11 +1,11 @@
 package com.pau101.fairylights.client.renderer.block.entity;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-
 import com.pau101.fairylights.client.renderer.FastenerRenderer;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
+
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 public final class BlockEntityFastenerRenderer extends TileEntitySpecialRenderer<BlockEntityFastener> {
 	@Override

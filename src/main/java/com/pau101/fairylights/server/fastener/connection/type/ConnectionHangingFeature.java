@@ -6,10 +6,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import com.google.common.base.Objects;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.Catenary;
@@ -22,6 +18,10 @@ import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingF
 import com.pau101.fairylights.util.AABBBuilder;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.matrix.Matrix;
+
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public abstract class ConnectionHangingFeature<F extends HangingFeature> extends Connection {
 	protected static final FeatureType FEATURE = FeatureType.create("feature");

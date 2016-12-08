@@ -18,6 +18,17 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import com.google.common.base.Objects;
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
+import com.pau101.fairylights.util.styledstring.Style;
+import com.pau101.fairylights.util.styledstring.StyledString;
+import com.pau101.fairylights.util.styledstring.StyledStringBuilder;
+import com.pau101.fairylights.util.styledstring.StyledStringSelection;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -38,19 +49,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import paulscode.sound.SoundSystem;
-
-import com.google.common.base.Objects;
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
-import com.pau101.fairylights.util.styledstring.Style;
-import com.pau101.fairylights.util.styledstring.StyledString;
-import com.pau101.fairylights.util.styledstring.StyledStringBuilder;
-import com.pau101.fairylights.util.styledstring.StyledStringSelection;
 
 public final class GuiStyledTextField extends Gui {
 	private static final DataFlavor RTF_FLAVOR = new DataFlavor("text/rtf", "Rich Text Format"); 

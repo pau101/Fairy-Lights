@@ -1,12 +1,12 @@
 package com.pau101.fairylights.client.model.lights;
 
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
+
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public final class ModelLightFlower extends ModelLight {
 	private static final float PEDDLE_ANGLE = -Mth.PI / 6;

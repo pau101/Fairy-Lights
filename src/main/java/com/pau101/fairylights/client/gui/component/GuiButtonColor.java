@@ -1,13 +1,13 @@
 package com.pau101.fairylights.client.gui.component;
 
+import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
+import com.pau101.fairylights.util.styledstring.StyledString;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-
-import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
-import com.pau101.fairylights.util.styledstring.StyledString;
 
 public final class GuiButtonColor extends GuiButton {
 	private static final int TEX_U = 0;

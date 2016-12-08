@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-
-import com.google.common.base.Preconditions;
-import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
 
 public abstract class IngredientAuxiliaryBasic<A> implements IngredientAuxiliary<A> {
 	private final ItemStack ingredient;

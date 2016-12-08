@@ -1,9 +1,5 @@
 package com.pau101.fairylights.util.styledstring;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.buffer.Unpooled;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,14 +28,17 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextFormatting;
-
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextFormatting;
 
 public final class StyledString implements Comparable<StyledString>, CharSequence {
 	public static final TextFormatting DEFAULT_COLOR = TextFormatting.WHITE;

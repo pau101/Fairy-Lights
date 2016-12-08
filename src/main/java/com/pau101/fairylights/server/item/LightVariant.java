@@ -1,17 +1,17 @@
 package com.pau101.fairylights.server.item;
 
+import com.google.common.base.CaseFormat;
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.item.crafting.Recipes;
+import com.pau101.fairylights.util.Utils;
+import com.pau101.fairylights.util.crafting.GenericRecipeBuilder;
+
 import net.minecraft.block.BlockFlower.EnumFlowerType;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-
-import com.google.common.base.CaseFormat;
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.server.item.crafting.Recipes;
-import com.pau101.fairylights.util.Utils;
-import com.pau101.fairylights.util.crafting.GenericRecipeBuilder;
 
 public enum LightVariant {
 	FAIRY("fairy", true, 5, 5, new GenericRecipeBuilder()

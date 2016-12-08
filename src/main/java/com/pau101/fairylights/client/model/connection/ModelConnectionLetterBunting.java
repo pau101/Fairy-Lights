@@ -1,11 +1,5 @@
 package com.pau101.fairylights.client.model.connection;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.ClientProxy;
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
@@ -15,6 +9,12 @@ import com.pau101.fairylights.server.fastener.connection.type.letter.ConnectionL
 import com.pau101.fairylights.server.fastener.connection.type.letter.Letter;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.styledstring.StyledString;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class ModelConnectionLetterBunting extends ModelConnection<ConnectionLetterBunting> {
 	private static final ResourceLocation LETTERS = new ResourceLocation(FairyLights.ID, "textures/entity/letters.png");

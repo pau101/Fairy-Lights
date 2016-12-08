@@ -5,17 +5,17 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.pau101.fairylights.server.capability.CapabilityHandler;
+import com.pau101.fairylights.server.fastener.Fastener;
+import com.pau101.fairylights.server.fastener.FastenerEntity;
+import com.pau101.fairylights.server.fastener.connection.type.Connection;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.fastener.FastenerEntity;
-import com.pau101.fairylights.server.fastener.connection.type.Connection;
 
 public abstract class FastenerAccessorEntity<E extends Entity> implements FastenerAccessor {
 	private Class<? extends E> entityClass;

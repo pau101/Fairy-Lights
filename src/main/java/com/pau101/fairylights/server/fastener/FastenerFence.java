@@ -1,10 +1,10 @@
 package com.pau101.fairylights.server.fastener;
 
-import net.minecraft.util.math.BlockPos;
-
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorEntity;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorFence;
+
+import net.minecraft.util.math.BlockPos;
 
 public final class FastenerFence extends FastenerEntity<EntityFenceFastener> {
 	public FastenerFence(EntityFenceFastener entity) {

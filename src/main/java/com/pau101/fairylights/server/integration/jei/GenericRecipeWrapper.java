@@ -56,6 +56,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 
 	private void forOutputMatches(BiConsumer<ItemStack, ItemStack> outputConsumer) {
 		InventoryCrafting crafting = new InventoryCrafting(new Container() {
+			@Override
 			public boolean canInteractWith(EntityPlayer player) {
 				return false;
 			}

@@ -6,6 +6,16 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.ServerEventHandler;
+import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
+import com.pau101.fairylights.server.capability.CapabilityHandler;
+import com.pau101.fairylights.server.fastener.Fastener;
+import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
+import com.pau101.fairylights.server.fastener.connection.ConnectionType;
+import com.pau101.fairylights.server.fastener.connection.type.Connection;
+import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
@@ -31,16 +41,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.server.ServerEventHandler;
-import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
-import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
-import com.pau101.fairylights.server.fastener.connection.ConnectionType;
-import com.pau101.fairylights.server.fastener.connection.type.Connection;
-import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 
 public final class BlockFastener extends BlockContainer {
 	public static final PropertyDirection FACING = BlockDirectional.FACING;

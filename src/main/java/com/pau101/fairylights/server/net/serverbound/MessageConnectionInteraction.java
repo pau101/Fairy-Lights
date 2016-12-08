@@ -4,6 +4,13 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
+import com.pau101.fairylights.server.fastener.connection.FeatureType;
+import com.pau101.fairylights.server.fastener.connection.PlayerAction;
+import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
+import com.pau101.fairylights.server.fastener.connection.type.Connection;
+import com.pau101.fairylights.server.net.MessageConnection;
+import com.pau101.fairylights.util.Utils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -12,13 +19,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import com.pau101.fairylights.server.fastener.connection.FeatureType;
-import com.pau101.fairylights.server.fastener.connection.PlayerAction;
-import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
-import com.pau101.fairylights.server.fastener.connection.type.Connection;
-import com.pau101.fairylights.server.net.MessageConnection;
-import com.pau101.fairylights.util.Utils;
 
 public final class MessageConnectionInteraction extends MessageConnection<Connection> {
 	private static final float RANGE = (Connection.MAX_LENGTH + 1) * (Connection.MAX_LENGTH + 1);

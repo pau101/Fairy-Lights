@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-
 import com.google.common.collect.Multimap;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
+
+import net.minecraft.item.ItemStack;
 
 public interface IngredientAuxiliary<A> extends Ingredient<IngredientAuxiliary<?>, MatchResultAuxiliary> {
 	boolean isRequired();

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import com.pau101.fairylights.server.entity.EntityFenceFastener;
+import com.pau101.fairylights.util.WorldEventListener;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.culling.ICamera;
@@ -11,9 +14,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-
-import com.pau101.fairylights.server.entity.EntityFenceFastener;
-import com.pau101.fairylights.util.WorldEventListener;
 
 public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRenderer<FenceFastenerRepresentative> implements WorldEventListener {
 	private FenceFastenerRendererDispatcher() {}

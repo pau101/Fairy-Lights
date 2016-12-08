@@ -1,10 +1,10 @@
 package com.pau101.fairylights.server.fastener.accessor;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.pau101.fairylights.server.fastener.FastenerPlayer;
 import com.pau101.fairylights.server.fastener.FastenerType;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 
 public final class FastenerAccessorPlayer extends FastenerAccessorEntity<EntityPlayer> {
 	public FastenerAccessorPlayer() {

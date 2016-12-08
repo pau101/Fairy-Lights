@@ -1,11 +1,5 @@
 package com.pau101.fairylights.client.model.connection;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -13,6 +7,12 @@ import com.pau101.fairylights.server.fastener.connection.type.pennant.Connection
 import com.pau101.fairylights.server.fastener.connection.type.pennant.Pennant;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.styledstring.StyledString;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class ModelConnectionPennantBunting extends ModelConnection<ConnectionPennantBunting> {
 	private AdvancedModelRenderer cordModel;

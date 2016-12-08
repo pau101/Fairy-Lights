@@ -1,13 +1,12 @@
 package com.pau101.fairylights.client.gui.component;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-
 import org.lwjgl.input.Mouse;
 
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
-import com.sun.jna.platform.win32.WinDef.HPALETTE;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiButtonToggle extends GuiButton {
 	private int u;
