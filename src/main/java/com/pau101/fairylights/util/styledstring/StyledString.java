@@ -814,7 +814,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 		Matcher m = TAG_PATTERN.matcher(html);
 		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
-			String tagName = m.group(2).toLowerCase();
+			String tagName = m.group(2).toLowerCase(Locale.ENGLISH);
 			String rep;
 			switch (tagName) {
 				/*

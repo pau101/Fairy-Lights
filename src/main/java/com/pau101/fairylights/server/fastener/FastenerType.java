@@ -1,6 +1,7 @@
 package com.pau101.fairylights.server.fastener;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -30,7 +31,7 @@ public enum FastenerType {
 
 	private FastenerType(Supplier<? extends FastenerAccessor> supplier) {
 		this.supplier = supplier;
-		name = name().toLowerCase();
+		name = name().toLowerCase(Locale.ENGLISH);
 	}
 
 	public String getName() {
