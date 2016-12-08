@@ -1,13 +1,20 @@
 package com.pau101.fairylights.server.entity;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Throwables;
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.ServerProxy;
+import com.pau101.fairylights.server.capability.CapabilityHandler;
+import com.pau101.fairylights.server.fastener.Fastener;
+import com.pau101.fairylights.server.item.ItemConnection;
+import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
@@ -26,14 +33,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-
-import com.google.common.base.Throwables;
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.server.ServerProxy;
-import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.item.ItemConnection;
-import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
 
 public final class EntityFenceFastener extends EntityHanging implements IEntityAdditionalSpawnData {
 	public EntityFenceFastener(World world) {
@@ -73,6 +72,24 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 		 * connection. I hope you enjoy my line lengths.
 		 */
 		return 1;
+	}
+
+	@Override
+	public float getBrightness(float delta) {
+		BlockPos pos = new BlockPos(this);
+		if (worldObj.isBlockLoaded(pos)) {
+			return worldObj.getLightBrightness(pos);
+		}
+		return 0;
+	}
+
+	@Override
+	public int getBrightnessForRender(float delta) {
+		BlockPos pos = new BlockPos(this);
+		if (worldObj.isBlockLoaded(pos)) {
+			return worldObj.getCombinedLight(pos, 0);
+		}
+		return 0;
 	}
 
 	@Override
