@@ -215,12 +215,6 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 		return getCapability(CapabilityHandler.FASTENER_CAP, null);
 	}
 
-	// There's no unload hook so this'll do
-	@Override
-	protected void finalize() {
-		getFastener().remove();
-	}
-
 	public static EntityFenceFastener create(World world, BlockPos fence) {
 		EntityFenceFastener fastener = new EntityFenceFastener(world, fence);
 		fastener.forceSpawn = true;
