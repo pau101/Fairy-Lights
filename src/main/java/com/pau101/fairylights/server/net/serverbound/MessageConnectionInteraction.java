@@ -2,8 +2,6 @@ package com.pau101.fairylights.server.net.serverbound;
 
 import java.io.IOException;
 
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
 import com.pau101.fairylights.server.fastener.connection.PlayerAction;
 import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
@@ -88,7 +86,7 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 	private void interact(EntityPlayer player, Connection connection, Vec3d hit) {
 		for (EnumHand hand : EnumHand.values()) {
 			ItemStack stack = player.getHeldItem(hand);
-			ItemStack oldStack = stack == null ? null : stack.copy();
+			ItemStack oldStack = stack.copy();
 			if (connection.interact(player, hit, featureType, featureId, stack, hand)) {
 				updateItem(player, oldStack, stack, hand);
 				break;
@@ -96,14 +94,12 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 		}
 	}
 
-	private void updateItem(EntityPlayer player, ItemStack oldStack, @Nullable ItemStack stack, EnumHand hand) {
-		if (stack != null && stack == player.getHeldItem(hand)) {
-			if (stack.func_190916_E() <= 0 && !player.capabilities.isCreativeMode) {
-				ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
-				player.setHeldItem(hand, null);
-			} else if (stack.func_190916_E() < oldStack.func_190916_E() && player.capabilities.isCreativeMode) {
-				stack.func_190920_e(oldStack.func_190916_E());
-			}
+	private void updateItem(EntityPlayer player, ItemStack oldStack, ItemStack stack, EnumHand hand) {
+		if (stack.func_190916_E() <= 0 && !player.capabilities.isCreativeMode) {
+			ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
+			player.setHeldItem(hand, ItemStack.field_190927_a);
+		} else if (stack.func_190916_E() < oldStack.func_190916_E() && player.capabilities.isCreativeMode) {
+			stack.func_190920_e(oldStack.func_190916_E());
 		}
 	}
 }

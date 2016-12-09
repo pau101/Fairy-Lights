@@ -198,8 +198,8 @@ public abstract class Connection implements NBTSerializable {
 		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_DISCONNECT, SoundCategory.BLOCKS, 1, 1);
 	}
 
-	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, @Nullable ItemStack heldStack, EnumHand hand) {
-		if (heldStack != null && heldStack.getItem() instanceof ItemConnection && destination.isLoaded(world)) {
+	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, EnumHand hand) {
+		if (heldStack.getItem() instanceof ItemConnection && destination.isLoaded(world)) {
 			Fastener<?> dest = destination.get(world);
 			fastener.removeConnection(this);
 			dest.removeConnection(uuid);
@@ -216,7 +216,7 @@ public abstract class Connection implements NBTSerializable {
 		return false;
 	}
 
-	public void onConnect(World world, EntityPlayer user, @Nullable ItemStack heldStack) {}
+	public void onConnect(World world, EntityPlayer user, ItemStack heldStack) {}
 
 	protected void onRemove() {}
 

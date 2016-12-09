@@ -127,11 +127,11 @@ public final class BlockFastener extends BlockContainer {
 		return new BlockEntityFastener();
 	}
 
-	@Nullable
 	@Override
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
 		return ItemStack.field_190927_a;
 	}
+
 	@Nullable
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune) {
