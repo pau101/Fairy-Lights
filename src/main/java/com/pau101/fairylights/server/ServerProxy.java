@@ -120,6 +120,11 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 		FairyLights.christmas = new CalendarEvent(Month.DECEMBER, 24, 26);
 		FairyLights.christmasJingles = JingleLibrary.create("christmas");
 		FairyLights.randomJingles = JingleLibrary.create("random");
+		loadJingleLibraries();
+	}
+
+	protected void loadJingleLibraries() {
+		JingleLibrary.loadAll();
 	}
 
 	public void initEntities() {

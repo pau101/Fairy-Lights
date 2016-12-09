@@ -201,10 +201,14 @@ public final class ClientProxy extends ServerProxy {
 	@Override
 	public void initEggs() {
 		super.initEggs();
-		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(m -> JingleLibrary.loadAll());
 		CommandJingler cmd = new CommandJingler();
 		ClientCommandHandler.instance.registerCommand(cmd);
 		MinecraftForge.EVENT_BUS.register(cmd);
+	}
+
+	@Override
+	protected void loadJingleLibraries() {
+		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(m -> JingleLibrary.loadAll());
 	}
 
 	/*
