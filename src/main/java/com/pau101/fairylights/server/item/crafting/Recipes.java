@@ -224,6 +224,11 @@ public final class Recipes {
 		.withIngredient('-', Items.STRING)
 		.withIngredient('P', Items.PAPER)
 		.withIngredient('B', "dyeBlack")
-		.withIngredient('F', Items.FEATHER)
+		.withIngredient('F', new IngredientRegularBasic(Items.FEATHER) {
+			@Override
+			public void present(ItemStack output) {
+				output.setTagInfo("text", StyledString.serialize(new StyledString()));
+			}
+		})
 		.build();
 }
