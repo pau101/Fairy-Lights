@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.ClientEventHandler;
 import com.pau101.fairylights.client.entity.EntityLightSource;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -44,6 +45,8 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	private List<EntityLightSource> lightSources;
 
 	private boolean updateLightSources;
+
+	private boolean wasPlaying = false;
 
 	public ConnectionHangingLights(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
 		super(world, fastener, uuid, destination, isOrigin, compound);
@@ -92,13 +95,25 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	@Override
 	public void onUpdateLate() {
-		if (jinglePlayer.isPlaying()) {
+		boolean playing = jinglePlayer.isPlaying();
+		if (playing) {
 			jinglePlayer.tick(world, getFastener().getConnectionPoint(), features, world.isRemote);
 		}
+		if (playing || wasPlaying && !playing) {
+			updateNeighbors(getFastener());
+			if (getDestination().isLoaded(world)) {
+				updateNeighbors(getDestination().get(world));
+			}
+		}
+		wasPlaying = playing;
 		for (int i = 0; i < features.length; i++) {
 			Light light = features[i];
 			light.tick(this, twinkle);
 		}
+	}
+
+	private void updateNeighbors(Fastener<?> fastener) {
+		world.updateComparatorOutputLevel(fastener.getPos(), FairyLights.fastener);
 	}
 
 	@Override
@@ -173,6 +188,10 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	public boolean canCurrentlyPlayAJingle() {
 		return !jinglePlayer.isPlaying();
+	}
+
+	public float getJingleProgress() {
+		return jinglePlayer.getProgress();
 	}
 
 	@Override

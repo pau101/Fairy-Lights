@@ -34,6 +34,8 @@ public final class JinglePlayer {
 
 	private int rest;
 
+	private int timePassed;
+
 	private EnumParticleTypes noteParticle;
 
 	@Nullable
@@ -52,6 +54,7 @@ public final class JinglePlayer {
 		isPlaying = true;
 		currentTickIndex = 0;
 		rest = 0;
+		timePassed = 0;
 		noteParticle = "playing_with_fire".equals(jingle.getId()) ? EnumParticleTypes.LAVA : WITH_LOVE.contains(jingle.getId()) ? EnumParticleTypes.HEART : EnumParticleTypes.NOTE;
 	}
 
@@ -63,13 +66,19 @@ public final class JinglePlayer {
 		isPlaying = false;
 		currentTickIndex = 0;
 		rest = 0;
+		timePassed = 0;
 	}
 
 	public boolean isPlaying() {
 		return isPlaying;
 	}
 
+	public float getProgress() {
+		return isPlaying ? timePassed / (float) jingleLength : 0;
+	}
+
 	public void tick(World world, Vec3d origin, Light[] lights, boolean isClient) {
+		timePassed++;
 		if (rest <= 0) {
 			if (currentTickIndex >= jinglePlayTicks.size()) {
 				stop();
