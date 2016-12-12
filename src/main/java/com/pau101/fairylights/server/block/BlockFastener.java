@@ -183,6 +183,40 @@ public final class BlockFastener extends BlockContainer {
 	}
 
 	@Override
+	public boolean hasComparatorInputOverride(IBlockState state) {
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
+		Fastener<?> fastener = world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP, null);
+		int level = 0;
+		for (Entry<UUID, Connection> e : fastener.getConnections().entrySet()) {
+			Connection connection = e.getValue();
+			if (connection.getType() != ConnectionType.HANGING_LIGHTS) {
+				continue;
+			}
+			if (!connection.getDestination().isLoaded(world)) {
+				continue;
+			}
+			if (!connection.isOrigin()) {
+				BlockPos to = connection.getDestination().get(world).getPos();
+				fastener = world.getTileEntity(to).getCapability(CapabilityHandler.FASTENER_CAP, null);
+				connection = fastener.getConnections().get(e.getKey());
+				if (connection == null) {
+					continue;
+				}
+			}
+			ConnectionHangingLights logic = (ConnectionHangingLights) connection;
+			int lvl = (int) Math.ceil(logic.getJingleProgress() * 15);
+			if (lvl > level) {
+				level = lvl;
+			}
+		}
+		return level;
+	}
+
+	@Override
 	public int tickRate(World world) {
 		return 2;
 	}
