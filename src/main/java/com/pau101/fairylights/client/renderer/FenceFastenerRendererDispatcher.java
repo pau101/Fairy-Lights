@@ -1,11 +1,6 @@
 package com.pau101.fairylights.client.renderer;
 
-import java.util.Collections;
-import java.util.Set;
-
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
-import com.pau101.fairylights.util.WeakIdentityHashMap;
-import com.pau101.fairylights.util.WorldEventListener;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -13,33 +8,11 @@ import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
 
-public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRenderer<FenceFastenerRepresentative> implements WorldEventListener {
+public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRenderer<FenceFastenerRepresentative> {
 	private FenceFastenerRendererDispatcher() {}
 
 	public static final FenceFastenerRendererDispatcher INSTANCE = new FenceFastenerRendererDispatcher();
-
-	private Set<EntityFenceFastener> fences = newSet();
-
-	public FenceFastenerRendererDispatcher init(World world) {
-		fences = newSet();
-		return this;
-	}
-
-	@Override
-	public void onEntityAdded(Entity entity) {
-		if (entity instanceof EntityFenceFastener) {
-			fences.add((EntityFenceFastener) entity);
-		}
-	}
-
-	@Override
-	public void onEntityRemoved(Entity entity) {
-		if (entity instanceof EntityFenceFastener) {
-			fences.remove(entity);
-		}
-	}
 
 	@Override
 	public void renderTileEntityAt(FenceFastenerRepresentative rep, double px, double py, double pz, float delta, int destroy) {
@@ -51,14 +24,13 @@ public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRend
 		double z = view.lastTickPosZ + (view.posZ - view.lastTickPosZ) * delta;
 		ICamera camera = new Frustum();
 		camera.setPosition(x, y, z);
-		for (EntityFenceFastener fence : fences) {
-			if (fence.isInRangeToRender3d(x, y, z) && camera.isBoundingBoxInFrustum(fence.getRenderBoundingBox())) {
-				renderMgr.renderEntityStatic(fence, delta, false);
+		for (Entity e : mc.theWorld.loadedEntityList) {
+			if (e instanceof EntityFenceFastener) {
+				EntityFenceFastener fence = (EntityFenceFastener) e;
+				if (fence.isInRangeToRender3d(x, y, z) && camera.isBoundingBoxInFrustum(fence.getRenderBoundingBox())) {
+					renderMgr.renderEntityStatic(fence, delta, false);
+				}	
 			}
 		}
-	}
-
-	private static Set<EntityFenceFastener> newSet() {
-		return Collections.newSetFromMap(new WeakIdentityHashMap<>());
 	}
 }

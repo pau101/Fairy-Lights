@@ -93,9 +93,7 @@ public final class ServerEventHandler {
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event) {
 		World world = event.getWorld();
-		if (world.isRemote) {
-			world.addEventListener(FenceFastenerRendererDispatcher.INSTANCE.init(world));
-		} else {
+		if (!world.isRemote) {
 			world.addEventListener(new ServerWorldEventListener());
 		}
 	}
