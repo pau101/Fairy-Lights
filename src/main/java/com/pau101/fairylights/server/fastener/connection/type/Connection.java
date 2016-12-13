@@ -206,11 +206,11 @@ public abstract class Connection implements NBTSerializable {
 			if (shouldDrop()) {
 				player.inventory.addItemStackToInventory(getItemStack());
 			}
-			heldStack.func_190918_g(1);
 			NBTTagCompound data = Objects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
 			ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
 			fastener.connectWith(world, dest, type, data).onConnect(player.worldObj, player, heldStack);
 			world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
+			heldStack.func_190918_g(1);
 			return true;
 		}
 		return false;
