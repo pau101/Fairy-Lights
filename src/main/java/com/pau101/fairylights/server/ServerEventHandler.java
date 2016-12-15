@@ -10,7 +10,6 @@ import java.util.Random;
 import java.util.UUID;
 
 import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.client.renderer.FenceFastenerRendererDispatcher;
 import com.pau101.fairylights.server.block.BlockFastener;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
@@ -74,17 +73,20 @@ public final class ServerEventHandler {
 
 	@SubscribeEvent
 	public void onGetCollisionBoxes(GetCollisionBoxesEvent event) {
-		AxisAlignedBB bounds = event.getAabb();
-		List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.expandXyz(1));
-		List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
-		for (EntityLadder ladder : ladders) {
-			if (event.getEntity() == ladder) {
-				continue;
-			}
-			List<AxisAlignedBB> surfaces = ladder.getCollisionSurfaces();
-			for (AxisAlignedBB surface : surfaces) {
-				if (surface.intersectsWith(bounds)) {
-					boxes.add(surface);	
+		Entity entity = event.getEntity();
+		if (entity != null) {
+			AxisAlignedBB bounds = event.getAabb();
+			List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.expandXyz(1));
+			List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
+			for (EntityLadder ladder : ladders) {
+				if (entity == ladder) {
+					continue;
+				}
+				List<AxisAlignedBB> surfaces = ladder.getCollisionSurfaces();
+				for (AxisAlignedBB surface : surfaces) {
+					if (surface.intersectsWith(bounds)) {
+						boxes.add(surface);	
+					}
 				}
 			}
 		}
