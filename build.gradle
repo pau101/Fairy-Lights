@@ -19,7 +19,7 @@ repositories {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-ext.modVersion = "2.0.1"
+ext.modVersion = "2.0.2"
 version = "${modVersion}-1.10.2"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
