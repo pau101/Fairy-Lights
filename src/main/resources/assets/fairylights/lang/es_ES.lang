@@ -1,0 +1,72 @@
+itemGroup.fairylights=Fairy Lights
+
+fairylights.config=Configuración del Fairy Lights
+
+tile.fairyLights.name=Gancho de Cable
+
+item.hangingLights.name=Luces Decorativas
+item.garland.name=Guirnalda de Navidad
+item.tinsel.name=Oropel de Navidad
+
+item.fairyLights.pattern=Patrón:
+item.fairyLights.twinkle=Luces Intermitente
+item.fairyLights.tight=Apretado
+
+item.pennantBunting.name=Banderines
+item.pennantBunting.colors=Colores:
+
+item.letterBunting.name=Guirnalda de Letras
+
+item.pennant.name=Banderín
+
+item.light.name=Lámpara
+item.light.fairy.name=Pequeña Lámpara
+item.light.paper.name=Lámpara de Papel
+item.light.orb.name=Lámpara Redonda de Papel
+item.light.flower.name=Lámpara de Flor
+item.light.ornate.name=Linterna de Vela
+item.light.oil.name=Lámpara de Queroseno
+item.light.luxoBall.name=Luxo Ball
+item.light.jackOLantern.name=Calabaza
+item.light.skull.name=Lámpara de Cráneo
+item.light.ghost.name=Lámpara de Fantasma
+item.light.spider.name=Lámpara en Forma de Araña
+item.light.witch.name=Lámpara de Bruja
+item.light.snowflake.name=Lámpara de Copo de Nieve
+item.light.icicle.name=Lámpara Bar de Hielo
+item.light.meteor.name=Luces Lluvia de Meteoros
+
+item.ladder.name=Escalera de Tijera
+
+entity.fairylights.fastener.name=Gancho
+entity.fairylights.ladder.name=Escalera de Tijera
+
+gui.editLetteredConnection.name=Establecer Texto Guirnalda
+
+format.pattern.entry=  %1$s
+format.colored=%2$s %1$s
+format.text=Texto: %1$s
+
+color.black.name=Negro
+color.red.name=Rojo
+color.green.name=Verde
+color.brown.name=Marrón
+color.blue.name=Azul
+color.purple.name=Púrpura
+color.cyan.name=Cian
+color.silver.name=Gris Claro
+color.gray.name=Gris
+color.pink.name=Rosado
+color.lime.name=Lima
+color.yellow.name=Amarillo
+color.lightBlue.name=Azul Claro
+color.magenta.name=Magenta
+color.orange.name=Naranja
+color.white.name=Blanco
+
+subtitles.block.jingleBell=Campana toca
+subtitles.block.cord.connect=Cable conecta
+subtitles.block.cord.disconnect=Cable desconecta
+subtitles.block.cord.stretch=Cable estira
+subtitles.block.cord.snap=Cable rupturas
+subtitles.block.feature.colorChange=Color cambia

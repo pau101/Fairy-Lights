@@ -43,8 +43,8 @@ entity.fairylights.ladder.name=人字梯
 
 gui.editLetteredConnection.name=设置彩旗文字
 
-
-
+format.pattern.entry=  %1$s
+format.colored=%1$s %2$s
 format.text=文字：%1$s
 
 color.black.name=黑色

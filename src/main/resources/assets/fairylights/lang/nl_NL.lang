@@ -1,0 +1,72 @@
+itemGroup.fairylights=Fairy Lights
+
+fairylights.config=Fairy Lights instellingen
+
+tile.fairyLights.name=Haakje
+
+item.hangingLights.name=Hangende lichtjes
+item.garland.name=Guirlande
+item.tinsel.name=Folie slinger
+
+item.fairyLights.pattern=Patroon:
+item.fairyLights.twinkle=Twinkelen
+item.fairyLights.tight=Gespannen
+
+item.pennantBunting.name=Vlaggenslinger
+item.pennantBunting.colors=Kleuren:
+
+item.letterBunting.name=Letterslinger
+
+item.pennant.name=Vlag
+
+item.light.name=Lichtje
+item.light.fairy.name=Kerstverlichting
+item.light.paper.name=Papieren lantaarn
+item.light.orb.name=Bolvormige lantaarn
+item.light.flower.name=Bloemenlampje
+item.light.ornate.name=Versierde lantaarn
+item.light.oil.name=Olielantaarn
+item.light.luxoBall.name=Luxo bal
+item.light.jackOLantern.name=Jack-o'-lantern
+item.light.skull.name=Schedellampje
+item.light.ghost.name=Ghostlampje
+item.light.spider.name=Spinnenlampje
+item.light.witch.name=Heksenlampje
+item.light.snowflake.name=Sneeuwvloklampje
+item.light.icicle.name=IJspegelverlichting
+item.light.meteor.name=Meteor regen licht
+
+item.ladder.name=Trapladder
+
+entity.fairylights.fastener.name=Haak
+entity.fairylights.ladder.name=Trapladder
+
+gui.editLetteredConnection.name=Stel letterslinger tekst in:
+
+format.pattern.entry=  %1$s
+format.colored=%1$s %2$s
+format.text=Tekst: %1$s
+
+color.black.name=Zwart
+color.red.name=Rood
+color.green.name=Groen
+color.brown.name=Bruin
+color.blue.name=Blauw
+color.purple.name=Paars
+color.cyan.name=Cyaan
+color.silver.name=Lichtgrijs
+color.gray.name=Grijs
+color.pink.name=Roze
+color.lime.name=Limoen
+color.yellow.name=Geel
+color.lightBlue.name=Lichtblauw
+color.magenta.name=Magenta
+color.orange.name=Oranje
+color.white.name=Wit
+
+subtitles.block.jingleBell=Bel luidt
+subtitles.block.cord.connect=Koord verbonden
+subtitles.block.cord.disconnect=Koord koppelt los
+subtitles.block.cord.stretch=Koord rekt uit
+subtitles.block.cord.snap=Koord breekt
+subtitles.block.feature.colorChange=Lichtje plopt

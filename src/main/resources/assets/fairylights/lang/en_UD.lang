@@ -1,0 +1,72 @@
+﻿itemGroup.fairylights=sʇɥᵷᴉ˥ ʎɹᴉɐℲ
+
+fairylights.config=uoᴉʇɐɹnᵷᴉɟuoƆ  sʇɥᵷᴉ˥ ʎɹᴉɐℲ
+
+tile.fairyLights.name=ɹǝuǝʇsɐℲ uoᴉʇɔǝuuoƆ
+
+item.hangingLights.name=sʇɥᵷᴉ˥ ᵷuᴉᵷuɐH
+item.garland.name=puɐlɹɐפ ǝuᴉΛ
+item.tinsel.name=puɐlɹɐפ lǝsuᴉ┴
+
+item.fairyLights.pattern=:uɹǝʇʇɐԀ
+item.fairyLights.twinkle=ǝlʞuᴉʍ┴
+item.fairyLights.tight=pǝʌɹnɔu∩
+
+item.pennantBunting.name=ᵷuᴉʇunq ᵷ
+item.pennantBunting.colors=:sɹoloƆ
+
+item.letterBunting.name=ᵷuᴉʇunq ɹǝʇʇǝ˥
+
+item.pennant.name=ʇuɐuuǝԀ
+
+item.light.name=ʇɥᵷᴉ˥
+item.light.fairy.name=ʇɥᵷᴉ˥ ʎɹᴉɐℲ
+item.light.paper.name=uɹǝʇuɐ˥ ɹǝdɐԀ
+item.light.orb.name=uɹǝʇuɐ˥ qɹO
+item.light.flower.name=ʇɥᵷᴉ˥ ɹǝʍolℲ
+item.light.ornate.name=uɹǝʇuɐ˥ ǝʇɐuɹO
+item.light.oil.name=uɹǝʇuɐ˥ lᴉO
+item.light.luxoBall.name=llɐq oxn˥
+item.light.jackOLantern.name=uɹǝʇuɐ˥,o ʞɔɐſ
+item.light.skull.name=ʇɥᵷᴉ˥ llnʞS
+item.light.ghost.name=ʇɥᵷᴉ˥ ʇsoɥפ
+item.light.spider.name=ʇɥᵷᴉ˥ ɹǝpᴉdS
+item.light.witch.name=ʇɥᵷᴉ˥ ɥɔʇᴉM
+item.light.snowflake.name=ʇɥᵷᴉ˥ ǝʞɐlɟʍouS
+item.light.icicle.name=sʇɥᵷᴉ˥ ǝlɔᴉɔI
+item.light.meteor.name=ʇɥᵷᴉ˥ ɹoǝʇǝW
+
+item.ladder.name=ɹǝppɐl-dǝʇS
+
+entity.fairylights.fastener.name=ɹǝuǝʇsɐℲ
+entity.fairylights.ladder.name=ɹǝppɐl-dǝʇS
+
+gui.editLetteredConnection.name=ʇxǝ┴ ᵷuᴉʇunq ʇǝS
+
+format.pattern.entry=%1$s  
+format.colored=%2$s %1$s
+format.text=%1$s :ʇxǝ┴
+
+color.black.name=ʞɔɐlq
+color.red.name=pǝɹ
+color.green.name=uǝǝɹפ
+color.brown.name=uʍoɹq
+color.blue.name=ǝnlq
+color.purple.name=ǝldɹnԀ
+color.cyan.name=uɐʎƆ
+color.silver.name=ʎɐɹפ ʇɥᵷᴉ˥
+color.gray.name=ʎɐɹפ
+color.pink.name=ʞuᴉԀ
+color.lime.name=ǝɯᴉ˥
+color.yellow.name=ʍollǝ⅄
+color.lightBlue.name=ǝnlq ʇɥᵷᴉ˥
+color.magenta.name=ɐʇuǝᵷɐW
+color.orange.name=ǝᵷuɐɹO
+color.white.name=ǝʇᴉɥM
+
+subtitles.block.jingleBell=sǝlᵷuᴉɾ llǝq
+subtitles.block.cord.connect=sʇɔǝuuoɔ pɹoƆ
+subtitles.block.cord.disconnect=sʇɔǝuuoɔsᴉp pɹoƆ
+subtitles.block.cord.stretch=sǝɥɔʇǝɹʇs pɹoƆ
+subtitles.block.cord.snap=sdɐus pɹoƆ
+subtitles.block.feature.colorChange=sdold ɹoloƆ

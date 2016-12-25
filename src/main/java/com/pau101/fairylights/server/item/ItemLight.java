@@ -1,6 +1,7 @@
 package com.pau101.fairylights.server.item;
 
 import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.util.Utils;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
@@ -19,9 +20,8 @@ public final class ItemLight extends Item {
 
 	@Override
 	public String getItemStackDisplayName(ItemStack stack) {
-		String localizedColor = I18n.translateToLocal("item.fireworksCharge." + getLightColor(stack.getMetadata()).getUnlocalizedName());
 		String localizedLightName = I18n.translateToLocal(super.getUnlocalizedName(stack) + '.' + getLightVariant(stack.getMetadata()).getUnlocalizedName() + ".name");
-		return I18n.translateToLocalFormatted("format.colored", localizedColor, localizedLightName);
+		return Utils.formatColored(getLightColor(stack.getMetadata()), localizedLightName);
 	}
 
 	@Override

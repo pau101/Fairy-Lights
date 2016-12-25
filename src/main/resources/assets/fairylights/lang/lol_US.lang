@@ -1,0 +1,72 @@
+itemGroup.fairylights=Faiwee Litez
+
+fairylights.config=Faiwee Litez Configurashun
+
+tile.fairyLights.name=Connecshun Fastenah
+
+item.hangingLights.name=Hangz Litez
+item.garland.name=Vineh Garladn
+item.tinsel.name=Tisnel Garladn
+
+item.fairyLights.pattern=Pattrrrnz:
+item.fairyLights.twinkle=Twinklee
+item.fairyLights.tight=Likah stik
+
+item.pennantBunting.name=Pointee Toyz
+item.pennantBunting.colors=Pritee Colors:
+
+item.letterBunting.name=Lettr Toyz
+
+item.pennant.name=Pointee
+
+item.light.name=Lite
+item.light.fairy.name=Faiwee Lite
+item.light.paper.name=Papr Lantrn
+item.light.orb.name=Orb Lantrn
+item.light.flower.name=Flowr Lite
+item.light.ornate.name=Heavee Lantrn
+item.light.oil.name=Oily Lantrn
+item.light.luxoBall.name=Colorrful Ball
+item.light.jackOLantern.name=Jack o'Litez
+item.light.skull.name=Skull Lite
+item.light.ghost.name=Ghostlee Lite
+item.light.spider.name=Gud Eatz Lite
+item.light.witch.name=Scarwee Lite
+item.light.snowflake.name=Verwee Cold Lite
+item.light.icicle.name=Fragl Litez
+item.light.meteor.name=Fallin Lite
+
+item.ladder.name=Hooman toy
+
+entity.fairylights.fastener.name=Fastenah
+entity.fairylights.ladder.name=Hooman toy
+
+gui.editLetteredConnection.name=Paw paw Lettrz
+
+format.pattern.entry=  %1$s
+format.colored=%1$s %2$s
+format.text=Lettrz: %1$s
+
+color.black.name=Blakc
+color.red.name=Redd
+color.green.name=Gren
+color.brown.name=Broun
+color.blue.name=Bloo
+color.purple.name=Purrrple
+color.cyan.name=Nyan
+color.silver.name=Lite Gra
+color.gray.name=Gra
+color.pink.name=Pnk
+color.lime.name=Liime
+color.yellow.name=Yalloh
+color.lightBlue.name=Lite Bloo
+color.magenta.name=Mujnta
+color.orange.name=Ornge
+color.white.name=Wite
+
+subtitles.block.jingleBell=Kat bell jnglez
+subtitles.block.cord.connect=Cord connectz
+subtitles.block.cord.disconnect=Cord dizconnectz
+subtitles.block.cord.stretch=Cord sttrrrreeechhezz
+subtitles.block.cord.snap=Scarwee cord snapz
+subtitles.block.feature.colorChange=Pritee color plopz
