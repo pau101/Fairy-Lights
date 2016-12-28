@@ -2,9 +2,11 @@ package com.pau101.fairylights.client;
 
 import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -177,19 +179,36 @@ public final class ClientEventHandler {
         			continue;
         		}
         		Map<BlockPos, TileEntity> blockEntities = chunk.getTileEntityMap();
-        		for (Entry<BlockPos, TileEntity> entry : blockEntities.entrySet()) {
-        			Vec3d vec = new Vec3d(entry.getKey()).addVector(0.5, 0.5, 0.5);
-        			if (!bounds.isVecInside(vec)) {
-        				continue;
-        			}
-        			TileEntity blockEntity = entry.getValue();
-        			if (blockEntity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) {
-        				fasteners.add(blockEntity.getCapability(CapabilityHandler.FASTENER_CAP, null));
+        		// In case it is fixed
+        		if (blockEntities instanceof ConcurrentHashMap) {
+        			collectFasteners(bounds, fasteners, blockEntities);
+        		} else {
+        			try {
+        				collectFasteners(bounds, fasteners, blockEntities);
+        			} catch (ConcurrentModificationException e) {
+        				/*
+        				 * Oh noes!.. I would guess a ChunkRenderWorker discovered
+        				 * an invalid block entity and graciously removed it, or
+        				 * something modded did.
+        				 */
         			}
         		}
         	}
         }
         return fasteners;
+	}
+
+	private static void collectFasteners(AxisAlignedBB bounds, List<Fastener<?>> fasteners, Map<BlockPos, TileEntity> blockEntities) {
+		for (Entry<BlockPos, TileEntity> entry : blockEntities.entrySet()) {
+			Vec3d vec = new Vec3d(entry.getKey()).addVector(0.5, 0.5, 0.5);
+			if (!bounds.isVecInside(vec)) {
+				continue;
+			}
+			TileEntity blockEntity = entry.getValue();
+			if (blockEntity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) {
+				fasteners.add(blockEntity.getCapability(CapabilityHandler.FASTENER_CAP, null));
+			}
+		}
 	}
 
 	@Nullable
