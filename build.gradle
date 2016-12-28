@@ -16,7 +16,7 @@ repositories {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-ext.modVersion = "2.0.2"
+ext.modVersion = "2.0.3"
 version = "${modVersion}-1.11"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
@@ -48,4 +48,5 @@ processResources {
 
 jar {
 	exclude "shadersmod/**"
+	exclude "**/Thumbs.db"
 }
