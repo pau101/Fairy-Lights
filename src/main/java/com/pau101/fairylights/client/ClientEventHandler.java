@@ -130,13 +130,16 @@ public final class ClientEventHandler {
 	@SubscribeEvent
 	public void renderWorldEarly(EntityViewRenderEvent.FogColors event) {
 		if (HIT_CONNECTION.connection != null) {
-			Minecraft.getMinecraft().objectMouseOver = new RayTraceResult(HIT_CONNECTION);
+			Minecraft mc = Minecraft.getMinecraft();
+			HIT_CONNECTION.setWorld(mc.theWorld);
+			mc.objectMouseOver = new RayTraceResult(HIT_CONNECTION);
 		}
 	}
 
 	public static void updateHitConnection() {
 		Minecraft mc = Minecraft.getMinecraft();
 		Entity viewer = mc.getRenderViewEntity();
+		HIT_CONNECTION.setWorld(null);
 		if (mc.objectMouseOver != null && mc.theWorld != null && viewer != null) {
 			HitResult result = getHitConnection(mc.theWorld, viewer);
 			if (result != null) {
@@ -144,6 +147,7 @@ public final class ClientEventHandler {
 				if (result.intersection.getResult().hitVec.distanceTo(eyes) < mc.objectMouseOver.hitVec.distanceTo(eyes)) {
 					HIT_CONNECTION.connection = result.connection;
 					HIT_CONNECTION.intersection= result.intersection;
+					HIT_CONNECTION.setWorld(mc.theWorld);
 					mc.objectMouseOver = new RayTraceResult(HIT_CONNECTION);
 					return;
 				}
