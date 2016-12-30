@@ -29,7 +29,7 @@ public final class FairyLights {
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "2.0.3";
+	public static final String VERSION = "2.0.4";
 
 	@Instance(ID)
 	public static FairyLights instance;
