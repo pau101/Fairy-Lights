@@ -3,13 +3,18 @@ package com.pau101.fairylights.server.integration.jei;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.function.BiConsumer;
 
 import com.pau101.fairylights.util.crafting.GenericRecipe;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
 
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocus.Mode;
+import mezz.jei.api.recipe.wrapper.ICustomCraftingRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -17,13 +22,16 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
-public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper {
+public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper, ICustomCraftingRecipeWrapper {
+	private static final Random MEDIOCRE_SOLUTION = new Random(0x2100e79);
+
 	private final GenericRecipe recipe;
 
 	private final List<List<ItemStack>> inputs;
 
 	private final List<ItemStack> outputs;
 
+	// Only minimal stacks, ingredients that support multiple will only have first taken unless dictatesOutputType
 	private final List<List<ItemStack>> inputStacks;
 
 	private final int subtypeIndex;
@@ -101,12 +109,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		return recipe.getHeight();
 	}
 
-	@Override
-	public List<List<ItemStack>> getInputs() {
-		return inputs;
-	}
-
-	public List<List<ItemStack>> getInputs(ItemStack focus) {
+	public List<List<ItemStack>> getInputsForOutput(ItemStack focus) {
 		if (subtypeIndex == -1) {
 			return getInputs();	
 		}
@@ -124,14 +127,92 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		return inputs;
 	}
 
-	@Override
-	public List<ItemStack> getOutputs() {
-		return outputs;
+	private List<List<ItemStack>> getInputsForIngredient(ItemStack ingredient) {
+		InventoryCrafting crafting = new InventoryCrafting(new Container() {
+			@Override
+			public boolean canInteractWith(EntityPlayer player) {
+				return false;
+			}
+
+			@Override
+			public void onCraftMatrixChanged(IInventory inventory) {}
+		}, getWidth(), getHeight());
+		 for (int i = 0; i < this.inputs.size(); i++) {
+			 List<ItemStack> options = this.inputs.get(i);
+			 ItemStack matched = null;
+			 for (ItemStack o : options) {
+				 if (ingredient.getItem() == o.getItem() && ingredient.getItemDamage() == o.getItemDamage() && ItemStack.areItemStackTagsEqual(ingredient, o)) {
+					 matched = o;
+					 break;
+				 }
+			}
+			if (matched == null) {
+				continue;
+			}
+			crafting.clear();
+			for (int n = 0; n < inputStacks.size(); n++) {
+				List<ItemStack> stacks = inputStacks.get(n);
+				crafting.setInventorySlotContents(n, i == n ? matched : stacks.isEmpty() ? null : stacks.get(0));
+			}
+			if (recipe.matches(crafting, null)) {
+				List<List<ItemStack>> inputs = new ArrayList<>(this.inputs.size());
+				for (int n = 0; n < this.inputs.size(); n++) {
+					List<ItemStack> stacks = this.inputs.get(n);
+					inputs.add(i == n ? Collections.singletonList(matched) : stacks.isEmpty() ? Collections.singletonList(null) : stacks);
+				};
+				return inputs;
+			}
+		}
+		 return null;
+	}
+
+	public ItemStack getOutput(List<List<ItemStack>> inputs) {
+		InventoryCrafting crafting = new InventoryCrafting(new Container() {
+			@Override
+			public boolean canInteractWith(EntityPlayer player) {
+				return false;
+			}
+
+			@Override
+			public void onCraftMatrixChanged(IInventory inventory) {}
+		}, getWidth(), getHeight());
+		if (subtypeIndex == -1 || inputs.get(subtypeIndex).size() == 1) {
+			for (int i = 0; i < inputs.size(); i++) {
+				List<ItemStack> stacks = inputs.get(i);
+				crafting.setInventorySlotContents(i, stacks.isEmpty() ? null : stacks.get(0));
+			}
+			if (recipe.matches(crafting, null)) {
+				return recipe.getCraftingResult(crafting);
+			}
+		}
+		return outputs.get(MEDIOCRE_SOLUTION.nextInt(outputs.size()));
 	}
 
 	@Override
 	public void getIngredients(IIngredients ingredients) {
 		ingredients.setInputLists(ItemStack.class, inputs);
 		ingredients.setOutputs(ItemStack.class, outputs);
+	}
+
+	@Override
+	public void setRecipe(IRecipeLayout layout, IIngredients ingredients) {
+		IFocus<?> focus = layout.getFocus();
+		Object value = focus.getValue();
+		if (value instanceof ItemStack) {
+			ItemStack stack = (ItemStack) value;
+			List<List<ItemStack>> inputs = null;
+			if (focus.getMode() == Mode.OUTPUT) {
+				inputs = getInputsForOutput(stack);	
+			} else {
+				inputs = getInputsForIngredient(stack);
+			}
+			if (inputs != null) {
+				ingredients.setInputLists(ItemStack.class, inputs);
+				ingredients.setOutput(ItemStack.class, getOutput(inputs));
+			} else {
+				// Some Ingredient is picky with requirements, should allow a GenericRecipe to have a "smart input provider"
+			}
+		}
+		layout.getItemStacks().set(ingredients);
 	}
 }
