@@ -7,7 +7,6 @@ import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.crafting.GenericRecipeBuilder;
 
 import net.minecraft.block.BlockFlower.EnumFlowerType;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -65,7 +64,7 @@ public enum LightVariant {
 		.withShape(" I ", "SDS", "GPG")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
-		.withIngredient('S', Blocks.WOODEN_SLAB, BlockPlanks.EnumType.ACACIA.getMetadata())
+		.withIngredient('S', "slabWood")
 		.withIngredient('G', Blocks.TORCH)
 		.withIngredient('P', Blocks.PUMPKIN)
 	),
