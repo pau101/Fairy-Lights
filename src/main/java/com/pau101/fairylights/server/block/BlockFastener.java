@@ -167,10 +167,7 @@ public final class BlockFastener extends BlockContainer {
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn) {
 		EnumFacing facing = state.getValue(FACING);
 		BlockPos blockOnPos = pos.offset(facing.getOpposite());
-		if (!canPlaceBlockOnSide(world, blockOnPos, facing)) {
-			dropBlockAsItem(world, pos, world.getBlockState(pos), 0);
-			world.setBlockToAir(pos);
-		} else {
+		if (canPlaceBlockOnSide(world, blockOnPos, facing)) {
 			boolean receivingPower = world.isBlockPowered(pos);
 			boolean isPowered = state.getValue(TRIGGERED);
 			if (receivingPower && !isPowered) {
@@ -179,6 +176,9 @@ public final class BlockFastener extends BlockContainer {
 			} else if (!receivingPower && isPowered) {
 				world.setBlockState(pos, state.withProperty(TRIGGERED, false), 4);
 			}
+		} else {
+			dropBlockAsItem(world, pos, state, 0);
+			world.setBlockToAir(pos);
 		}
 	}
 

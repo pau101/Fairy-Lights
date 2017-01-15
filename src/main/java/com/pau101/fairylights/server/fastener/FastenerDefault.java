@@ -134,12 +134,10 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 
 	@Override
 	public void dropItems(World world, BlockPos pos) {
-		Iterator<Connection> connectionIterator = connections.values().iterator();
 		float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
 		float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
 		float offsetZ = world.rand.nextFloat() * 0.8F + 0.1F;
-		while (connectionIterator.hasNext()) {
-			Connection connection = connectionIterator.next();
+		for (Connection connection : connections.values()) {
 			if (connection.shouldDrop()) {
 				ItemStack stack = connection.getItemStack();
 				EntityItem entityItem = new EntityItem(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
