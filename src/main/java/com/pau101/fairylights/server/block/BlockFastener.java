@@ -28,6 +28,7 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -135,7 +136,7 @@ public final class BlockFastener extends BlockContainer {
 	@Nullable
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune) {
-		return null;
+		return Items.field_190931_a;
 	}
 
 	@Override
