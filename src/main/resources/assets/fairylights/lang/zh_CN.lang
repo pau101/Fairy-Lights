@@ -44,10 +44,10 @@ entity.fairylights.ladder.name=人字梯
 gui.editLetteredConnection.name=设置彩旗文字
 
 recipe.ingredient.tooltip=§7%s
-recipe.ingredient.auxiliary.optional=(Optional)
-recipe.hangingLights.glowstone=Causes lights to twinkle
-recipe.hangingLights.light=Add multiple lights to customize pattern
-recipe.pennantBunting.pennant=Add multiple pennants to customize pattern
+recipe.ingredient.auxiliary.optional=（设置）
+recipe.hangingLights.glowstone=使灯光闪烁
+recipe.hangingLights.light=添加多个灯来自定义样式
+recipe.pennantBunting.pennant=添加多个彩旗来自定义样式
 
 format.pattern.entry=  %1$s
 format.colored=%1$s %2$s
