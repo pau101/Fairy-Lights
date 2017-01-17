@@ -4,8 +4,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.ServerEventHandler;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
@@ -133,7 +131,6 @@ public final class BlockFastener extends BlockContainer {
 		return ItemStack.field_190927_a;
 	}
 
-	@Nullable
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune) {
 		return Items.field_190931_a;
@@ -165,7 +162,7 @@ public final class BlockFastener extends BlockContainer {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos neighborPos) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos) {
 		EnumFacing facing = state.getValue(FACING);
 		BlockPos blockOnPos = pos.offset(facing.getOpposite());
 		if (canPlaceBlockOnSide(world, blockOnPos, facing)) {

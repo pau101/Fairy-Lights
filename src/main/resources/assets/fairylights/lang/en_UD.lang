@@ -43,6 +43,12 @@ entity.fairylights.ladder.name=ɹǝppɐl-dǝʇS
 
 gui.editLetteredConnection.name=ʇxǝ┴ ᵷuᴉʇunq ʇǝS
 
+recipe.ingredient.tooltip=§7%s
+recipe.ingredient.auxiliary.optional=(lɐuoᴉʇdO)
+recipe.hangingLights.glowstone=ǝlʞuᴉʍʇ oʇ sʇɥᵷᴉl sǝsnɐƆ
+recipe.hangingLights.light=uɹǝʇʇɐd ǝzᴉɯoʇsnɔ oʇ sʇɥᵷᴉl ǝldᴉʇlnɯ pp∀
+recipe.pennantBunting.pennant=uɹǝʇʇɐd ǝzᴉɯoʇsnɔ oʇ sʇuɐuuǝd ǝldᴉʇlnɯ pp∀
+
 format.pattern.entry=%1$s  
 format.colored=%2$s %1$s
 format.text=%1$s :ʇxǝ┴

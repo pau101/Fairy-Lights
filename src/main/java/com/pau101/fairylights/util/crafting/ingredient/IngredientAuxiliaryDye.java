@@ -1,8 +1,8 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
 import java.util.Collections;
-import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.DyeOreDictUtils;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
 
@@ -34,7 +34,7 @@ public abstract class IngredientAuxiliaryDye<A> implements IngredientAuxiliary<A
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
+	public ImmutableList<ItemStack> getInputs() {
 		return DyeOreDictUtils.getAllDyes();
 	}
 }

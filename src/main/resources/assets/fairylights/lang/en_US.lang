@@ -43,6 +43,12 @@ entity.fairylights.ladder.name=Step-ladder
 
 gui.editLetteredConnection.name=Set Bunting Text
 
+recipe.ingredient.tooltip=§7%s
+recipe.ingredient.auxiliary.optional=(Optional)
+recipe.hangingLights.glowstone=Causes lights to twinkle
+recipe.hangingLights.light=Add multiple lights to customize pattern
+recipe.pennantBunting.pennant=Add multiple pennants to customize pattern
+
 format.pattern.entry=  %1$s
 format.colored=%1$s %2$s
 format.text=Text: %1$s

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
 
 import net.minecraft.item.ItemStack;
@@ -39,12 +40,34 @@ public class IngredientRegularList implements IngredientRegular {
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
-		List<ItemStack> inputs = new ArrayList<>();
+	public ImmutableList<ItemStack> getInputs() {
+		ImmutableList.Builder<ItemStack> inputs = ImmutableList.builder();
 		for (IngredientRegular ingredient : ingredients) {
 			inputs.addAll(ingredient.getInputs());
 		}
-		return inputs;
+		return inputs.build();
+	}
+
+	@Override
+	public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
+		List<List<ItemStack>> inputs = new ArrayList<>();
+		for (IngredientRegular ingredient : ingredients) {
+			ImmutableList<ImmutableList<ItemStack>> subInputs = ingredient.getInput(output);
+			for (int i = 0; i < subInputs.size(); i++) {
+				List<ItemStack> stacks;
+				if (i < inputs.size()) {
+					stacks = inputs.get(i);
+				} else {
+					inputs.add(stacks = new ArrayList<>());
+				}
+				stacks.addAll(subInputs.get(i));
+			}
+		}
+		ImmutableList.Builder<ImmutableList<ItemStack>> inputsImm = ImmutableList.builder();
+		for (List<ItemStack> list : inputs) {
+			inputsImm.add(ImmutableList.copyOf(list));
+		}
+		return inputsImm.build();
 	}
 
 	@Override

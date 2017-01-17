@@ -11,6 +11,7 @@ public class IngredientAuxiliaryListInert extends IngredientAuxiliaryList<Void> 
 	public IngredientAuxiliaryListInert(boolean isRequired, int limit, IngredientAuxiliary<?>... ingredients) {
 		super(isRequired, limit, ingredients);
 	}
+
 	public IngredientAuxiliaryListInert(boolean isRequired, IngredientAuxiliary<?>... ingredients) {
 		super(isRequired, ingredients);
 	}

@@ -1,9 +1,9 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
 
 import net.minecraft.block.Block;
@@ -27,7 +27,7 @@ public class IngredientRegularBasic implements IngredientRegular {
 	}
 
 	public IngredientRegularBasic(ItemStack stack) {
-		this.ingredient = Objects.requireNonNull(stack, "stack");
+		ingredient = Objects.requireNonNull(stack, "stack");
 		Objects.requireNonNull(stack.getItem(), "item");
 	}
 
@@ -37,7 +37,7 @@ public class IngredientRegularBasic implements IngredientRegular {
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
+	public ImmutableList<ItemStack> getInputs() {
 		return getMatchingSubtypes(ingredient);
 	}
 
