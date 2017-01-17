@@ -1,13 +1,16 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Multimap;
+import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
 
 public interface IngredientAuxiliary<A> extends Ingredient<IngredientAuxiliary<?>, MatchResultAuxiliary> {
 	boolean isRequired();
@@ -31,5 +34,12 @@ public interface IngredientAuxiliary<A> extends Ingredient<IngredientAuxiliary<?
 			consume(ax, result.getInput());
 		}
 		return finish(ax, output);
+	}
+
+	@Override
+	public default void addTooltip(List<String> tooltip) {
+		if (!isRequired()) {
+			tooltip.add(Utils.formatRecipeTooltip("recipe.ingredient.auxiliary.optional"));
+		}
 	}
 }

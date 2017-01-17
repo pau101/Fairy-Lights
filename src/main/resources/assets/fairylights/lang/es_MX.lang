@@ -43,6 +43,12 @@ entity.fairylights.ladder.name=Escalera de Tijera
 
 gui.editLetteredConnection.name=Establecer Texto Guirnalda
 
+recipe.ingredient.tooltip=§7%s
+recipe.ingredient.auxiliary.optional=(Opcionales)
+recipe.hangingLights.glowstone=Hace que las luces intermitente
+recipe.hangingLights.light=Agregar varios luces para personalizar el patrón
+recipe.pennantBunting.pennant=Agregar varios banderines para personalizar el patrón
+
 format.pattern.entry=  %1$s
 format.colored=%2$s %1$s
 format.text=Texto: %1$s

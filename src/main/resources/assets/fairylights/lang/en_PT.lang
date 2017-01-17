@@ -9,7 +9,7 @@ item.garland.name=Hangin' Ivy
 item.tinsel.name=Hangin' Metal Scraps
 
 item.fairyLights.pattern=Pattern:
-item.fairyLights.twinkle=Sparkly like Gold
+item.fairyLights.twinkle=Sparkly like gold
 item.fairyLights.tight=Pulled tight
 
 item.pennantBunting.name=Hangin' Flags
@@ -42,6 +42,12 @@ entity.fairylights.fastener.name=Fasten yer Ropes
 entity.fairylights.ladder.name=Steps for Climbin'
 
 gui.editLetteredConnection.name=Write yer Text
+
+recipe.ingredient.tooltip=§7%s
+recipe.ingredient.auxiliary.optional=(Optional)
+recipe.hangingLights.glowstone=Make yer lanterns sparkle
+recipe.hangingLights.light=Add some lanterns to customize yer pattern
+recipe.pennantBunting.pennant=Add some flags to customize yer pattern
 
 format.pattern.entry=  %1$s
 format.colored=%1$s %2$s

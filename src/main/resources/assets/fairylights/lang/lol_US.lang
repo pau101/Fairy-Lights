@@ -43,6 +43,12 @@ entity.fairylights.ladder.name=Hooman toy
 
 gui.editLetteredConnection.name=Paw paw Lettrz
 
+recipe.ingredient.tooltip=§7%s
+recipe.ingredient.auxiliary.optional=(Dont needs itz)
+recipe.hangingLights.glowstone=Mak litez rly perrrty
+recipe.hangingLights.light=Moreee litez teh perrtier
+recipe.pennantBunting.pennant=Moree pointee toyz fo mor playtim
+
 format.pattern.entry=  %1$s
 format.colored=%1$s %2$s
 format.text=Lettrz: %1$s

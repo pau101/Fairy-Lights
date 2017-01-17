@@ -143,6 +143,17 @@ public final class Mth {
         return r;
 	}
 
+	public static int lcm(int a, int b) {
+		return Math.abs(a * b) / gcd(a, b);
+	}
+
+	public static int gcd(int a, int b) {
+		while (b != 0) {
+			b = mod(a, a = b);
+		}
+		return a;
+	}
+
 	public static double angle(Vec3d a, Vec3d b) {
 		Objects.requireNonNull(a, "a vector");
 		Objects.requireNonNull(b, "b vector");
@@ -158,8 +169,9 @@ public final class Mth {
 
 	public static <T> int[] invertMap(T[] map, ToIntFunction<T> asInt) {
 		for (T v : map) {
-			if (asInt.applyAsInt(v) >= map.length) {
-				throw new IllegalArgumentException("Must be a perfect map: " + v + " out of range");
+			int vp = asInt.applyAsInt(v);
+			if (vp < 0 || vp >= map.length) {
+				throw new IllegalArgumentException("Must be a perfect map, " + v + " out of range with " + vp);
 			}
 		}
 		int[] inverse = new int[map.length];

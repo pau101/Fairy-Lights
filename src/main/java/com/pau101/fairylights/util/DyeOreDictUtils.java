@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -53,9 +56,14 @@ public final class DyeOreDictUtils {
 		return -1;
 	}
 
-	public static List<ItemStack> getAllDyes() {
+	public static ImmutableList<ItemStack> getDyes(EnumDyeColor color) {
 		initDyeItemStacks();
-		return new ArrayList<>(allDyeItemStacks);
+		return Utils.copyItemStacks(dyeItemStacks[color.getDyeDamage()]);
+	}
+
+	public static ImmutableList<ItemStack> getAllDyes() {
+		initDyeItemStacks();
+		return Utils.copyItemStacks(allDyeItemStacks);
 	}
 
 	private static void initDyeItemStacks() {
