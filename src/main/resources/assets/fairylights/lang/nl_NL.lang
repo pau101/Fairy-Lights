@@ -45,9 +45,9 @@ gui.editLetteredConnection.name=Stel letterslinger tekst in:
 
 recipe.ingredient.tooltip=§7%s
 recipe.ingredient.auxiliary.optional=(Facultatief)
-recipe.hangingLights.glowstone=Causes lights to twinkle
-recipe.hangingLights.light=Add multiple lights to customize pattern
-recipe.pennantBunting.pennant=Add multiple pennants to customize pattern
+recipe.hangingLights.glowstone=Hierdoor zullen lampjes fonkelen
+recipe.hangingLights.light=Voeg lampjes toe om het patroon te veranderen
+recipe.pennantBunting.pennant=Voeg vlaggetjes toe om het patroon te veranderen
 
 format.pattern.entry=  %1$s
 format.colored=%1$s %2$s
