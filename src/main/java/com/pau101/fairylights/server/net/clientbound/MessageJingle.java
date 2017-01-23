@@ -65,7 +65,7 @@ public final class MessageJingle extends MessageConnection<Connection> {
 	@Override
 	protected void process(MessageContext ctx, Connection connection) {
 		if (jingle != null && connection.getType() == ConnectionType.HANGING_LIGHTS) {
-			((ConnectionHangingLights) connection).play(jingle, lightOffset);
+			((ConnectionHangingLights) connection).play(library, jingle, lightOffset);
 		}
 	}
 }

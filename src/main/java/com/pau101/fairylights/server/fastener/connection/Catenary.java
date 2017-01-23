@@ -8,8 +8,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public final class Catenary {
-	private static final CubicBezier SLACK_CURVE = new CubicBezier(0.495F, 0.505F, 0.495F, 0.505F);
-
 	private static final int MIN_VERTEX_COUNT = 8;
 
 	private static final int SCALE = 16;
@@ -38,22 +36,19 @@ public final class Catenary {
 		return length;
 	}
 
+	public static Catenary from(Vec3d direction, CubicBezier bezier, float slack) {
+		float dist = (float) direction.lengthVector();
+		float length;
+		if (slack < 1e-2 || Math.abs(direction.xCoord) < 1e-6 && Math.abs(direction.zCoord) < 1e-6) {
+			length = dist;
+		} else {
+			length = dist + (lengthFunc(bezier, dist) - dist) * slack;
+		}
+		return from(direction, length);
+	}
+
 	private static float lengthFunc(CubicBezier bezier, double length) {
 		return bezier.eval(MathHelper.clamp_float((float) length / Connection.MAX_LENGTH, 0, 1)) * Connection.MAX_LENGTH;
-	}
-
-	public static Catenary from(Vec3d direction, CubicBezier bezier) {
-		return from(direction, lengthFunc(bezier, (float) direction.lengthVector() - 1e-6F));
-	}
-
-	public static Catenary from(Vec3d direction, boolean tight) {
-		float length;
-		 if (tight || Math.abs(direction.xCoord) < 1e-6 && Math.abs(direction.zCoord) < 1e-6) {
-			 length = (float) direction.lengthVector() - 1e-6F;
-		 } else {
-			 length = lengthFunc(SLACK_CURVE, direction.lengthVector() - 1e-6F);
-		 }
-		return from(direction, length);
 	}
 
 	public static Catenary from(Vec3d direction, float ropeLength) {
@@ -68,24 +63,19 @@ public final class Catenary {
 		float[] yCoords = result[1];
 		Segment[] segments = new Segment[xCoords.length - 1];
 		float rotationCos = MathHelper.cos(rotation), rotationSin = MathHelper.sin(rotation);
-		/*/
-		double mag = Math.sqrt(direction.xCoord * direction.xCoord + direction.zCoord * direction.zCoord);
-		double perpX = -direction.zCoord / mag, perpZ = direction.xCoord / mag;
-		double t = System.currentTimeMillis() / 200D;
-		//*/
+		/*
+		 * / double mag = Math.sqrt(direction.xCoord * direction.xCoord + direction.zCoord * direction.zCoord); double perpX = -direction.zCoord / mag, perpZ =
+		 * direction.xCoord / mag; double t = System.currentTimeMillis() / 200D; //
+		 */
 		float length = 0;
 		Segment prev = null;
 		for (int i = 0, end = xCoords.length - 1;; i++) {
-			/*/
-			int dist = Math.min(i, xCoords.length - i - 1);
-			double mult = Math.min(dist, 6) / 6D;
-			double dev = Math.sin(t + i * 0.6) * 8 * mult;
-			double devY = Math.sin(t + Math.PI / 2 + i * 0.6) * 8 * mult;
-			//*/
-			Vec3d vertex = new Vec3d(
-				xCoords[i] * rotationCos * SCALE/* + perpX * dev*/,
-				yCoords[i] * SCALE/* + devY*/,
-				xCoords[i] * rotationSin * SCALE/* + perpZ * dev*/
+			/*
+			 * / int dist = Math.min(i, xCoords.length - i - 1); double mult = Math.min(dist, 6) / 6D; double dev = Math.sin(t + i * 0.6) * 8 * mult; double
+			 * devY = Math.sin(t + Math.PI / 2 + i * 0.6) * 8 * mult; //
+			 */
+			Vec3d vertex = new Vec3d(xCoords[i] * rotationCos * SCALE/* + perpX * dev */, yCoords[i] * SCALE/* + devY */,
+				xCoords[i] * rotationSin * SCALE/* + perpZ * dev */
 			);
 			if (i > 0) {
 				prev.connectTo(vertex);

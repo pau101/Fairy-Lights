@@ -52,16 +52,17 @@ public abstract class ModelConnection<T extends Connection> extends ModelBase {
 		Segment[] segmentsOld = prevCatenary.getSegments();
 		GlStateManager.color(1, 1, 1);
 		GlStateManager.disableRescaleNormal();
-		for (int i = 0, count = Math.min(segments.length, segmentsOld.length); i < count; i++) {
+		for (int i = 0, count = segments.length; i < count; i++) {
 			float v = i / (float) segments.length;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight * (1 - v) + toSunlight * v, moonlight * (1 - v) + toMoonlight * v);
 			Segment segment = segments[i];
 			Vec3d rotation = segment.getRotation();
 			double length = segment.getLength();
 			Vec3d vertex = segment.getStart();
-			rotation = Mth.lerpAngles(rotation, segmentsOld[i].getRotation(), 1 - delta);
-			length = length * delta + segmentsOld[i].getLength() * (1 - delta);
-			vertex = Mth.lerp(vertex, segmentsOld[i].getStart(), 1 - delta);
+			Segment old = i < segmentsOld.length ? segmentsOld[i] : segment;
+			rotation = Mth.lerpAngles(rotation, old.getRotation(), 1 - delta);
+			length = length * delta + old.getLength() * (1 - delta);
+			vertex = Mth.lerp(vertex, old.getStart(), 1 - delta);
 			renderSegment(connection, i, rotation.yCoord, rotation.xCoord, length, vertex.xCoord, vertex.yCoord, vertex.zCoord, delta);
 		}
 		GlStateManager.enableRescaleNormal();

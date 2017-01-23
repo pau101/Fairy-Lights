@@ -3,14 +3,12 @@ package com.pau101.fairylights.server.fastener.connection.type.garland;
 import java.util.UUID;
 
 import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.item.ItemLight;
 
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public final class ConnectionGarlandTinsel extends Connection {
@@ -40,19 +38,15 @@ public final class ConnectionGarlandTinsel extends Connection {
 	}
 
 	@Override
-	public Catenary createCatenary(Vec3d to) {
-		return Catenary.from(to, false);
-	}
-
-	@Override
 	public NBTTagCompound serializeLogic() {
-		NBTTagCompound compound = new NBTTagCompound();
+		NBTTagCompound compound = super.serializeLogic();
 		compound.setByte("color", (byte) color.getDyeDamage());
 		return compound;
 	}
 
 	@Override
 	public void deserializeLogic(NBTTagCompound compound) {
+		super.deserializeLogic(compound);
 		color = EnumDyeColor.byDyeDamage(compound.getByte("color"));
 	}
 }

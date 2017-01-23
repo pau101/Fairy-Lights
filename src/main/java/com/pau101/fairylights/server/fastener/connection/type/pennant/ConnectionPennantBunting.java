@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
 import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
 import com.pau101.fairylights.server.fastener.connection.PlayerAction;
@@ -15,7 +14,7 @@ import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingF
 import com.pau101.fairylights.server.fastener.connection.type.Lettered;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.sound.FLSounds;
-import com.pau101.fairylights.util.DyeOreDictUtils;
+import com.pau101.fairylights.util.OreDictUtils;
 import com.pau101.fairylights.util.styledstring.StyledString;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -58,11 +57,6 @@ public final class ConnectionPennantBunting extends ConnectionHangingFeature<Pen
 	}
 
 	@Override
-	public Catenary createCatenary(Vec3d to) {
-		return Catenary.from(to, false);
-	}
-
-	@Override
 	public void processClientAction(EntityPlayer player, PlayerAction action, Intersection intersection) {
 		if (openTextGui(player, action, intersection)) {
 			super.processClientAction(player, action, intersection);
@@ -71,10 +65,10 @@ public final class ConnectionPennantBunting extends ConnectionHangingFeature<Pen
 
 	@Override
 	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, EnumHand hand) {
-		if (featureType == FEATURE && DyeOreDictUtils.isDye(heldStack)) {
+		if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
 			int index = feature % pattern.size();
 			EnumDyeColor patternColor = pattern.get(index);
-			EnumDyeColor color = EnumDyeColor.byDyeDamage(DyeOreDictUtils.getDyeMetadata(heldStack));
+			EnumDyeColor color = EnumDyeColor.byDyeDamage(OreDictUtils.getDyeMetadata(heldStack));
 			if (patternColor != color) {
 				pattern.set(index, color);
 				dataUpdateState = true;
@@ -129,7 +123,7 @@ public final class ConnectionPennantBunting extends ConnectionHangingFeature<Pen
 
 	@Override
 	public NBTTagCompound serializeLogic() {
-		NBTTagCompound compound = new NBTTagCompound();
+		NBTTagCompound compound = super.serializeLogic();
 		NBTTagList patternList = new NBTTagList();
 		for (EnumDyeColor color : pattern) {
 			NBTTagCompound colorCompound = new NBTTagCompound();
@@ -143,6 +137,7 @@ public final class ConnectionPennantBunting extends ConnectionHangingFeature<Pen
 
 	@Override
 	public void deserializeLogic(NBTTagCompound compound) {
+		super.deserializeLogic(compound);
 		pattern = new ArrayList<>();
 		NBTTagList patternList = compound.getTagList("pattern", NBT.TAG_COMPOUND);
 		for (int i = 0; i < patternList.tagCount(); i++) {

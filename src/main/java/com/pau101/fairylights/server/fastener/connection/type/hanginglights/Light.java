@@ -102,24 +102,26 @@ public final class Light extends HangingFeature<Light> {
 	}
 
 	public void jingle(World world, Vec3d origin, int note, EnumParticleTypes particle) {
-		jingle(world, origin, note, particle, FLSounds.JINGLE_BELL);
+		jingle(world, origin, note, FLSounds.JINGLE_BELL, particle);
 	}
 
-	public void jingle(World world, Vec3d origin, int note, EnumParticleTypes particle, SoundEvent sound) {
+	public void jingle(World world, Vec3d origin, int note, SoundEvent sound, EnumParticleTypes... particles) {
 		if (world.isRemote) {
 			double x = origin.xCoord + point.xCoord / 16;
 			double y = origin.yCoord + point.yCoord / 16;
 			double z = origin.zCoord + point.zCoord / 16;
-			double vx = world.rand.nextGaussian();
-			double vy = world.rand.nextGaussian();
-			double vz = world.rand.nextGaussian();
-			double t = world.rand.nextDouble() * (0.4 - 0.2) + 0.2;
-			double mag = t / Math.sqrt(vx * vx + vy * vy + vz * vz);
-			vx *= mag;
-			vy *= mag;
-			vz *= mag;
+			for (EnumParticleTypes particle : particles) {
+				double vx = world.rand.nextGaussian();
+				double vy = world.rand.nextGaussian();
+				double vz = world.rand.nextGaussian();
+				double t = world.rand.nextDouble() * (0.4 - 0.2) + 0.2;
+				double mag = t / Math.sqrt(vx * vx + vy * vy + vz * vz);
+				vx *= mag;
+				vy *= mag;
+				vz *= mag;
+				world.spawnParticle(particle, x + vx, y + vy, z + vz, particle == EnumParticleTypes.NOTE ? note / 24D : 0, 0, 0);	
+			}
 			world.playSound(x, y, z, sound, SoundCategory.BLOCKS, Configurator.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
-			world.spawnParticle(particle, x + vx, y + vy, z + vz, particle == EnumParticleTypes.NOTE ? note / 24D : 0, 0, 0);
 			startSwaying(world.rand.nextBoolean());
 		}
 	}

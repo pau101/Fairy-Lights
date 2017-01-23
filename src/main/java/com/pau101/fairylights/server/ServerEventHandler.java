@@ -292,7 +292,7 @@ public final class ServerEventHandler {
 		Jingle jingle = library.getRandom(world.rand, lights.length);
 		if (jingle != null) {
 			int lightOffset = lights.length / 2 - jingle.getRange() / 2;
-			hangingLights.play(jingle, lightOffset);
+			hangingLights.play(library, jingle, lightOffset);
 			ServerProxy.sendToPlayersWatchingChunk(new MessageJingle(connection, lightOffset, library, jingle), world, connection.getFastener().getPos());
 			return true;
 		}

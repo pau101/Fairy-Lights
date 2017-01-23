@@ -10,15 +10,15 @@ import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.ClientEventHandler;
 import com.pau101.fairylights.client.entity.EntityLightSource;
 import com.pau101.fairylights.server.fastener.Fastener;
-import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
 import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingFeature;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.jingle.Jingle;
+import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.jingle.JinglePlayer;
 import com.pau101.fairylights.server.sound.FLSounds;
-import com.pau101.fairylights.util.DyeOreDictUtils;
+import com.pau101.fairylights.util.OreDictUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,9 +37,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	private boolean twinkle;
 
-	private boolean tight;
-
-	private final JinglePlayer jinglePlayer = new JinglePlayer();
+	private JinglePlayer jinglePlayer = new JinglePlayer();
 
 	@Nullable
 	private List<EntityLightSource> lightSources;
@@ -62,26 +60,21 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 		return ConnectionType.HANGING_LIGHTS;
 	}
 
-	@Override
-	public Catenary createCatenary(Vec3d to) {
-		return Catenary.from(to, tight);
-	}
-
 	@Nullable
 	public Jingle getPlayingJingle() {
 		return jinglePlayer.getJingle();
 	}
 
-	public void play(Jingle jingle, int lightOffset) {
-		jinglePlayer.start(jingle, lightOffset);
+	public void play(JingleLibrary library, Jingle jingle, int lightOffset) {
+		jinglePlayer.start(library, jingle, lightOffset);
 	}
 
 	@Override
 	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, EnumHand hand) {
-		if (featureType == FEATURE && DyeOreDictUtils.isDye(heldStack)) {
+		if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
 			int index = feature % pattern.size();
 			ColoredLightVariant light = pattern.get(index);
-			EnumDyeColor color = EnumDyeColor.byDyeDamage(DyeOreDictUtils.getDyeMetadata(heldStack));
+			EnumDyeColor color = EnumDyeColor.byDyeDamage(OreDictUtils.getDyeMetadata(heldStack));
 			if (light.getColor() != color) {
 				pattern.set(index, light.withColor(color));
 				dataUpdateState = true;
@@ -195,20 +188,39 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	}
 
 	@Override
+	public NBTTagCompound serialize() {
+		NBTTagCompound compound = super.serialize();
+		compound.setTag("jinglePlayer", jinglePlayer.serialize());
+		return compound;
+	}
+
+	@Override
+	public void deserialize(NBTTagCompound compound) {
+		super.deserialize(compound);
+		if (jinglePlayer == null) {
+			jinglePlayer = new JinglePlayer();
+		}
+		if (!jinglePlayer.isPlaying()) {
+			jinglePlayer.deserialize(compound.getCompoundTag("jinglePlayer"));
+		}
+	}
+
+	@Override
 	public NBTTagCompound serializeLogic() {
-		NBTTagCompound compound = new NBTTagCompound();
+		NBTTagCompound compound = super.serializeLogic();
 		NBTTagList tagList = new NBTTagList();
 		for (ColoredLightVariant light : pattern) {
 			tagList.appendTag(light.serialize());
 		}
 		compound.setTag("pattern", tagList);
 		compound.setBoolean("twinkle", twinkle);
-		compound.setBoolean("tight", tight);
+		compound.setBoolean("tight", slack == 0);
 		return compound;
 	}
 
 	@Override
 	public void deserializeLogic(NBTTagCompound compound) {
+		super.deserializeLogic(compound);
 		NBTTagList patternList = compound.getTagList("pattern", NBT.TAG_COMPOUND);
 		pattern = new ArrayList<>();
 		for (int i = 0; i < patternList.tagCount(); i++) {
@@ -216,6 +228,8 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 			pattern.add(ColoredLightVariant.from(lightCompound));
 		}
 		twinkle = compound.getBoolean("twinkle");
-		tight = compound.getBoolean("tight");
+		if (compound.getBoolean("tight")) {
+			slack = 0;
+		}
 	}
 }

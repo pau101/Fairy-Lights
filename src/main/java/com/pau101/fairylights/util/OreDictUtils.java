@@ -12,8 +12,8 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public final class DyeOreDictUtils {
-	private DyeOreDictUtils() {}
+public final class OreDictUtils {
+	private OreDictUtils() {}
 
 	private static final String[] DYE_NAMES = { "dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan", "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange", "dyeWhite" };
 
@@ -64,6 +64,10 @@ public final class DyeOreDictUtils {
 	public static ImmutableList<ItemStack> getAllDyes() {
 		initDyeItemStacks();
 		return Utils.copyItemStacks(allDyeItemStacks);
+	}
+
+	public static boolean matches(ItemStack stack, String name) {
+		return OreDictionary.containsMatch(false, OreDictionary.getOres(name), stack);
 	}
 
 	private static void initDyeItemStacks() {

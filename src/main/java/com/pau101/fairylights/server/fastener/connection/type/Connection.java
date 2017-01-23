@@ -23,17 +23,22 @@ import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
 import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.server.net.serverbound.MessageConnectionInteraction;
 import com.pau101.fairylights.server.sound.FLSounds;
+import com.pau101.fairylights.util.CubicBezier;
 import com.pau101.fairylights.util.NBTSerializable;
+import com.pau101.fairylights.util.OreDictUtils;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class Connection implements NBTSerializable {
 	public static final int MAX_LENGTH = 32;
@@ -41,6 +46,10 @@ public abstract class Connection implements NBTSerializable {
 	public static final double PULL_RANGE = 5;
 
 	public static final FeatureType CORD_FEATURE = FeatureType.create("cord");
+
+	private static final CubicBezier SLACK_CURVE = new CubicBezier(0.495F, 0.505F, 0.495F, 0.505F);
+
+	private static final float MAX_SLACK = 3;
 
 	private final Fastener<?> fastener;
 
@@ -52,10 +61,13 @@ public abstract class Connection implements NBTSerializable {
 
 	private boolean isOrigin;
 
+	@Nullable
 	private Catenary catenary;
 
 	@Nullable
 	private Catenary prevCatenary;
+
+	protected float slack = 1;
 
 	private final ConnectionCollision collision = new ConnectionCollision();
 
@@ -94,8 +106,9 @@ public abstract class Connection implements NBTSerializable {
 		return catenary;
 	}
 
+	@Nullable
 	public final Catenary getPrevCatenary() {
-		return Objects.firstNonNull(prevCatenary, catenary);
+		return prevCatenary == null ? catenary : prevCatenary;
 	}
 
 	public void setWorld(World world) {
@@ -160,9 +173,7 @@ public abstract class Connection implements NBTSerializable {
 		if (removeListeners == null) {
 			removeListeners = new ArrayList<>();
 		}
-		if (!removeListeners.contains(listener)) {
-			removeListeners.add(listener);
-		}
+		removeListeners.add(listener);
 	}
 
 	public final void remove() {
@@ -199,21 +210,48 @@ public abstract class Connection implements NBTSerializable {
 	}
 
 	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, EnumHand hand) {
-		if (heldStack.getItem() instanceof ItemConnection && destination.isLoaded(world)) {
-			Fastener<?> dest = destination.get(world);
-			fastener.removeConnection(this);
-			dest.removeConnection(uuid);
-			if (shouldDrop()) {
-				player.inventory.addItemStackToInventory(getItemStack());
+		Item item = heldStack.getItem();
+		if (item instanceof ItemConnection) {
+			if (destination.isLoaded(world)) {
+				replace(player, hit, heldStack);
+				return true;
 			}
-			NBTTagCompound data = Objects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
-			ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
-			fastener.connectWith(world, dest, type, data).onConnect(player.worldObj, player, heldStack);
-			world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
-			heldStack.func_190918_g(1);
-			return true;
+		} else if (OreDictUtils.matches(heldStack, "string")) {
+			if (slacken(hit, heldStack, 0.2F)) {
+				return true;
+			}
+		} else if (OreDictUtils.matches(heldStack, "stickWood")) {
+			if (slacken(hit, heldStack, -0.2F)) {
+				return true;
+			}
 		}
 		return false;
+	}
+
+	private void replace(EntityPlayer player, Vec3d hit, ItemStack heldStack) {
+		Fastener<?> dest = destination.get(world);
+		fastener.removeConnection(this);
+		dest.removeConnection(uuid);
+		if (shouldDrop()) {
+			player.inventory.addItemStackToInventory(getItemStack());
+		}
+		NBTTagCompound data = Objects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
+		ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
+		fastener.connectWith(world, dest, type, data).onConnect(player.worldObj, player, heldStack);
+		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
+	}
+
+	private boolean slacken(Vec3d hit, ItemStack heldStack, float amount) {
+		if (slack <= 0 && amount < 0 || slack >= MAX_SLACK && amount > 0) {
+			return false;
+		}
+		slack = MathHelper.clamp_float(slack + amount, 0, MAX_SLACK);
+		if (slack < 1e-2F) {
+			slack = 0;
+		}
+		dataUpdateState = true;
+		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_STRETCH, SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - slack) * 0.4F);
+		return true;
 	}
 
 	public void onConnect(World world, EntityPlayer user, ItemStack heldStack) {}
@@ -228,12 +266,6 @@ public abstract class Connection implements NBTSerializable {
 
 	public abstract ConnectionType getType();
 
-	public abstract Catenary createCatenary(Vec3d to);
-
-	public abstract NBTTagCompound serializeLogic();
-
-	public abstract void deserializeLogic(NBTTagCompound compound);
-
 	public final void update(Vec3d from) {
 		prevCatenary = catenary;
 		destination.update(world, fastener.getPos());
@@ -244,7 +276,7 @@ public abstract class Connection implements NBTSerializable {
 			if (updateCatenary || dest.isDynamic() || fastener.isDynamic()) {
 				Vec3d vec = point.subtract(from);
 				if (vec.lengthVector() > 1e-6) {
-					catenary = createCatenary(vec);
+					catenary = Catenary.from(vec, SLACK_CURVE, slack);
 					onCalculateCatenary();
 					collision.update(this, from);
 				}
@@ -296,22 +328,30 @@ public abstract class Connection implements NBTSerializable {
 	}
 
 	@Override
-	public final NBTTagCompound serialize() {
+	public NBTTagCompound serialize() {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setBoolean("isOrigin", isOrigin);
 		compound.setTag("destination", FastenerType.serialize(destination));
 		compound.setTag("logic", serializeLogic());
+		compound.setFloat("slack", slack);
 		return compound;
 	}
 
 	@Override
-	public final void deserialize(NBTTagCompound compound) {
+	public void deserialize(NBTTagCompound compound) {
 		isOrigin = compound.getBoolean("isOrigin");
 		destination = FastenerType.deserialize(compound.getCompoundTag("destination"));
 		if (world != null) {
 			destination.update(world, fastener.getPos());
 		}
 		deserializeLogic(compound.getCompoundTag("logic"));
+		slack = compound.hasKey("slack", NBT.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;
 		updateCatenary = true;
 	}
+
+	public NBTTagCompound serializeLogic() {
+		return new NBTTagCompound();
+	}
+
+	public void deserializeLogic(NBTTagCompound compound) {}
 }
