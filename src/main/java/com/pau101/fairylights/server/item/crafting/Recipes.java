@@ -8,8 +8,8 @@ import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.item.LightVariant;
-import com.pau101.fairylights.util.DyeOreDictUtils;
 import com.pau101.fairylights.util.Mth;
+import com.pau101.fairylights.util.OreDictUtils;
 import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.crafting.GenericRecipeBuilder;
 import com.pau101.fairylights.util.crafting.ingredient.Ingredient;
@@ -37,7 +37,7 @@ public final class Recipes {
 	public static final IngredientRegular LIGHT_DYE = new IngredientRegularDye() {
 		@Override
 		public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-			return ImmutableList.of(DyeOreDictUtils.getDyes(ItemLight.getLightColor(output.getItemDamage())));
+			return ImmutableList.of(OreDictUtils.getDyes(ItemLight.getLightColor(output.getItemDamage())));
 		}
 
 		@Override
@@ -47,7 +47,7 @@ public final class Recipes {
 
 		@Override
 		public void matched(ItemStack ingredient, ItemStack output) {
-			output.setItemDamage(Mth.floorInterval(output.getMetadata(), ItemLight.COLOR_COUNT) + DyeOreDictUtils.getDyeMetadata(ingredient));
+			output.setItemDamage(Mth.floorInterval(output.getMetadata(), ItemLight.COLOR_COUNT) + OreDictUtils.getDyeMetadata(ingredient));
 		}
 	};
 
@@ -325,7 +325,7 @@ public final class Recipes {
 				if (compound == null) {
 					return ImmutableList.of();
 				}
-				return ImmutableList.of(DyeOreDictUtils.getDyes(EnumDyeColor.byDyeDamage(compound.getByte("color"))));
+				return ImmutableList.of(OreDictUtils.getDyes(EnumDyeColor.byDyeDamage(compound.getByte("color"))));
 			}
 
 			@Override
@@ -335,7 +335,7 @@ public final class Recipes {
 
 			@Override
 			public void matched(ItemStack ingredient, ItemStack output) {
-				output.getTagCompound().setByte("color", (byte) DyeOreDictUtils.getDyeMetadata(ingredient));
+				output.getTagCompound().setByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
 			}
 		})
 		.build();
@@ -406,7 +406,7 @@ public final class Recipes {
 		.withIngredient('D', new IngredientRegularDye() {
 			@Override
 			public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-				return ImmutableList.of(DyeOreDictUtils.getDyes(EnumDyeColor.byDyeDamage(output.getItemDamage())));
+				return ImmutableList.of(OreDictUtils.getDyes(EnumDyeColor.byDyeDamage(output.getItemDamage())));
 			}
 
 			@Override
@@ -416,7 +416,7 @@ public final class Recipes {
 
 			@Override
 			public void matched(ItemStack ingredient, ItemStack output) {
-				output.setItemDamage(DyeOreDictUtils.getDyeMetadata(ingredient));
+				output.setItemDamage(OreDictUtils.getDyeMetadata(ingredient));
 			}
 		})
 		.build();

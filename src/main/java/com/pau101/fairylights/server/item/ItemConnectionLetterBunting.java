@@ -20,7 +20,7 @@ public class ItemConnectionLetterBunting extends ItemConnection {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> stringLines, boolean advanced) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
 		if (!stack.hasTagCompound()) {
 			return;
 		}
@@ -29,7 +29,7 @@ public class ItemConnectionLetterBunting extends ItemConnection {
 			NBTTagCompound text = compound.getCompoundTag("text");
 			String val = text.getString("value");
 			if (val.length() > 0) {
-				stringLines.add(I18n.translateToLocalFormatted("format.text", val));
+				tooltip.add(I18n.translateToLocalFormatted("format.text", val));
 			}
 		}
 	}

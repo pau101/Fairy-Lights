@@ -25,26 +25,22 @@ public enum FastenerType {
 		}
 	}
 
-	private Supplier<? extends FastenerAccessor> supplier;
+	private final Supplier<? extends FastenerAccessor> supplier;
 
-	private String name;
+	private final String name;
 
 	private FastenerType(Supplier<? extends FastenerAccessor> supplier) {
 		this.supplier = supplier;
 		name = name().toLowerCase(Locale.ENGLISH);
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public FastenerAccessor createAccessor() {
+	public final FastenerAccessor createAccessor() {
 		return supplier.get();
 	}
 
 	public static NBTTagCompound serialize(FastenerAccessor accessor) {
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("type", accessor.getType().getName());
+		compound.setString("type", accessor.getType().name);
 		compound.setTag("data", accessor.serialize());
 		return compound;
 	}

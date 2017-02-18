@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Objects;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
@@ -43,7 +41,6 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 
 	private Letter[] letters = new Letter[0];
 
-	@Nullable
 	private Letter[] prevLetters;
 
 	public ConnectionLetterBunting(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
@@ -71,11 +68,6 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 	@Override
 	public ConnectionType getType() {
 		return ConnectionType.LETTER_BUNTING;
-	}
-
-	@Override
-	public Catenary createCatenary(Vec3d to) {
-		return Catenary.from(to, false);
 	}
 
 	@Override
@@ -212,13 +204,14 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 
 	@Override
 	public NBTTagCompound serializeLogic() {
-		NBTTagCompound compound = new NBTTagCompound();
+		NBTTagCompound compound = super.serializeLogic();
 		compound.setTag("text", StyledString.serialize(text));
 		return compound;
 	}
 
 	@Override
 	public void deserializeLogic(NBTTagCompound compound) {
+		super.deserializeLogic(compound);
 		text = StyledString.deserialize(compound.getCompoundTag("text"));
 	}
 }
