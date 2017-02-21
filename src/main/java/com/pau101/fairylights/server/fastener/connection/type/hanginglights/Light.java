@@ -40,8 +40,9 @@ public final class Light extends HangingFeature<Light> {
 
 	private boolean swayDirection;
 
-	public Light(int index, Vec3d point, Vec3d rotation) {
+	public Light(int index, Vec3d point, Vec3d rotation, boolean isOn) {
 		super(index, point, rotation);
+		isTwinkling = !isOn;
 	}
 
 	public boolean isTwinkling() {
@@ -138,20 +139,27 @@ public final class Light extends HangingFeature<Light> {
 		swaying = false;
 	}
 
-	public void tick(ConnectionHangingLights lights, boolean twinkle) {
+	public void tick(ConnectionHangingLights lights, boolean twinkle, boolean isOn) {
 		prevRotation = rotation;
 		prevTwinkleTime = twinkleTime;
-		isTwinkling = twinkle;
-		if (isTwinkling || variant.alwaysDoTwinkleLogic()) {
-			if (lights.getWorld().rand.nextFloat() < getVariant().getTwinkleChance() && twinkleTime == NORMAL_LIGHT) {
-				twinkleTime = 0;
-			}
-			if (twinkleTime >= 0) {
-				twinkleTime++;
-			}
-			if (twinkleTime == variant.getTickCycle()) {
+		if (isOn) {
+			if (isTwinkling || variant.alwaysDoTwinkleLogic()) {
+				if (lights.getWorld().rand.nextFloat() < getVariant().getTwinkleChance() && twinkleTime == NORMAL_LIGHT) {
+					twinkleTime = 0;
+				}
+				if (twinkleTime >= 0) {
+					twinkleTime++;
+				}
+				if (twinkleTime == variant.getTickCycle()) {
+					twinkleTime = NORMAL_LIGHT;
+				}
+			} else {
 				twinkleTime = NORMAL_LIGHT;
 			}
+			isTwinkling = twinkle;
+		} else {
+			twinkleTime = NORMAL_LIGHT;
+			isTwinkling = true;
 		}
 		if (swaying) {
 			if (sway >= SWAY_CYCLE) {

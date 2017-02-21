@@ -48,7 +48,7 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 	}
 
 	@Override
-	protected void onUpdateEarly() {
+	protected void updatePrev() {
 		prevFeatures = features;
 	}
 
@@ -99,7 +99,7 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 
 	protected void onBeforeUpdateFeatures(int size) {}
 
-	protected void onAfterUpdateFeatures(int index) {}
+	protected void onAfterUpdateFeatures(int size) {}
 
 	@Override
 	public void addCollision(List<Collidable> collision, Vec3d origin) {

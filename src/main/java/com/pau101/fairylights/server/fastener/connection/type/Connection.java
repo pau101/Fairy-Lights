@@ -51,7 +51,7 @@ public abstract class Connection implements NBTSerializable {
 
 	private static final float MAX_SLACK = 3;
 
-	private final Fastener<?> fastener;
+	protected final Fastener<?> fastener;
 
 	private final UUID uuid;
 
@@ -169,6 +169,17 @@ public abstract class Connection implements NBTSerializable {
 		return 0.0625F;
 	}
 
+	public final boolean isDynamic() {
+		if (destination.isLoaded(world)) {
+			return isDynamic(destination.get(world));
+		}
+		return fastener.isDynamic();
+	}
+
+	private boolean isDynamic(Fastener<?> to) {
+		return fastener.isDynamic() || to.isDynamic();
+	}
+
 	public final void addRemoveListener(Runnable listener) {
 		if (removeListeners == null) {
 			removeListeners = new ArrayList<>();
@@ -258,6 +269,8 @@ public abstract class Connection implements NBTSerializable {
 
 	protected void onRemove() {}
 
+	protected void updatePrev() {}
+
 	protected void onUpdateEarly() {}
 
 	protected void onUpdateLate() {}
@@ -268,21 +281,13 @@ public abstract class Connection implements NBTSerializable {
 
 	public final void update(Vec3d from) {
 		prevCatenary = catenary;
+		updatePrev();
 		destination.update(world, fastener.getPos());
 		if (destination.isLoaded(world)) {
 			onUpdateEarly();
 			Fastener dest = destination.get(world);
 			Vec3d point = dest.getConnectionPoint();
-			if (updateCatenary || dest.isDynamic() || fastener.isDynamic()) {
-				Vec3d vec = point.subtract(from);
-				if (vec.lengthVector() > 1e-6) {
-					catenary = Catenary.from(vec, SLACK_CURVE, slack);
-					onCalculateCatenary();
-					collision.update(this, from);
-				}
-				catenaryUpdateState = true;
-				updateCatenary = false;
-			}
+			updateCatenary(from, dest, point);
 			double dist = point.distanceTo(from);
 			double pull = dist - MAX_LENGTH + PULL_RANGE;
 			if (pull > 0) {
@@ -299,6 +304,31 @@ public abstract class Connection implements NBTSerializable {
 				dest.resistSnap(from);
 			}
 			onUpdateLate();
+		}
+	}
+
+	public void updateCatenary(Vec3d from) {
+		if (world.isBlockLoaded(fastener.getPos())) {
+			destination.update(world, fastener.getPos());
+			if (destination.isLoaded(world)) {
+				Fastener dest = destination.get(world);
+				Vec3d point = dest.getConnectionPoint();
+				updateCatenary(from, dest, point);
+				updateCatenary = false;
+			}
+		}
+	}
+
+	private void updateCatenary(Vec3d from, Fastener<?> dest, Vec3d point) {
+		if (updateCatenary || isDynamic(dest)) {
+			Vec3d vec = point.subtract(from);
+			if (vec.lengthVector() > 1e-6) {
+				catenary = Catenary.from(vec, SLACK_CURVE, slack);
+				onCalculateCatenary();
+				collision.update(this, from);
+			}
+			catenaryUpdateState = true;
+			updateCatenary = false;
 		}
 	}
 
