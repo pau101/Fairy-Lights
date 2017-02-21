@@ -285,9 +285,6 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 				connections.put(uuid, connection);
 			}
 			connection.deserialize(connectionCompound.getCompoundTag("connection"));
-			if (world != null) {
-				connection.update(getConnectionPoint());
-			}
 		}
 		Iterator<Entry<UUID, Connection>> connectionsIter = connections.entrySet().iterator();
 		while (connectionsIter.hasNext()) {
@@ -295,6 +292,11 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 			if (!nbtUUIDs.contains(connection.getKey())) {
 				connectionsIter.remove();
 				connection.getValue().remove();
+			}
+		}
+		if (world != null) {
+			for (Connection connection : connections.values()) {
+				connection.updateCatenary(getConnectionPoint());
 			}
 		}
 	}

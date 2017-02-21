@@ -1,50 +1,63 @@
 package com.pau101.fairylights.server.fastener.connection.type.hanginglights;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.client.ClientEventHandler;
-import com.pau101.fairylights.client.entity.EntityLightSource;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
 import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingFeature;
 import com.pau101.fairylights.server.item.ItemLight;
+import com.pau101.fairylights.server.item.LightVariant;
 import com.pau101.fairylights.server.jingle.Jingle;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.jingle.JinglePlayer;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.OreDictUtils;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public final class ConnectionHangingLights extends ConnectionHangingFeature<Light> {
+	private static final int LIGHT_VALUE = 15;
+
+	private static final int LIGHT_UPDATE_WAIT = 400;
+
+	private static final int LIGHT_UPDATE_RATE = 10;
+
 	private List<ColoredLightVariant> pattern;
 
 	private boolean twinkle;
 
 	private JinglePlayer jinglePlayer = new JinglePlayer();
 
-	@Nullable
-	private List<EntityLightSource> lightSources;
-
-	private boolean updateLightSources;
-
 	private boolean wasPlaying = false;
+
+	private Set<BlockPos> litBlocks = new HashSet<>();
+
+	private Set<BlockPos> oldLitBlocks = new HashSet<>();
+
+	private int lightUpdateTime = (int) (Math.random() * LIGHT_UPDATE_WAIT / 2);
+
+	private int lightUpdateIndex;
 
 	public ConnectionHangingLights(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
 		super(world, fastener, uuid, destination, isOrigin, compound);
@@ -90,18 +103,30 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	public void onUpdateLate() {
 		boolean playing = jinglePlayer.isPlaying();
 		if (playing) {
-			jinglePlayer.tick(world, getFastener().getConnectionPoint(), features, world.isRemote);
+			jinglePlayer.tick(world, fastener.getConnectionPoint(), features, world.isRemote);
 		}
 		if (playing || wasPlaying && !playing) {
-			updateNeighbors(getFastener());
+			updateNeighbors(fastener);
 			if (getDestination().isLoaded(world)) {
 				updateNeighbors(getDestination().get(world));
 			}
 		}
 		wasPlaying = playing;
+		boolean still = !isDynamic();
 		for (int i = 0; i < features.length; i++) {
 			Light light = features[i];
-			light.tick(this, twinkle);
+			light.tick(this, twinkle, still);
+		}
+		if (still && isOrigin() && features.length > 0) {
+			lightUpdateTime++;
+			if (lightUpdateTime > LIGHT_UPDATE_WAIT && lightUpdateTime % LIGHT_UPDATE_RATE == 0) {
+				if (lightUpdateIndex >= features.length) {
+					lightUpdateIndex = 0;
+					lightUpdateTime = world.rand.nextInt(LIGHT_UPDATE_WAIT / 2);
+				} else {
+					setLight(new BlockPos(features[lightUpdateIndex++].getAbsolutePoint(fastener)), LIGHT_VALUE);
+				}
+			}	
 		}
 	}
 
@@ -116,19 +141,12 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	@Override
 	protected Light createFeature(int index, Vec3d point, Vec3d rotation) {
-		Light light = new Light(index, point, rotation);
-		if (updateLightSources) {
-			EntityLightSource src;
-			if (index < lightSources.size()) {
-				src = lightSources.get(index);
-			} else {
-				src = new EntityLightSource(world);
-				lightSources.add(src);
-				world.loadedEntityList.add(src);
-				world.onEntityAdded(src);
-			}
-			Vec3d pos = light.getAbsolutePoint(getFastener());
-			src.setPosition(pos.xCoord, pos.yCoord, pos.zCoord);
+		boolean still = !isDynamic();
+		Light light = new Light(index, point, rotation, still);
+		if (isOrigin() && still) {
+			BlockPos pos = new BlockPos(light.getAbsolutePoint(fastener));
+			litBlocks.add(pos);
+			setLight(pos, LIGHT_VALUE);
 		}
 		if (pattern.size() > 0) {
 			ColoredLightVariant lightData = pattern.get(index % pattern.size());
@@ -140,7 +158,10 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	@Override
 	protected float getFeatureSpacing() {
-		float spacing = pattern.isEmpty() ? 16 : 0;
+		if (pattern.isEmpty()) {
+			return LightVariant.FAIRY.getSpacing();
+		}
+		float spacing = 0;
 		for (ColoredLightVariant patternLightData : pattern) {
 			float lightSpacing = patternLightData.getVariant().getSpacing();
 			if (lightSpacing > spacing) {
@@ -152,30 +173,42 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	@Override
 	protected void onBeforeUpdateFeatures(int size) {
-		updateLightSources = world.isRemote && isOrigin() && ClientEventHandler.isDynamicLights();
-		if (updateLightSources && lightSources == null) {
-			lightSources = new ArrayList<>(size);
+		Iterator<BlockPos> litIter = litBlocks.iterator();
+		while (litIter.hasNext()) {
+			oldLitBlocks.add(litIter.next());
+			litIter.remove();
 		}
 	}
 
 	@Override
-	protected void onAfterUpdateFeatures(int index) {
-		if (updateLightSources) {
-			for (; index < lightSources.size(); index++) {
-				Entity e = lightSources.remove(index);
-				world.loadedEntityList.remove(e);
-				world.onEntityRemoved(e);
-			}
+	protected void onAfterUpdateFeatures(int size) {
+		oldLitBlocks.removeAll(litBlocks);
+		Iterator<BlockPos> oldIter = oldLitBlocks.iterator();
+		while (oldIter.hasNext()) {
+			world.checkLightFor(EnumSkyBlock.BLOCK, oldIter.next());
+			oldIter.remove();
 		}
 	}
 
 	@Override
 	public void onRemove() {
-		if (world.isRemote && lightSources != null) {
-			world.loadedEntityList.removeAll(lightSources);
-			for (Entity e : lightSources) {
-				world.onEntityRemoved(e);
+		for (BlockPos pos : litBlocks) {
+			world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+		}
+	}
+
+	private void setLight(BlockPos pos, int value) {
+		if (world.isAirBlock(pos) && world.getLightFor(EnumSkyBlock.BLOCK, pos) != value) { 
+			world.setLightFor(EnumSkyBlock.BLOCK, pos, value);
+			for (EnumFacing dir : EnumFacing.values()) {
+				updateLight(pos.offset(dir), value);
 			}
+		}
+	}
+
+	private void updateLight(BlockPos pos, int value) {
+		if (world.getLightFor(EnumSkyBlock.BLOCK, pos) != value) {
+			world.checkLightFor(EnumSkyBlock.BLOCK, pos);
 		}
 	}
 

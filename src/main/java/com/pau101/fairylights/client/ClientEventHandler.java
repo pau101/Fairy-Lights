@@ -1,6 +1,5 @@
 package com.pau101.fairylights.client;
 
-import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -26,7 +25,6 @@ import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.server.jingle.Jingle;
 import com.pau101.fairylights.util.Mth;
-import com.pau101.fairylights.util.Utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -58,7 +56,6 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 import shadersmod.client.Shaders;
 
 public final class ClientEventHandler {
@@ -67,9 +64,6 @@ public final class ClientEventHandler {
 	private static final HitConnection HIT_CONNECTION = new HitConnection();
 
 	private static final float HIGHLIGHT_ALPHA = 0.4F;
-
-	@Nullable
-	private static MethodHandle isDynamicLights;
 
 	@Nullable
 	private Vec3d prevCatenaryVec;
@@ -81,29 +75,8 @@ public final class ClientEventHandler {
 
 	private boolean useVBO;
 
-	static {
-		if (optifinePresent) {
-			try {
-				isDynamicLights = Utils.getMethodHandle("Config", "isDynamicLights");
-			} catch (UnableToFindMethodException e) {
-				optifinePresent = false;
-			}
-		}
-	}
-
 	public static boolean isShaders() {
 		return optifinePresent && Shaders.shaderPackLoaded;
-	}
-
-	public static boolean isDynamicLights() {
-		if (optifinePresent) {
-			try {
-				return (boolean) isDynamicLights.invoke();
-			} catch (Throwable e) {
-				optifinePresent = false;
-			}
-		}
-		return false;
 	}
 
 	public static Connection getHitConnection() {
