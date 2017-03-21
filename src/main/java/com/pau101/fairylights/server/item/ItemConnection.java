@@ -9,7 +9,9 @@ import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.sound.FLSounds;
+import com.pau101.fairylights.util.DummyBlockAccess;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -22,11 +24,15 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public abstract class ItemConnection extends Item {
+	private static final IBlockAccess DUMMY_WORLD = new DummyBlockAccess();
+
 	public ItemConnection() {
 		setMaxStackSize(16);
 	}
@@ -137,6 +143,20 @@ public abstract class ItemConnection extends Item {
 	}
 
 	public static boolean isFence(IBlockState state) {
-		return state.getBlock() instanceof BlockFence;
+		Block block = state.getBlock();
+		if (block instanceof BlockFence) {
+			return true;
+		}
+		if (!state.getMaterial().isSolid()) {
+			return false;
+		}
+		AxisAlignedBB bounds = null;
+		try {
+			bounds = block.getDefaultState().getBoundingBox(DUMMY_WORLD, BlockPos.ORIGIN);
+		} catch (Exception e) {
+			// Safeguard against theoretical special cases of a Block expecting BlockPos.ORIGIN to be itself or IBlockAccess casting
+		}
+		// Check if x/z bounds are within in a centered 5x5 square.
+		return bounds != null && bounds.minX > 0.34375F && bounds.minZ > 0.34375F && bounds.maxX < 0.65625F && bounds.maxZ < 0.65625F;
 	}
 }
