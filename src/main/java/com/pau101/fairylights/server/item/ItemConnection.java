@@ -156,7 +156,6 @@ public abstract class ItemConnection extends Item {
 		try {
 			bounds = block.getDefaultState().getCollisionBoundingBox(new IsolatedBlock(state, entity), IsolatedBlock.POS);
 		} catch (Exception e) {
-			e.printStackTrace();
 			// Safeguard against theoretical special cases
 		}
 		// Check if x/z bounds are within in a centered 5x5 square.
