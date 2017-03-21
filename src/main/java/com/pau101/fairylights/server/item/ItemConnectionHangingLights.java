@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
+import com.pau101.fairylights.server.item.crafting.Recipes;
 import com.pau101.fairylights.util.Utils;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -17,6 +18,10 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public final class ItemConnectionHangingLights extends ItemConnection {
+	public ItemConnectionHangingLights() {
+		setCreativeTab(FairyLights.fairyLightsTab);
+	}
+
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
 		if (!stack.hasTagCompound()) {
@@ -42,22 +47,11 @@ public final class ItemConnectionHangingLights extends ItemConnection {
 			}
 		}
 	}
-
-	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {}
-
-	/*@Override
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setBoolean("twinkle", false);
-		compound.setBoolean("tight", false);
-		NBTTagList pattern = new NBTTagList();
-		pattern.appendTag(new ColoredLightVariant(LightVariant.FAIRY, EnumDyeColor.YELLOW).serialize());
-		compound.setTag("pattern", pattern);
-		ItemStack stack = new ItemStack(this);
-		stack.setTagCompound(compound);
-		subItems.add(stack);
-	}*/
+		for (EnumDyeColor color : EnumDyeColor.values()) {
+			subItems.add(Recipes.makeHangingLights(new ItemStack(FairyLights.hangingLights), color));	
+		}
+	}
 
 	@Override
 	public ConnectionType getConnectionType() {
