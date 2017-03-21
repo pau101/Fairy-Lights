@@ -302,18 +302,23 @@ public final class Recipes {
 		);
 	}
 
-	private static ItemStack makeHangingLights(ItemStack base, EnumDyeColor... colors) {
+	public static ItemStack makeHangingLights(ItemStack base, EnumDyeColor... colors) {
 		ItemStack stack = base.copy();
 		NBTTagCompound compound = stack.getTagCompound();
-		NBTTagList pennants = new NBTTagList();
+		NBTTagList lights = new NBTTagList();
 		for (EnumDyeColor color : colors) {
 			NBTTagCompound pennant = new NBTTagCompound();
 			pennant.setByte("color", (byte) color.getDyeDamage());
 			pennant.setInteger("light", LightVariant.FAIRY.ordinal());
-			pennants.appendTag(pennant);
+			lights.appendTag(pennant);
 		}
-		compound.setTag("pattern", pennants);
+		if (compound == null) {
+			compound = new NBTTagCompound();
+			stack.setTagCompound(compound);
+		}
+		compound.setTag("pattern", lights);
 		compound.setBoolean("twinkle", false);
+		compound.setBoolean("tight", false);
 		return stack;
 	}
 
