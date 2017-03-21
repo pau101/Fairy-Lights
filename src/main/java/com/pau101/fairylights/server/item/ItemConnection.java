@@ -10,21 +10,32 @@ import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.sound.FLSounds;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Biomes;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
 
 public abstract class ItemConnection extends Item {
 	public ItemConnection() {
@@ -53,7 +64,7 @@ public abstract class ItemConnection extends Item {
 					return EnumActionResult.SUCCESS;
 				}
 			}
-		} else if (user.canPlayerEdit(pos, side, stack) && isFence(world.getBlockState(pos))) {
+		} else if (user.canPlayerEdit(pos, side, stack) && isFence(world.getBlockState(pos), world.getTileEntity(pos))) {
 			EntityHanging entity = EntityFenceFastener.findHanging(world, pos);
 			if (entity == null || entity instanceof EntityFenceFastener) {
 				if (!world.isRemote) {
@@ -135,7 +146,112 @@ public abstract class ItemConnection extends Item {
 		connect(stack, user, world, fastener.getCapability(CapabilityHandler.FASTENER_CAP, null), playConnectSound);
 	}
 
-	public static boolean isFence(IBlockState state) {
-		return state.getBlock() instanceof BlockFence;
+	public static boolean isFence(IBlockState state, TileEntity entity) {
+		Block block = state.getBlock();
+		if (block instanceof BlockFence) {
+			return true;
+		}
+		if (!state.getMaterial().isSolid()) {
+			return false;
+		}
+		AxisAlignedBB bounds = null;
+		try {
+			bounds = block.getDefaultState().getCollisionBoundingBox(new IsolatedBlock(state, entity), IsolatedBlock.POS);
+		} catch (Exception e) {
+			// Safeguard against theoretical special cases
+		}
+		// Check if x/z bounds are within in a centered 5x5 square.
+		return bounds != null && bounds.minX > 0.34375F && bounds.minZ > 0.34375F && bounds.maxX < 0.65625F && bounds.maxZ < 0.65625F;
+	}
+
+	private static class IsolatedBlock extends World {
+		public static final BlockPos POS = BlockPos.ORIGIN;
+
+		private final IBlockState state;
+
+		private final TileEntity entity;
+
+		public IsolatedBlock(IBlockState state, TileEntity entity) {
+			super(null, null, new IsolatedProvider(), null, true);
+			this.state = state;
+			this.entity = entity;
+		}
+
+		@Override
+		public TileEntity getTileEntity(BlockPos pos) {
+			return POS.equals(pos) ? entity : null;
+		}
+
+		@Override
+		public int getCombinedLight(BlockPos pos, int lightValue) {
+			return 0;
+		}
+
+		@Override
+		public IBlockState getBlockState(BlockPos pos) {
+			return POS.equals(pos) ? state : Blocks.AIR.getDefaultState();
+		}
+
+		@Override
+		public boolean isAirBlock(BlockPos pos) {
+			return !POS.equals(pos) || state.getBlock().isAir(state, this, pos);
+		}
+
+		@Override
+		public Biome getBiomeGenForCoords(BlockPos pos) {
+			return Biomes.DEFAULT;
+		}
+
+		@Override
+		public int getStrongPower(BlockPos pos, EnumFacing direction) {
+			return 0;
+		}
+
+		@Override
+		public WorldType getWorldType() {
+			return WorldType.CUSTOMIZED;
+		}
+
+		@Override
+		public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
+			return POS.equals(pos) && state.isSideSolid(this, pos, side);
+		}
+
+		@Override
+		protected IChunkProvider createChunkProvider() {
+			return new IChunkProvider() {
+				@Override
+				public boolean unloadQueuedChunks() {
+					return false;
+				}
+
+				@Override
+				public Chunk provideChunk(int x, int z) {
+					return null;
+				}
+
+				@Override
+				public String makeString() {
+					return "";
+				}
+
+				@Override
+				public Chunk getLoadedChunk(int x, int z) {
+					return null;
+				}
+			};
+		}
+
+		@Override
+		protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
+			return true;
+		}
+	}
+
+	private static class IsolatedProvider extends WorldProvider {
+		@Override
+		public DimensionType getDimensionType() {
+			return DimensionType.OVERWORLD;
+		}
 	}
 }
