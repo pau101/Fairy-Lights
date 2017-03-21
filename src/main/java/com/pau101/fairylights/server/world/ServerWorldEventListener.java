@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public final class ServerWorldEventListener implements WorldEventListener {
 	@Override
 	public void notifyBlockUpdate(World world, BlockPos pos, IBlockState oldState, IBlockState newState, int flags) {
-		if (ItemConnection.isFence(oldState) && !ItemConnection.isFence(newState)) {
+		if (ItemConnection.isFence(oldState, null) && !ItemConnection.isFence(newState, world.getTileEntity(pos))) {
 			EntityFenceFastener fastener = EntityFenceFastener.find(world, pos);
 			if (fastener != null) {
 				fastener.setDead();

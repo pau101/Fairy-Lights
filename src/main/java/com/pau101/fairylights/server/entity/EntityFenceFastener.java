@@ -105,7 +105,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 
 	@Override
 	public boolean onValidSurface() {
-		return ItemConnection.isFence(worldObj.getBlockState(hangingPosition));
+		return ItemConnection.isFence(worldObj.getBlockState(hangingPosition), worldObj.getTileEntity(hangingPosition));
 	}
 
 	@Override
