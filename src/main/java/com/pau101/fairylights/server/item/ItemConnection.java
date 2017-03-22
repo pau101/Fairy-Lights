@@ -21,6 +21,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -84,7 +85,7 @@ public abstract class ItemConnection extends Item {
 			if (nbt.hasNoTags()) {
 				return stack.hasTagCompound();
 			}
-			return !nbt.equals(stack.getTagCompound());
+			return !NBTUtil.areNBTEquals(nbt, stack.getTagCompound(), true);
 		}
 		return false;
 	}
