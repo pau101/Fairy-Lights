@@ -114,10 +114,10 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 			IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
 			for (int i = 0, ai = 0; i < minimalInputStacks.size(); i++) {
 				List<ItemStack> stacks = minimalInputStacks.get(i);
-				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
+				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
 			}
 			if (recipe.matches(crafting, null)) {
-				outputConsumer.accept(ItemStack.field_190927_a, recipe.getCraftingResult(crafting));
+				outputConsumer.accept(ItemStack.EMPTY, recipe.getCraftingResult(crafting));
 			}
 		} else {
 			List<ItemStack> dictators = minimalInputStacks.get(subtypeIndex);
@@ -128,7 +128,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 						crafting.setInventorySlotContents(i, subtype);
 					} else {
 						List<ItemStack> stacks = minimalInputStacks.get(i);
-						crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
+						crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
 					}
 				}
 				if (recipe.matches(crafting, null)) {
@@ -212,7 +212,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 			 for (ItemStack o : options) {
 				 if (ingredient.getItem() == o.getItem() && ingredient.getItemDamage() == o.getItemDamage()) {
 					 matched = ingredient.copy();
-					 matched.func_190920_e(1);
+					 matched.setCount(1);
 					 break;
 				 }
 			}
@@ -222,13 +222,13 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 			crafting.clear();
 			for (int n = 0; n < minimalInputStacks.size(); n++) {
 				List<ItemStack> stacks = minimalInputStacks.get(n);
-				crafting.setInventorySlotContents(n, i == n ? matched : stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
+				crafting.setInventorySlotContents(n, i == n ? matched : stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
 			}
 			if (recipe.matches(crafting, null)) {
 				List<List<ItemStack>> inputs = new ArrayList<>(allInputs.size());
 				for (int n = 0; n < allInputs.size(); n++) {
 					List<ItemStack> stacks = allInputs.get(n);
-					inputs.add(i == n ? Collections.singletonList(matched) : stacks.isEmpty() ? Collections.singletonList(ItemStack.field_190927_a) : stacks);
+					inputs.add(i == n ? Collections.singletonList(matched) : stacks.isEmpty() ? Collections.singletonList(ItemStack.EMPTY) : stacks);
 				};
 				return new Input(inputs, ingredientMatrix);
 			}
@@ -256,7 +256,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		for (int n = 0; n < size; n++) {
 			for (int i = 0; i < inputs.size(); i++) {
 				List<ItemStack> stacks = inputs.get(i);
-				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(n % stacks.size()));
+				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(n % stacks.size()));
 			}
 			if (recipe.matches(crafting, null)) {
 				outputs.add(recipe.getCraftingResult(crafting));

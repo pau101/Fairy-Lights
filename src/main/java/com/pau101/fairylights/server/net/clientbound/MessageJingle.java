@@ -38,7 +38,7 @@ public final class MessageJingle extends MessageConnection<Connection> {
 	@Override
 	public void serialize(PacketBuffer buf) {
 		super.serialize(buf);
-		buf.writeVarIntToBuffer(lightOffset);
+		buf.writeVarInt(lightOffset);
 		buf.writeByte(library.getId());
 		buf.writeString(jingle.getId());
 	}
@@ -46,9 +46,9 @@ public final class MessageJingle extends MessageConnection<Connection> {
 	@Override
 	public void deserialize(PacketBuffer buf) throws IOException {
 		super.deserialize(buf);
-		lightOffset = buf.readVarIntFromBuffer();
+		lightOffset = buf.readVarInt();
 		library = JingleLibrary.fromId(buf.readUnsignedByte());
-		jingle = library.get(buf.readStringFromBuffer(64));
+		jingle = library.get(buf.readString(64));
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public final class MessageJingle extends MessageConnection<Connection> {
 	@Override
 	@SideOnly(Side.CLIENT)
 	protected World getWorld(MessageContext ctx) {
-		return Minecraft.getMinecraft().theWorld;
+		return Minecraft.getMinecraft().world;
 	}
 
 	@Override

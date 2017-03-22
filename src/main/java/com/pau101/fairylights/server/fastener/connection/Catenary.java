@@ -48,7 +48,7 @@ public final class Catenary {
 	}
 
 	private static float lengthFunc(CubicBezier bezier, double length) {
-		return bezier.eval(MathHelper.clamp_float((float) length / Connection.MAX_LENGTH, 0, 1)) * Connection.MAX_LENGTH;
+		return bezier.eval(MathHelper.clamp((float) length / Connection.MAX_LENGTH, 0, 1)) * Connection.MAX_LENGTH;
 	}
 
 	public static Catenary from(Vec3d direction, float ropeLength) {
@@ -57,7 +57,7 @@ public final class Catenary {
 		if (vertexCount < MIN_VERTEX_COUNT) {
 			vertexCount = MIN_VERTEX_COUNT;
 		}
-		float endX = MathHelper.sqrt_double(direction.xCoord * direction.xCoord + direction.zCoord * direction.zCoord);
+		float endX = MathHelper.sqrt(direction.xCoord * direction.xCoord + direction.zCoord * direction.zCoord);
 		float[][] result = CatenaryUtils.catenary(0, 0, endX, (float) direction.yCoord, ropeLength, vertexCount);
 		float[] xCoords = result[0];
 		float[] yCoords = result[1];

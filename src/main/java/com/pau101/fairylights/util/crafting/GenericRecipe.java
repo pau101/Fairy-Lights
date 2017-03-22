@@ -40,7 +40,7 @@ public final class GenericRecipe implements IRecipe {
 
 	private final int height;
 
-	private ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.field_190927_a);
+	private ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.EMPTY);
 
 	GenericRecipe(ItemStack output, IngredientRegular[] ingredients, IngredientAuxiliary<?>[] auxiliaryIngredients, int width, int height) {
 		Objects.requireNonNull(output, "output");
@@ -87,18 +87,18 @@ public final class GenericRecipe implements IRecipe {
 			int x = i % scanWidth, y = i / scanWidth;
 			ItemStack result = getResult(inventory, prepareOutput(), x, y, c -> c);
 			this.result.set(result);
-			if (!result.func_190926_b()) {
+			if (!result.isEmpty()) {
 				prepareResult();
 				return true;
 			}
 			result = getResult(inventory, prepareOutput(), x, y, c -> width - 1 - c);
 			this.result.set(result);
-			if (!result.func_190926_b()) {
+			if (!result.isEmpty()) {
 				prepareResult();
 				return true;
 			}
 		}
-		result.set(ItemStack.field_190927_a);
+		result.set(ItemStack.EMPTY);
 		return false;
 	}
 
@@ -133,7 +133,7 @@ public final class GenericRecipe implements IRecipe {
 				IngredientRegular ingredient = ingredients[index];
 				MatchResultRegular result = ingredient.matches(input, output);
 				if (!result.doesMatch()) {
-					return ItemStack.field_190927_a;
+					return ItemStack.EMPTY;
 				}
 				match[index] = result;
 				result.forMatch(presentCalled, output);
@@ -143,7 +143,7 @@ public final class GenericRecipe implements IRecipe {
 					MatchResultAuxiliary result = auxiliaryIngredients[n].matches(input, output);
 					if (result.doesMatch()) {
 						if (result.isAtLimit(auxMatchTotals.getOrDefault(result.ingredient, 0))) {
-							return ItemStack.field_190927_a;
+							return ItemStack.EMPTY;
 						}
 						result.forMatch(presentCalled, output);
 						auxMatchTotals.merge(result.ingredient, 1, IntMath::checkedAdd);
@@ -153,7 +153,7 @@ public final class GenericRecipe implements IRecipe {
 					auxResults.add(result);
 				}
 				if (nonAuxiliary) {
-					return ItemStack.field_190927_a;
+					return ItemStack.EMPTY;
 				}
 			}
 		}
@@ -166,7 +166,7 @@ public final class GenericRecipe implements IRecipe {
 		}
 		for (IngredientAuxiliary<?> ingredient : auxiliaryIngredients) {
 			if (ingredient.process(auxMatchResults, output)) {
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 			}
 		}
 		return output;
@@ -179,7 +179,7 @@ public final class GenericRecipe implements IRecipe {
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inventory) {
 		ItemStack result = this.result.get();
-		return result.func_190926_b() ? result : result.copy();
+		return result.isEmpty() ? result : result.copy();
 	}
 
 	@Override

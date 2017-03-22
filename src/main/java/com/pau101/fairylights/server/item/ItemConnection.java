@@ -124,7 +124,7 @@ public abstract class ItemConnection extends Item {
 				playConnectSound = false;
 			} else {
 				c.onConnect(world, user, stack);
-				stack.func_190918_g(1);
+				stack.shrink(1);
 			}
 		}
 		if (playConnectSound) {

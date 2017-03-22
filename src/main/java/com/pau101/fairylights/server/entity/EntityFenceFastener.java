@@ -78,8 +78,8 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	@Override
 	public float getBrightness(float delta) {
 		BlockPos pos = new BlockPos(this);
-		if (worldObj.isBlockLoaded(pos)) {
-			return worldObj.getLightBrightness(pos);
+		if (world.isBlockLoaded(pos)) {
+			return world.getLightBrightness(pos);
 		}
 		return 0;
 	}
@@ -87,8 +87,8 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	@Override
 	public int getBrightnessForRender(float delta) {
 		BlockPos pos = new BlockPos(this);
-		if (worldObj.isBlockLoaded(pos)) {
-			return worldObj.getCombinedLight(pos, 0);
+		if (world.isBlockLoaded(pos)) {
+			return world.getCombinedLight(pos, 0);
 		}
 		return 0;
 	}
@@ -105,7 +105,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 
 	@Override
 	public boolean onValidSurface() {
-		return ItemConnection.isFence(worldObj.getBlockState(hangingPosition), worldObj.getTileEntity(hangingPosition));
+		return ItemConnection.isFence(world.getBlockState(hangingPosition), world.getTileEntity(hangingPosition));
 	}
 
 	@Override
@@ -121,15 +121,15 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 
 	@Override
 	public void onBroken(@Nullable Entity breaker) {
-		getFastener().dropItems(worldObj, hangingPosition);
+		getFastener().dropItems(world, hangingPosition);
 		if (breaker != null) {
-			worldObj.playEvent(2001, hangingPosition, Block.getStateId(FairyLights.fastener.getDefaultState()));	
+			world.playEvent(2001, hangingPosition, Block.getStateId(FairyLights.fastener.getDefaultState()));	
 		}
 	}
 
 	@Override
 	public void playPlaceSound() {
-		SoundType sound = FairyLights.fastener.getSoundType(FairyLights.fastener.getDefaultState(), worldObj, getHangingPosition(), null);
+		SoundType sound = FairyLights.fastener.getSoundType(FairyLights.fastener.getDefaultState(), world, getHangingPosition(), null);
 		playSound(sound.getPlaceSound(), (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8F);
 	}
 
@@ -140,7 +140,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 
 	@Override
 	public void setPosition(double x, double y, double z) {
-		super.setPosition(MathHelper.floor_double(x) + 0.5, MathHelper.floor_double(y) + 0.5, MathHelper.floor_double(z) + 0.5);
+		super.setPosition(MathHelper.floor(x) + 0.5, MathHelper.floor(y) + 0.5, MathHelper.floor(z) + 0.5);
 	}
 
 	@Override
@@ -165,12 +165,12 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	public void onUpdate() {
 		super.onUpdate();
 		Fastener<?> fastener = getFastener();
-		if (!worldObj.isRemote && fastener.hasNoConnections()) {
+		if (!world.isRemote && fastener.hasNoConnections()) {
 			setDead();
 			onBroken(null);
-		} else if (fastener.update() && !worldObj.isRemote) {
+		} else if (fastener.update() && !world.isRemote) {
 			MessageUpdateFastenerEntity msg = new MessageUpdateFastenerEntity(this, fastener.serializeNBT());
-			ServerProxy.sendToPlayersWatchingEntity(msg, worldObj, this);
+			ServerProxy.sendToPlayersWatchingEntity(msg, world, this);
 		}
 	}
 
@@ -178,10 +178,10 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.getItem() instanceof ItemConnection) {
-			if (worldObj.isRemote) {
+			if (world.isRemote) {
 				player.swingArm(hand);
 			} else {
-				((ItemConnection) stack.getItem()).connect(stack, player, worldObj, getFastener());
+				((ItemConnection) stack.getItem()).connect(stack, player, world, getFastener());
 			}
 			return true;
 		}
@@ -225,7 +225,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	public static EntityFenceFastener create(World world, BlockPos fence) {
 		EntityFenceFastener fastener = new EntityFenceFastener(world, fence);
 		fastener.forceSpawn = true;
-		world.spawnEntityInWorld(fastener);
+		world.spawnEntity(fastener);
 		fastener.playPlaceSound();
 		return fastener;
 	}

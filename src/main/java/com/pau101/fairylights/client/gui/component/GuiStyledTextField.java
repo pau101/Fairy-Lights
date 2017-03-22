@@ -256,7 +256,7 @@ public final class GuiStyledTextField extends Gui {
 	}
 
 	public void setCaret(int pos, boolean changeColor) {
-		caret = MathHelper.clamp_int(pos, 0, value.length());
+		caret = MathHelper.clamp(pos, 0, value.length());
 		setSelectionPos(caret);
 		if (changeColor) {
 			setCurrentStyleByIndex(caret);
@@ -331,7 +331,7 @@ public final class GuiStyledTextField extends Gui {
 
 	public void setSelectionPos(int pos) {
 		int len = value.length();
-		selectionEnd = MathHelper.clamp_int(pos, 0, len);
+		selectionEnd = MathHelper.clamp(pos, 0, len);
 		if (lineScrollOffset > len) {
 			lineScrollOffset = len;
 		}
@@ -341,7 +341,7 @@ public final class GuiStyledTextField extends Gui {
 		} else if (selectionEnd <= lineScrollOffset) {
 			lineScrollOffset = selectionEnd;
 		}
-		lineScrollOffset = MathHelper.clamp_int(lineScrollOffset, 0, len);
+		lineScrollOffset = MathHelper.clamp(lineScrollOffset, 0, len);
 		if (caret != selectionEnd) {
 			updateSelectionControls();
 		}
@@ -1088,7 +1088,7 @@ public final class GuiStyledTextField extends Gui {
 					};
 				}
 			};
-			String ex = MathHelper.getRandomUuid(ThreadLocalRandom.current()).toString();
+			String ex = MathHelper.getRandomUUID(ThreadLocalRandom.current()).toString();
 			nostrud.newStreamingSource(false, ex, new URL(null, "mcsounddomain:" + FairyLights.ID + ":elit", nisi), "elit.ogg", false, 0, 0, 0, 0, 16);
 			nostrud.setPitch(ex, 1);
 			nostrud.setVolume(ex, 1);

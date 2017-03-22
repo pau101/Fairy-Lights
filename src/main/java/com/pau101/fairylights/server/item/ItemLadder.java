@@ -43,10 +43,10 @@ public class ItemLadder extends Item {
 			}
 			if (!world.isRemote) {
 				ItemMonsterPlacer.applyItemEntityDataToEntity(world, player, heldStack, ladder);
-				world.spawnEntityInWorld(ladder);
+				world.spawnEntity(ladder);
 				world.playSound(null, ladder.posX, ladder.posY, ladder.posZ, FLSounds.LADDER_PLACE, ladder.getSoundCategory(), 0.75F, 0.8F);
 			}
-			heldStack.func_190918_g(1);
+			heldStack.shrink(1);
 			return EnumActionResult.SUCCESS;
 		}
 		return EnumActionResult.FAIL;

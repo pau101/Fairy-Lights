@@ -128,12 +128,12 @@ public final class BlockFastener extends BlockContainer {
 
 	@Override
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune) {
-		return Items.field_190931_a;
+		return Items.AIR;
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public final class BlockFastener extends BlockContainer {
 	}
 
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		return worldIn.isSideSolid(pos.offset(facing.getOpposite()), facing, true) ? getDefaultState().withProperty(FACING, facing) : getDefaultState().withProperty(FACING, EnumFacing.DOWN);
 	}
 

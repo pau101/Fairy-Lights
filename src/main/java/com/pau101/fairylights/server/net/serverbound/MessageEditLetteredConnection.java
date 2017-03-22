@@ -24,13 +24,13 @@ public class MessageEditLetteredConnection<C extends Connection & Lettered> exte
 	@Override
 	public void serialize(PacketBuffer buf) {
 		super.serialize(buf);
-		buf.writeNBTTagCompoundToBuffer(StyledString.serialize(text));
+		buf.writeCompoundTag(StyledString.serialize(text));
 	}
 
 	@Override
 	public void deserialize(PacketBuffer buf) throws IOException {
 		super.deserialize(buf);
-		text = StyledString.deserialize(buf.readNBTTagCompoundFromBuffer());
+		text = StyledString.deserialize(buf.readCompoundTag());
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class MessageEditLetteredConnection<C extends Connection & Lettered> exte
 
 	@Override
 	protected World getWorld(MessageContext ctx) {
-		return ctx.getServerHandler().playerEntity.worldObj;
+		return ctx.getServerHandler().playerEntity.world;
 	}
 
 	@Override

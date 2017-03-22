@@ -45,14 +45,14 @@ public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 
 	default ImmutableList<ItemStack> getMatchingSubtypes(ItemStack stack) {
 		Objects.requireNonNull(stack, "stack");
-		NonNullList<ItemStack> subtypes = NonNullList.func_191196_a();
+		NonNullList<ItemStack> subtypes = NonNullList.create();
 		Item item = stack.getItem();
 		for (CreativeTabs tab : item.getCreativeTabs()) {
 			item.getSubItems(item, tab, subtypes);
 		}
 		Iterator<ItemStack> iter = subtypes.iterator();
 		while (iter.hasNext()) {
-			if (!matches(iter.next(), ItemStack.field_190927_a).doesMatch()) {
+			if (!matches(iter.next(), ItemStack.EMPTY).doesMatch()) {
 				iter.remove();
 			}
 		}

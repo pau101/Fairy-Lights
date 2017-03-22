@@ -166,6 +166,6 @@ public enum ConnectionType {
 
 	public static ConnectionType from(int ordinal) {
 		ConnectionType[] values = values();
-		return values[MathHelper.clamp_int(ordinal, 0, values.length - 1)];
+		return values[MathHelper.clamp(ordinal, 0, values.length - 1)];
 	}
 }

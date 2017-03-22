@@ -14,7 +14,7 @@ public abstract class FastenerEntity<E extends Entity> extends FastenerDefault<F
 	public FastenerEntity(E entity) {
 		this.entity = entity;
 		bounds = new AxisAlignedBB(entity.getPosition());
-		setWorld(entity.worldObj);
+		setWorld(entity.world);
 	}
 
 	@Override

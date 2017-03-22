@@ -242,7 +242,7 @@ public final class Recipes {
 				if (compound == null) {
 					return ImmutableList.of();
 				}
-				stack.func_190920_e(1);
+				stack.setCount(1);
 				compound.setBoolean("twinkle", false);
 				return ImmutableList.of(ImmutableList.of(stack));
 			}

@@ -29,7 +29,7 @@ public interface WorldEventListener extends IWorldEventListener {
 	default void spawnParticle(int particleID, boolean ignoreRange, double x, double y, double z, double dx, double dy, double dz, int... parameters) {}
 
 	@Override
-	default void func_190570_a(int particleID, boolean ignoreRange, boolean respectMinimalParticles, double x, double y, double z, double dx, double dy, double dz, int... parameters) {}
+	default void spawnParticle(int particleID, boolean ignoreRange, boolean respectMinimalParticles, double x, double y, double z, double dx, double dy, double dz, int... parameters) {}
 
 	@Override
 	default void onEntityAdded(Entity entity) {}

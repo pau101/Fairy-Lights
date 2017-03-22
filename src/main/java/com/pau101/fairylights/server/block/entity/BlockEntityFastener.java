@@ -24,7 +24,7 @@ public final class BlockEntityFastener extends TileEntity implements ITickable {
 	}
 
 	public EnumFacing getFacing() {
-		IBlockState state = worldObj.getBlockState(pos);
+		IBlockState state = world.getBlockState(pos);
 		if (state.getBlock() != FairyLights.fastener) {
 			return EnumFacing.UP;
 		}
@@ -44,8 +44,8 @@ public final class BlockEntityFastener extends TileEntity implements ITickable {
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.getNbtCompound());
-		IBlockState state = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, state, state, 3);
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, state, state, 3);
 	}
 
 	@Override
@@ -54,20 +54,20 @@ public final class BlockEntityFastener extends TileEntity implements ITickable {
 	}
 
 	@Override
-	public void setWorldObj(World world) {
-		super.setWorldObj(world);
+	public void setWorld(World world) {
+		super.setWorld(world);
 		getFastener().setWorld(world);
 	}
 
 	@Override
 	public void update() {
 		Fastener<?> fastener = getFastener();
-		if (!worldObj.isRemote && fastener.hasNoConnections()) {
-			worldObj.setBlockToAir(pos);
+		if (!world.isRemote && fastener.hasNoConnections()) {
+			world.setBlockToAir(pos);
 		} else if (fastener.update()) {
 			markDirty();	
-			IBlockState state = worldObj.getBlockState(pos);
-			worldObj.notifyBlockUpdate(pos, state, state, 3);
+			IBlockState state = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, state, state, 3);
 		}
 	}
 

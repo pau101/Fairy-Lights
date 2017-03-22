@@ -60,7 +60,7 @@ public final class ModelConnectionGarland extends ModelConnection<ConnectionGarl
 		GlStateManager.translate(x / 16, y / 16, z / 16);
 		GlStateManager.rotate((float) angleY * Mth.RAD_TO_DEG, 0, 1, 0);
 		GlStateManager.rotate((float) angleX * Mth.RAD_TO_DEG, 1, 0, 0);
-		int rings = MathHelper.ceiling_double_int(length * RINGS_PER_METER / 16) + 1;
+		int rings = MathHelper.ceil(length * RINGS_PER_METER / 16) + 1;
 		for (int i = 0; i < rings; i++) {
 			double t = i / (float) rings * length / 16;
 			GlStateManager.pushMatrix();

@@ -55,7 +55,7 @@ public final class Mth {
 		float s = MathHelper.sin(angle);
 		float c = MathHelper.cos(angle);
 		float t = 1 - c;
-		float magnitude = MathHelper.sqrt_float(x * x + y * y + z * z);
+		float magnitude = MathHelper.sqrt(x * x + y * y + z * z);
 		if (magnitude == 0) {
 			throw new IllegalArgumentException("Ubiquitous vector!");
 		}

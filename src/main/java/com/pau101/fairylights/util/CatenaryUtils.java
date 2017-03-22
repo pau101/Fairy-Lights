@@ -48,7 +48,7 @@ public final class CatenaryUtils {
 				y = linspace(y1, y2, pointCount);
 			} else {
 				sag = (length - MathHelper.abs(h)) / 2;
-				int nSag = MathHelper.ceiling_float_int(pointCount * sag / length);
+				int nSag = MathHelper.ceil(pointCount * sag / length);
 				float yMax = Math.max(y1, y2);
 				float yMin = Math.min(y1, y2);
 				y = concat(linspace(yMax, yMin - sag, pointCount - nSag), linspace(yMin - sag, yMin, nSag));
@@ -56,7 +56,7 @@ public final class CatenaryUtils {
 			return new float[][] { x, y };
 		}
 		x = linspace(x1, x2, pointCount);
-		if (length <= MathHelper.sqrt_float(d * d + h * h)) {
+		if (length <= MathHelper.sqrt(d * d + h * h)) {
 			y = linspace(y1, y2, pointCount);
 			return new float[][] { x, y };
 		}
@@ -103,7 +103,7 @@ public final class CatenaryUtils {
 	}
 
 	private static float g(float s, float d, float length, float h) {
-		return 2 * (float) Math.sinh(s * d / 2) / s - MathHelper.sqrt_float(length * length - h * h);
+		return 2 * (float) Math.sinh(s * d / 2) / s - MathHelper.sqrt(length * length - h * h);
 	}
 
 	private static float[] linspace(float base, float limit, int n) {

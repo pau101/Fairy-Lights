@@ -34,15 +34,15 @@ public abstract class MessageConnection<C extends Connection> extends FLMessage 
 	@Override
 	public void serialize(PacketBuffer buf) {
 		buf.writeBlockPos(pos);
-		buf.writeNBTTagCompoundToBuffer(FastenerType.serialize(accessor));
-		buf.writeUuid(uuid);
+		buf.writeCompoundTag(FastenerType.serialize(accessor));
+		buf.writeUniqueId(uuid);
 	}
 
 	@Override
 	public void deserialize(PacketBuffer buf) throws IOException {
 		pos = buf.readBlockPos();
-		accessor = FastenerType.deserialize(buf.readNBTTagCompoundFromBuffer());
-		uuid = buf.readUuid();
+		accessor = FastenerType.deserialize(buf.readCompoundTag());
+		uuid = buf.readUniqueId();
 	}
 
 	@Override

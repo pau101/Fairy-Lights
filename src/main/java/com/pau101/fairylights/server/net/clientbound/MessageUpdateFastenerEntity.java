@@ -27,22 +27,22 @@ public final class MessageUpdateFastenerEntity extends FLMessage {
 
 	@Override
 	public void serialize(PacketBuffer buf) {
-		buf.writeVarIntToBuffer(entityId);
-		buf.writeNBTTagCompoundToBuffer(compound);
+		buf.writeVarInt(entityId);
+		buf.writeCompoundTag(compound);
 	}
 
 	@Override
 	public void deserialize(PacketBuffer buf) throws IOException {
-		entityId = buf.readVarIntFromBuffer();
-		compound = buf.readNBTTagCompoundFromBuffer();
+		entityId = buf.readVarInt();
+		compound = buf.readCompoundTag();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void process(MessageContext ctx) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.theWorld != null) {
-			Entity entity = mc.theWorld.getEntityByID(entityId);
+		if (mc.world != null) {
+			Entity entity = mc.world.getEntityByID(entityId);
 			if (entity != null && entity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) {
 				entity.getCapability(CapabilityHandler.FASTENER_CAP, null).deserializeNBT(compound);
 			}

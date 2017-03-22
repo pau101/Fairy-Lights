@@ -198,8 +198,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public void addCollisionBoxToList(World world, BlockPos pos, AxisAlignedBB aabb, List<AxisAlignedBB> boxes, Entity entity) {
-		state.addCollisionBoxToList(world, pos, aabb, boxes, entity);
+	public void addCollisionBoxToList(World world, BlockPos pos, AxisAlignedBB aabb, List<AxisAlignedBB> boxes, Entity entity, boolean isPistonMovingEntities) {
+		state.addCollisionBoxToList(world, pos, aabb, boxes, entity, isPistonMovingEntities);
 	}
 
 	@Override
@@ -228,8 +228,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public Collection<IProperty<?>> getPropertyNames() {
-		return state.getPropertyNames();
+	public Collection<IProperty<?>> getPropertyKeys() {
+		return state.getPropertyKeys();
 	}
 
 	@Override
@@ -263,17 +263,17 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public boolean func_191057_i() {
-		return state.func_191057_i();
+	public boolean causesSuffocation() {
+		return state.causesSuffocation();
 	}
 
 	@Override
-	public Vec3d func_191059_e(IBlockAccess world, BlockPos pos) {
-		return state.func_191059_e(world, pos);
+	public Vec3d getOffset(IBlockAccess world, BlockPos pos) {
+		return state.getOffset(world, pos);
 	}
 
 	@Override
-	public boolean func_191058_s() {
-		return state.func_191058_s();
+	public boolean hasCustomBreakingProgress() {
+		return state.hasCustomBreakingProgress();
 	}
 }

@@ -60,12 +60,12 @@ public final class CommandJingler extends CommandBase {
 	private static Thread shutdownCloser;
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 		return "/jingler <open|close|list>";
 	}
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "jingler";
 	}
 
@@ -89,7 +89,7 @@ public final class CommandJingler extends CommandBase {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (args.length < 1) {
-			throw new WrongUsageException(getCommandUsage(sender));
+			throw new WrongUsageException(getUsage(sender));
 		}
 		String option = args[0];
 		if ("open".equalsIgnoreCase(option)) {
@@ -126,7 +126,7 @@ public final class CommandJingler extends CommandBase {
 			transmitters.add(transmitter);
 			transmitter.setReceiver(new MidiJingler(hangingLights));
 			hangingLights.addRemoveListener(new ConnectionRemoveListener(hangingLights));
-			sender.addChatMessage(new TextComponentString("Connection opened"));
+			sender.sendMessage(new TextComponentString("Connection opened"));
 		} else if ("close".equalsIgnoreCase(option)) {
 			MidiDevice device = args.length == 1 ? null : getDeviceFromArgs(args, 1);
 			Connection connection = ClientEventHandler.getHitConnection();
@@ -157,10 +157,10 @@ public final class CommandJingler extends CommandBase {
 			if (closed > 0 && TRANSMITTERS.isEmpty()) {
 				msg.append(", non remaining");
 			}
-			sender.addChatMessage(new TextComponentString(msg.toString()));
+			sender.sendMessage(new TextComponentString(msg.toString()));
 		} else if ("list".equalsIgnoreCase(option)) {
 			if (TRANSMITTERS.isEmpty()) {
-				sender.addChatMessage(new TextComponentString("No connections to list"));
+				sender.sendMessage(new TextComponentString("No connections to list"));
 			} else {
 				List<ConnectionHangingLights> allConnections = new ArrayList<>(TRANSMITTERS.keySet());
 				allConnections.sort((c1, c2) -> Double.compare(
@@ -182,7 +182,7 @@ public final class CommandJingler extends CommandBase {
 				List<MidiDevice> devices = new ArrayList<>(deviceConnections.keySet());
 				devices.sort((d1, d2) -> d1.getDeviceInfo().getName().compareTo(d2.getDeviceInfo().getName()));
 				for (MidiDevice device : devices) {
-					sender.addChatMessage(new TextComponentString(ChatFormatting.GREEN + device.getDeviceInfo().getName()));
+					sender.sendMessage(new TextComponentString(ChatFormatting.GREEN + device.getDeviceInfo().getName()));
 					for (ConnectionHangingLights connection : deviceConnections.get(device)) {
 						Fastener<?> fastener = connection.getFastener();
 						FastenerAccessor dest = connection.getDestination();
@@ -192,12 +192,12 @@ public final class CommandJingler extends CommandBase {
 						} else {
 							destStr = "?";
 						}
-						sender.addChatMessage(new TextComponentString(String.format("  Connection: %s to %s", fastener, destStr)));
+						sender.sendMessage(new TextComponentString(String.format("  Connection: %s to %s", fastener, destStr)));
 					}
 				}
 			}
 		} else {
-			throw new WrongUsageException(getCommandUsage(sender));
+			throw new WrongUsageException(getUsage(sender));
 		}
 	}
 
@@ -295,7 +295,7 @@ public final class CommandJingler extends CommandBase {
 	}
 
 	@Override
-	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
 		int len = args.length;
 		if (len == 1) {
 			return OPTIONS;

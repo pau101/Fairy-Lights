@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 public class IngredientRegularEmpty implements IngredientRegular {
 	@Override
 	public MatchResultRegular matches(ItemStack input, ItemStack output) {
-		return new MatchResultRegular(this, input, input.func_190926_b(), Collections.EMPTY_LIST);
+		return new MatchResultRegular(this, input, input.isEmpty(), Collections.EMPTY_LIST);
 	}
 
 	@Override

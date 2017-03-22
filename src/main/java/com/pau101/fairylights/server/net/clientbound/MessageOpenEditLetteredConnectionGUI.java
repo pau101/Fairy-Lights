@@ -26,7 +26,7 @@ public class MessageOpenEditLetteredConnectionGUI<C extends Connection & Lettere
 	@Override
 	@SideOnly(Side.CLIENT)
 	protected World getWorld(MessageContext ctx) {
-		return Minecraft.getMinecraft().theWorld;
+		return Minecraft.getMinecraft().world;
 	}
 
 	@Override

@@ -104,7 +104,7 @@ public final class ClientEventHandler {
 	public void renderWorldEarly(EntityViewRenderEvent.FogColors event) {
 		if (HIT_CONNECTION.connection != null) {
 			Minecraft mc = Minecraft.getMinecraft();
-			HIT_CONNECTION.setWorld(mc.theWorld);
+			HIT_CONNECTION.setWorld(mc.world);
 			mc.objectMouseOver = new RayTraceResult(HIT_CONNECTION);
 		}
 	}
@@ -113,14 +113,14 @@ public final class ClientEventHandler {
 		Minecraft mc = Minecraft.getMinecraft();
 		Entity viewer = mc.getRenderViewEntity();
 		HIT_CONNECTION.setWorld(null);
-		if (mc.objectMouseOver != null && mc.theWorld != null && viewer != null) {
-			HitResult result = getHitConnection(mc.theWorld, viewer);
+		if (mc.objectMouseOver != null && mc.world != null && viewer != null) {
+			HitResult result = getHitConnection(mc.world, viewer);
 			if (result != null) {
 				Vec3d eyes = viewer.getPositionEyes(1);
 				if (result.intersection.getResult().hitVec.distanceTo(eyes) < mc.objectMouseOver.hitVec.distanceTo(eyes)) {
 					HIT_CONNECTION.connection = result.connection;
 					HIT_CONNECTION.intersection= result.intersection;
-					HIT_CONNECTION.setWorld(mc.theWorld);
+					HIT_CONNECTION.setWorld(mc.world);
 					mc.objectMouseOver = new RayTraceResult(HIT_CONNECTION);
 					return;
 				}
@@ -143,10 +143,10 @@ public final class ClientEventHandler {
 			.map(e -> e.<Fastener<?>>getCapability(CapabilityHandler.FASTENER_CAP, null))
 			.collect(Collectors.toCollection(ArrayList::new)
 		);
-        int minX = MathHelper.floor_double((bounds.minX - 1) / 16D);
-        int maxX = MathHelper.ceiling_double_int((bounds.maxX + 1) / 16D);
-        int minZ = MathHelper.floor_double((bounds.minZ - 1) / 16D);
-        int maxZ = MathHelper.ceiling_double_int((bounds.maxZ + 1) / 16D);
+        int minX = MathHelper.floor((bounds.minX - 1) / 16D);
+        int maxX = MathHelper.ceil((bounds.maxX + 1) / 16D);
+        int minZ = MathHelper.floor((bounds.minZ - 1) / 16D);
+        int maxZ = MathHelper.ceil((bounds.maxZ + 1) / 16D);
         IChunkProvider provider = world.getChunkProvider();
         for (int x = minX; x < maxX; x++) {
         	for (int z = minZ; z < maxZ; z++) {
@@ -448,7 +448,7 @@ public final class ClientEventHandler {
 		}
 
 		private void processAction(PlayerAction action) {
-			connection.processClientAction(Minecraft.getMinecraft().thePlayer, action, intersection);
+			connection.processClientAction(Minecraft.getMinecraft().player, action, intersection);
 		}
 
 		@Override

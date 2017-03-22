@@ -24,7 +24,7 @@ public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRend
 		double z = view.lastTickPosZ + (view.posZ - view.lastTickPosZ) * delta;
 		ICamera camera = new Frustum();
 		camera.setPosition(x, y, z);
-		for (Entity e : mc.theWorld.loadedEntityList) {
+		for (Entity e : mc.world.loadedEntityList) {
 			if (e instanceof EntityFenceFastener) {
 				EntityFenceFastener fence = (EntityFenceFastener) e;
 				if (fence.isInRangeToRender3d(x, y, z) && camera.isBoundingBoxInFrustum(fence.getRenderBoundingBox())) {

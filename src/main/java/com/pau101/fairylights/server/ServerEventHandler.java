@@ -122,8 +122,8 @@ public final class ServerEventHandler {
 	public void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
 			Fastener fastener = event.player.getCapability(CapabilityHandler.FASTENER_CAP, null);
-			if (fastener.update() && !event.player.worldObj.isRemote) {
-				ServerProxy.sendToPlayersWatchingEntity(new MessageUpdateFastenerEntity(event.player, fastener.serializeNBT()), event.player.worldObj, event.player);
+			if (fastener.update() && !event.player.world.isRemote) {
+				ServerProxy.sendToPlayersWatchingEntity(new MessageUpdateFastenerEntity(event.player, fastener.serializeNBT()), event.player.world, event.player);
 			}
 		}
 	}

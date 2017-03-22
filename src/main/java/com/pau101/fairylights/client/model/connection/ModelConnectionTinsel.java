@@ -48,7 +48,7 @@ public final class ModelConnectionTinsel extends ModelConnection<ConnectionGarla
 		GlStateManager.translate(x / 16, y / 16, z / 16);
 		GlStateManager.rotate((float) angleY * Mth.RAD_TO_DEG, 0, 1, 0);
 		GlStateManager.rotate((float) angleX * Mth.RAD_TO_DEG, 1, 0, 0);
-		int rings = MathHelper.ceiling_double_int(length * 4);
+		int rings = MathHelper.ceil(length * 4);
 		for (int i = 0; i < rings; i++) {
 			double t = i / (float) rings * length / 16;
 			GlStateManager.pushMatrix();

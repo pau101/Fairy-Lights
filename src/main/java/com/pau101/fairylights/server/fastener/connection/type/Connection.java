@@ -97,8 +97,7 @@ public abstract class Connection implements NBTSerializable {
 		this.world = world;
 		this.fastener = fastener;
 		this.uuid = uuid;
-		updateCatenary = true;
-		dataUpdateState = true;
+		computeCatenary();
 	}
 
 	@Nullable
@@ -137,7 +136,7 @@ public abstract class Connection implements NBTSerializable {
 
 	public final void setDestination(Fastener<?> destination) {
 		this.destination = destination.createAccessor();
-		updateCatenary = dataUpdateState = true;
+		computeCatenary();
 	}
 
 	public final FastenerAccessor getDestination() {
@@ -197,6 +196,10 @@ public abstract class Connection implements NBTSerializable {
 		}
 	}
 
+	public void computeCatenary() {
+		updateCatenary = dataUpdateState = true;
+	}
+
 	public void processClientAction(EntityPlayer player, PlayerAction action, Intersection intersection) {
 		FairyLights.network.sendToServer(new MessageConnectionInteraction(this, action, intersection));
 	}
@@ -214,7 +217,7 @@ public abstract class Connection implements NBTSerializable {
 			item.motionX = world.rand.nextGaussian() * scale;
 			item.motionY = world.rand.nextGaussian() * scale + 0.2F;
 			item.motionZ = world.rand.nextGaussian() * scale;
-			world.spawnEntityInWorld(item);
+			world.spawnEntity(item);
 		}
 		Vec3d pos = fastener.getConnectionPoint();
 		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_DISCONNECT, SoundCategory.BLOCKS, 1, 1);
@@ -248,7 +251,7 @@ public abstract class Connection implements NBTSerializable {
 		}
 		NBTTagCompound data = Objects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
 		ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
-		fastener.connectWith(world, dest, type, data).onConnect(player.worldObj, player, heldStack);
+		fastener.connectWith(world, dest, type, data).onConnect(player.world, player, heldStack);
 		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
 	}
 
@@ -256,7 +259,7 @@ public abstract class Connection implements NBTSerializable {
 		if (slack <= 0 && amount < 0 || slack >= MAX_SLACK && amount > 0) {
 			return false;
 		}
-		slack = MathHelper.clamp_float(slack + amount, 0, MAX_SLACK);
+		slack = MathHelper.clamp(slack + amount, 0, MAX_SLACK);
 		if (slack < 1e-2F) {
 			slack = 0;
 		}

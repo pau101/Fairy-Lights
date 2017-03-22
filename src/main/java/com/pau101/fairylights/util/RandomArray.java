@@ -28,7 +28,7 @@ public final class RandomArray {
 	}
 
 	public float get(float t) {
-		int t0 = MathHelper.floor_float(Mth.mod(t, values.length));
+		int t0 = MathHelper.floor(Mth.mod(t, values.length));
 		int t1 = Mth.mod(t0 + 1, values.length);
 		return values[t0] * (1 - t % 1) + values[t1] * (t % 1);
 	}

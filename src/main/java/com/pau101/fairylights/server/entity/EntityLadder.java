@@ -58,7 +58,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 
 	@Override
 	public ItemStack getItemStackFromSlot(EntityEquipmentSlot slot) {
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 	}
 
 	@Override
-	public boolean func_190631_cK() {
+	public boolean attackable() {
 		return false;
 	}
 
@@ -137,21 +137,21 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if (worldObj.isRemote || isDead || isEntityInvulnerable(source)) {
+		if (world.isRemote || isDead || isEntityInvulnerable(source)) {
 			return false;
 		}
-		if (DamageSource.outOfWorld == source) {
+		if (DamageSource.OUT_OF_WORLD == source) {
 			setDead();
 		} else if (source.isExplosion()) {
 			playBreakSound();
 			setDead();
-		} else if (DamageSource.inFire == source) {
+		} else if (DamageSource.IN_FIRE == source) {
 			if (isBurning()) {
 				damage(0.15F);
 			} else {
 				setFire(5);
 			}
-		} else if (DamageSource.onFire == source && getHealth() > 0.5F) {
+		} else if (DamageSource.ON_FIRE == source && getHealth() > 0.5F) {
 			damage(4);
 		} else if (isPlayerDamage(source)) {
 			if (source.isCreativePlayer()) {
@@ -159,9 +159,9 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 				playParticles();
 				setDead();
 			} else {
-				long time = worldObj.getTotalWorldTime();
+				long time = world.getTotalWorldTime();
 				if (time - lastPunchTime > 5) {
-					worldObj.setEntityState(this, PUNCH_ID);
+					world.setEntityState(this, PUNCH_ID);
 					lastPunchTime = time;
 				} else {
 					dropIt();
@@ -182,16 +182,16 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 	}
 
 	private void dropIt() {
-		Block.spawnAsEntity(worldObj, new BlockPos(this), new ItemStack(FairyLights.ladder));
+		Block.spawnAsEntity(world, new BlockPos(this), new ItemStack(FairyLights.ladder));
 	}
 
 	private void playBreakSound() {
-		worldObj.playSound(null, posX, posY, posZ, getDeathSound(), getSoundCategory(), 1, 1);
+		world.playSound(null, posX, posY, posZ, getDeathSound(), getSoundCategory(), 1, 1);
 	}
 
 	private void playParticles() {
-		if (worldObj instanceof WorldServer) {
-			((WorldServer) worldObj).spawnParticle(EnumParticleTypes.BLOCK_DUST, posX, posY + height / 1.5, posZ, 18, width / 4, height / 4, width / 4, 0.05, Block.getStateId(Blocks.PLANKS.getDefaultState()));
+		if (world instanceof WorldServer) {
+			((WorldServer) world).spawnParticle(EnumParticleTypes.BLOCK_DUST, posX, posY + height / 1.5, posZ, 18, width / 4, height / 4, width / 4, 0.05, Block.getStateId(Blocks.PLANKS.getDefaultState()));
 		}
 	}
 
@@ -208,9 +208,9 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 	@Override
 	public void handleStatusUpdate(byte id) {
 		if (id == PUNCH_ID) {
-			if (worldObj.isRemote) {
-				worldObj.playSound(posX, posY, posZ, getHurtSound(), getSoundCategory(), 0.3F, 1, false);
-				lastPunchTime = worldObj.getTotalWorldTime();
+			if (world.isRemote) {
+				world.playSound(posX, posY, posZ, getHurtSound(), getSoundCategory(), 0.3F, 1, false);
+				lastPunchTime = world.getTotalWorldTime();
 			}
 		} else {
 			super.handleStatusUpdate(id);

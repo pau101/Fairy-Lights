@@ -145,7 +145,7 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 				entityItem.motionX = world.rand.nextGaussian() * scale;
 				entityItem.motionY = world.rand.nextGaussian() * scale + 0.2F;
 				entityItem.motionZ = world.rand.nextGaussian() * scale;
-				world.spawnEntityInWorld(entityItem);
+				world.spawnEntity(entityItem);
 			}
 		}
 	}

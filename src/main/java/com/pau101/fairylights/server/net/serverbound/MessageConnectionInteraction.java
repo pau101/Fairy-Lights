@@ -48,8 +48,8 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 		buf.writeDouble(hit.xCoord);
 		buf.writeDouble(hit.yCoord);
 		buf.writeDouble(hit.zCoord);
-		buf.writeVarIntToBuffer(featureType.getId());
-		buf.writeVarIntToBuffer(featureId);
+		buf.writeVarInt(featureType.getId());
+		buf.writeVarInt(featureId);
 	}
 
 	@Override
@@ -57,8 +57,8 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 		super.deserialize(buf);
 		type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
 		hit = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		featureType = FeatureType.fromId(buf.readVarIntFromBuffer());
-		featureId = buf.readVarIntFromBuffer();
+		featureType = FeatureType.fromId(buf.readVarInt());
+		featureId = buf.readVarInt();
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 
 	@Override
 	protected World getWorld(MessageContext ctx) {
-		return ctx.getServerHandler().playerEntity.worldObj;
+		return ctx.getServerHandler().playerEntity.world;
 	}
 
 	@Override
@@ -95,11 +95,11 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 	}
 
 	private void updateItem(EntityPlayer player, ItemStack oldStack, ItemStack stack, EnumHand hand) {
-		if (stack.func_190916_E() <= 0 && !player.capabilities.isCreativeMode) {
+		if (stack.getCount() <= 0 && !player.capabilities.isCreativeMode) {
 			ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
-			player.setHeldItem(hand, ItemStack.field_190927_a);
-		} else if (stack.func_190916_E() < oldStack.func_190916_E() && player.capabilities.isCreativeMode) {
-			stack.func_190920_e(oldStack.func_190916_E());
+			player.setHeldItem(hand, ItemStack.EMPTY);
+		} else if (stack.getCount() < oldStack.getCount() && player.capabilities.isCreativeMode) {
+			stack.setCount(oldStack.getCount());
 		}
 	}
 }
