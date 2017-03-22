@@ -12,6 +12,7 @@ import com.pau101.fairylights.util.Mth;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -78,7 +79,7 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 		if (!((ItemConnection) stack.getItem()).getConnectionType().isConnectionThis(getFirstConnection())) {
 			return false;
 		}
-		if (stack.hasTagCompound() && !stack.getTagCompound().equals(getFirstConnection().serializeLogic())) {
+		if (stack.hasTagCompound() && !NBTUtil.areNBTEquals(getFirstConnection().serializeLogic(), stack.getTagCompound(), true)) {
 			return false;
 		}
 		return true;
