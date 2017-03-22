@@ -75,4 +75,6 @@ subtitles.block.cord.connect=Cable conecta
 subtitles.block.cord.disconnect=Cable desconecta
 subtitles.block.cord.stretch=Cable estira
 subtitles.block.cord.snap=Cable rupturas
+subtitles.block.feature.lightTurnOn=Luces se encienden
+subtitles.block.feature.lightTurnOff=Luces se apagan
 subtitles.block.feature.colorChange=Color cambia

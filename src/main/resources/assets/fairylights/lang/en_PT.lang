@@ -75,4 +75,6 @@ subtitles.block.cord.connect=Rope ties up
 subtitles.block.cord.disconnect=Rope is cut
 subtitles.block.cord.stretch=Rope pulls
 subtitles.block.cord.snap=Rope whips
+subtitles.block.feature.lightTurnOn=Lanterns catch fire
+subtitles.block.feature.lightTurnOff=Lanterns burn out
 subtitles.block.feature.colorChange=Color plops
