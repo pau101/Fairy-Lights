@@ -97,8 +97,7 @@ public abstract class Connection implements NBTSerializable {
 		this.world = world;
 		this.fastener = fastener;
 		this.uuid = uuid;
-		updateCatenary = true;
-		dataUpdateState = true;
+		computeCatenary();
 	}
 
 	@Nullable
@@ -137,7 +136,7 @@ public abstract class Connection implements NBTSerializable {
 
 	public final void setDestination(Fastener<?> destination) {
 		this.destination = destination.createAccessor();
-		updateCatenary = dataUpdateState = true;
+		computeCatenary();
 	}
 
 	public final FastenerAccessor getDestination() {
@@ -195,6 +194,10 @@ public abstract class Connection implements NBTSerializable {
 				removeListeners.forEach(Runnable::run);
 			}
 		}
+	}
+
+	public void computeCatenary() {
+		updateCatenary = dataUpdateState = true;
 	}
 
 	public void processClientAction(EntityPlayer player, PlayerAction action, Intersection intersection) {
