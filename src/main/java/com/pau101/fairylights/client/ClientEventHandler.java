@@ -248,7 +248,7 @@ public final class ClientEventHandler {
 					drawConnectionHighlight(HIT_CONNECTION.connection, delta, dx, dy, dz);
 				} else {
 					AxisAlignedBB aabb = HIT_CONNECTION.intersection.getHitBox().offset(-dx, -dy, -dz).expandXyz(0.002);
-					RenderGlobal.func_189697_a(aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
+					RenderGlobal.drawSelectionBoundingBox(aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
 				}
 			}
 			restoreHighlightGL();
@@ -259,7 +259,7 @@ public final class ClientEventHandler {
 		// Check if the server will allow interaction
 		if (player.canEntityBeSeen(fence) || player.getDistanceSqToEntity(fence) <= 9) {
 			AxisAlignedBB selection = fence.getEntityBoundingBox().offset(-dx, -dy, -dz).expandXyz(0.002);
-			RenderGlobal.func_189697_a(selection, 0, 0, 0, HIGHLIGHT_ALPHA);
+			RenderGlobal.drawSelectionBoundingBox(selection, 0, 0, 0, HIGHLIGHT_ALPHA);
 		}
 	}
 

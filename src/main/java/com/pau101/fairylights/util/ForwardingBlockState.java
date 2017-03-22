@@ -53,8 +53,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public boolean func_189884_a(Entity entity) {
-		return state.func_189884_a(entity);
+	public boolean canEntitySpawn(Entity entity) {
+		return state.canEntitySpawn(entity);
 	}
 
 	@Override

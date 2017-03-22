@@ -198,7 +198,7 @@ public abstract class ItemConnection extends Item {
 		}
 
 		@Override
-		public Biome getBiomeGenForCoords(BlockPos pos) {
+		public Biome getBiome(BlockPos pos) {
 			return Biomes.DEFAULT;
 		}
 

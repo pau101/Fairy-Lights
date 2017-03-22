@@ -24,7 +24,7 @@ public class RenderLadder extends RenderLivingBase<EntityLadder> {
 	@Override
 	public void doRender(EntityLadder ladder, double x, double y, double z, float yaw, float delta) {
 		super.doRender(ladder, x, y, z, yaw, delta);
-		if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox() && !ladder.isInvisible() && !Minecraft.getMinecraft().func_189648_am()) {
+		if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox() && !ladder.isInvisible() && !Minecraft.getMinecraft().isReducedDebug()) {
 			GlStateManager.enableBlend();
 			GlStateManager.disableLighting();
 			GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
@@ -32,7 +32,7 @@ public class RenderLadder extends RenderLivingBase<EntityLadder> {
 			GlStateManager.disableTexture2D();
 			GlStateManager.depthMask(false);
 			for (AxisAlignedBB s : ladder.getCollisionSurfaces()) {
-				RenderGlobal.func_189697_a(s.expandXyz(0.002).offset(-ladder.posX + x, -ladder.posY + y, -ladder.posZ + z), 1, 1, 1, 1);
+				RenderGlobal.drawSelectionBoundingBox(s.expandXyz(0.002).offset(-ladder.posX + x, -ladder.posY + y, -ladder.posZ + z), 1, 1, 1, 1);
 			}
 			GlStateManager.depthMask(true);
 			GlStateManager.enableTexture2D();
