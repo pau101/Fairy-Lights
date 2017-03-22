@@ -31,6 +31,14 @@
 		"sounds": [ "minecraft:random/pop" ],
 		"subtitle": "subtitles.block.feature.colorChange"
 	},
+	"feature.light_turnon": {
+		"sounds": [ "minecraft:random/click" ],
+		"subtitle": "subtitles.block.feature.lightTurnOn"
+	},
+	"feature.light_turnoff": {
+		"sounds": [ "minecraft:random/click" ],
+		"subtitle": "subtitles.block.feature.lightTurnOff"
+	},
 	"entity.ladder.break": {
 		"sounds": [
 			"entity/armorstand/break1",

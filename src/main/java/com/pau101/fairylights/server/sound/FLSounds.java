@@ -21,6 +21,10 @@ public final class FLSounds {
 
 	public static final SoundEvent FEATURE_COLOR_CHANGE = create("feature.color_change");
 
+	public static final SoundEvent FEATURE_LIGHT_TURNON = create("feature.light_turnon");
+
+	public static final SoundEvent FEATURE_LIGHT_TURNOFF = create("feature.light_turnoff");
+
 	public static final SoundEvent LADDER_BREAK = create("entity.ladder.break");
 
 	public static final SoundEvent LADDER_FALL = create("entity.ladder.fall");

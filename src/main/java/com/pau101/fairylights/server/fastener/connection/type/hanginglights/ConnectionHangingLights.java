@@ -30,6 +30,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
@@ -50,6 +51,8 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	private JinglePlayer jinglePlayer = new JinglePlayer();
 
 	private boolean wasPlaying = false;
+
+	private boolean isOn = true;
 
 	private Set<BlockPos> litBlocks = new HashSet<>();
 
@@ -96,7 +99,22 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 				return true;
 			}
 		}
-		return super.interact(player, hit, featureType, feature, heldStack, hand);
+		if (super.interact(player, hit, featureType, feature, heldStack, hand)) {
+			return true;
+		}
+		isOn = !isOn;
+		SoundEvent lightSnd;
+		float pitch;
+		if (isOn) {
+			lightSnd = FLSounds.FEATURE_LIGHT_TURNON;
+			pitch = 0.6F;
+		} else {
+			lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF;
+			pitch = 0.5F;
+		}
+		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, lightSnd, SoundCategory.BLOCKS, 1, pitch);
+		computeCatenary();
+		return true;
 	}
 
 	@Override
@@ -112,12 +130,12 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 			}
 		}
 		wasPlaying = playing;
-		boolean still = !isDynamic();
+		boolean on = !isDynamic() && isOn;
 		for (int i = 0; i < features.length; i++) {
 			Light light = features[i];
-			light.tick(this, twinkle, still);
+			light.tick(this, twinkle, on);
 		}
-		if (still && isOrigin() && features.length > 0) {
+		if (on && isOrigin() && features.length > 0) {
 			lightUpdateTime++;
 			if (lightUpdateTime > LIGHT_UPDATE_WAIT && lightUpdateTime % LIGHT_UPDATE_RATE == 0) {
 				if (lightUpdateIndex >= features.length) {
@@ -141,9 +159,9 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	@Override
 	protected Light createFeature(int index, Vec3d point, Vec3d rotation) {
-		boolean still = !isDynamic();
-		Light light = new Light(index, point, rotation, still);
-		if (isOrigin() && still) {
+		boolean on = !isDynamic() && isOn;
+		Light light = new Light(index, point, rotation, on);
+		if (on && isOrigin()) {
 			BlockPos pos = new BlockPos(light.getAbsolutePoint(fastener));
 			litBlocks.add(pos);
 			setLight(pos, LIGHT_VALUE);
@@ -224,6 +242,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	public NBTTagCompound serialize() {
 		NBTTagCompound compound = super.serialize();
 		compound.setTag("jinglePlayer", jinglePlayer.serialize());
+		compound.setBoolean("isOn", isOn);
 		return compound;
 	}
 
@@ -236,6 +255,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 		if (!jinglePlayer.isPlaying()) {
 			jinglePlayer.deserialize(compound.getCompoundTag("jinglePlayer"));
 		}
+		isOn = compound.getBoolean("isOn");
 	}
 
 	@Override

@@ -75,4 +75,6 @@ subtitles.block.cord.connect=Cord connects
 subtitles.block.cord.disconnect=Cord disconnects
 subtitles.block.cord.stretch=Cord stretches
 subtitles.block.cord.snap=Cord snaps
+subtitles.block.feature.lightTurnOn=Lights click on
+subtitles.block.feature.lightTurnOff=Lights click off
 subtitles.block.feature.colorChange=Color plops
