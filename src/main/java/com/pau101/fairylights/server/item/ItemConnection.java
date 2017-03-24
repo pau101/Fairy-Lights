@@ -1,5 +1,10 @@
 package com.pau101.fairylights.server.item;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.common.base.Objects;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
@@ -22,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -31,12 +37,19 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.storage.IChunkLoader;
+import net.minecraft.world.gen.structure.template.TemplateManager;
+import net.minecraft.world.storage.IPlayerFileData;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 
 public abstract class ItemConnection extends Item {
 	public ItemConnection() {
@@ -147,6 +160,8 @@ public abstract class ItemConnection extends Item {
 		connect(stack, user, world, fastener.getCapability(CapabilityHandler.FASTENER_CAP, null), playConnectSound);
 	}
 
+	private static final ThreadLocal<IsolatedBlock> ISOLATED_BLOCK = ThreadLocal.withInitial(() -> new IsolatedBlock());
+
 	public static boolean isFence(IBlockState state, TileEntity entity) {
 		Block block = state.getBlock();
 		if (block instanceof BlockFence) {
@@ -157,7 +172,9 @@ public abstract class ItemConnection extends Item {
 		}
 		AxisAlignedBB bounds = null;
 		try {
-			bounds = block.getDefaultState().getCollisionBoundingBox(new IsolatedBlock(state, entity), IsolatedBlock.POS);
+			IsolatedBlock ib = ISOLATED_BLOCK.get();
+			ib.set(state, entity);
+			bounds = block.getDefaultState().getCollisionBoundingBox(ib, IsolatedBlock.POS);
 		} catch (Exception e) {
 			// Safeguard against theoretical special cases
 		}
@@ -168,12 +185,19 @@ public abstract class ItemConnection extends Item {
 	private static class IsolatedBlock extends World {
 		public static final BlockPos POS = BlockPos.ORIGIN;
 
-		private final IBlockState state;
+		public static final WorldInfo INFO = new WorldInfo(new WorldSettings(0, GameType.ADVENTURE, false, false, WorldType.CUSTOMIZED), "");
+	
+		private static final IsolatedImpl OBJECT = new IsolatedImpl();
 
-		private final TileEntity entity;
+		private IBlockState state;
 
-		public IsolatedBlock(IBlockState state, TileEntity entity) {
-			super(null, null, new IsolatedProvider(), null, true);
+		private TileEntity entity;
+
+		public IsolatedBlock() {
+			super(OBJECT, INFO, OBJECT, new IsolatedProfiler(), true);
+		}
+
+		public void set(IBlockState state, TileEntity entity) {
 			this.state = state;
 			this.entity = entity;
 		}
@@ -249,10 +273,106 @@ public abstract class ItemConnection extends Item {
 		}
 	}
 
-	private static class IsolatedProvider extends WorldProvider {
+	private static class IsolatedImpl extends WorldProvider implements ISaveHandler, IPlayerFileData, IChunkLoader {
 		@Override
 		public DimensionType getDimensionType() {
 			return DimensionType.OVERWORLD;
+		}
+
+		@Override
+		public WorldInfo loadWorldInfo() {
+			return IsolatedBlock.INFO;
+		}
+
+		@Override
+		public void checkSessionLock() {}
+
+		@Override
+		public IChunkLoader getChunkLoader(WorldProvider provider) {
+			return this;
+		}
+
+		@Override
+		public void saveWorldInfoWithPlayer(WorldInfo worldInformation, NBTTagCompound tagCompound) {}
+
+		@Override
+		public void saveWorldInfo(WorldInfo worldInformation) {}
+
+		@Override
+		public IPlayerFileData getPlayerNBTManager() {
+			return this;
+		}
+
+		@Override
+		public void flush() {}
+
+		@Override
+		public File getWorldDirectory() {
+			return null;
+		}
+
+		@Override
+		public File getMapFileFromName(String mapName) {
+			return null;
+		}
+
+		@Override
+		public TemplateManager getStructureTemplateManager() {
+			return null;
+		}
+
+		@Override
+		public void writePlayerData(EntityPlayer player) {}
+
+		@Override
+		public NBTTagCompound readPlayerData(EntityPlayer player) {
+			return new NBTTagCompound();
+		}
+
+		@Override
+		public String[] getAvailablePlayerDat() {
+			return new String[0];
+		}
+
+		@Override
+		public Chunk loadChunk(World worldIn, int x, int z) throws IOException {
+			return null;
+		}
+
+		@Override
+		public void saveChunk(World worldIn, Chunk chunkIn) {}
+
+		@Override
+		public void saveExtraChunkData(World worldIn, Chunk chunkIn) {}
+
+		@Override
+		public void chunkTick() {}
+
+		@Override
+		public void saveExtraData() {}
+	}
+
+	private static class IsolatedProfiler extends Profiler {
+		@Override
+		public void clearProfiling() {}
+
+		@Override
+		public void startSection(String name) {}
+
+		@Override
+		public void endSection() {}
+
+		@Override
+		public void endStartSection(String name) {}
+
+		@Override
+		public String getNameOfLastSection() {
+			return "";
+		}
+
+		@Override
+		public List<Result> getProfilingData(String profilerName) {
+			return Collections.EMPTY_LIST;
 		}
 	}
 }
