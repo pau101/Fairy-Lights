@@ -5,7 +5,6 @@ import com.pau101.fairylights.server.block.BlockFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -38,7 +37,7 @@ public final class BlockEntityFastener extends TileEntity implements ITickable {
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(super.getUpdateTag());
+		return writeToNBT(new NBTTagCompound());
 	}
 
 	@Override
