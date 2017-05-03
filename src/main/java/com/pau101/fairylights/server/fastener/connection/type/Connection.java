@@ -237,8 +237,8 @@ public abstract class Connection implements NBTSerializable {
 
 	private void replace(EntityPlayer player, Vec3d hit, ItemStack heldStack) {
 		Fastener<?> dest = destination.get(world);
-		fastener.removeConnection(this);
-		dest.removeConnection(uuid);
+		fastener.removeConnectionImmediately(this);
+		dest.removeConnectionImmediately(uuid);
 		if (shouldDrop()) {
 			player.inventory.addItemStackToInventory(getItemStack());
 		}
