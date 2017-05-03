@@ -1,7 +1,5 @@
 package com.pau101.fairylights.server.fastener.connection;
 
-import java.util.Objects;
-
 import com.pau101.fairylights.util.Mth;
 
 import net.minecraft.util.math.MathHelper;
@@ -19,11 +17,11 @@ public final class Segment implements Feature {
 	private double length;
 
 	public Segment(Vec3d start) {
-		this.start = Objects.requireNonNull(start, "start");
+		this.start = start;
 	}
 
 	public void connectTo(Vec3d end) {
-		this.end = Objects.requireNonNull(end, "end");
+		this.end = end;
 		length = start.distanceTo(end);
 		vector = start.subtract(end).normalize();
 		double rotationYaw = -MathHelper.atan2(vector.zCoord, vector.xCoord) - Mth.HALF_PI;
