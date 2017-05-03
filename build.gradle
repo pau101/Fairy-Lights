@@ -38,11 +38,13 @@ dependencies {
 }
 
 processResources {
-	from(sourceSets.main.resources.srcDirs) {
+	inputs.property "version", project.modVersion
+	inputs.property "mcversion", project.minecraft.version
+	from (sourceSets.main.resources.srcDirs) {
 		include "mcmod.info"
-		expand "version":project.modVersion, "mcversion":project.minecraft.version
+		expand "version": project.modVersion, "mcversion": project.minecraft.version
 	}
-	from(sourceSets.main.resources.srcDirs) {
+	from (sourceSets.main.resources.srcDirs) {
 		exclude "mcmod.info"
 	}
 }

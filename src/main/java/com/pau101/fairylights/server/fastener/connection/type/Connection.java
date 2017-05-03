@@ -1,21 +1,11 @@
 package com.pau101.fairylights.server.fastener.connection.type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Objects;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerType;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
-import com.pau101.fairylights.server.fastener.connection.Catenary;
-import com.pau101.fairylights.server.fastener.connection.ConnectionType;
-import com.pau101.fairylights.server.fastener.connection.FeatureType;
-import com.pau101.fairylights.server.fastener.connection.PlayerAction;
-import com.pau101.fairylights.server.fastener.connection.Segment;
+import com.pau101.fairylights.server.fastener.connection.*;
 import com.pau101.fairylights.server.fastener.connection.collision.Collidable;
 import com.pau101.fairylights.server.fastener.connection.collision.ConnectionCollision;
 import com.pau101.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
@@ -26,7 +16,6 @@ import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.CubicBezier;
 import com.pau101.fairylights.util.NBTSerializable;
 import com.pau101.fairylights.util.OreDictUtils;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -39,6 +28,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class Connection implements NBTSerializable {
 	public static final int MAX_LENGTH = 32;
@@ -219,7 +213,6 @@ public abstract class Connection implements NBTSerializable {
 			item.motionZ = world.rand.nextGaussian() * scale;
 			world.spawnEntityInWorld(item);
 		}
-		Vec3d pos = fastener.getConnectionPoint();
 		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_DISCONNECT, SoundCategory.BLOCKS, 1, 1);
 	}
 
@@ -255,6 +248,7 @@ public abstract class Connection implements NBTSerializable {
 		NBTTagCompound data = Objects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
 		ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
 		fastener.connectWith(world, dest, type, data).onConnect(player.worldObj, player, heldStack);
+		heldStack.stackSize--;
 		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
 	}
 
