@@ -1,11 +1,15 @@
 package com.pau101.fairylights.server.fastener.connection.type;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerType;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
-import com.pau101.fairylights.server.fastener.connection.*;
+import com.pau101.fairylights.server.fastener.connection.Catenary;
+import com.pau101.fairylights.server.fastener.connection.ConnectionType;
+import com.pau101.fairylights.server.fastener.connection.FeatureType;
+import com.pau101.fairylights.server.fastener.connection.PlayerAction;
+import com.pau101.fairylights.server.fastener.connection.Segment;
 import com.pau101.fairylights.server.fastener.connection.collision.Collidable;
 import com.pau101.fairylights.server.fastener.connection.collision.ConnectionCollision;
 import com.pau101.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
@@ -206,14 +210,14 @@ public abstract class Connection implements NBTSerializable {
 		destination.get(world).removeConnection(uuid);
 		if (shouldDrop()) {
 			ItemStack stack = getItemStack();
-			EntityItem item = new EntityItem(world, hit.xCoord, hit.yCoord, hit.zCoord, stack);
+			EntityItem item = new EntityItem(world, hit.x, hit.y, hit.z, stack);
 			float scale = 0.05F;
 			item.motionX = world.rand.nextGaussian() * scale;
 			item.motionY = world.rand.nextGaussian() * scale + 0.2F;
 			item.motionZ = world.rand.nextGaussian() * scale;
 			world.spawnEntity(item);
 		}
-		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_DISCONNECT, SoundCategory.BLOCKS, 1, 1);
+		world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_DISCONNECT, SoundCategory.BLOCKS, 1, 1);
 	}
 
 	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, EnumHand hand) {
@@ -242,11 +246,11 @@ public abstract class Connection implements NBTSerializable {
 		if (shouldDrop()) {
 			player.inventory.addItemStackToInventory(getItemStack());
 		}
-		NBTTagCompound data = Objects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
+		NBTTagCompound data = MoreObjects.firstNonNull(heldStack.getTagCompound(), new NBTTagCompound());
 		ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
 		fastener.connectWith(world, dest, type, data).onConnect(player.world, player, heldStack);
 		heldStack.shrink(1);
-		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
+		world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
 	}
 
 	private boolean slacken(Vec3d hit, ItemStack heldStack, float amount) {
@@ -258,7 +262,7 @@ public abstract class Connection implements NBTSerializable {
 			slack = 0;
 		}
 		dataUpdateState = true;
-		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.CORD_STRETCH, SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - slack) * 0.4F);
+		world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_STRETCH, SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - slack) * 0.4F);
 		return true;
 	}
 
@@ -290,12 +294,12 @@ public abstract class Connection implements NBTSerializable {
 			if (pull > 0) {
 				int stage = (int) (pull + 0.1F);
 				if (stage > prevStretchStage) {
-					world.playSound(null, point.xCoord, point.yCoord, point.zCoord, FLSounds.CORD_STRETCH, SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
+					world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_STRETCH, SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
 				}
 				prevStretchStage = stage;
 			}
 			if (dist > MAX_LENGTH + PULL_RANGE) {
-				world.playSound(null, point.xCoord, point.yCoord, point.zCoord, FLSounds.CORD_SNAP, SoundCategory.BLOCKS, 0.75F, 0.8F + world.rand.nextFloat() * 0.3F);
+				world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP, SoundCategory.BLOCKS, 0.75F, 0.8F + world.rand.nextFloat() * 0.3F);
 				forceRemove = true;
 			} else if (dest.isDynamic()) {
 				dest.resistSnap(from);
@@ -348,9 +352,9 @@ public abstract class Connection implements NBTSerializable {
 			Vec3d start = s.getStart();
 			Vec3d end = s.getEnd();
 			return new AxisAlignedBB(
-				origin.xCoord + start.xCoord / 16, origin.yCoord + start.yCoord / 16, origin.zCoord + start.zCoord / 16,
-				origin.xCoord + end.xCoord / 16, origin.yCoord + end.yCoord / 16, origin.zCoord + end.zCoord / 16
-			).expandXyz(radius);
+				origin.x + start.x / 16, origin.y + start.y / 16, origin.z + start.z / 16,
+				origin.x + end.x / 16, origin.y + end.y / 16, origin.z + end.z / 16
+			).grow(radius);
 		}, 1, segments.length - 2));
 	}
 

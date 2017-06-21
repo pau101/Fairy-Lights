@@ -84,7 +84,7 @@ public abstract class FastenerAccessorEntity<E extends Entity> implements Fasten
 	@Override
 	public void update(World world, BlockPos pos) {
 		if (entity == null) {
-			AxisAlignedBB aabb = new AxisAlignedBB(pos).expandXyz(Connection.MAX_LENGTH);
+			AxisAlignedBB aabb = new AxisAlignedBB(pos).grow(Connection.MAX_LENGTH);
 			List<E> nearEntities = world.getEntitiesWithinAABB(entityClass, aabb);
 			for (E entity : nearEntities) {
 				if (equalsUUID(entity)) {

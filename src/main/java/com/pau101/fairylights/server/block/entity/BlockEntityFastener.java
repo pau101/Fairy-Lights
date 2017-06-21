@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 public final class BlockEntityFastener extends TileEntity implements ITickable {
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		return getFastener().getBounds().expandXyz(1);
+		return getFastener().getBounds().grow(1);
 	}
 
 	public EnumFacing getFacing() {

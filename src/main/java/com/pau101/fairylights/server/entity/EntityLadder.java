@@ -1,15 +1,10 @@
 package com.pau101.fairylights.server.entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.matrix.Matrix;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -30,6 +25,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class EntityLadder extends EntityLivingBase implements IEntityAdditionalSpawnData {
 	private static final byte PUNCH_ID = 32;
@@ -75,7 +74,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 	}
 
 	@Override
-	protected SoundEvent getHurtSound() {
+	protected SoundEvent getHurtSound(DamageSource damage) {
 		return FLSounds.LADDER_HIT;
 	}
 
@@ -109,7 +108,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 		for (float[] step : steps) {
 			for (int b = -1; b <= 1; b++) {
 				Vec3d p = mat.transform(new Vec3d(b * bs, step[0], step[1])).scale(1 / 16F);
-				bounds.add(new AxisAlignedBB(posX + p.xCoord - bhm, posY + p.yCoord - bvm, posZ + p.zCoord - bhm, posX + p.xCoord + bhm, posY + p.yCoord + bvm, posZ + p.zCoord + bhm));
+				bounds.add(new AxisAlignedBB(posX + p.x - bhm, posY + p.y - bvm, posZ + p.z - bhm, posX + p.x + bhm, posY + p.y + bvm, posZ + p.z + bhm));
 			}
 		}
 		final float tym = 43.5F / 16;
@@ -175,7 +174,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 
 	private boolean isPlayerDamage(DamageSource source) {
 		if ("player".equals(source.getDamageType())) {
-			Entity e = source.getEntity();
+			Entity e = source.getTrueSource();
 			return !(e instanceof EntityPlayer) || ((EntityPlayer) e).capabilities.allowEdit;
 		}
 		return false;
@@ -209,7 +208,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 	public void handleStatusUpdate(byte id) {
 		if (id == PUNCH_ID) {
 			if (world.isRemote) {
-				world.playSound(posX, posY, posZ, getHurtSound(), getSoundCategory(), 0.3F, 1, false);
+				world.playSound(posX, posY, posZ, FLSounds.LADDER_HIT, getSoundCategory(), 0.3F, 1, false);
 				lastPunchTime = world.getTotalWorldTime();
 			}
 		} else {

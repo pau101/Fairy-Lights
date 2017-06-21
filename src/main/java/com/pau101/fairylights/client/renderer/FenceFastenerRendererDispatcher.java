@@ -15,7 +15,7 @@ public final class FenceFastenerRendererDispatcher extends TileEntitySpecialRend
 	public static final FenceFastenerRendererDispatcher INSTANCE = new FenceFastenerRendererDispatcher();
 
 	@Override
-	public void renderTileEntityAt(FenceFastenerRepresentative rep, double px, double py, double pz, float delta, int destroy) {
+	public void render(FenceFastenerRepresentative rep, double px, double py, double pz, float delta, int destroy, float alpha) {
 		Minecraft mc = Minecraft.getMinecraft();
 		Entity view = mc.getRenderViewEntity();
 		RenderManager renderMgr = mc.getRenderManager();

@@ -91,24 +91,24 @@ public final class Mth {
 	}
 
 	public static Vec3d negate(Vec3d vector) {
-		return new Vec3d(-Objects.requireNonNull(vector, "vector").xCoord, -vector.yCoord, -vector.zCoord);
+		return new Vec3d(-Objects.requireNonNull(vector, "vector").x, -vector.y, -vector.z);
 	}
 
 	public static Vec3d lerp(Vec3d a, Vec3d b, double t) {
 		Objects.requireNonNull(a, "a vector");
 		Objects.requireNonNull(b, "b vector");
-		double x = a.xCoord + (b.xCoord - a.xCoord) * t;
-		double y = a.yCoord + (b.yCoord - a.yCoord) * t;
-		double z = a.zCoord + (b.zCoord - a.zCoord) * t;
+		double x = a.x + (b.x - a.x) * t;
+		double y = a.y + (b.y - a.y) * t;
+		double z = a.z + (b.z - a.z) * t;
 		return new Vec3d(x, y, z);
 	}
 
 	public static Vec3d lerpAngles(Vec3d a, Vec3d b, double t) {
 		Objects.requireNonNull(a, "a vector");
 		Objects.requireNonNull(b, "b vector");
-		double x = lerpAngle(a.xCoord, b.xCoord, t);
-		double y = lerpAngle(a.yCoord, b.yCoord, t);
-		double z = lerpAngle(a.zCoord, b.zCoord, t);
+		double x = lerpAngle(a.x, b.x, t);
+		double y = lerpAngle(a.y, b.y, t);
+		double z = lerpAngle(a.z, b.z, t);
 		return new Vec3d(x, y, z);
 	}
 

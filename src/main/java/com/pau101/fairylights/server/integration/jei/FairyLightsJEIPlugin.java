@@ -1,17 +1,18 @@
 package com.pau101.fairylights.server.integration.jei;
 
 import com.pau101.fairylights.FairyLights;
-
-import mezz.jei.api.BlankModPlugin;
+import com.pau101.fairylights.util.crafting.GenericRecipe;
+import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
 @JEIPlugin
-public final class FairyLightsJEIPlugin extends BlankModPlugin {
+public final class FairyLightsJEIPlugin implements IModPlugin {
 	@Override
 	public void register(IModRegistry registry) {
-		registry.addRecipeHandlers(new GenericRecipeHandler());
+		registry.handleRecipes(GenericRecipe.class, GenericRecipeWrapper::new, VanillaRecipeCategoryUid.CRAFTING);
 	}
 
 	@Override

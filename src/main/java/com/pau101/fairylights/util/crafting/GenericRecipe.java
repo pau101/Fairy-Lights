@@ -1,14 +1,5 @@
 package com.pau101.fairylights.util.crafting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.IntUnaryOperator;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.LinkedListMultimap;
@@ -18,7 +9,6 @@ import com.pau101.fairylights.util.crafting.ingredient.Ingredient;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularEmpty;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -26,8 +16,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 
-public final class GenericRecipe implements IRecipe {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.IntUnaryOperator;
+
+public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	public static final IngredientRegularEmpty EMPTY = new IngredientRegularEmpty();
 
 	private final ItemStack output;
@@ -40,7 +40,7 @@ public final class GenericRecipe implements IRecipe {
 
 	private final int height;
 
-	private ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.EMPTY);
+	private final ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.EMPTY);
 
 	GenericRecipe(ItemStack output, IngredientRegular[] ingredients, IngredientAuxiliary<?>[] auxiliaryIngredients, int width, int height) {
 		Objects.requireNonNull(output, "output");
@@ -60,7 +60,7 @@ public final class GenericRecipe implements IRecipe {
 		return output.copy();
 	}
 
-	public IngredientRegular[] getIngredients() {
+	public IngredientRegular[] getGenericIngredients() {
 		return ingredients.clone();
 	}
 
@@ -77,8 +77,13 @@ public final class GenericRecipe implements IRecipe {
 	}
 
 	@Override
+	public boolean canFit(int width, int height) {
+		return this.width <= width && this.height <= height;
+	}
+
+	@Override
 	public boolean matches(InventoryCrafting inventory, World world) {
-		if (width > inventory.getWidth() || height > inventory.getHeight()) {
+		if (!canFit(inventory.getWidth(), inventory.getHeight())) {
 			return false;
 		}
 		int scanWidth = inventory.getWidth() + 1 - width;
@@ -180,11 +185,6 @@ public final class GenericRecipe implements IRecipe {
 	public ItemStack getCraftingResult(InventoryCrafting inventory) {
 		ItemStack result = this.result.get();
 		return result.isEmpty() ? result : result.copy();
-	}
-
-	@Override
-	public int getRecipeSize() {
-		return width * height;
 	}
 
 	@Override

@@ -1,16 +1,15 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResult;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 	/**
@@ -48,7 +47,7 @@ public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 		NonNullList<ItemStack> subtypes = NonNullList.create();
 		Item item = stack.getItem();
 		for (CreativeTabs tab : item.getCreativeTabs()) {
-			item.getSubItems(item, tab, subtypes);
+			item.getSubItems(tab, subtypes);
 		}
 		Iterator<ItemStack> iter = subtypes.iterator();
 		while (iter.hasNext()) {

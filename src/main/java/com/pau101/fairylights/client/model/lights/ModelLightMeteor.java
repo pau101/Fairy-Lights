@@ -80,7 +80,7 @@ public final class ModelLightMeteor extends ModelLight {
 			}
 			amutachromicLitParts.render(scale);
 			float[] hsb = new float[3];
-			Color.RGBtoHSB((int) (color.xCoord * 255 + 0.5F), (int) (color.yCoord * 255 + 0.5F), (int) (color.zCoord * 255 + 0.5F), hsb);
+			Color.RGBtoHSB((int) (color.x * 255 + 0.5F), (int) (color.y * 255 + 0.5F), (int) (color.z * 255 + 0.5F), hsb);
 			hsb[2] = brightness * 0.75F + 0.25F;
 			int colorRGB = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
 			float cr = (colorRGB >> 16 & 0xFF) / 255F, cg = (colorRGB >> 8 & 0xFF) / 255F, cb = (colorRGB & 0xFF) / 255F;
@@ -115,7 +115,7 @@ public final class ModelLightMeteor extends ModelLight {
 				brightness = 1;
 			}
 			float[] hsb = new float[3];
-			Color.RGBtoHSB((int) (color.xCoord * 255 + 0.5F), (int) (color.yCoord * 255 + 0.5F), (int) (color.zCoord * 255 + 0.5F), hsb);
+			Color.RGBtoHSB((int) (color.x * 255 + 0.5F), (int) (color.y * 255 + 0.5F), (int) (color.z * 255 + 0.5F), hsb);
 			if (hsb[1] > 0) {
 				hsb[1] = brightness;
 				hsb[2] = 1;

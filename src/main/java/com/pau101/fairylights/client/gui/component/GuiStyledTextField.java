@@ -1,6 +1,37 @@
 package com.pau101.fairylights.client.gui.component;
 
-import java.awt.Toolkit;
+import com.google.common.base.MoreObjects;
+import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
+import com.pau101.fairylights.util.styledstring.Style;
+import com.pau101.fairylights.util.styledstring.StyledString;
+import com.pau101.fairylights.util.styledstring.StyledStringBuilder;
+import com.pau101.fairylights.util.styledstring.StyledStringSelection;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.audio.SoundManager;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+import paulscode.sound.SoundSystem;
+
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.io.ByteArrayInputStream;
@@ -17,39 +48,6 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
-import com.google.common.base.Objects;
-import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
-import com.pau101.fairylights.util.styledstring.Style;
-import com.pau101.fairylights.util.styledstring.StyledString;
-import com.pau101.fairylights.util.styledstring.StyledStringBuilder;
-import com.pau101.fairylights.util.styledstring.StyledStringSelection;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.SoundManager;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import paulscode.sound.SoundSystem;
 
 public final class GuiStyledTextField extends Gui {
 	private static final DataFlavor RTF_FLAVOR = new DataFlavor("text/rtf", "Rich Text Format"); 
@@ -879,7 +877,7 @@ public final class GuiStyledTextField extends Gui {
 			int rgb = StyledString.getColor(font, currentStyle.getColor());
 			if (currentStyle.isItalic()) {
 		        Tessellator tes = Tessellator.getInstance();
-		        VertexBuffer buf = tes.getBuffer();
+				BufferBuilder buf = tes.getBuffer();
 		        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 		        buf.pos(caretX + 2, offsetY - 2, 0).endVertex();
 		        buf.pos(caretX + 1, offsetY - 2, 0).endVertex();
@@ -942,7 +940,7 @@ public final class GuiStyledTextField extends Gui {
 			startX = x + width;
 		}
 		Tessellator tes = Tessellator.getInstance();
-		VertexBuffer buf = tes.getBuffer();
+		BufferBuilder buf = tes.getBuffer();
 		GlStateManager.color(1, 1, 1);
 		GlStateManager.disableTexture2D();
 		buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
@@ -1014,7 +1012,7 @@ public final class GuiStyledTextField extends Gui {
 	}
 
 	private static int getMultiClickInterval() {
-		return Objects.firstNonNull((Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval"), 500);
+		return MoreObjects.firstNonNull((Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval"), 500);
 	}
 
 	@FunctionalInterface

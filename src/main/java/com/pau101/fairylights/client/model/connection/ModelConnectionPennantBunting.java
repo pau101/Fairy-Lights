@@ -70,7 +70,7 @@ public class ModelConnectionPennantBunting extends ModelConnection<ConnectionPen
 		} else {
 			offset = pennantCount / 2 - text.length() / 2;
 		}
-		FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
+		FontRenderer font = Minecraft.getMinecraft().fontRenderer;
 		for (int i = 0; i < text.length(); i++) {
 			int pennantIndex = i + offset;
 			StyledString chrA = text.substring(i, i + 1);
@@ -102,8 +102,8 @@ public class ModelConnectionPennantBunting extends ModelConnection<ConnectionPen
 		Vec3d point = Mth.lerp(prevPennants[index].getPoint(), pennant.getPoint(), delta);
 		Vec3d rotation = Mth.lerpAngles(prevPennants[index].getRotation(), pennant.getRotation(), delta);
 		AdvancedModelRenderer model = pennantModels[index % pennantModels.length];
-		model.setRotationPoint(point.xCoord, point.yCoord, point.zCoord);
-		model.setRotationAngles(rotation.yCoord, rotation.xCoord, rotation.zCoord);
+		model.setRotationPoint(point.x, point.y, point.z);
+		model.setRotationAngles(rotation.y, rotation.x, rotation.z);
 		return model;
 	}
 

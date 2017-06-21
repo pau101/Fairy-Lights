@@ -1,17 +1,11 @@
 package com.pau101.fairylights.server.integration.jei;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.crafting.GenericRecipe;
 import com.pau101.fairylights.util.crafting.ingredient.Ingredient;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
-
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITooltipCallback;
@@ -26,6 +20,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper, ICustomCraftingRecipeWrapper {
 	private final GenericRecipe recipe;
@@ -45,7 +44,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		this.recipe = recipe;
 		ImmutableList.Builder<ImmutableList<ItemStack>> allInputs = ImmutableList.builder();
 		ImmutableList.Builder<ImmutableList<ItemStack>> minimalInputStacks = ImmutableList.builder();
-		IngredientRegular[] ingredients = recipe.getIngredients();
+		IngredientRegular[] ingredients = recipe.getGenericIngredients();
 		IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
 		ingredientMatrix = new Ingredient<?, ?>[9];
 		int subtypeIndex = -1;
@@ -149,7 +148,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 	}
 
 	public Input getInputsForOutput(ItemStack output) {
-		IngredientRegular[] ingredients = recipe.getIngredients();
+		IngredientRegular[] ingredients = recipe.getGenericIngredients();
 		List<List<ItemStack>> inputs = new ArrayList<>(9);
 		Ingredient<?, ?>[] ingredientMat = new Ingredient<?, ?>[9];
 		IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();

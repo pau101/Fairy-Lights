@@ -1,12 +1,6 @@
 package com.pau101.fairylights.server.fastener.connection.type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.Feature;
@@ -18,10 +12,14 @@ import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingF
 import com.pau101.fairylights.util.AABBBuilder;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.matrix.Matrix;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class ConnectionHangingFeature<F extends HangingFeature> extends Connection {
 	protected static final FeatureType FEATURE = FeatureType.create("feature");
@@ -44,7 +42,7 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 	}
 
 	public final F[] getPrevFeatures() {
-		return Objects.firstNonNull(prevFeatures, features);
+		return MoreObjects.firstNonNull(prevFeatures, features);
 	}
 
 	@Override
@@ -108,16 +106,16 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 			Matrix matrix = new Matrix();
 			collision.add(FeatureCollisionTree.build(FEATURE, features, f -> {
 				Vec3d pos = f.getPoint();
-				double x = origin.xCoord + pos.xCoord / 16;
-				double y = origin.yCoord + pos.yCoord / 16;
-				double z = origin.zCoord + pos.zCoord / 16;
+				double x = origin.x + pos.x / 16;
+				double y = origin.y + pos.y / 16;
+				double z = origin.z + pos.z / 16;
 				double w = f.getWidth() / 2;
 				double h = f.getHeight();
 				matrix.push();
 				Vec3d rot = f.getRotation();
 				if (f.parallelsCord()) {
-					matrix.rotate(rot.xCoord, 0, 1, 0);
-					matrix.rotate(rot.yCoord, 1, 0, 0);
+					matrix.rotate(rot.x, 0, 1, 0);
+					matrix.rotate(rot.y, 1, 0, 0);
 				}
 				matrix.translate(0, 0.025, 0);
 				AABBBuilder bounds = new AABBBuilder();

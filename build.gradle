@@ -1,10 +1,12 @@
 buildscript {
 	repositories {
 		jcenter()
-		maven { url = "http://files.minecraftforge.net/maven" }
+		maven {
+			url = "http://files.minecraftforge.net/maven"
+		}
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
+		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
 	}
 }
 
@@ -16,22 +18,22 @@ repositories {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-ext.modVersion = "2.1.0"
-version = "${modVersion}-1.11.2"
+ext.modVersion = "2.1.1"
+version = "${modVersion}-1.12"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-	version = "1.11.2-13.20.0.2259"
+	version = "1.12-14.21.0.2340"
 	runDir = "run"
-	mappings = "snapshot_20161220"
+	mappings = "snapshot_20170620"
 	makeObfSourceJar = false
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.11.2:4.2.10.248:api"
-	runtime "mezz.jei:jei_1.11.2:4.2.10.248"
+	deobfCompile "mezz.jei:jei_1.12:4.6.0.64:api"
+	runtime "mezz.jei:jei_1.12:4.6.0.64"
 }
 
 processResources {
@@ -48,5 +50,4 @@ processResources {
 
 jar {
 	exclude "shadersmod/**"
-	exclude "**/Thumbs.db"
 }

@@ -1,14 +1,11 @@
 package com.pau101.fairylights.server.net.serverbound;
 
-import java.io.IOException;
-
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
 import com.pau101.fairylights.server.fastener.connection.PlayerAction;
 import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.net.MessageConnection;
 import com.pau101.fairylights.util.Utils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -17,6 +14,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.io.IOException;
 
 public final class MessageConnectionInteraction extends MessageConnection<Connection> {
 	private static final float RANGE = (Connection.MAX_LENGTH + 1) * (Connection.MAX_LENGTH + 1);
@@ -45,9 +44,9 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 	public void serialize(PacketBuffer buf) {
 		super.serialize(buf);
 		buf.writeByte(type.ordinal());
-		buf.writeDouble(hit.xCoord);
-		buf.writeDouble(hit.yCoord);
-		buf.writeDouble(hit.zCoord);
+		buf.writeDouble(hit.x);
+		buf.writeDouble(hit.y);
+		buf.writeDouble(hit.z);
 		buf.writeVarInt(featureType.getId());
 		buf.writeVarInt(featureId);
 	}
@@ -68,13 +67,13 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 
 	@Override
 	protected World getWorld(MessageContext ctx) {
-		return ctx.getServerHandler().playerEntity.world;
+		return ctx.getServerHandler().player.world;
 	}
 
 	@Override
 	protected void process(MessageContext ctx, Connection connection) {
-		EntityPlayer player = ctx.getServerHandler().playerEntity;
-		if (player.getDistanceSq(connection.getFastener().getPos()) < RANGE && player.getDistanceSq(hit.xCoord, hit.yCoord, hit.zCoord) < REACH) {
+		EntityPlayer player = ctx.getServerHandler().player;
+		if (player.getDistanceSq(connection.getFastener().getPos()) < RANGE && player.getDistanceSq(hit.x, hit.y, hit.z) < REACH) {
 			if (type == PlayerAction.ATTACK) {
 				connection.disconnect(player, hit);
 			} else {

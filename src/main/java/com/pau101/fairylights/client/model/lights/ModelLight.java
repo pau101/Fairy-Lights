@@ -102,7 +102,7 @@ public abstract class ModelLight extends ModelBase {
 		GlStateManager.enableLighting();
 		amutachromicLitParts.render(scale);
 		float[] hsb = new float[3];
-		Color.RGBtoHSB((int) (color.xCoord * 255 + 0.5F), (int) (color.yCoord * 255 + 0.5F), (int) (color.zCoord * 255 + 0.5F), hsb);
+		Color.RGBtoHSB((int) (color.x * 255 + 0.5F), (int) (color.y * 255 + 0.5F), (int) (color.z * 255 + 0.5F), hsb);
 		/*/ trippin balls
 		hsb[0] = (float) ((hsb[0] + System.currentTimeMillis() / 2000D) % 1);
 		hsb[1] = hsb[2] = 1;//*/

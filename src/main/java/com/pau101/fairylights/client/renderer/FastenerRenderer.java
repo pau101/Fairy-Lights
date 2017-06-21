@@ -1,12 +1,5 @@
 package com.pau101.fairylights.client.renderer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.model.connection.ModelConnection;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -14,12 +7,11 @@ import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
@@ -28,6 +20,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public final class FastenerRenderer {
 	private FastenerRenderer() {}
@@ -55,7 +53,7 @@ public final class FastenerRenderer {
 		GlStateManager.disableBlend();
 		GlStateManager.pushMatrix();
 		Vec3d offset = fastener.getOffsetPoint();
-		GlStateManager.translate(offset.xCoord, offset.yCoord, offset.zCoord);
+		GlStateManager.translate(offset.x, offset.y, offset.z);
 		if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox() && !Minecraft.getMinecraft().isReducedDebug()) {
 			renderBoundingBox(fastener);
 		}
@@ -105,7 +103,7 @@ public final class FastenerRenderer {
 		GlStateManager.depthMask(false);
 		GlStateManager.glLineWidth(2);
 		Vec3d offset = fastener.getAbsolutePos();
-		RenderGlobal.drawSelectionBoundingBox(fastener.getBounds().offset(-offset.xCoord, -offset.yCoord, -offset.zCoord), 1, 1, 1, 1);
+		RenderGlobal.drawSelectionBoundingBox(fastener.getBounds().offset(-offset.x, -offset.y, -offset.z), 1, 1, 1, 1);
 		/*/
 		offset = Mth.negate(offset).subtract(fastener.getOffsetPoint());
 		for (Connection connection : fastener.getConnections().values()) {
@@ -122,7 +120,7 @@ public final class FastenerRenderer {
 	private static void renderCollision(Vec3d offset, AxisAlignedBB[] tree, int node) {
 		AxisAlignedBB bounds = tree[node];
 		if (bounds != null) {
-			RenderGlobal.func_189697_a(bounds.offset(offset.xCoord, offset.yCoord, offset.zCoord), 1, 1, 1, 1);
+			RenderGlobal.func_189697_a(bounds.offset(offset.x, offset.y, offset.z), 1, 1, 1, 1);
 			if (node * 2 + 1 < tree.length && tree[node * 2 + 1] != null) {
 				renderCollision(offset, tree, node * 2 + 1);
 				renderCollision(offset, tree, node * 2 + 2);
@@ -136,9 +134,9 @@ public final class FastenerRenderer {
 			return;
 		}
 		Vec3d fastenerDir = new Vec3d(facing.getDirectionVec());
-		float yaw = (float) -MathHelper.atan2(fastenerDir.zCoord, fastenerDir.xCoord) - Mth.HALF_PI;
+		float yaw = (float) -MathHelper.atan2(fastenerDir.z, fastenerDir.x) - Mth.HALF_PI;
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(fastenerDir.xCoord * 1.5F / 16, 0, fastenerDir.zCoord * 1.5F / 16);
+		GlStateManager.translate(fastenerDir.x * 1.5F / 16, 0, fastenerDir.z * 1.5F / 16);
 		GlStateManager.rotate(yaw * Mth.RAD_TO_DEG, 0, 1, 0);
 		GlStateManager.translate(-9F / 16, -6F / 16, -0.5F / 16);
 		GlStateManager.scale(1, 1, 2.5F);
@@ -175,7 +173,7 @@ public final class FastenerRenderer {
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(width / 16F, height / 16F, 1);
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer render = tessellator.getBuffer();
+		BufferBuilder render = tessellator.getBuffer();
 		float depth = 0.0625F;
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		GlStateManager.glNormal3f(0, 0, 1);

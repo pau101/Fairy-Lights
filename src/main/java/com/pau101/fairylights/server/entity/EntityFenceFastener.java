@@ -1,9 +1,5 @@
 package com.pau101.fairylights.server.entity;
 
-import java.io.IOException;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Throwables;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.ServerProxy;
@@ -12,7 +8,6 @@ import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
 import com.pau101.fairylights.util.Utils;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -34,6 +29,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
 
 public final class EntityFenceFastener extends EntityHanging implements IEntityAdditionalSpawnData {
 	public EntityFenceFastener(World world) {
@@ -76,7 +74,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public float getBrightness(float delta) {
+	public float getBrightness() {
 		BlockPos pos = new BlockPos(this);
 		if (world.isBlockLoaded(pos)) {
 			return world.getLightBrightness(pos);
@@ -85,7 +83,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public int getBrightnessForRender(float delta) {
+	public int getBrightnessForRender() {
 		BlockPos pos = new BlockPos(this);
 		if (world.isBlockLoaded(pos)) {
 			return world.getCombinedLight(pos, 0);
@@ -158,7 +156,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		return getFastener().getBounds().expandXyz(1);
+		return getFastener().getBounds().grow(1);
 	}
 
 	@Override
@@ -241,7 +239,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 
 	@Nullable
 	public static EntityHanging findHanging(World world, BlockPos pos) {
-		for (EntityHanging e : world.getEntitiesWithinAABB(EntityHanging.class, new AxisAlignedBB(pos).expandXyz(2))) {
+		for (EntityHanging e : world.getEntitiesWithinAABB(EntityHanging.class, new AxisAlignedBB(pos).grow(2))) {
 			if (e.getHangingPosition().equals(pos)) {
 				return e;
 			}

@@ -48,10 +48,10 @@ public class ModelConnectionLetterBunting extends ModelConnection<ConnectionLett
 			Vec3d point = Mth.lerp(prevLetters[i].getPoint(), letter.getPoint(), delta);
 			Vec3d rotation = letter.getRotation(delta);
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(point.xCoord / 16, point.yCoord / 16, point.zCoord / 16);
-			GlStateManager.rotate((float) rotation.xCoord * Mth.RAD_TO_DEG, 0, 1, 0);
-			GlStateManager.rotate((float) rotation.yCoord * Mth.RAD_TO_DEG, 1, 0, 0);
-			GlStateManager.rotate((float) rotation.zCoord * Mth.RAD_TO_DEG, 0, 0, 1);
+			GlStateManager.translate(point.x / 16, point.y / 16, point.z / 16);
+			GlStateManager.rotate((float) rotation.x * Mth.RAD_TO_DEG, 0, 1, 0);
+			GlStateManager.rotate((float) rotation.y * Mth.RAD_TO_DEG, 1, 0, 0);
+			GlStateManager.rotate((float) rotation.z * Mth.RAD_TO_DEG, 0, 0, 1);
 			int rgb = StyledString.getColor(ClientProxy.recoloredFont, letterBunting.getText().colorAt(i));
 			GlStateManager.color((rgb >> 16 & 0xFF) / 255F, (rgb >> 8 & 0xFF) / 255F, (rgb & 0xFF) / 255F);
 			GlStateManager.rotate(-90, 0, 1, 0);

@@ -267,7 +267,7 @@ public final class BlockFastener extends BlockContainer {
 
 	private static AxisAlignedBB createAABB(EnumFacing facing) {
 		Vec3d offset = getFastenerOffset(facing, 0);
-		double x = offset.xCoord, y = offset.yCoord, z = offset.zCoord;
+		double x = offset.x, y = offset.y, z = offset.z;
 		return new AxisAlignedBB(x, y, z, x + 0.25, y + 0.25, z + 0.25);
 	}
 

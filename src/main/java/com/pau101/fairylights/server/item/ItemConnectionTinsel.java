@@ -3,10 +3,8 @@ package com.pau101.fairylights.server.item;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.util.Utils;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -29,9 +27,9 @@ public final class ItemConnectionTinsel extends ItemConnection {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> items) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		for (int color = 0; color < ItemLight.COLOR_COUNT; color++) {
-			ItemStack tinsel = new ItemStack(item, 1);
+			ItemStack tinsel = new ItemStack(this, 1);
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setByte("color", (byte) color);
 			tinsel.setTagCompound(compound);

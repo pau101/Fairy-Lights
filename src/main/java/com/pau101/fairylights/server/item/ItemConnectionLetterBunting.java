@@ -1,19 +1,18 @@
 package com.pau101.fairylights.server.item;
 
-import java.util.List;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.util.styledstring.StyledString;
-
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.List;
 
 public class ItemConnectionLetterBunting extends ItemConnection {
 	public ItemConnectionLetterBunting() {
@@ -21,7 +20,7 @@ public class ItemConnectionLetterBunting extends ItemConnection {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
 		if (!stack.hasTagCompound()) {
 			return;
 		}
@@ -36,8 +35,8 @@ public class ItemConnectionLetterBunting extends ItemConnection {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> items) {
-		ItemStack bunting = new ItemStack(item, 1);
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+		ItemStack bunting = new ItemStack(this, 1);
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setTag("text", StyledString.serialize(new StyledString()));
 		bunting.setTagCompound(compound);

@@ -14,7 +14,7 @@ public final class BlockEntityFastenerRenderer extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	public void renderTileEntityAt(BlockEntityFastener fastener, double x, double y, double z, float delta, int destroyStage) {
+	public void render(BlockEntityFastener fastener, double x, double y, double z, float delta, int destroyStage, float alpha) {
 		bindTexture(FastenerRenderer.TEXTURE);
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);

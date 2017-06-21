@@ -1,22 +1,21 @@
 package com.pau101.fairylights.server.item;
 
-import java.util.List;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.item.crafting.Recipes;
 import com.pau101.fairylights.util.Utils;
-
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.List;
 
 public final class ItemConnectionHangingLights extends ItemConnection {
 	public ItemConnectionHangingLights() {
@@ -24,7 +23,7 @@ public final class ItemConnectionHangingLights extends ItemConnection {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
 		if (!stack.hasTagCompound()) {
 			return;
 		}
@@ -50,7 +49,7 @@ public final class ItemConnectionHangingLights extends ItemConnection {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		for (EnumDyeColor color : EnumDyeColor.values()) {
 			subItems.add(Recipes.makeHangingLights(new ItemStack(FairyLights.hangingLights), color));	
 		}

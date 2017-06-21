@@ -39,11 +39,11 @@ public class GuiButtonToggle extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float delta) {
 		if (visible) {
 			mc.getTextureManager().bindTexture(GuiEditLetteredConnection.WIDGETS_TEXTURE);
 			GlStateManager.color(1, 1, 1);
-			hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
+			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 			int t;
 			if (hovered) {
 				if (Mouse.isButtonDown(0)) {
@@ -58,7 +58,7 @@ public class GuiButtonToggle extends GuiButton {
 					t = 0;
 				}
 			}
-			drawTexturedModalRect(xPosition, yPosition, u, v + height * t, width, height);
+			drawTexturedModalRect(x, y, u, v + height * t, width, height);
 		}
 	}
 }

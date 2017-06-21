@@ -24,8 +24,8 @@ public final class Segment implements Feature {
 		this.end = end;
 		length = start.distanceTo(end);
 		vector = start.subtract(end).normalize();
-		double rotationYaw = -MathHelper.atan2(vector.zCoord, vector.xCoord) - Mth.HALF_PI;
-		double rotationPitch = MathHelper.atan2(vector.yCoord, Math.sqrt(vector.xCoord * vector.xCoord + vector.zCoord * vector.zCoord));
+		double rotationYaw = -MathHelper.atan2(vector.z, vector.x) - Mth.HALF_PI;
+		double rotationPitch = MathHelper.atan2(vector.y, Math.sqrt(vector.x * vector.x + vector.z * vector.z));
 		rotation = new Vec3d(rotationYaw, rotationPitch, 0);
 	}
 

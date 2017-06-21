@@ -1,6 +1,6 @@
 package com.pau101.fairylights.server.item;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
@@ -9,7 +9,6 @@ import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.sound.FLSounds;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.SoundType;
@@ -113,11 +112,11 @@ public abstract class ItemConnection extends Item {
 		connect(stack, user, world, fastener, true);
 	}
 
-	public void connect(ItemStack stack, EntityPlayer user, World world, Fastener fastener, boolean playConnectSound) {
+	public void connect(ItemStack stack, EntityPlayer user, World world, Fastener<?> fastener, boolean playConnectSound) {
 		Fastener<?> attacher = user.getCapability(CapabilityHandler.FASTENER_CAP, null);
 		Connection conn = attacher.getFirstConnection();
 		if (conn == null) {
-			NBTTagCompound data = Objects.firstNonNull(stack.getTagCompound(), new NBTTagCompound());
+			NBTTagCompound data = MoreObjects.firstNonNull(stack.getTagCompound(), new NBTTagCompound());
 			fastener.connectWith(world, attacher, getConnectionType(), data);
 		} else if (conn.getDestination().isLoaded(world)) {
 			Connection c = conn.getDestination().get(world).reconnect(attacher, fastener);
@@ -130,7 +129,7 @@ public abstract class ItemConnection extends Item {
 		}
 		if (playConnectSound) {
 			Vec3d pos = fastener.getConnectionPoint();
-			world.playSound(null, pos.xCoord, pos.yCoord, pos.zCoord, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
+			world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT, SoundCategory.BLOCKS, 1, 1);
 		}
 	}
 

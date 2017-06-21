@@ -1,16 +1,12 @@
 package com.pau101.fairylights.util;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
 import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +20,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class ForwardingBlockState implements IBlockState {
 	private final IBlockState state;
@@ -88,8 +88,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public MapColor getMapColor() {
-		return state.getMapColor();
+	public MapColor getMapColor(IBlockAccess world, BlockPos pos) {
+		return state.getMapColor(world, pos);
 	}
 
 	@Override
@@ -213,8 +213,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public boolean isFullyOpaque() {
-		return state.isFullyOpaque();
+	public boolean isTopSolid() {
+		return state.isTopSolid();
 	}
 
 	@Override
@@ -265,6 +265,11 @@ public class ForwardingBlockState implements IBlockState {
 	@Override
 	public boolean causesSuffocation() {
 		return state.causesSuffocation();
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockPos pos, EnumFacing facing) {
+		return state.getBlockFaceShape(world, pos, facing);
 	}
 
 	@Override

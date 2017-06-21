@@ -4,7 +4,7 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 
 public final class ModelMeteorLightBox extends ModelBox {
 	private PositionTextureVertex[] vertexPositions;
@@ -74,7 +74,7 @@ public final class ModelMeteorLightBox extends ModelBox {
 	}
 
 	@Override
-	public void render(VertexBuffer buf, float scale) {
+	public void render(BufferBuilder buf, float scale) {
 		for (int i = 0; i < quadList.length; i++) {
 			if (type != 1 && i == 2 || type != 0 && i == 3) {
 				continue;

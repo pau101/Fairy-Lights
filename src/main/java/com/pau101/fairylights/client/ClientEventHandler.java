@@ -1,17 +1,5 @@
 package com.pau101.fairylights.client;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -25,8 +13,8 @@ import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.server.jingle.Jingle;
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -34,7 +22,6 @@ import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,7 +43,17 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 import shadersmod.client.Shaders;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public final class ClientEventHandler {
 	private static boolean optifinePresent = FMLClientHandler.instance().hasOptifine();
@@ -132,7 +129,7 @@ public final class ClientEventHandler {
 
 	@Nullable
 	private static HitResult getHitConnection(World world, Entity viewer) {
-		AxisAlignedBB bounds = new AxisAlignedBB(viewer.getPosition()).expandXyz(Connection.MAX_LENGTH + 1);
+		AxisAlignedBB bounds = new AxisAlignedBB(viewer.getPosition()).grow(Connection.MAX_LENGTH + 1);
 		List<Fastener<?>> fasteners = collectFasteners(world, bounds);
 		return getHitConnection(viewer, bounds, fasteners);
 	}
@@ -178,7 +175,7 @@ public final class ClientEventHandler {
 	private static void collectFasteners(AxisAlignedBB bounds, List<Fastener<?>> fasteners, Map<BlockPos, TileEntity> blockEntities) {
 		for (Entry<BlockPos, TileEntity> entry : blockEntities.entrySet()) {
 			Vec3d vec = new Vec3d(entry.getKey()).addVector(0.5, 0.5, 0.5);
-			if (!bounds.isVecInside(vec)) {
+			if (!bounds.contains(vec)) {
 				continue;
 			}
 			TileEntity blockEntity = entry.getValue();
@@ -196,12 +193,12 @@ public final class ClientEventHandler {
 		Vec3d origin = viewer.getPositionEyes(1);
 		Vec3d look = viewer.getLook(1);
 		double reach = Minecraft.getMinecraft().playerController.getBlockReachDistance();
-		Vec3d end = origin.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
+		Vec3d end = origin.addVector(look.x * reach, look.y * reach, look.z * reach);
 		Connection found = null;
 		Intersection rayTrace = null;
 		double distance = Double.MAX_VALUE;
 		for (Fastener<?> fastener : fasteners) {
-			if (!bounds.intersectsWith(fastener.getBounds())) {
+			if (!bounds.intersects(fastener.getBounds())) {
 				continue;
 			}
 			for (Connection connection : fastener.getConnections().values()) {
@@ -247,7 +244,7 @@ public final class ClientEventHandler {
 				if (HIT_CONNECTION.intersection.getFeatureType() == Connection.CORD_FEATURE) {
 					drawConnectionHighlight(HIT_CONNECTION.connection, delta, dx, dy, dz);
 				} else {
-					AxisAlignedBB aabb = HIT_CONNECTION.intersection.getHitBox().offset(-dx, -dy, -dz).expandXyz(0.002);
+					AxisAlignedBB aabb = HIT_CONNECTION.intersection.getHitBox().offset(-dx, -dy, -dz).grow(0.002);
 					RenderGlobal.drawSelectionBoundingBox(aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
 				}
 			}
@@ -258,7 +255,7 @@ public final class ClientEventHandler {
 	private void drawFenceFastenerHighlight(EntityPlayer player, EntityFenceFastener fence, float delta, double dx, double dy, double dz) {
 		// Check if the server will allow interaction
 		if (player.canEntityBeSeen(fence) || player.getDistanceSqToEntity(fence) <= 9) {
-			AxisAlignedBB selection = fence.getEntityBoundingBox().offset(-dx, -dy, -dz).expandXyz(0.002);
+			AxisAlignedBB selection = fence.getEntityBoundingBox().offset(-dx, -dy, -dz).grow(0.002);
 			RenderGlobal.drawSelectionBoundingBox(selection, 0, 0, 0, HIGHLIGHT_ALPHA);
 		}
 	}
@@ -277,7 +274,7 @@ public final class ClientEventHandler {
 			}
 			GlStateManager.pushMatrix();
 			Vec3d offset = connection.getFastener().getConnectionPoint();
-			GlStateManager.translate(offset.xCoord - dx, offset.yCoord - dy, offset.zCoord - dz);
+			GlStateManager.translate(offset.x - dx, offset.y - dy, offset.z - dz);
 			if (useVBO) {
 				connHighlightVBO.bindBuffer();
 				GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
@@ -325,7 +322,7 @@ public final class ClientEventHandler {
 			connHighlightId = 0;
 		}
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buf = tessellator.getBuffer();
+        BufferBuilder buf = tessellator.getBuffer();
 		if (OpenGlHelper.useVbo()) {
 			connHighlightVBO = new net.minecraft.client.renderer.vertex.VertexBuffer(DefaultVertexFormats.POSITION_COLOR);
 			renderHighlight(connection, buf);
@@ -343,7 +340,7 @@ public final class ClientEventHandler {
 		}
 	}
 
-	private void renderHighlight(Connection connection, VertexBuffer buf) {
+	private void renderHighlight(Connection connection, BufferBuilder buf) {
 		buf.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
 		Segment[] segments = connection.getCatenary().getSegments();
 		float cordRadius = connection.getRadius();
@@ -395,7 +392,7 @@ public final class ClientEventHandler {
 		renderVertex(buf, 0, true, startPoint, dir, dir, cordRadius, HIGHLIGHT_ALPHA);
 	}
 
-	private void renderVertex(VertexBuffer buf, int edge, boolean forward, Vec3d pos, Vec3d dir, Vec3d toDir, float cordRadius, float alpha) {
+	private void renderVertex(BufferBuilder buf, int edge, boolean forward, Vec3d pos, Vec3d dir, Vec3d toDir, float cordRadius, float alpha) {
 		if (forward) {
 			toDir = Mth.negate(toDir);
 		} else {
@@ -404,11 +401,11 @@ public final class ClientEventHandler {
 		Vec3d up;
 		boolean colinear = dir.dotProduct(toDir) < -1 + 1e-6;
 		if (colinear) {
-			double h = Math.sqrt(dir.xCoord * dir.xCoord + dir.zCoord * dir.zCoord);
+			double h = Math.sqrt(dir.x * dir.x + dir.z * dir.z);
 			if (h < 1e-6) {
 				up = new Vec3d(-1, 0, 0);
 			} else {
-				up = new Vec3d(dir.xCoord / h * -dir.yCoord, h, dir.zCoord / h * -dir.yCoord).normalize();
+				up = new Vec3d(dir.x / h * -dir.y, h, dir.z / h * -dir.y).normalize();
 			}
 		} else {
 			up = Mth.lerp(dir, toDir, 0.5F).normalize();
@@ -418,7 +415,7 @@ public final class ClientEventHandler {
 			up = Mth.negate(up);
 		}
 		pos = pos.scale(0.0625F).add(up.scale(cordRadius + 0.01F).add(side.scale(cordRadius + 0.01F)));
-		buf.pos(pos.xCoord, pos.yCoord, pos.zCoord).color(0, 0, 0, alpha).endVertex();
+		buf.pos(pos.x, pos.y, pos.z).color(0, 0, 0, alpha).endVertex();
 	}
 
 	private static class HitConnection extends Entity {

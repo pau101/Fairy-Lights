@@ -35,8 +35,8 @@ public final class AABBBuilder {
 
 	public AABBBuilder(Vec3d min, Vec3d max) {
 		this(
-			Objects.requireNonNull(min, "min").xCoord, min.yCoord, min.zCoord,
-			Objects.requireNonNull(max, "max").xCoord, max.yCoord, max.zCoord
+			Objects.requireNonNull(min, "min").x, min.y, min.z,
+			Objects.requireNonNull(max, "max").x, max.y, max.z
 		);
 	}
 
@@ -50,7 +50,7 @@ public final class AABBBuilder {
 	}
 
 	public AABBBuilder add(Vec3d point) {
-		return add(Objects.requireNonNull(point, "point").xCoord, point.yCoord, point.zCoord);
+		return add(Objects.requireNonNull(point, "point").x, point.y, point.z);
 	}
 
 	public AABBBuilder add(Vec3i point) {
@@ -68,7 +68,7 @@ public final class AABBBuilder {
 	}
 
 	public AABBBuilder include(Vec3d point) {
-		return include(Objects.requireNonNull(point, "point").xCoord, point.yCoord, point.zCoord);
+		return include(Objects.requireNonNull(point, "point").x, point.y, point.z);
 	}
 
 	public AABBBuilder include(double x, double y, double z) {

@@ -1,14 +1,5 @@
 package com.pau101.fairylights.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.UUID;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
@@ -31,7 +22,6 @@ import com.pau101.fairylights.server.net.clientbound.MessageJingle;
 import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.server.world.ServerWorldEventListener;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.state.IBlockState;
@@ -65,6 +55,15 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.UUID;
+
 public final class ServerEventHandler {
 	private final Random rng = new Random();
 
@@ -76,7 +75,7 @@ public final class ServerEventHandler {
 		Entity entity = event.getEntity();
 		if (entity != null) {
 			AxisAlignedBB bounds = event.getAabb();
-			List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.expandXyz(1));
+			List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.grow(1));
 			List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
 			for (EntityLadder ladder : ladders) {
 				if (entity == ladder) {
@@ -84,7 +83,7 @@ public final class ServerEventHandler {
 				}
 				List<AxisAlignedBB> surfaces = ladder.getCollisionSurfaces();
 				for (AxisAlignedBB surface : surfaces) {
-					if (surface.intersectsWith(bounds)) {
+					if (surface.intersects(bounds)) {
 						boxes.add(surface);	
 					}
 				}
@@ -101,8 +100,8 @@ public final class ServerEventHandler {
 	}
 
 	@SubscribeEvent
-	public void onAttachCapability(AttachCapabilitiesEvent.Entity event) {
-		Entity entity = event.getEntity();
+	public void onAttachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
+		Entity entity = event.getObject();
 		if (entity instanceof EntityPlayer) {
 			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerPlayer((EntityPlayer) entity));
 		} else if (entity instanceof EntityFenceFastener) {
@@ -111,8 +110,8 @@ public final class ServerEventHandler {
 	}
 
 	@SubscribeEvent
-	public void onAttachCapability(AttachCapabilitiesEvent.TileEntity event) {
-		TileEntity entity = event.getTileEntity();
+	public void onAttachBlockEntityCapability(AttachCapabilitiesEvent<TileEntity> event) {
+		TileEntity entity = event.getObject();
 		if (entity instanceof BlockEntityFastener) {
 			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerBlock((BlockEntityFastener) entity));
 		}
@@ -156,11 +155,11 @@ public final class ServerEventHandler {
 			return;
 		}
 		ItemStack stack = event.getItemStack();
-		boolean checkHanging = stack != null && stack.getItem() == Items.LEAD;
+		boolean checkHanging = stack.getItem() == Items.LEAD;
 		EntityPlayer player = event.getEntityPlayer();
 		if (event.getHand() == EnumHand.MAIN_HAND) {
 			ItemStack offhandStack = player.getHeldItemOffhand();
-			if (offhandStack != null && offhandStack.getItem() instanceof ItemConnection) {
+			if (offhandStack.getItem() instanceof ItemConnection) {
 				if (checkHanging) {
 					event.setCanceled(true);
 					return;
@@ -186,7 +185,6 @@ public final class ServerEventHandler {
 			EntityHanging entity = EntityFenceFastener.findHanging(world, pos);
 			if (entity != null && !(entity instanceof EntityLeashKnot)) {
 				event.setCanceled(true);
-				return;
 			}
 		}
 	}
@@ -255,7 +253,6 @@ public final class ServerEventHandler {
 			if (connection.isOrigin() && connection.getDestination().isLoaded(world) && !connection.getDestination().get(world).isDynamic() && connection.getType() == ConnectionType.HANGING_LIGHTS) {
 				ConnectionHangingLights connectionLogic = (ConnectionHangingLights) connection;
 				Light[] lightPoints = connectionLogic.getFeatures();
-				int range = lightPoints.length;
 				if (connectionLogic.canCurrentlyPlayAJingle()) {
 					if (arePlayersNear) {
 						if (feasibleConnections.containsKey(fastener)) {

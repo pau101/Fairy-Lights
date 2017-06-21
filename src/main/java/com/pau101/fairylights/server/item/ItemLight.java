@@ -25,14 +25,14 @@ public final class ItemLight extends Item {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		LightVariant[] variants = LightVariant.values();
 		for (int variant = 0; variant < variants.length; variant++) {
 			if (variants[variant] == LightVariant.LUXO_BALL) {
 				continue;
 			}
 			for (int color = 0; color < COLOR_COUNT; color++) {
-				subItems.add(new ItemStack(item, 1, variant * COLOR_COUNT + color));
+				subItems.add(new ItemStack(this, 1, variant * COLOR_COUNT + color));
 			}
 		}
 	}
@@ -68,6 +68,6 @@ public final class ItemLight extends Item {
 		if (color == EnumDyeColor.GRAY) {
 			return 0x606060;
 		}
-		return color.getMapColor().colorValue;
+		return color.getColorValue();
 	}
 }

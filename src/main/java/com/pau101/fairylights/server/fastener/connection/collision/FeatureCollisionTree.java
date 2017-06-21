@@ -36,7 +36,7 @@ public final class FeatureCollisionTree implements Collidable {
 	@Nullable
 	private Intersection intersect(Vec3d origin, Vec3d end, int node) {
 		RayTraceResult result;
-		if (tree[node].isVecInside(origin)) {
+		if (tree[node].contains(origin)) {
 			result = new RayTraceResult(origin, EnumFacing.UP);
 		} else {
 			result = tree[node].calculateIntercept(origin, end);

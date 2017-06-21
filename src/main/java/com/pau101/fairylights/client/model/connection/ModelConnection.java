@@ -63,7 +63,7 @@ public abstract class ModelConnection<T extends Connection> extends ModelBase {
 			rotation = Mth.lerpAngles(rotation, old.getRotation(), 1 - delta);
 			length = length * delta + old.getLength() * (1 - delta);
 			vertex = Mth.lerp(vertex, old.getStart(), 1 - delta);
-			renderSegment(connection, i, rotation.yCoord, rotation.xCoord, length, vertex.xCoord, vertex.yCoord, vertex.zCoord, delta);
+			renderSegment(connection, i, rotation.y, rotation.x, length, vertex.x, vertex.y, vertex.z, delta);
 		}
 		GlStateManager.enableRescaleNormal();
 	}

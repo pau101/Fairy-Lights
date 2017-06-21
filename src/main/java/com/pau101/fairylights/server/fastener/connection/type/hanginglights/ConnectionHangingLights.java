@@ -95,7 +95,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 				pattern.set(index, light.withColor(color));
 				dataUpdateState = true;
 				heldStack.shrink(1);
-				world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, FLSounds.FEATURE_COLOR_CHANGE, SoundCategory.BLOCKS, 1, 1);
+				world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE, SoundCategory.BLOCKS, 1, 1);
 				return true;
 			}
 		}
@@ -112,7 +112,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 			lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF;
 			pitch = 0.5F;
 		}
-		world.playSound(null, hit.xCoord, hit.yCoord, hit.zCoord, lightSnd, SoundCategory.BLOCKS, 1, pitch);
+		world.playSound(null, hit.x, hit.y, hit.z, lightSnd, SoundCategory.BLOCKS, 1, pitch);
 		computeCatenary();
 		return true;
 	}

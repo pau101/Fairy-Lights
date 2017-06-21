@@ -1,22 +1,19 @@
 package com.pau101.fairylights.client.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class AdvancedModelRenderer extends ModelRenderer {
 	protected int textureOffsetX;
@@ -119,7 +116,7 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 	protected void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
 		GlStateManager.glNewList(displayList, GL11.GL_COMPILE);
-		VertexBuffer buf = Tessellator.getInstance().getBuffer();
+		BufferBuilder buf = Tessellator.getInstance().getBuffer();
 		for (ModelBox box : cubeList) {
 			box.render(buf, scale);
 		}
@@ -147,7 +144,7 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 		}
 		if (isGlowing) {
 			List<ModelBox> boxModels = cubeList;
-			VertexBuffer buf = Tessellator.getInstance().getBuffer();
+			BufferBuilder buf = Tessellator.getInstance().getBuffer();
 			for (ModelBox box : boxModels) {
 				int bri = 1;
 				float meteorExpandY = 0;

@@ -108,9 +108,9 @@ public final class Light extends HangingFeature<Light> {
 
 	public void jingle(World world, Vec3d origin, int note, SoundEvent sound, EnumParticleTypes... particles) {
 		if (world.isRemote) {
-			double x = origin.xCoord + point.xCoord / 16;
-			double y = origin.yCoord + point.yCoord / 16;
-			double z = origin.zCoord + point.zCoord / 16;
+			double x = origin.x + point.x / 16;
+			double y = origin.y + point.y / 16;
+			double z = origin.z + point.z / 16;
 			for (EnumParticleTypes particle : particles) {
 				double vx = world.rand.nextGaussian();
 				double vy = world.rand.nextGaussian();
@@ -135,7 +135,7 @@ public final class Light extends HangingFeature<Light> {
 
 	public void stopSwaying() {
 		sway = 0;
-		rotation = new Vec3d(rotation.xCoord, rotation.yCoord, 0);
+		rotation = new Vec3d(rotation.x, rotation.y, 0);
 		swaying = false;
 	}
 
@@ -165,7 +165,7 @@ public final class Light extends HangingFeature<Light> {
 			if (sway >= SWAY_CYCLE) {
 				stopSwaying();
 			} else {
-				rotation = new Vec3d(rotation.xCoord, rotation.yCoord, (float) (Math.sin((swayDirection ? 1 : -1) * 2 * Math.PI / SWAY_RATE * sway) * Math.pow(180 / Math.PI * 2, -sway / (float) SWAY_CYCLE)));
+				rotation = new Vec3d(rotation.x, rotation.y, (float) (Math.sin((swayDirection ? 1 : -1) * 2 * Math.PI / SWAY_RATE * sway) * Math.pow(180 / Math.PI * 2, -sway / (float) SWAY_CYCLE)));
 				sway++;
 			}
 		}

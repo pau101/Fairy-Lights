@@ -47,16 +47,16 @@ public final class GuiButtonColor extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float delta) {
 		if (visible) {
 			mc.getTextureManager().bindTexture(GuiEditLetteredConnection.WIDGETS_TEXTURE);
 			GlStateManager.color(1, 1, 1);
-			hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
-			drawTexturedModalRect(xPosition, yPosition, TEX_U, hovered ? TEX_V + height : TEX_V, width, height);
+			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+			drawTexturedModalRect(x, y, TEX_U, hovered ? TEX_V + height : TEX_V, width, height);
 			if (displayColor != null) {
-				drawTexturedModalRect(xPosition, yPosition, TEX_U + width, TEX_V, width, height);
+				drawTexturedModalRect(x, y, TEX_U + width, TEX_V, width, height);
 				GlStateManager.color(displayColorR, displayColorG, displayColorB);
-				drawTexturedModalRect(xPosition, yPosition, TEX_U + width, TEX_V + height, width, height);
+				drawTexturedModalRect(x, y, TEX_U + width, TEX_V + height, width, height);
 				GlStateManager.color(1, 1, 1);
 			}
 		}

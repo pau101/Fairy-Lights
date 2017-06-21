@@ -69,10 +69,10 @@ public final class ModelConnectionHangingLights extends ModelConnection<Connecti
 			Vec3d rotation = light.getRotation(delta);
 			float brightness = light.getBrightness(delta);
 			ModelLight model = lightModels[light.getVariant().ordinal()];
-			model.setOffsets(point.xCoord / 16, point.yCoord / 16, point.zCoord / 16);
-			boolean vert = Math.abs(Math.abs(rotation.yCoord) - Mth.PI / 2) < 1e-6F;
+			model.setOffsets(point.x / 16, point.y / 16, point.z / 16);
+			boolean vert = Math.abs(Math.abs(rotation.y) - Mth.PI / 2) < 1e-6F;
 			model.setAfts(0, -2.2F / 16, 0);
-			model.setRotationAngles(light.getVariant().parallelsCord() ? rotation.yCoord : vert ? 0.3F : 0, rotation.xCoord, rotation.zCoord);
+			model.setRotationAngles(light.getVariant().parallelsCord() ? rotation.y : vert ? 0.3F : 0, rotation.x, rotation.z);
 			model.setScale(1);
 			model.render(world, light, 0.0625F, color, moonlight, skylight, brightness, i, delta);
 		}

@@ -37,7 +37,7 @@ public final class RenderFenceFastener extends Render<EntityFenceFastener> {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(-0.5, -0.5, 0.5);
 		renderManager.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(FastenerStateMapper.FENCE_FASTENER_STATE, fastener.getBrightness(delta));
+		Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(FastenerStateMapper.FENCE_FASTENER_STATE, fastener.getBrightness());
 		GlStateManager.popMatrix();
 		bindEntityTexture(fastener);
 		FastenerRenderer.render(fastener.getCapability(CapabilityHandler.FASTENER_CAP, null), delta);

@@ -32,7 +32,7 @@ public class RenderLadder extends RenderLivingBase<EntityLadder> {
 			GlStateManager.disableTexture2D();
 			GlStateManager.depthMask(false);
 			for (AxisAlignedBB s : ladder.getCollisionSurfaces()) {
-				RenderGlobal.drawSelectionBoundingBox(s.expandXyz(0.002).offset(-ladder.posX + x, -ladder.posY + y, -ladder.posZ + z), 1, 1, 1, 1);
+				RenderGlobal.drawSelectionBoundingBox(s.grow(0.002).offset(-ladder.posX + x, -ladder.posY + y, -ladder.posZ + z), 1, 1, 1, 1);
 			}
 			GlStateManager.depthMask(true);
 			GlStateManager.enableTexture2D();

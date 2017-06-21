@@ -1,11 +1,6 @@
 package com.pau101.fairylights.server.fastener.connection.type.letter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
-
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -19,7 +14,6 @@ import com.pau101.fairylights.server.fastener.connection.type.Lettered;
 import com.pau101.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
 import com.pau101.fairylights.util.styledstring.StyledString;
 import com.pau101.fairylights.util.styledstring.StylingPresence;
-
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,6 +23,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
 
 public final class ConnectionLetterBunting extends Connection implements Lettered {
 	public static final SymbolSet SYMBOLS = SymbolSet.from(6, 10, "0,6,1,3,2,6,3,6,4,6,5,6,6,6,7,6,8,6,9,6,A,8,B,7,C,8,D,7,E,7,F,7,G,8,H,7,I,2,J,6,K,8,L,7,M,10,N,8,O,8,P,7,Q,8,R,7,S,7,T,8,U,7,V,8,W,10,X,8,Y,8,Z,7, ,6");
@@ -62,7 +61,7 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 	}
 
 	public Letter[] getPrevLetters() {
-		return Objects.firstNonNull(prevLetters, letters);
+		return MoreObjects.firstNonNull(prevLetters, letters);
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 	@Override
 	public void onConnect(World world, EntityPlayer user, ItemStack heldStack) {
 		if (text.isEmpty()) {
-			FairyLights.network.sendTo(new MessageOpenEditLetteredConnectionGUI(this), (EntityPlayerMP) user);
+			FairyLights.network.sendTo(new MessageOpenEditLetteredConnectionGUI<>(this), (EntityPlayerMP) user);
 		}
 	}
 

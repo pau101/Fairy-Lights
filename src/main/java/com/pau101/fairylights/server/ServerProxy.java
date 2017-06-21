@@ -1,9 +1,5 @@
 package com.pau101.fairylights.server;
 
-import java.time.Month;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.CaseFormat;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
@@ -21,8 +17,6 @@ import com.pau101.fairylights.server.item.ItemConnectionTinsel;
 import com.pau101.fairylights.server.item.ItemLadder;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.item.ItemPennant;
-import com.pau101.fairylights.server.item.LightVariant;
-import com.pau101.fairylights.server.item.crafting.Recipes;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.net.FLMessage;
 import com.pau101.fairylights.server.net.clientbound.MessageJingle;
@@ -32,16 +26,12 @@ import com.pau101.fairylights.server.net.serverbound.MessageConnectionInteractio
 import com.pau101.fairylights.server.net.serverbound.MessageEditLetteredConnection;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.CalendarEvent;
-import com.pau101.fairylights.util.crafting.GenericRecipe;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.util.IThreadListener;
@@ -59,9 +49,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.RecipeSorter.Category;
-import net.minecraftforge.oredict.ShapedOreRecipe;
+
+import javax.annotation.Nullable;
+import java.time.Month;
 
 public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	private int nextMessageId;
@@ -96,7 +86,7 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	}
 
 	public void initCrafting() {
-		GameRegistry.addRecipe(Recipes.FAIRY_LIGHTS);
+		/*GameRegistry.addRecipe(Recipes.FAIRY_LIGHTS);
 		GameRegistry.addRecipe(Recipes.FAIRY_LIGHTS_AUGMENTATION);
 		for (LightVariant variant : LightVariant.values()) {
 			GameRegistry.addRecipe(variant.getRecipe());
@@ -108,7 +98,7 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 		GameRegistry.addRecipe(Recipes.PENNANT);
 		GameRegistry.addRecipe(Recipes.LETTER_BUNTING);
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(FairyLights.ladder), "#/", "#/", "#/", '#', Blocks.LADDER, '/', "stickWood"));
-		RecipeSorter.register(FairyLights.ID + ":generic", GenericRecipe.class, Category.SHAPED, "after:minecraft:shaped");
+		RecipeSorter.register(FairyLights.ID + ":generic", GenericRecipe.class, Category.SHAPED, "after:minecraft:shaped");*/
 	}
 
 	/*

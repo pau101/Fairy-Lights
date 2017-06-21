@@ -1,26 +1,8 @@
 package com.pau101.fairylights.client.gui.component;
 
-import static net.minecraft.util.text.TextFormatting.AQUA;
-import static net.minecraft.util.text.TextFormatting.BLACK;
-import static net.minecraft.util.text.TextFormatting.BLUE;
-import static net.minecraft.util.text.TextFormatting.DARK_AQUA;
-import static net.minecraft.util.text.TextFormatting.DARK_BLUE;
-import static net.minecraft.util.text.TextFormatting.DARK_GRAY;
-import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
-import static net.minecraft.util.text.TextFormatting.DARK_PURPLE;
-import static net.minecraft.util.text.TextFormatting.DARK_RED;
-import static net.minecraft.util.text.TextFormatting.GOLD;
-import static net.minecraft.util.text.TextFormatting.GRAY;
-import static net.minecraft.util.text.TextFormatting.GREEN;
-import static net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
-import static net.minecraft.util.text.TextFormatting.RED;
-import static net.minecraft.util.text.TextFormatting.WHITE;
-import static net.minecraft.util.text.TextFormatting.YELLOW;
-
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.styledstring.StyledString;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -28,6 +10,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.util.text.TextFormatting;
+
+import static net.minecraft.util.text.TextFormatting.*;
 
 public class GuiButtonPalette extends GuiButton {
 	private static final int TEX_U = 0;
@@ -73,15 +57,15 @@ public class GuiButtonPalette extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float delta) {
 		if (visible) {
 			mc.getTextureManager().bindTexture(GuiEditLetteredConnection.WIDGETS_TEXTURE);
 			GlStateManager.color(1, 1, 1);
-			drawTexturedModalRect(xPosition, yPosition, TEX_U, TEX_V, width, height);
+			drawTexturedModalRect(x, y, TEX_U, TEX_V, width, height);
 			if (colorBtn.hasDisplayColor()) {
 				int idx = COLOR_IDX[colorBtn.getDisplayColor().ordinal()];
-				int selectX = xPosition + 2 + (idx % 4) * 6;
-				int selectY = yPosition + 2 + (idx / 4) * 6;
+				int selectX = x + 2 + (idx % 4) * 6;
+				int selectY = y + 2 + (idx / 4) * 6;
 				drawTexturedModalRect(selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
 			}
 			for (int i = 0; i < IDX_COLOR.length; i++) {
@@ -91,15 +75,15 @@ public class GuiButtonPalette extends GuiButton {
 				float g = (rgb >> 8 & 0xFF) / 255F;
 				float b = (rgb & 0xFF) / 255F;
 				GlStateManager.color(r, g, b);
-				drawTexturedModalRect(xPosition + 2 + (i % 4) * 6, yPosition + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
+				drawTexturedModalRect(x + 2 + (i % 4) * 6, y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
 			}
 			int selectIndex = getMouseOverIndex(mouseX, mouseY);
 			if (selectIndex > -1) {
 				GlStateManager.enableBlend();
 				GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 				GlStateManager.color(1, 1, 1, 0.5F);
-				int hoverSelectX = xPosition + 2 + selectIndex % 4 * 6;
-				int hoverSelectY = yPosition + 2 + selectIndex / 4 * 6;
+				int hoverSelectX = x + 2 + selectIndex % 4 * 6;
+				int hoverSelectY = y + 2 + selectIndex / 4 * 6;
 				drawTexturedModalRect(hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
 				GlStateManager.disableBlend();
 			}
@@ -108,7 +92,7 @@ public class GuiButtonPalette extends GuiButton {
 	}
 
 	private int getMouseOverIndex(int mouseX, int mouseY) {
-		int relX = mouseX - xPosition - 3, relY = mouseY - yPosition - 3;
+		int relX = mouseX - x - 3, relY = mouseY - y - 3;
 		if (relX < 0 || relY < 0 || relX > 22 || relY > 22) {
 			return -1;
 		}

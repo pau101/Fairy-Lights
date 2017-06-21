@@ -89,9 +89,9 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 	public void resistSnap(Vec3d from) {
 		double dist = getConnectionPoint().distanceTo(from);
 		if (dist > Connection.MAX_LENGTH) {
-			double dx = entity.posX - from.xCoord;
-			double dy = entity.posY - from.yCoord;
-			double dz = entity.posZ - from.zCoord;
+			double dx = entity.posX - from.x;
+			double dy = entity.posY - from.y;
+			double dz = entity.posZ - from.z;
 			double vectorX = dx / dist;
 			double vectorY = dy / dist;
 			double vectorZ = dz / dist;

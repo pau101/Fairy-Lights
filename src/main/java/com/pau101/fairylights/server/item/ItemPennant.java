@@ -20,9 +20,9 @@ public class ItemPennant extends Item {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		for (int meta = 0; meta < ItemLight.COLOR_COUNT; meta++) {
-			subItems.add(new ItemStack(item, 1, meta));
+			subItems.add(new ItemStack(this, 1, meta));
 		}
 	}
 }

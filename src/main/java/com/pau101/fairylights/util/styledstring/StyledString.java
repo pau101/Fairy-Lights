@@ -1,6 +1,28 @@
 package com.pau101.fairylights.util.styledstring;
 
-import java.awt.Color;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Charsets;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextFormatting;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.PlainView;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.rtf.RTFEditorKit;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -16,29 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.PlainView;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.rtf.RTFEditorKit;
-
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.buffer.Unpooled;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextFormatting;
 
 public final class StyledString implements Comparable<StyledString>, CharSequence {
 	public static final TextFormatting DEFAULT_COLOR = TextFormatting.WHITE;
@@ -932,10 +931,10 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 				Color color = StyleConstants.getForeground(attrs);
 				boolean isBold = StyleConstants.isBold(attrs);
 				// For whatever reason RTFAttributes doesn't use StyleConstants.StrikeThrough...
-				boolean isStrikethrough = com.google.common.base.Objects.firstNonNull((Boolean) attrs.getAttribute("strike"), false);
+				boolean isStrikethrough = MoreObjects.firstNonNull((Boolean) attrs.getAttribute("strike"), false);
 				boolean isUnderline = StyleConstants.isUnderline(attrs);
 				boolean isItalic = StyleConstants.isItalic(attrs);
-				str.append(CharMatcher.WHITESPACE.replaceFrom(s, ' '), Style.getShortStyling(getNearestColor(font, color), isBold, isStrikethrough, isUnderline, isItalic));
+				str.append(CharMatcher.whitespace().replaceFrom(s, ' '), Style.getShortStyling(getNearestColor(font, color), isBold, isStrikethrough, isUnderline, isItalic));
 				/*/
 				Enumeration<?> e = attrs.getAttributeNames();
 				System.out.printf("%s\n", s);
