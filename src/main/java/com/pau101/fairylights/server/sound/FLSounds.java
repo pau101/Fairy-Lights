@@ -1,10 +1,9 @@
 package com.pau101.fairylights.server.sound;
 
 import com.pau101.fairylights.FairyLights;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public final class FLSounds {
 	private FLSounds() {}
@@ -38,7 +37,7 @@ public final class FLSounds {
 	private static final SoundEvent create(String name) {
 		ResourceLocation id = new ResourceLocation(FairyLights.ID, name);
 		SoundEvent sound = new SoundEvent(id).setRegistryName(name);
-		GameRegistry.register(sound);
+		ForgeRegistries.SOUND_EVENTS.register(sound);
 		return sound;
 	}
 }

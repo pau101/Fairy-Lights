@@ -1,0 +1,18 @@
+{
+	"type": "forge:ore_shaped",
+	"pattern": [
+		"I-I",
+		"PBF"
+	],
+	"key": {
+		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
+		"-": { "type": "forge:ore_dict", "ore": "string" },
+		"P": { "type": "forge:ore_dict", "ore": "paper" },
+		"B": { "type": "forge:ore_dict", "ore": "dyeBlack" },
+		"F": { "type": "forge:ore_dict", "ore": "feather" }
+	},
+	"result": {
+		"item": "letter_bunting",
+		"nbt": "{text:{value:\"\",styling:[B;]}}"
+	}
+}

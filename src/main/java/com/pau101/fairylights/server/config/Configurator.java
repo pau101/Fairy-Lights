@@ -44,7 +44,7 @@ public final class Configurator {
 	}
 
 	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if (FairyLights.ID.equals(event.getModID())) {
 			updateConfig();
 		}

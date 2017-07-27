@@ -6,7 +6,6 @@ import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.util.CalendarEvent;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
@@ -67,7 +66,7 @@ public final class FairyLights {
 
 	public static JingleLibrary christmasJingles;
 
-	public static JingleLibrary randomJingles; 
+	public static JingleLibrary randomJingles;
 
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {

@@ -2,12 +2,12 @@ package com.pau101.fairylights.server.net;
 
 import java.io.IOException;
 
-import com.google.common.base.Throwables;
-
-import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import com.google.common.base.Throwables;
+import io.netty.buffer.ByteBuf;
 
 public abstract class FLMessage implements IMessage {
 	@Override
@@ -18,7 +18,7 @@ public abstract class FLMessage implements IMessage {
 	@Override
 	public final void fromBytes(ByteBuf buf) {
 		try {
-			deserialize(new PacketBuffer(buf));	
+			deserialize(new PacketBuffer(buf));
 		} catch (IOException e) {
 			Throwables.propagate(e);
 		}

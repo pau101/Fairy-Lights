@@ -1,5 +1,8 @@
 package com.pau101.fairylights.server;
 
+import java.time.Month;
+import javax.annotation.Nullable;
+
 import com.google.common.base.CaseFormat;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
@@ -47,11 +50,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-
-import javax.annotation.Nullable;
-import java.time.Month;
 
 public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	private int nextMessageId;
@@ -176,16 +177,16 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	}
 
 	private <B extends Block> B register(Block block, String name, boolean hasItem) {
-		GameRegistry.register(block.setRegistryName(name));
+		ForgeRegistries.BLOCKS.register(block.setRegistryName(name));
 		if (hasItem) {
-			GameRegistry.register(new ItemBlock(block).setRegistryName(name));
+			ForgeRegistries.ITEMS.register(new ItemBlock(block).setRegistryName(name));
 		}
 		return (B) block.setUnlocalizedName(toUnlocalizedName(name));
 	}
 
 	private <T extends Item> T register(T item, String name) {
 		item.setRegistryName(name);
-		GameRegistry.register(item);
+		ForgeRegistries.ITEMS.register(item);
 		return (T) item.setUnlocalizedName(toUnlocalizedName(name));
 	}
 

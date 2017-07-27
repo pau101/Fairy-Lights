@@ -135,7 +135,7 @@ public final class ClientProxy extends ServerProxy {
 		}, FairyLights.pennantBunting);
 		colors.registerItemColorHandler((stack, index) -> {
 			if (index == 0) {
-				return 0xFFFFFFFF;
+				return 0xFFFFFF;
 			}
 			return ItemLight.getColorValue(EnumDyeColor.byDyeDamage(stack.getMetadata()));
 		}, FairyLights.pennant);

@@ -1,0 +1,15 @@
+{
+	"type": "forge:ore_shaped",
+	"pattern": [
+		"#/",
+		"#/",
+		"#/"
+	],
+	"key": {
+		"#": { "item": "minecraft:ladder" },
+		"/": { "type": "forge:ore_dict", "ore": "stickWood" }
+	},
+	"result": {
+		"item": "ladder"
+	}
+}
