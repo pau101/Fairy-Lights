@@ -1,34 +1,27 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import com.pau101.fairylights.util.crafting.ingredient.behavior.Behavior;
+import com.pau101.fairylights.util.crafting.ingredient.behavior.BehaviorRegular;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class IngredientRegularBasic implements IngredientRegular {
+public class IngredientRegularItem extends IngredientRegular {
 	protected final ItemStack ingredient;
 
-	public IngredientRegularBasic(Item item) {
-		this(new ItemStack(Objects.requireNonNull(item, "item")));
+	public IngredientRegularItem(ItemStack stack) {
+		this(ImmutableList.of(), EMPTY_TOOLTIP, ImmutableList.of(), stack);
 	}
 
-	public IngredientRegularBasic(Item item, int metadata) {
-		this(new ItemStack(Objects.requireNonNull(item, "item"), 1, metadata));
-	}
-
-	public IngredientRegularBasic(Block block) {
-		this(new ItemStack(Objects.requireNonNull(block, "block"), 1, OreDictionary.WILDCARD_VALUE));
-	}
-
-	public IngredientRegularBasic(ItemStack stack) {
+	public IngredientRegularItem(ImmutableList<Behavior> behaviors, Consumer<List<String>> tooltip, ImmutableList<BehaviorRegular> regularBehaviors, ItemStack stack) {
+		super(behaviors, tooltip, regularBehaviors);
 		ingredient = Objects.requireNonNull(stack, "stack");
-		Objects.requireNonNull(stack.getItem(), "item");
 	}
 
 	@Override

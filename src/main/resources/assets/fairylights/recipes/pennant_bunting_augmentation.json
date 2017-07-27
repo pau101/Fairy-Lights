@@ -1,0 +1,11 @@
+{
+	"type": "generic",
+	"pattern": "B",
+	"key": {
+		"B": { "type": "augmentation_pennant_bunting" }
+	},
+	"auxiliary": [{
+		"type": "pennant"
+	}],
+	"result": "pennant_bunting"
+}

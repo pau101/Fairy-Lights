@@ -1,0 +1,15 @@
+{
+	"type": "generic",
+	"pattern": [
+		" P ",
+		"I-I",
+		" D "
+	],
+	"key": {
+		"P": { "type": "ore_dict", "ore": "paper" },
+		"I": { "type": "ore_dict", "ore": "ingotIron" },
+		"-": { "type": "ore_dict", "ore": "string" },
+		"D": { "type": "tinsel_dye" }
+	},
+	"result": "tinsel"
+}

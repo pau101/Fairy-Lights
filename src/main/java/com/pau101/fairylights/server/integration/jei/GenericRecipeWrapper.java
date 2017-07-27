@@ -1,5 +1,10 @@
 package com.pau101.fairylights.server.integration.jei;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
+
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.crafting.GenericRecipe;
@@ -21,11 +26,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-
 public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper, ICustomCraftingRecipeWrapper {
 	private final GenericRecipe recipe;
 
@@ -45,7 +45,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		ImmutableList.Builder<ImmutableList<ItemStack>> allInputs = ImmutableList.builder();
 		ImmutableList.Builder<ImmutableList<ItemStack>> minimalInputStacks = ImmutableList.builder();
 		IngredientRegular[] ingredients = recipe.getGenericIngredients();
-		IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
+		IngredientAuxiliary[] aux = recipe.getAuxiliaryIngredients();
 		ingredientMatrix = new Ingredient<?, ?>[9];
 		int subtypeIndex = -1;
 		for (int i = 0, auxIdx = 0; i < 9; i++) {
@@ -67,7 +67,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 				}
 			}
 			if (isEmpty) {
-				IngredientAuxiliary<?> ingredient = null;
+				IngredientAuxiliary ingredient = null;
 				ImmutableList<ItemStack> stacks = null;
 				boolean dictator = false;
 				for (; auxIdx < aux.length;) {
@@ -110,7 +110,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 			public void onCraftMatrixChanged(IInventory inventory) {}
 		}, getWidth(), getHeight());
 		if (subtypeIndex == -1) {
-			IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
+			IngredientAuxiliary[] aux = recipe.getAuxiliaryIngredients();
 			for (int i = 0, ai = 0; i < minimalInputStacks.size(); i++) {
 				List<ItemStack> stacks = minimalInputStacks.get(i);
 				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
@@ -151,7 +151,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 		IngredientRegular[] ingredients = recipe.getGenericIngredients();
 		List<List<ItemStack>> inputs = new ArrayList<>(9);
 		Ingredient<?, ?>[] ingredientMat = new Ingredient<?, ?>[9];
-		IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
+		IngredientAuxiliary[] aux = recipe.getAuxiliaryIngredients();
 		for (int i = 0, auxIngIdx = 0, auxIdx = 0; i < 9; i++) {
 			int x = i % 3, y = i / 3;
 			ImmutableList<ImmutableList<ItemStack>> ingInputs;
@@ -166,7 +166,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 				boolean isEmpty = true;
 				if (auxIngIdx < aux.length) {
 					ImmutableList<ImmutableList<ItemStack>> auxInputs = null;
-					IngredientAuxiliary<?> ingredientAux = null;
+					IngredientAuxiliary ingredientAux = null;
 					for (; auxIngIdx < aux.length; auxIngIdx++) {
 						ingredientAux = aux[auxIngIdx];
 						auxInputs = ingredientAux.getInput(output);

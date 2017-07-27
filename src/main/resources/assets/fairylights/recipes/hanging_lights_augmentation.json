@@ -1,0 +1,21 @@
+{
+	"type": "generic",
+	"pattern": "F",
+	"key": {
+		"F": { "type": "augmentation_hanging_lights" }
+	},
+	"auxiliary": [[{
+			"type": "light",
+			"required": false
+		}, {
+			"type": "item",
+			"item": "minecraft:glowstone_dust",
+			"required": false,
+			"limit": 1,
+			"behavior": {
+				"type": "augmentation_twinkle"
+			}
+		}
+	]],
+	"result": "hanging_lights"
+}

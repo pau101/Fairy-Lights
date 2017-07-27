@@ -1,0 +1,12 @@
+{
+	"type": "generic",
+	"pattern": "I-I",
+	"key": {
+		"I": { "type": "ore_dict", "ore": "ingotIron" },
+		"-": { "type": "ore_dict", "ore": "string" }
+	},
+	"auxiliary": [{
+		"type": "pennant"
+	}],
+	"result": "pennant_bunting"
+}

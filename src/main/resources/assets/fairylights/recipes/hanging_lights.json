@@ -1,0 +1,35 @@
+{
+	"type": "generic",
+	"pattern": "I-I",
+	"key": {
+		"I": { "type": "ore_dict", "item": "ingotIron" },
+		"-": [{
+				"type": "ore_dict",
+				"ore": "string"
+			}, {
+				"type": "ore_dict",
+				"ore": "stickWood",
+				"behavior": {
+					"type": "set_nbt",
+					"key": "tight"
+				}
+			}
+		]
+	},
+	"auxiliary": [{
+			"type": "light",
+			"required": true
+		}, {
+			"type": "item",
+			"item": "minecraft:glowstone_dust",
+			"required": false,
+			"limit": 1,
+			"behavior": {
+				"type": "set_nbt",
+				"key": "twinkle"
+			},
+			"tooltip": "recipe.hangingLights.glowstone"
+		}
+	],
+	"result": "hanging_lights"
+}

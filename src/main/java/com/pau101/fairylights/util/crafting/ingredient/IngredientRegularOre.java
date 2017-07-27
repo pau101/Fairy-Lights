@@ -1,10 +1,8 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Preconditions;
-
+import com.google.common.collect.ImmutableList;
+import com.pau101.fairylights.util.Utils;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class IngredientRegularOre extends IngredientRegularList {
@@ -15,8 +13,8 @@ public class IngredientRegularOre extends IngredientRegularList {
 		this.name = name;
 	}
 
-	private static List<IngredientRegular> getOres(String name) {
+	public static ImmutableList<IngredientRegular> getOres(String name) {
 		Preconditions.checkArgument(OreDictionary.doesOreNameExist(name), "Ore name must exist");
-		return OreDictionary.getOres(name).stream().map(IngredientRegularBasic::new).collect(Collectors.toList());
+		return OreDictionary.getOres(name).stream().map(IngredientRegularItem::new).collect(Utils.toImmutableList());
 	}
 }

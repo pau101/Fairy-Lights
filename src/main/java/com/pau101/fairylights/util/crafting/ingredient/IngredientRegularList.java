@@ -1,23 +1,29 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
-
+import com.pau101.fairylights.util.crafting.ingredient.behavior.Behavior;
+import com.pau101.fairylights.util.crafting.ingredient.behavior.BehaviorRegular;
 import net.minecraft.item.ItemStack;
 
-public class IngredientRegularList implements IngredientRegular {
-	private final List<IngredientRegular> ingredients;
+public class IngredientRegularList extends IngredientRegular {
+	private final ImmutableList<IngredientRegular> ingredients;
 
 	public IngredientRegularList(IngredientRegular... ingredients) {
-		this(Arrays.asList(ingredients));
+		this(ImmutableList.copyOf(ingredients));
 	}
 
-	public IngredientRegularList(List<IngredientRegular> ingredients) {
+	public IngredientRegularList(ImmutableList<IngredientRegular> ingredients) {
+		this(ImmutableList.of(), EMPTY_TOOLTIP, ImmutableList.of(), ingredients);
+	}
+
+	public IngredientRegularList(ImmutableList<Behavior> behaviors, Consumer<List<String>> tooltip, ImmutableList<BehaviorRegular> regularBehaviors, ImmutableList<IngredientRegular> ingredients) {
+		super(behaviors, tooltip, regularBehaviors);
 		this.ingredients = Objects.requireNonNull(ingredients, "ingredients");
 	}
 
@@ -68,10 +74,5 @@ public class IngredientRegularList implements IngredientRegular {
 			inputsImm.add(ImmutableList.copyOf(list));
 		}
 		return inputsImm.build();
-	}
-
-	@Override
-	public String toString() {
-		return ingredients.toString();
 	}
 }

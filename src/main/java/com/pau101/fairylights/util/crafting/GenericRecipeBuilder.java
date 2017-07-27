@@ -5,18 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
-import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryBasicInert;
-import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryOreInert;
+import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryItem;
+import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryOre;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
-import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularBasic;
+import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularItem;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularList;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularOre;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -136,7 +135,7 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, ItemStack stack) {
-		return withIngredient(key, new IngredientRegularBasic(Objects.requireNonNull(stack, "stack")));
+		return withIngredient(key, new IngredientRegularItem(Objects.requireNonNull(stack, "stack")));
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, String name) {
@@ -150,11 +149,11 @@ public final class GenericRecipeBuilder {
 
 	public GenericRecipeBuilder withAnyIngredient(char key, Object... objects) {
 		Objects.requireNonNull(objects, "objects");
-		List<IngredientRegular> ingredients = new ArrayList<>(objects.length);
+		ImmutableList.Builder<IngredientRegular> ingredients = ImmutableList.builder();
 		for (int i = 0; i < objects.length; i++) {
 			ingredients.add(asIngredient(objects[i]));
 		}
-		this.ingredients.put(key, new IngredientRegularList(ingredients));
+		this.ingredients.put(key, new IngredientRegularList(ingredients.build()));
 		return this;
 	}
 
@@ -195,7 +194,7 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(ItemStack stack, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(new IngredientAuxiliaryBasicInert(Objects.requireNonNull(stack, "stack"), isRequired, limit));
+		return withAuxiliaryIngredient(new IngredientAuxiliaryItem(Objects.requireNonNull(stack, "stack"), isRequired, limit));
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(String name) {
@@ -203,10 +202,10 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(String name, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(new IngredientAuxiliaryOreInert(name, isRequired, limit));
+		return withAuxiliaryIngredient(new IngredientAuxiliaryOre(name, isRequired, limit));
 	}
 
-	public GenericRecipeBuilder withAuxiliaryIngredient(IngredientAuxiliary<?> ingredient) {
+	public GenericRecipeBuilder withAuxiliaryIngredient(IngredientAuxiliary ingredient) {
 		auxiliaryIngredients.add(Objects.requireNonNull(ingredient, "ingredient"));
 		return this;
 	}
@@ -224,21 +223,21 @@ public final class GenericRecipeBuilder {
 			}
 			ingredients[i] = ingredient;
 		}
-		IngredientAuxiliary<?>[] auxiliaryIngredients = this.auxiliaryIngredients.toArray(
-			new IngredientAuxiliary<?>[this.auxiliaryIngredients.size()]
+		IngredientAuxiliary[] auxiliaryIngredients = this.auxiliaryIngredients.toArray(
+			new IngredientAuxiliary[this.auxiliaryIngredients.size()]
 		);
 		return new GenericRecipe(output, ingredients, auxiliaryIngredients, width, height);
 	}
 
 	private static IngredientRegular asIngredient(Object object) {
 		if (object instanceof Item) {
-			return new IngredientRegularBasic(new ItemStack((Item) object));
+			return new IngredientRegularItem(new ItemStack((Item) object));
 		}
 		if (object instanceof Block) {
-			return new IngredientRegularBasic(new ItemStack((Block) object, 1, OreDictionary.WILDCARD_VALUE));
+			return new IngredientRegularItem(new ItemStack((Block) object, 1, OreDictionary.WILDCARD_VALUE));
 		}
 		if (object instanceof ItemStack) {
-			return new IngredientRegularBasic((ItemStack) object);
+			return new IngredientRegularItem((ItemStack) object);
 		}
 		if (object instanceof String) {
 			return new IngredientRegularOre((String) object);

@@ -1,0 +1,5 @@
+{
+	"recipes": {
+		"generic": "com.pau101.fairylights.util.crafting.GenericRecipeFactory"
+	}
+}

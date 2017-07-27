@@ -1,0 +1,14 @@
+{
+	"type": "generic",
+	"pattern": [
+		"- -",
+		"PDP",
+		" P "
+	],
+	"key": {
+		"P": { "type": "ore_dict", "ore": "paper" },
+		"-": { "type": "ore_dict", "ore": "string" },
+		"D": { "type": "pennant_dye" }
+	},
+	"result": "pennant"
+}

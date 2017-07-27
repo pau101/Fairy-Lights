@@ -4,13 +4,12 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collector;
 
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.FairyLights;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.EnumDyeColor;
@@ -85,5 +84,13 @@ public final class Utils {
 			copy.add(stack.copy());
 		}
 		return copy.build();
+	}
+
+	public static <T> Collector<T, ImmutableList.Builder<T>, ImmutableList<T>> toImmutableList() {
+		return Collector.of(
+			ImmutableList.Builder::new, ImmutableList.Builder::add,
+			(left, right) -> left.addAll(right.build()),
+			ImmutableList.Builder::build
+		);
 	}
 }

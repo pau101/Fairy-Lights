@@ -34,7 +34,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	private final IngredientRegular[] ingredients;
 
-	private final IngredientAuxiliary<?>[] auxiliaryIngredients;
+	private final IngredientAuxiliary[] auxiliaryIngredients;
 
 	private final int width;
 
@@ -42,7 +42,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	private final ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.EMPTY);
 
-	GenericRecipe(ItemStack output, IngredientRegular[] ingredients, IngredientAuxiliary<?>[] auxiliaryIngredients, int width, int height) {
+	GenericRecipe(ItemStack output, IngredientRegular[] ingredients, IngredientAuxiliary[] auxiliaryIngredients, int width, int height) {
 		Objects.requireNonNull(output, "output");
 		Objects.requireNonNull(ingredients, "ingredients");
 		Objects.requireNonNull(auxiliaryIngredients, "auxiliaryIngredients");
@@ -64,7 +64,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		return ingredients.clone();
 	}
 
-	public IngredientAuxiliary<?>[] getAuxiliaryIngredients() {
+	public IngredientAuxiliary[] getAuxiliaryIngredients() {
 		return auxiliaryIngredients.clone();
 	}
 
@@ -74,11 +74,6 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	public int getHeight() {
 		return height;
-	}
-
-	@Override
-	public boolean canFit(int width, int height) {
-		return this.width <= width && this.height <= height;
 	}
 
 	@Override
@@ -124,8 +119,8 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	private ItemStack getResult(InventoryCrafting inventory, ItemStack output, int originX, int originY, IntUnaryOperator funcX) {
 		MatchResultRegular[] match = new MatchResultRegular[ingredients.length];
-		Multimap<IngredientAuxiliary<?>, MatchResultAuxiliary> auxMatchResults = LinkedListMultimap.create();
-		Map<IngredientAuxiliary<?>, Integer> auxMatchTotals = new HashMap<>();
+		Multimap<IngredientAuxiliary, MatchResultAuxiliary> auxMatchResults = LinkedListMultimap.create();
+		Map<IngredientAuxiliary, Integer> auxMatchTotals = new HashMap<>();
 		Set<Ingredient<?, ?>> presentCalled = new HashSet<>();
 		List<MatchResultAuxiliary> auxResults = new ArrayList<>();
 		for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight(), auxCount = auxiliaryIngredients.length; i < size; i++) {
@@ -169,7 +164,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		for (MatchResultAuxiliary result : auxResults) {
 			result.notifyAbsence(presentCalled, absentCalled, output);
 		}
-		for (IngredientAuxiliary<?> ingredient : auxiliaryIngredients) {
+		for (IngredientAuxiliary ingredient : auxiliaryIngredients) {
 			if (ingredient.process(auxMatchResults, output)) {
 				return ItemStack.EMPTY;
 			}
@@ -188,6 +183,11 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 	}
 
 	@Override
+	public boolean canFit(int width, int height) {
+		return this.width <= width && this.height <= height;
+	}
+
+	@Override
 	public ItemStack getRecipeOutput() {
 		return output;
 	}
@@ -195,6 +195,11 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inventory) {
 		return ForgeHooks.defaultRecipeGetRemainingItems(inventory);
+	}
+
+	@Override
+	public boolean isHidden() {
+		return true;
 	}
 
 	public interface MatchResult<I extends Ingredient, M extends MatchResult<I, M>> {
@@ -294,7 +299,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		}
 	}
 
-	public static class MatchResultAuxiliary implements MatchResult<IngredientAuxiliary<?>, MatchResultAuxiliary> {
+	public static class MatchResultAuxiliary implements MatchResult<IngredientAuxiliary, MatchResultAuxiliary> {
 		protected final IngredientAuxiliary ingredient;
 
 		protected final ItemStack input;
@@ -353,7 +358,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 			return count >= ingredient.getLimit();
 		}
 
-		public void propagate(Multimap<IngredientAuxiliary<?>, MatchResultAuxiliary> map) {
+		public void propagate(Multimap<IngredientAuxiliary, MatchResultAuxiliary> map) {
 			map.put(ingredient, this);
 		}
 	}
@@ -389,13 +394,13 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		}
 
 		@Override
-		public void propagate(Multimap<IngredientAuxiliary<?>, MatchResultAuxiliary> map) {
+		public void propagate(Multimap<IngredientAuxiliary, MatchResultAuxiliary> map) {
 			super.propagate(map);
 			parent.propagate(map);
 		}
 	}
 
-	private static void checkIngredients(IngredientRegular[] ingredients, IngredientAuxiliary<?>[] auxiliaryIngredients) {
+	private static void checkIngredients(IngredientRegular[] ingredients, IngredientAuxiliary[] auxiliaryIngredients) {
 		checkForNulls(ingredients);
 		checkForNulls(auxiliaryIngredients);
 		boolean ingredientDictator = checkDictatorship(false, ingredients);
