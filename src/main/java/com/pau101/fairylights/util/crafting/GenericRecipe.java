@@ -1,5 +1,14 @@
 package com.pau101.fairylights.util.crafting;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.IntUnaryOperator;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.LinkedListMultimap;
@@ -16,16 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.IntUnaryOperator;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	public static final IngredientRegularEmpty EMPTY = new IngredientRegularEmpty();
