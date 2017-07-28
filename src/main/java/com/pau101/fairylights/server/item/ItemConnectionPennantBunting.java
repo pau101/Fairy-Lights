@@ -1,6 +1,10 @@
 package com.pau101.fairylights.server.item;
 
+import java.util.List;
+
+import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
+import com.pau101.fairylights.server.item.crafting.Recipes;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
@@ -12,9 +16,11 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
-import java.util.List;
-
 public class ItemConnectionPennantBunting extends ItemConnection {
+	public ItemConnectionPennantBunting() {
+		setCreativeTab(FairyLights.fairyLightsTab);
+	}
+
 	@Override
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
 		if (!stack.hasTagCompound()) {
@@ -42,7 +48,13 @@ public class ItemConnectionPennantBunting extends ItemConnection {
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {}
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
+		if (isInCreativeTab(tab)) {
+			for (EnumDyeColor color : EnumDyeColor.values()) {
+				subItems.add(Recipes.makePennant(new ItemStack(this), color));
+			}
+		}
+	}
 
 	@Override
 	public ConnectionType getConnectionType() {

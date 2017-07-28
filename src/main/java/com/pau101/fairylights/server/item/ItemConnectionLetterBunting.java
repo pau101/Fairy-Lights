@@ -1,5 +1,7 @@
 package com.pau101.fairylights.server.item;
 
+import java.util.List;
+
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.util.styledstring.StyledString;
@@ -11,8 +13,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-
-import java.util.List;
 
 public class ItemConnectionLetterBunting extends ItemConnection {
 	public ItemConnectionLetterBunting() {
@@ -36,11 +36,13 @@ public class ItemConnectionLetterBunting extends ItemConnection {
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		ItemStack bunting = new ItemStack(this, 1);
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setTag("text", StyledString.serialize(new StyledString()));
-		bunting.setTagCompound(compound);
-		items.add(bunting);
+		if (isInCreativeTab(tab)) {
+			ItemStack bunting = new ItemStack(this, 1);
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setTag("text", StyledString.serialize(new StyledString()));
+			bunting.setTagCompound(compound);
+			items.add(bunting);
+		}
 	}
 
 	@Override

@@ -28,12 +28,14 @@ public final class ItemConnectionTinsel extends ItemConnection {
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		for (int color = 0; color < ItemLight.COLOR_COUNT; color++) {
-			ItemStack tinsel = new ItemStack(this, 1);
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setByte("color", (byte) color);
-			tinsel.setTagCompound(compound);
-			items.add(tinsel);
+		if (isInCreativeTab(tab)) {
+			for (int color = 0; color < ItemLight.COLOR_COUNT; color++) {
+				ItemStack tinsel = new ItemStack(this, 1);
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setByte("color", (byte) color);
+				tinsel.setTagCompound(compound);
+				items.add(tinsel);
+			}
 		}
 	}
 

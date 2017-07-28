@@ -20,6 +20,8 @@ import com.pau101.fairylights.server.item.ItemConnectionTinsel;
 import com.pau101.fairylights.server.item.ItemLadder;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.item.ItemPennant;
+import com.pau101.fairylights.server.item.LightVariant;
+import com.pau101.fairylights.server.item.crafting.Recipes;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.net.FLMessage;
 import com.pau101.fairylights.server.net.clientbound.MessageJingle;
@@ -87,19 +89,15 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	}
 
 	public void initCrafting() {
-		/*GameRegistry.addRecipe(Recipes.FAIRY_LIGHTS);
-		GameRegistry.addRecipe(Recipes.FAIRY_LIGHTS_AUGMENTATION);
+		ForgeRegistries.RECIPES.register(Recipes.FAIRY_LIGHTS);
+		ForgeRegistries.RECIPES.register(Recipes.FAIRY_LIGHTS_AUGMENTATION);
 		for (LightVariant variant : LightVariant.values()) {
-			GameRegistry.addRecipe(variant.getRecipe());
+			ForgeRegistries.RECIPES.register(variant.getRecipe());
 		}
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(FairyLights.garland, 2), "I-I", 'I', "ingotIron", '-', Blocks.VINE));
-		GameRegistry.addRecipe(Recipes.TINSEL_GARLAND);
-		GameRegistry.addRecipe(Recipes.PENNANT_BUNTING);
-		GameRegistry.addRecipe(Recipes.PENNANT_BUNTING_AUGMENTATION);
-		GameRegistry.addRecipe(Recipes.PENNANT);
-		GameRegistry.addRecipe(Recipes.LETTER_BUNTING);
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(FairyLights.ladder), "#/", "#/", "#/", '#', Blocks.LADDER, '/', "stickWood"));
-		RecipeSorter.register(FairyLights.ID + ":generic", GenericRecipe.class, Category.SHAPED, "after:minecraft:shaped");*/
+		ForgeRegistries.RECIPES.register(Recipes.TINSEL_GARLAND);
+		ForgeRegistries.RECIPES.register(Recipes.PENNANT_BUNTING);
+		ForgeRegistries.RECIPES.register(Recipes.PENNANT_BUNTING_AUGMENTATION);
+		ForgeRegistries.RECIPES.register(Recipes.PENNANT);
 	}
 
 	/*

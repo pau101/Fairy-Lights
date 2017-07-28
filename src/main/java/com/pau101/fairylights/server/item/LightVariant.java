@@ -157,7 +157,9 @@ public enum LightVariant {
 		this.spacing = spacing;
 		this.width = width / 16;
 		this.height = height / 16;
-		this.recipe = recipe.withOutput(FairyLights.light, 4, getFirstMeta()).build();
+		this.recipe = recipe.withOutput(FairyLights.light, 4, getFirstMeta())
+			.build()
+			.setRegistryName(name);
 		this.twinkleChance = twinkleChance;
 		this.tickCycle = tickCycle;
 		this.alwaysTwinkle = alwaysTwinkle;

@@ -26,13 +26,15 @@ public final class ItemLight extends Item {
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-		LightVariant[] variants = LightVariant.values();
-		for (int variant = 0; variant < variants.length; variant++) {
-			if (variants[variant] == LightVariant.LUXO_BALL) {
-				continue;
-			}
-			for (int color = 0; color < COLOR_COUNT; color++) {
-				subItems.add(new ItemStack(this, 1, variant * COLOR_COUNT + color));
+		if (isInCreativeTab(tab)) {
+			LightVariant[] variants = LightVariant.values();
+			for (int variant = 0; variant < variants.length; variant++) {
+				if (variants[variant] == LightVariant.LUXO_BALL) {
+					continue;
+				}
+				for (int color = 0; color < COLOR_COUNT; color++) {
+					subItems.add(new ItemStack(this, 1, variant * COLOR_COUNT + color));
+				}
 			}
 		}
 	}

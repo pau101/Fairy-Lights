@@ -50,8 +50,10 @@ public final class ItemConnectionHangingLights extends ItemConnection {
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-		for (EnumDyeColor color : EnumDyeColor.values()) {
-			subItems.add(Recipes.makeHangingLights(new ItemStack(FairyLights.hangingLights), color));
+		if (isInCreativeTab(tab)) {
+			for (EnumDyeColor color : EnumDyeColor.values()) {
+				subItems.add(Recipes.makeHangingLights(new ItemStack(this), color));
+			}
 		}
 	}
 

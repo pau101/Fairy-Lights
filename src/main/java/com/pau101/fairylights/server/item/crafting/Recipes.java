@@ -213,7 +213,8 @@ public final class Recipes {
 				tooltip.add(Utils.formatRecipeTooltip("recipe.hangingLights.glowstone"));
 			}
 		})
-		.build();
+		.build()
+		.setRegistryName("fairy_lights");
 
 	private static boolean useInputsForTagBool(Ingredient ingredient, ItemStack output, String key, boolean value) {
 		NBTTagCompound compound = output.getTagCompound();
@@ -290,7 +291,8 @@ public final class Recipes {
 				}
 			}
 		))
-		.build();
+		.build()
+		.setRegistryName("fairy_lights_augmentation");
 
 	private static ImmutableList<ItemStack> makeHangingLightsExamples(ItemStack stack) {
 		return ImmutableList.of(
@@ -347,14 +349,16 @@ public final class Recipes {
 				output.getTagCompound().setByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
 			}
 		})
-		.build();
+		.build()
+		.setRegistryName("tinsel_garland");
 
 	public static final IRecipe PENNANT_BUNTING = new GenericRecipeBuilder(FairyLights.pennantBunting)
 		.withShape("I-I")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('-', Items.STRING)
 		.withAuxiliaryIngredient(new PennantIngredient())
-		.build();
+		.build()
+		.setRegistryName("pennant_bunting");
 
 	public static final IRecipe PENNANT_BUNTING_AUGMENTATION = new GenericRecipeBuilder(FairyLights.pennantBunting)
 		.withShape("B")
@@ -384,7 +388,8 @@ public final class Recipes {
 			}
 		})
 		.withAuxiliaryIngredient(new PennantIngredient())
-		.build();
+		.build()
+		.setRegistryName("pennant_bunting_augmentation");
 
 	private static ImmutableList<ItemStack> makePennantExamples(ItemStack stack) {
 		return ImmutableList.of(
@@ -395,7 +400,7 @@ public final class Recipes {
 		);
 	}
 
-	private static ItemStack makePennant(ItemStack base, EnumDyeColor... colors) {
+	public static ItemStack makePennant(ItemStack base, EnumDyeColor... colors) {
 		ItemStack stack = base.copy();
 		NBTTagCompound compound = stack.getTagCompound();
 		NBTTagList pennants = new NBTTagList();
@@ -404,7 +409,12 @@ public final class Recipes {
 			pennant.setByte("color", (byte) color.getDyeDamage());
 			pennants.appendTag(pennant);
 		}
+		if (compound == null) {
+			compound = new NBTTagCompound();
+			stack.setTagCompound(compound);
+		}
 		compound.setTag("pattern", pennants);
+		compound.setTag("text", StyledString.serialize(new StyledString()));
 		return stack;
 	}
 
@@ -428,19 +438,6 @@ public final class Recipes {
 				output.setItemDamage(OreDictUtils.getDyeMetadata(ingredient));
 			}
 		})
-		.build();
-
-	public static final IRecipe LETTER_BUNTING = new GenericRecipeBuilder(FairyLights.letterBunting)
-		.withShape("I-I", "PBF")
-		.withIngredient('I', "ingotIron")
-		.withIngredient('-', Items.STRING)
-		.withIngredient('P', Items.PAPER)
-		.withIngredient('B', "dyeBlack")
-		.withIngredient('F', new IngredientRegularBasic(Items.FEATHER) {
-			@Override
-			public void present(ItemStack output) {
-				output.setTagInfo("text", StyledString.serialize(new StyledString()));
-			}
-		})
-		.build();
+		.build()
+		.setRegistryName("pennant");
 }
