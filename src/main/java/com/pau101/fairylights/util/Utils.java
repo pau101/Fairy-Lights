@@ -1,44 +1,53 @@
 package com.pau101.fairylights.util;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.CaseFormat;
+import com.google.common.base.Converter;
 import com.pau101.fairylights.FairyLights;
-
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public final class Utils {
 	private Utils() {}
 
-	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+	private static final Converter<String, String> UNDRSCR_TO_CML = CaseFormat.LOWER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL);
 
-	public static MethodHandle getMethodHandle(String className, String name, Class<?>... parameterTypes) {
-		try {
-			return getMethodHandle(Class.forName(className, false, Utils.class.getClassLoader()), name, parameterTypes);
-		} catch (ClassNotFoundException e) {
-			throw new UnableToFindMethodException(new String[] { name }, e);
-		}
+	// For silencing constant conditions for @ObjectHolder field references
+	// Requires disabling runtime assertions for not-null-annotated methods and parameters.
+	@SuppressWarnings("ConstantConditions")
+	@Nonnull
+	public static <T> T nil() {
+		return null;
 	}
 
-	public static MethodHandle getMethodHandle(Class<?> clazz, String name, Class<?>... parameterTypes) {
-		try {
-			Method method = clazz.getDeclaredMethod(name, parameterTypes);
-			method.setAccessible(true);
-			return LOOKUP.unreflect(method);
-		} catch (Exception e) {
-			throw new UnableToFindMethodException(new String[] { name }, e);
-		}
+	public static <I extends Item> I name(I item, String registryName) {
+		name(item, registryName, item::setUnlocalizedName);
+		return item;
+	}
+
+	public static <B extends Block> B name(B block, String registryName) {
+		name(block, registryName, block::setUnlocalizedName);
+		return block;
+	}
+
+	private static <T extends IForgeRegistryEntry.Impl<T>> T name(T entry, String registryName, Consumer<String> unlocalizedNameSetter) {
+		entry.setRegistryName(registryName);
+		unlocalizedNameSetter.accept(underScoreToCamel(registryName));
+		return entry;
+	}
+
+	public static String underScoreToCamel(String value) {
+		return UNDRSCR_TO_CML.convert(value);
 	}
 
 	public static Field getFieldOfType(Class<?> clazz, Class<?> type) {
@@ -48,7 +57,7 @@ public final class Utils {
 				return field;
 			}
 		}
-		return null;
+		throw new ReflectionHelper.UnableToFindFieldException(null, null);
 	}
 
 	public static <E extends Enum<E>> E getEnumValue(Class<E> clazz, int ordinal) {
@@ -64,7 +73,7 @@ public final class Utils {
 		return formatRecipeTooltipValue(I18n.translateToLocal(key));
 	}
 
-	public static String formatRecipeTooltipValue(String value) {
+	private static String formatRecipeTooltipValue(String value) {
 		return I18n.translateToLocalFormatted("recipe.ingredient.tooltip", value);
 	}
 
@@ -77,13 +86,5 @@ public final class Utils {
 			s = "generic";
 		}
 		return I18n.translateToLocal("entity." + FairyLights.ID + "." + s + ".name");
-	}
-
-	public static ImmutableList<ItemStack> copyItemStacks(List<ItemStack> list) {
-		ImmutableList.Builder<ItemStack> copy = ImmutableList.builder();
-		for (ItemStack stack : list) {
-			copy.add(stack.copy());
-		}
-		return copy.build();
 	}
 }

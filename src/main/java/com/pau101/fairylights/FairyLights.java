@@ -1,16 +1,12 @@
 package com.pau101.fairylights;
 
 import com.pau101.fairylights.server.ServerProxy;
-import com.pau101.fairylights.server.block.BlockFastener;
-import com.pau101.fairylights.server.item.ItemConnection;
-import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.util.CalendarEvent;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.Mod.InstanceFactory;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -20,7 +16,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 	modid = FairyLights.ID,
 	name = FairyLights.NAME,
 	version = FairyLights.VERSION,
-	dependencies = "required-after:forge@[13.19.1.2199,);",
+	dependencies = "required-after:forge@[14.21.1.2420,)",
 	acceptedMinecraftVersions = "[1.12]",
 	guiFactory = "com.pau101.fairylights.client.gui.FairyLightsGuiFactory"
 )
@@ -29,10 +25,11 @@ public final class FairyLights {
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "2.1.0";
+	public static final String VERSION = "2.1.1";
 
-	@Instance(ID)
-	public static FairyLights instance;
+	private static final class Holder {
+		private static final FairyLights INSTANCE = new FairyLights();
+	}
 
 	@SidedProxy(
 		clientSide = "com.pau101.fairylights.client.ClientProxy",
@@ -41,24 +38,6 @@ public final class FairyLights {
 	public static ServerProxy proxy;
 
 	public static SimpleNetworkWrapper network;
-
-	public static BlockFastener fastener;
-
-	public static ItemLight light;
-
-	public static ItemConnection hangingLights;
-
-	public static ItemConnection garland;
-
-	public static ItemConnection tinsel;
-
-	public static ItemConnection pennantBunting;
-
-	public static ItemConnection letterBunting;
-
-	public static Item pennant;
-
-	public static Item ladder;
 
 	public static CreativeTabs fairyLightsTab;
 
@@ -71,11 +50,7 @@ public final class FairyLights {
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {
 		proxy.initConfig(event);
-		proxy.initSounds();
 		proxy.initGUI();
-		proxy.initBlocks();
-		proxy.initItems();
-		proxy.initEntities();
 		proxy.initRenders();
 		proxy.initNetwork();
 		proxy.initEggs();
@@ -84,7 +59,11 @@ public final class FairyLights {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		proxy.initHandlers();
-		proxy.initCrafting();
 		proxy.initRendersLate();
+	}
+
+	@InstanceFactory
+	public static FairyLights instance() {
+		return Holder.INSTANCE;
 	}
 }

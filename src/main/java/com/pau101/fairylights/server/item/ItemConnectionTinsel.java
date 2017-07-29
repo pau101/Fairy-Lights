@@ -14,6 +14,7 @@ public final class ItemConnectionTinsel extends ItemConnection {
 	public ItemConnectionTinsel() {
 		setCreativeTab(FairyLights.fairyLightsTab);
 		setHasSubtypes(true);
+		Utils.name(this, "tinsel");
 	}
 
 	@Override

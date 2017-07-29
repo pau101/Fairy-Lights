@@ -3,7 +3,7 @@ package com.pau101.fairylights.server.item;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.entity.EntityLadder;
 import com.pau101.fairylights.server.sound.FLSounds;
-
+import com.pau101.fairylights.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 public class ItemLadder extends Item {
 	public ItemLadder() {
 		setCreativeTab(FairyLights.fairyLightsTab);
+		Utils.name(this, "ladder");
 	}
 
 	@Override

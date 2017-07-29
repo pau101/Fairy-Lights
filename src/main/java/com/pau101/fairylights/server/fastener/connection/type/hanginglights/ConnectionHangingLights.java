@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
@@ -123,7 +123,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 		if (playing) {
 			jinglePlayer.tick(world, fastener.getConnectionPoint(), features, world.isRemote);
 		}
-		if (playing || wasPlaying && !playing) {
+		if (playing || wasPlaying) {
 			updateNeighbors(fastener);
 			if (getDestination().isLoaded(world)) {
 				updateNeighbors(getDestination().get(world));
@@ -149,7 +149,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	}
 
 	private void updateNeighbors(Fastener<?> fastener) {
-		world.updateComparatorOutputLevel(fastener.getPos(), FairyLights.fastener);
+		world.updateComparatorOutputLevel(fastener.getPos(), FLBlocks.FASTENER);
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 package com.pau101.fairylights.server.item;
 
 import com.google.common.base.MoreObjects;
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
+import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -47,15 +47,15 @@ public abstract class ItemConnection extends Item {
 		if (isConnectionInOtherHand(world, user, stack)) {
 			return EnumActionResult.PASS;
 		}
-		if (user.canPlayerEdit(pos, side, stack) && world.getBlockState(pos).getBlock() == FairyLights.fastener) {
+		if (user.canPlayerEdit(pos, side, stack) && world.getBlockState(pos).getBlock() == FLBlocks.FASTENER) {
 			if (!world.isRemote) {
 				connect(stack, user, world, pos);
 			}
 			return EnumActionResult.SUCCESS;
-		} else if (FairyLights.fastener.canPlaceBlockOnSide(world, pos, side)) {
+		} else if (FLBlocks.FASTENER.canPlaceBlockOnSide(world, pos, side)) {
 			pos = pos.offset(side);
 			if (user.canPlayerEdit(pos, side, stack)) {
-				if (FairyLights.fastener.canPlaceBlockAt(world, pos)) {
+				if (FLBlocks.FASTENER.canPlaceBlockAt(world, pos)) {
 					if (!world.isRemote) {
 						connect(stack, user, world, pos, side);
 					}
@@ -93,10 +93,10 @@ public abstract class ItemConnection extends Item {
 	}
 
 	private void connect(ItemStack stack, EntityPlayer user, World world, BlockPos pos, EnumFacing facing) {
-		IBlockState state =  FairyLights.fastener.getDefaultState().withProperty(BlockFastener.FACING, facing);
+		IBlockState state =  FLBlocks.FASTENER.getDefaultState().withProperty(BlockFastener.FACING, facing);
 		if (world.setBlockState(pos, state, 3)) {
-			FairyLights.fastener.onBlockPlacedBy(world, pos, state, user, stack);
-			SoundType sound = FairyLights.fastener.getSoundType(state, world, pos, user);
+			FLBlocks.FASTENER.onBlockPlacedBy(world, pos, state, user, stack);
+			SoundType sound = FLBlocks.FASTENER.getSoundType(state, world, pos, user);
 			world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
 				sound.getPlaceSound(),
 				SoundCategory.BLOCKS,
@@ -163,13 +163,13 @@ public abstract class ItemConnection extends Item {
 	}
 
 	private static class IsolatedBlock implements IBlockAccess {
-		public static final BlockPos POS = BlockPos.ORIGIN;
+		private static final BlockPos POS = BlockPos.ORIGIN;
 
 		private final IBlockState state;
 
 		private final TileEntity entity;
 
-		public IsolatedBlock(IBlockState state, TileEntity entity) {
+		private IsolatedBlock(IBlockState state, TileEntity entity) {
 			this.state = state;
 			this.entity = entity;
 		}

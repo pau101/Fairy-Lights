@@ -1,6 +1,6 @@
 package com.pau101.fairylights.server.entity;
 
-import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.Utils;
@@ -47,7 +47,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
-		return new ItemStack(FairyLights.ladder);
+		return new ItemStack(FLItems.LADDER);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 	}
 
 	private void dropIt() {
-		Block.spawnAsEntity(world, new BlockPos(this), new ItemStack(FairyLights.ladder));
+		Block.spawnAsEntity(world, new BlockPos(this), new ItemStack(FLItems.LADDER));
 	}
 
 	private void playBreakSound() {

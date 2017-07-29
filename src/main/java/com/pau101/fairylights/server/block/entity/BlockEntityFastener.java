@@ -1,7 +1,7 @@
 package com.pau101.fairylights.server.block.entity;
 
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
+import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 
@@ -24,7 +24,7 @@ public final class BlockEntityFastener extends TileEntity implements ITickable {
 
 	public EnumFacing getFacing() {
 		IBlockState state = world.getBlockState(pos);
-		if (state.getBlock() != FairyLights.fastener) {
+		if (state.getBlock() != FLBlocks.FASTENER) {
 			return EnumFacing.UP;
 		}
 		return state.getValue(BlockFastener.FACING);

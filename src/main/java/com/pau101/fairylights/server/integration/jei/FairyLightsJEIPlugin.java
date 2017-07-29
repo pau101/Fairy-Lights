@@ -1,6 +1,6 @@
 package com.pau101.fairylights.server.integration.jei;
 
-import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.util.crafting.GenericRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -17,6 +17,6 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistry registry) {
-		registry.registerSubtypeInterpreter(FairyLights.tinsel, new TinselSubtypeInterpreter());
+		registry.registerSubtypeInterpreter(FLItems.TINSEL, new TinselSubtypeInterpreter());
 	}
 }

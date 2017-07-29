@@ -13,6 +13,7 @@ import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
+import com.pau101.fairylights.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
@@ -66,6 +67,7 @@ public final class BlockFastener extends BlockContainer {
 			.withProperty(TRIGGERED, false)
 		);
 		setResistance(2000);
+		Utils.name(this, "fastener");
 	}
 
 	@Override

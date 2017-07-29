@@ -1,6 +1,6 @@
 package com.pau101.fairylights.server.fastener;
 
-import com.pau101.fairylights.FairyLights;
+import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
 
@@ -30,7 +30,7 @@ public final class FastenerBlock extends FastenerDefault {
 
 	@Override
 	public Vec3d getOffsetPoint() {
-		return FairyLights.fastener.getOffset(fastener.getFacing(), 0.125F);
+		return FLBlocks.FASTENER.getOffset(fastener.getFacing(), 0.125F);
 	}
 
 	@Override

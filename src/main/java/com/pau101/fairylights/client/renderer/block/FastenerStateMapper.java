@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
+import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.util.ForwardingBlockState;
 
 import net.minecraft.block.Block;
@@ -16,7 +17,7 @@ public final class FastenerStateMapper extends StateMapperBase {
 	private static final ModelResourceLocation FASTENER = new ModelResourceLocation(FairyLights.ID + ":fastener", "fence");
 
 	// Dummy blockstate to represent the fence fastener model
-	public static final IBlockState FENCE_FASTENER_STATE = new ForwardingBlockState(FairyLights.fastener.getDefaultState());
+	public static final IBlockState FENCE_FASTENER_STATE = new ForwardingBlockState(FLBlocks.FASTENER.getDefaultState());
 
 	private final StateMap mapper = new StateMap.Builder().ignore(BlockFastener.TRIGGERED).build();
 

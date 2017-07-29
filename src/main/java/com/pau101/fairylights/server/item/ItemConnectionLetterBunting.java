@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
+import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -17,6 +18,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class ItemConnectionLetterBunting extends ItemConnection {
 	public ItemConnectionLetterBunting() {
 		setCreativeTab(FairyLights.fairyLightsTab);
+		Utils.name(this, "letter_bunting");
 	}
 
 	@Override

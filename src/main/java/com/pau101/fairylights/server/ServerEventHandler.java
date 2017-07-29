@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
+import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.config.Configurator;
@@ -133,7 +134,7 @@ public final class ServerEventHandler {
 		BlockPos pos = event.getPos();
 		Block noteBlock = world.getBlockState(pos).getBlock();
 		IBlockState below = world.getBlockState(pos.down());
-		if (below.getBlock() == FairyLights.fastener && below.getValue(BlockFastener.FACING) == EnumFacing.DOWN) {
+		if (below.getBlock() == FLBlocks.FASTENER && below.getValue(BlockFastener.FACING) == EnumFacing.DOWN) {
 			int note = event.getVanillaNoteId();
 	        float pitch = (float) Math.pow(2, (note - 12) / 12D);
 	        world.playSound(null, pos, FLSounds.JINGLE_BELL, SoundCategory.RECORDS, 3, pitch);

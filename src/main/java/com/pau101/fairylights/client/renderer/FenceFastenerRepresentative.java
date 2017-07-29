@@ -1,7 +1,6 @@
 package com.pau101.fairylights.client.renderer;
 
-import com.pau101.fairylights.FairyLights;
-
+import com.pau101.fairylights.server.block.FLBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -23,7 +22,7 @@ public final class FenceFastenerRepresentative extends TileEntity {
 
 	@Override
 	public Block getBlockType() {
-		return FairyLights.fastener;
+		return FLBlocks.FASTENER;
 	}
 
 	@Override

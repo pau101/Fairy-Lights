@@ -5,6 +5,7 @@ import java.util.List;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.item.crafting.Recipes;
+import com.pau101.fairylights.util.Utils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
@@ -19,6 +20,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class ItemConnectionPennantBunting extends ItemConnection {
 	public ItemConnectionPennantBunting() {
 		setCreativeTab(FairyLights.fairyLightsTab);
+		Utils.name(this, "pennant_bunting");
 	}
 
 	@Override

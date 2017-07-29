@@ -1,8 +1,8 @@
 package com.pau101.fairylights.server.entity;
 
 import com.google.common.base.Throwables;
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.ServerProxy;
+import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.item.ItemConnection;
@@ -121,13 +121,13 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	public void onBroken(@Nullable Entity breaker) {
 		getFastener().dropItems(world, hangingPosition);
 		if (breaker != null) {
-			world.playEvent(2001, hangingPosition, Block.getStateId(FairyLights.fastener.getDefaultState()));	
+			world.playEvent(2001, hangingPosition, Block.getStateId(FLBlocks.FASTENER.getDefaultState()));
 		}
 	}
 
 	@Override
 	public void playPlaceSound() {
-		SoundType sound = FairyLights.fastener.getSoundType(FairyLights.fastener.getDefaultState(), world, getHangingPosition(), null);
+		SoundType sound = FLBlocks.FASTENER.getSoundType(FLBlocks.FASTENER.getDefaultState(), world, getHangingPosition(), null);
 		playSound(sound.getPlaceSound(), (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8F);
 	}
 

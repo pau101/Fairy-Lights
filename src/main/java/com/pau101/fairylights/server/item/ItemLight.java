@@ -16,6 +16,7 @@ public final class ItemLight extends Item {
 	public ItemLight() {
 		setCreativeTab(FairyLights.fairyLightsTab);
 		setHasSubtypes(true);
+		Utils.name(this, "light");
 	}
 
 	@Override
@@ -70,6 +71,7 @@ public final class ItemLight extends Item {
 		if (color == EnumDyeColor.GRAY) {
 			return 0x606060;
 		}
-		return color.getColorValue();
+		float[] rgb = color.getColorComponentValues();
+		return (int) (rgb[0] * 255) << 16 | (int) (rgb[1] * 0xFF) << 8 | (int) (rgb[2] * 255);
 	}
 }

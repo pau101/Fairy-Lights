@@ -1,33 +1,26 @@
 package com.pau101.fairylights.util;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMultimap;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-
 public final class OreDictUtils {
 	private OreDictUtils() {}
 
-	private static final String[] DYE_NAMES = { "dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan", "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange", "dyeWhite" };
-
 	@Nullable
-	private static List<ItemStack>[] dyeItemStacks;
-
-	@Nullable
-	private static List<ItemStack> allDyeItemStacks;
+	private static ImmutableMultimap<Integer, ItemStack> dyeItemStacks;
 
 	public static boolean isDye(ItemStack stack) {
 		if (!stack.isEmpty()) {
 			if (stack.getItem() == Items.DYE) {
 				return true;
 			}
-			initDyeItemStacks();
-			for (ItemStack dye : allDyeItemStacks) {
+			for (ItemStack dye : getAllDyes()) {
 				if (OreDictionary.itemMatches(dye, stack, false)) {
 					return true;
 				}
@@ -41,12 +34,11 @@ public final class OreDictUtils {
 			if (stack.getItem() == Items.DYE) {
 				return stack.getMetadata();
 			}
-			initDyeItemStacks();
-			for (int i = 0; i < DYE_NAMES.length; i++) {
-				List<ItemStack> dyes = dyeItemStacks[i];
-				for (ItemStack dye : dyes) {
-					if (OreDictionary.itemMatches(dye, stack, false)) {
-						return i;
+			getDyeItemStacks();
+			for (Dye dye : Dye.values()) {
+				for (ItemStack dyeStack : getDyeItemStacks().get(dye.getDamage())) {
+					if (OreDictionary.itemMatches(dyeStack, stack, false)) {
+						return dye.getDamage();
 					}
 				}
 			}
@@ -55,27 +47,61 @@ public final class OreDictUtils {
 	}
 
 	public static ImmutableList<ItemStack> getDyes(EnumDyeColor color) {
-		initDyeItemStacks();
-		return Utils.copyItemStacks(dyeItemStacks[color.getDyeDamage()]);
+		return ImmutableList.copyOf(getDyeItemStacks().get(color.getDyeDamage()));
 	}
 
 	public static ImmutableList<ItemStack> getAllDyes() {
-		initDyeItemStacks();
-		return Utils.copyItemStacks(allDyeItemStacks);
+		return ImmutableList.copyOf(getDyeItemStacks().values());
 	}
 
 	public static boolean matches(ItemStack stack, String name) {
 		return OreDictionary.containsMatch(false, OreDictionary.getOres(name), stack);
 	}
 
-	private static void initDyeItemStacks() {
+	private static ImmutableMultimap<Integer, ItemStack> getDyeItemStacks() {
 		if (dyeItemStacks == null) {
-			dyeItemStacks = new List[DYE_NAMES.length];
-			allDyeItemStacks = new ArrayList<>();
-			for (int i = 0; i < DYE_NAMES.length; i++) {
-				dyeItemStacks[i] = new ArrayList<>(OreDictionary.getOres(DYE_NAMES[i]));
-				allDyeItemStacks.addAll(dyeItemStacks[i]);
+			ImmutableMultimap.Builder<Integer, ItemStack> bob = ImmutableMultimap.builder();
+			for (Dye dye : Dye.values()) {
+				bob.putAll(dye.getDamage(), OreDictionary.getOres(dye.getName()));
 			}
+			dyeItemStacks = bob.build();
+		}
+		return dyeItemStacks;
+	}
+
+	private enum Dye {
+		BLACK("dyeBlack"),
+		RED("dyeRed"),
+		GREEN("dyeGreen"),
+		BROWN("dyeBrown"),
+		BLUE("dyeBlue"),
+		PURPLE("dyePurple"),
+		CYAN("dyeCyan"),
+		LIGHT_GRAY("dyeLightGray"),
+		GRAY("dyeGray"),
+		PINK("dyePink"),
+		LIME("dyeLime"),
+		YELLOW("dyeYellow"),
+		LIGHT_BLUE("dyeLightBlue"),
+		MAGENTA("dyeMagenta"),
+		ORANGE("dyeOrange"),
+		WHITE("dyeWhite");
+
+		private final String name;
+
+		private final int damage;
+
+		Dye(String name) {
+			this.name = name;
+			damage = ordinal();
+		}
+
+		private String getName() {
+			return name;
+		}
+
+		private int getDamage() {
+			return damage;
 		}
 	}
 }

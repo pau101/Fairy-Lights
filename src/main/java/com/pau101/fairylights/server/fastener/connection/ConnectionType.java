@@ -2,7 +2,6 @@ package com.pau101.fairylights.server.fastener.connection;
 
 import java.util.UUID;
 
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.model.connection.ModelConnection;
 import com.pau101.fairylights.client.model.connection.ModelConnectionGarland;
 import com.pau101.fairylights.client.model.connection.ModelConnectionHangingLights;
@@ -16,6 +15,7 @@ import com.pau101.fairylights.server.fastener.connection.type.garland.Connection
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.server.fastener.connection.type.letter.ConnectionLetterBunting;
 import com.pau101.fairylights.server.fastener.connection.type.pennant.ConnectionPennantBunting;
+import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.server.item.ItemConnection;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,7 +36,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FairyLights.hangingLights;
+			return FLItems.HANGING_LIGHTS;
 		}
 
 		@Override
@@ -62,7 +62,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FairyLights.garland;
+			return FLItems.GARLAND;
 		}
 
 		@Override
@@ -88,7 +88,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FairyLights.tinsel;
+			return FLItems.TINSEL;
 		}
 
 		@Override
@@ -114,7 +114,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FairyLights.pennantBunting;
+			return FLItems.PENNANT_BUNTING;
 		}
 
 		@Override
@@ -140,7 +140,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FairyLights.letterBunting;
+			return FLItems.LETTER_BUNTING;
 		}
 
 		@Override

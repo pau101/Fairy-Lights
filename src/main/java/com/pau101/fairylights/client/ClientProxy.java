@@ -4,13 +4,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ForwardingSet;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.midi.CommandJingler;
 import com.pau101.fairylights.client.renderer.FenceFastenerRendererDispatcher;
 import com.pau101.fairylights.client.renderer.FenceFastenerRepresentative;
-import com.pau101.fairylights.client.renderer.block.FastenerStateMapper;
 import com.pau101.fairylights.client.renderer.block.entity.BlockEntityFastenerRenderer;
 import com.pau101.fairylights.client.renderer.entity.RenderFenceFastener;
 import com.pau101.fairylights.client.renderer.entity.RenderLadder;
@@ -18,27 +16,24 @@ import com.pau101.fairylights.server.ServerProxy;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
 import com.pau101.fairylights.server.entity.EntityLadder;
+import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.item.LightVariant;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.util.styledstring.StyledString;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.ITickableTextureObject;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -60,32 +55,6 @@ public final class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(FenceFastenerRepresentative.class, FenceFastenerRendererDispatcher.INSTANCE);
 		RenderingRegistry.registerEntityRenderingHandler(EntityFenceFastener.class, RenderFenceFastener::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityLadder.class, RenderLadder::new);
-		LightVariant[] lightVariants = LightVariant.values();
-		for (int var = 0; var < lightVariants.length; var++) {
-			LightVariant variant = lightVariants[var];
-			ModelResourceLocation model = new ModelResourceLocation(FairyLights.ID + ":light_" + variant.getName(), "inventory");
-			for (int color = 0, meta = var * ItemLight.COLOR_COUNT; color < ItemLight.COLOR_COUNT; meta++, color++) {
-				ModelLoader.setCustomModelResourceLocation(FairyLights.light, meta, model);	
-			}
-		}
-		setModel(FairyLights.hangingLights, "hanging_lights");
-		setModel(FairyLights.garland, "garland");
-		setModel(FairyLights.tinsel, "tinsel");
-		setModel(FairyLights.pennantBunting, "pennant_bunting");
-		setModel(FairyLights.letterBunting, "letter_bunting");
-		for (int meta = 0; meta < ItemLight.COLOR_COUNT; meta++) {
-			setModel(FairyLights.pennant, meta, "pennant");
-		}
-		setModel(FairyLights.ladder, "ladder");
-		ModelLoader.setCustomStateMapper(FairyLights.fastener, new FastenerStateMapper());
-	}
-
-	private void setModel(Item item, String id) {
-		setModel(item, 0, id);
-	}
-
-	private void setModel(Item item, int meta, String id) {
-		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(FairyLights.ID + ':' + id, "inventory"));
 	}
 
 	@Override
@@ -96,7 +65,7 @@ public final class ClientProxy extends ServerProxy {
 				return 0xFFFFFFFF;
 			}
 			return ItemLight.getColorValue(ItemLight.getLightColor(stack.getMetadata()));
-		}, FairyLights.light);
+		}, FLItems.LIGHT);
 		colors.registerItemColorHandler((stack, index) -> {
 			if (index == 0) {
 				return 0xFFFFFFFF;
@@ -111,7 +80,7 @@ public final class ClientProxy extends ServerProxy {
 				return (index + System.currentTimeMillis() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
 			}
 			return 0xFFD584;
-		}, FairyLights.hangingLights);
+		}, FLItems.HANGING_LIGHTS);
 		colors.registerItemColorHandler((stack, index) -> {
 			EnumDyeColor color;
 			if (stack.hasTagCompound()) {
@@ -120,7 +89,7 @@ public final class ClientProxy extends ServerProxy {
 				color = EnumDyeColor.BLACK;
 			}
 			return ItemLight.getColorValue(color);
-		}, FairyLights.tinsel);
+		}, FLItems.TINSEL);
 		colors.registerItemColorHandler((stack, index) -> {
 			if (index == 0) {
 				return 0xFFFFFFFF;
@@ -132,13 +101,13 @@ public final class ClientProxy extends ServerProxy {
 				}
 			}
 			return 0xFFFFFFFF;
-		}, FairyLights.pennantBunting);
+		}, FLItems.PENNANT_BUNTING);
 		colors.registerItemColorHandler((stack, index) -> {
 			if (index == 0) {
 				return 0xFFFFFF;
 			}
 			return ItemLight.getColorValue(EnumDyeColor.byDyeDamage(stack.getMetadata()));
-		}, FairyLights.pennant);
+		}, FLItems.PENNANT);
 		colors.registerItemColorHandler((stack, index) -> {
 			if (index > 0 && stack.hasTagCompound()) {
 				StyledString str = StyledString.deserialize(stack.getTagCompound().getCompoundTag("text"));
@@ -155,12 +124,12 @@ public final class ClientProxy extends ServerProxy {
 				}
 			}
 			return 0xFFFFFFFF;
-		}, FairyLights.letterBunting);
+		}, FLItems.LETTER_BUNTING);
 		initRecoloredFont();
 		try {
 			setupRenderGlobal();
 		} catch (Exception e) {
-			Throwables.propagate(e);
+			throw new RuntimeException(e);
 		}
 		// Early runTick hook after getMouseOver
 		Minecraft.getMinecraft().getTextureManager().loadTickableTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new ITickableTextureObject() {

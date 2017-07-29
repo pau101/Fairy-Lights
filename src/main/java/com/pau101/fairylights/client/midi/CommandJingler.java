@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -163,24 +164,16 @@ public final class CommandJingler extends CommandBase {
 				sender.sendMessage(new TextComponentString("No connections to list"));
 			} else {
 				List<ConnectionHangingLights> allConnections = new ArrayList<>(TRANSMITTERS.keySet());
-				allConnections.sort((c1, c2) -> Double.compare(
-					sender.getPositionVector().distanceTo(c1.getFastener().getAbsolutePos()),
-					sender.getPositionVector().distanceTo(c2.getFastener().getAbsolutePos())
-				));
+				allConnections.sort(Comparator.comparingDouble(c -> sender.getPositionVector().distanceTo(c.getFastener().getAbsolutePos())));
 				Map<MidiDevice, List<ConnectionHangingLights>> deviceConnections = new HashMap<>();
 				for (ConnectionHangingLights connection : allConnections) {
 					for (MidiDeviceTransmitter t : TRANSMITTERS.get(connection)) {
 						MidiDevice device = t.getMidiDevice();
-						List<ConnectionHangingLights> connections = deviceConnections.get(device);
-						if (connections == null) {
-							connections = new ArrayList<>();
-							deviceConnections.put(device, connections);
-						}
-						connections.add(connection);
+						deviceConnections.computeIfAbsent(device, k -> new ArrayList<>()).add(connection);
 					}
 				}
 				List<MidiDevice> devices = new ArrayList<>(deviceConnections.keySet());
-				devices.sort((d1, d2) -> d1.getDeviceInfo().getName().compareTo(d2.getDeviceInfo().getName()));
+				devices.sort(Comparator.comparing(d -> d.getDeviceInfo().getName()));
 				for (MidiDevice device : devices) {
 					sender.sendMessage(new TextComponentString(ChatFormatting.GREEN + device.getDeviceInfo().getName()));
 					for (ConnectionHangingLights connection : deviceConnections.get(device)) {

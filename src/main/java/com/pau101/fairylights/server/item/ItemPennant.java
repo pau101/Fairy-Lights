@@ -12,6 +12,7 @@ public class ItemPennant extends Item {
 	public ItemPennant() {
 		setHasSubtypes(true);
 		setCreativeTab(FairyLights.fairyLightsTab);
+		Utils.name(this, "pennant");
 	}
 
 	@Override

@@ -1,11 +1,11 @@
 package com.pau101.fairylights.server.item;
 
+import java.util.function.Supplier;
+
 import com.google.common.base.CaseFormat;
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.item.crafting.Recipes;
 import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.crafting.GenericRecipeBuilder;
-
 import net.minecraft.block.BlockFlower.EnumFlowerType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -13,26 +13,26 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
 public enum LightVariant {
-	FAIRY("fairy", true, 5, 5, new GenericRecipeBuilder()
+	FAIRY("fairy", true, 5, 5, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "IDI", " G ")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('G', "paneGlassColorless")
 	),
-	PAPER("paper", false, 9, 16.5F, new GenericRecipeBuilder()
+	PAPER("paper", false, 9, 16.5F, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "PDP", "PPP")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('P', Items.PAPER)
 	),
-	ORB("orb", false, 10, 11.5F, new GenericRecipeBuilder()
+	ORB("orb", false, 10, 11.5F, () -> new GenericRecipeBuilder()
 		.withShape( " I ", "SDS", " W ")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('S', Items.STRING)
 		.withIngredient('W', Blocks.WOOL)
 	),
-	FLOWER("flower", true, 10, 6, new GenericRecipeBuilder()
+	FLOWER("flower", true, 10, 6, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "RDB", " Y ")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
@@ -40,27 +40,27 @@ public enum LightVariant {
 		.withIngredient('Y', Blocks.YELLOW_FLOWER)
 		.withIngredient('B', Blocks.RED_FLOWER, EnumFlowerType.BLUE_ORCHID.getMeta())
 	),
-	ORNATE("ornate", false, 24, 8, 12, new GenericRecipeBuilder()
+	ORNATE("ornate", false, 24, 8, 12, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "GDG", "IGI")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('G', "nuggetGold")
 	),
-	OIL("oil", false, 32, 8, 13.5F, new GenericRecipeBuilder()
+	OIL("oil", false, 32, 8, 13.5F, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "SDS", "IGI")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('S', "stickWood")
 		.withIngredient('G', "paneGlassColorless")
 	),
-	LUXO_BALL("luxo_ball", true, 5, 5, new GenericRecipeBuilder()
+	LUXO_BALL("luxo_ball", true, 5, 5, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "BBB", "YRY")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('B', "dyeBlue")
 		.withIngredient('Y', "dyeYellow")
 		.withIngredient('R', "dyeRed")
 	),
-	JACK_O_LANTERN("jack_o_lantern", true, 7, 9.5F, new GenericRecipeBuilder()
+	JACK_O_LANTERN("jack_o_lantern", true, 7, 9.5F, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "SDS", "GPG")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
@@ -68,20 +68,20 @@ public enum LightVariant {
 		.withIngredient('G', Blocks.TORCH)
 		.withIngredient('P', Blocks.PUMPKIN)
 	),
-	SKULL("skull", true, 6, 9, new GenericRecipeBuilder()
+	SKULL("skull", true, 6, 9, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "IDI", " B ")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withAnyIngredient('B', Items.BONE, new ItemStack(Items.SKULL, 1, 0))
 	),
-	GHOST("ghost", true, 6, 8, new GenericRecipeBuilder()
+	GHOST("ghost", true, 6, 8, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "PDP", "IGI")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('P', Items.PAPER)
 		.withIngredient('G', "paneGlassWhite")
 	),
-	SPIDER("spider", true, 12, 14, new GenericRecipeBuilder()
+	SPIDER("spider", true, 12, 14, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "WDW", "SES")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
@@ -89,7 +89,7 @@ public enum LightVariant {
 		.withIngredient('S', Items.STRING)
 		.withIngredient('E', Items.SPIDER_EYE)
 	),
-	WITCH("witch", true, 8, 10, new GenericRecipeBuilder()
+	WITCH("witch", true, 8, 10, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "BDW", " S ")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
@@ -97,21 +97,21 @@ public enum LightVariant {
 		.withIngredient('W', Items.WHEAT)
 		.withIngredient('S', "stickWood")
 	),
-	SNOWFLAKE("snowflake", true, 8, 12.5F, new GenericRecipeBuilder()
+	SNOWFLAKE("snowflake", true, 8, 12.5F, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "SDS", " G ")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('S', Items.SNOWBALL)
 		.withIngredient('G', "paneGlassWhite")
 	),
-	ICICLE("icicle", false, 10, 7, 20, new GenericRecipeBuilder()
+	ICICLE("icicle", false, 10, 7, 20, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "GDG", " B ")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
 		.withIngredient('G', "paneGlassColorless")
 		.withAnyIngredient('B', Items.WATER_BUCKET, Blocks.ICE, Blocks.PACKED_ICE)
 	),
-	METEOR("meteor", false, 24, 3, 28.5F, new GenericRecipeBuilder()
+	METEOR("meteor", false, 24, 3, 28.5F, () -> new GenericRecipeBuilder()
 		.withShape(" I ", "GDG", "IPI")
 		.withIngredient('I', "ingotIron")
 		.withIngredient('D', Recipes.LIGHT_DYE)
@@ -131,7 +131,7 @@ public enum LightVariant {
 
 	private final float height;
 
-	private final IRecipe recipe;
+	private final Supplier<GenericRecipeBuilder> recipe;
 
 	private final float twinkleChance;
 
@@ -139,27 +139,25 @@ public enum LightVariant {
 
 	private final boolean alwaysTwinkle;
 
-	private LightVariant(String name, boolean parallelsCord, float width, float height, GenericRecipeBuilder recipe) {
+	private LightVariant(String name, boolean parallelsCord, float width, float height, Supplier<GenericRecipeBuilder> recipe) {
 		this(name, parallelsCord, 16, width, height, recipe);
 	}
 
-	private LightVariant(String name, boolean parallelsCord, float spacing, float width, float height, GenericRecipeBuilder recipe) {
+	private LightVariant(String name, boolean parallelsCord, float spacing, float width, float height, Supplier<GenericRecipeBuilder> recipe) {
 		this(name, parallelsCord, spacing, width, height, recipe, 0.05F, 40, false);
 	}
 
-	private LightVariant(String name, boolean parallelsCord, float spacing, float width, float height, GenericRecipeBuilder recipe, float twinkleChance, int tickCycle) {
+	private LightVariant(String name, boolean parallelsCord, float spacing, float width, float height, Supplier<GenericRecipeBuilder> recipe, float twinkleChance, int tickCycle) {
 		this(name, parallelsCord, spacing, width, height, recipe, twinkleChance, tickCycle, true);
 	}
 
-	private LightVariant(String name, boolean parallelsCord, float spacing, float width, float height, GenericRecipeBuilder recipe, float twinkleChance, int tickCycle, boolean alwaysTwinkle) {
+	private LightVariant(String name, boolean parallelsCord, float spacing, float width, float height, Supplier<GenericRecipeBuilder> recipe, float twinkleChance, int tickCycle, boolean alwaysTwinkle) {
 		this.name = name;
 		this.parallelsCord = parallelsCord;
 		this.spacing = spacing;
 		this.width = width / 16;
 		this.height = height / 16;
-		this.recipe = recipe.withOutput(FairyLights.light, 4, getFirstMeta())
-			.build()
-			.setRegistryName(name);
+		this.recipe = recipe;
 		this.twinkleChance = twinkleChance;
 		this.tickCycle = tickCycle;
 		this.alwaysTwinkle = alwaysTwinkle;
@@ -191,7 +189,10 @@ public enum LightVariant {
 	}
 
 	public IRecipe getRecipe() {
-		return recipe;
+		return recipe.get()
+			.withOutput(FLItems.LIGHT, 4, getFirstMeta())
+			.build()
+			.setRegistryName(name);
 	}
 
 	public float getTwinkleChance() {
