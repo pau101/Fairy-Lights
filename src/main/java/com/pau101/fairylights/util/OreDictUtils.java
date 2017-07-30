@@ -47,11 +47,11 @@ public final class OreDictUtils {
 	}
 
 	public static ImmutableList<ItemStack> getDyes(EnumDyeColor color) {
-		return ImmutableList.copyOf(getDyeItemStacks().get(color.getDyeDamage()));
+		return getDyeItemStacks().get(color.getDyeDamage()).asList();
 	}
 
 	public static ImmutableList<ItemStack> getAllDyes() {
-		return ImmutableList.copyOf(getDyeItemStacks().values());
+		return getDyeItemStacks().values().asList();
 	}
 
 	public static boolean matches(ItemStack stack, String name) {

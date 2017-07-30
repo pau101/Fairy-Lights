@@ -63,7 +63,7 @@ public final class Recipes {
 			createFairyLightsAugmentation(),
 			createTinselGarland(),
 			createPennantBunting(),
-			createPennantBunting(),
+			createPennantBuntingAugmentation(),
 			createPennant()
 		);
 		for (LightVariant variant : LightVariant.values()) {
