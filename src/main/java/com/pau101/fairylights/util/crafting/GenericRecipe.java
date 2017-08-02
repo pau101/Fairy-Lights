@@ -42,6 +42,10 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	private final ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.EMPTY);
 
+	private final ImmutableList<IntUnaryOperator> xFunctions = ImmutableList.of(IntUnaryOperator.identity(), i -> getWidth() - 1 - i);
+
+	private final NonNullList<net.minecraft.item.crafting.Ingredient> displayIngredients;
+
 	GenericRecipe(ItemStack output, IngredientRegular[] ingredients, IngredientAuxiliary<?>[] auxiliaryIngredients, int width, int height) {
 		Objects.requireNonNull(output, "output");
 		Objects.requireNonNull(ingredients, "ingredients");
@@ -54,6 +58,27 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		this.auxiliaryIngredients = auxiliaryIngredients;
 		this.width = width;
 		this.height = height;
+		displayIngredients = createDisplayIngredients();
+	}
+
+	private NonNullList<net.minecraft.item.crafting.Ingredient> createDisplayIngredients() {
+		NonNullList<net.minecraft.item.crafting.Ingredient> ingredients = NonNullList.withSize(9, net.minecraft.item.crafting.Ingredient.EMPTY);
+		for (int i = 0 ; i < this.ingredients.length; i++) {
+			int x = i % width, y = i / width;
+			ItemStack[] stacks = this.ingredients[i].getInputs().toArray(new ItemStack[0]);
+			ingredients.set(x + y * 3, net.minecraft.item.crafting.Ingredient.fromStacks(stacks));
+		}
+		for (int i = 0, slot = 0; i < auxiliaryIngredients.length && slot < ingredients.size(); slot++) {
+			net.minecraft.item.crafting.Ingredient ing = ingredients.get(slot);
+			if (ing == net.minecraft.item.crafting.Ingredient.EMPTY) {
+				IngredientAuxiliary<?> aux = auxiliaryIngredients[i++];
+				if (aux.isRequired()) {
+					ItemStack[] stacks = aux.getInputs().toArray(new ItemStack[0]);
+					ingredients.set(slot, net.minecraft.item.crafting.Ingredient.fromStacks(stacks));
+				}
+			}
+		}
+		return ingredients;
 	}
 
 	public ItemStack getOutput() {
@@ -77,6 +102,11 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 	}
 
 	@Override
+	public NonNullList<net.minecraft.item.crafting.Ingredient> getIngredients() {
+		return displayIngredients;
+	}
+
+	@Override
 	public boolean canFit(int width, int height) {
 		return this.width <= width && this.height <= height;
 	}
@@ -90,17 +120,13 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		int scanHeight = inventory.getHeight() + 1 - height;
 		for (int i = 0, end = scanWidth * scanHeight; i < end; i++) {
 			int x = i % scanWidth, y = i / scanWidth;
-			ItemStack result = getResult(inventory, prepareOutput(), x, y, c -> c);
-			this.result.set(result);
-			if (!result.isEmpty()) {
-				prepareResult();
-				return true;
-			}
-			result = getResult(inventory, prepareOutput(), x, y, c -> width - 1 - c);
-			this.result.set(result);
-			if (!result.isEmpty()) {
-				prepareResult();
-				return true;
+			for (IntUnaryOperator func : xFunctions) {
+				ItemStack result = getResult(inventory, prepareOutput(), x, y, func);
+				this.result.set(result);
+				if (!result.isEmpty()) {
+					prepareResult();
+					return true;
+				}
 			}
 		}
 		result.set(ItemStack.EMPTY);
