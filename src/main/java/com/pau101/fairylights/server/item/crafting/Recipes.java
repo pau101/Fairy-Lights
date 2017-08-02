@@ -221,10 +221,10 @@ public final class Recipes {
 		NBTTagCompound compound = stack.getTagCompound();
 		NBTTagList lights = new NBTTagList();
 		for (EnumDyeColor color : colors) {
-			NBTTagCompound pennant = new NBTTagCompound();
-			pennant.setByte("color", (byte) color.getDyeDamage());
-			pennant.setInteger("light", LightVariant.FAIRY.ordinal());
-			lights.appendTag(pennant);
+			NBTTagCompound light = new NBTTagCompound();
+			light.setByte("color", (byte) color.getDyeDamage());
+			light.setInteger("light", LightVariant.FAIRY.ordinal());
+			lights.appendTag(light);
 		}
 		if (compound == null) {
 			compound = new NBTTagCompound();

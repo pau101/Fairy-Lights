@@ -1,5 +1,10 @@
 package com.pau101.fairylights.server.integration.jei;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
+
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.crafting.GenericRecipe;
@@ -10,7 +15,6 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.IFocus.Mode;
 import mezz.jei.api.recipe.wrapper.ICustomCraftingRecipeWrapper;
@@ -21,12 +25,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-
-public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper, ICustomCraftingRecipeWrapper {
+public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper, ICustomCraftingRecipeWrapper {
 	private final GenericRecipe recipe;
 
 	private final ImmutableList<ImmutableList<ItemStack>> allInputs;
@@ -110,8 +109,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 			public void onCraftMatrixChanged(IInventory inventory) {}
 		}, getWidth(), getHeight());
 		if (subtypeIndex == -1) {
-			IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
-			for (int i = 0, ai = 0; i < minimalInputStacks.size(); i++) {
+			for (int i = 0; i < minimalInputStacks.size(); i++) {
 				List<ItemStack> stacks = minimalInputStacks.get(i);
 				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
 			}
@@ -185,7 +183,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 					}
 				}
 				if (isEmpty) {
-					inputs.add(Collections.EMPTY_LIST);
+					inputs.add(Collections.emptyList());
 				}
 			} else {
 				inputs.add(ingInputs.get(0));
@@ -275,11 +273,10 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 	@Override
 	public void setRecipe(IRecipeLayout layout, IIngredients ingredients) {
 		IFocus<?> focus = layout.getFocus();
-		Object value = focus.getValue();
 		IGuiItemStackGroup group = layout.getItemStacks();
-		if (value instanceof ItemStack) {
-			ItemStack stack = (ItemStack) value;
-			Input input = null;
+		if (focus != null && focus.getValue() instanceof ItemStack) {
+			ItemStack stack = (ItemStack) focus.getValue();
+			Input input;
 			if (focus.getMode() == Mode.OUTPUT) {
 				input = getInputsForOutput(stack);	
 			} else {
@@ -301,7 +298,7 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 
 		Ingredient<?, ?>[] ingredients;
 
-		public Input(List<List<ItemStack>> inputs, Ingredient<?, ?>[] ingredients) {
+		private Input(List<List<ItemStack>> inputs, Ingredient<?, ?>[] ingredients) {
 			this.inputs = inputs;
 			this.ingredients = ingredients;
 		}
@@ -316,12 +313,11 @@ public final class GenericRecipeWrapper extends BlankRecipeWrapper implements IS
 
 		@Override
 		public void onTooltip(int slot, boolean input, ItemStack ingredient, List<String> tooltip) {
-			if (!input) {
-				return;
-			}
-			Ingredient<?, ?> ing = ingredients[slot - 1];
-			if (ing != null) {
-				ing.addTooltip(tooltip);
+			if (input) {
+				Ingredient<?, ?> ing = ingredients[slot - 1];
+				if (ing != null) {
+					ing.addTooltip(tooltip);
+				}
 			}
 		}
 	}
