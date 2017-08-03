@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 	modid = FairyLights.ID,
 	name = FairyLights.NAME,
 	version = FairyLights.VERSION,
-	dependencies = "required-after:forge@[13.19.1.2199,);",
+	dependencies = "required-after:forge@[13.19.1.2199,)",
 	acceptedMinecraftVersions = "[1.11]",
 	guiFactory = "com.pau101.fairylights.client.gui.FairyLightsGuiFactory"
 )
@@ -30,7 +30,7 @@ public final class FairyLights {
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "2.1.0";
+	public static final String VERSION = "2.1.1";
 
 	@Instance(ID)
 	public static FairyLights instance;

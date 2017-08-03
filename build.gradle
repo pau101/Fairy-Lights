@@ -16,8 +16,8 @@ repositories {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-ext.modVersion = "2.1.0"
-version = "${modVersion}-1.11.2"
+ext.modVersion = "2.1.1"
+version = "${modVersion}-1.11.x"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
