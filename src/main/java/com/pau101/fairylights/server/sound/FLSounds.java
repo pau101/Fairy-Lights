@@ -14,7 +14,7 @@ import static com.pau101.fairylights.FairyLights.ID;
 public final class FLSounds {
 	private FLSounds() {}
 
-	private static final SoundEvent NIL = Utils.nil();
+	private static final SoundEvent NIL = null;
 
 	@ObjectHolder(ID + ":cord.stretch")
 	public static final SoundEvent CORD_STRETCH = NIL;

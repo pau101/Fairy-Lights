@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder(FairyLights.ID)
 @EventBusSubscriber(modid = FairyLights.ID)
 public final class FLBlocks {
-	public static final BlockFastener FASTENER = Utils.nil();
+	public static final BlockFastener FASTENER = null;
 
 	private FLBlocks() {}
 

@@ -13,21 +13,21 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 public final class FLItems {
 	private FLItems() {}
 
-	public static final ItemLight LIGHT = Utils.nil();
+	public static final ItemLight LIGHT = null;
 
-	public static final ItemConnection HANGING_LIGHTS = Utils.nil();
+	public static final ItemConnection HANGING_LIGHTS = null;
 
-	public static final ItemConnection GARLAND = Utils.nil();
+	public static final ItemConnection GARLAND = null;
 
-	public static final ItemConnection TINSEL = Utils.nil();
+	public static final ItemConnection TINSEL = null;
 
-	public static final ItemConnection PENNANT_BUNTING = Utils.nil();
+	public static final ItemConnection PENNANT_BUNTING = null;
 
-	public static final ItemConnection LETTER_BUNTING = Utils.nil();
+	public static final ItemConnection LETTER_BUNTING = null;
 
-	public static final Item PENNANT = Utils.nil();
+	public static final Item PENNANT = null;
 
-	public static final Item LADDER = Utils.nil();
+	public static final Item LADDER = null;
 
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Item> event) {

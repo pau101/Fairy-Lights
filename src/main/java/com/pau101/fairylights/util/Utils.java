@@ -22,14 +22,6 @@ public final class Utils {
 
 	private static final Converter<String, String> UNDRSCR_TO_CML = CaseFormat.LOWER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL);
 
-	// For silencing constant conditions for @ObjectHolder field references
-	// Requires disabling runtime assertions for not-null-annotated methods and parameters.
-	@SuppressWarnings("ConstantConditions")
-	@Nonnull
-	public static <T> T nil() {
-		return null;
-	}
-
 	public static <I extends Item> I name(I item, String registryName) {
 		name(item, registryName, item::setUnlocalizedName);
 		return item;
