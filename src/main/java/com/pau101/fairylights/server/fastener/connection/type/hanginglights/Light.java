@@ -40,6 +40,10 @@ public final class Light extends HangingFeature<Light> {
 
 	private boolean swayDirection;
 
+	private int tick;
+
+	private int lastJingledTick = -1;
+
 	public Light(int index, Vec3d point, Vec3d rotation, boolean isOn) {
 		super(index, point, rotation);
 		isTwinkling = !isOn;
@@ -96,6 +100,8 @@ public final class Light extends HangingFeature<Light> {
 		swayDirection = parent.swayDirection;
 		swaying = parent.swaying;
 		sway = parent.sway;
+		tick = parent.tick;
+		lastJingledTick = parent.lastJingledTick;
 	}
 
 	public void jingle(World world, Vec3d origin, int note) {
@@ -122,8 +128,11 @@ public final class Light extends HangingFeature<Light> {
 				vz *= mag;
 				world.spawnParticle(particle, x + vx, y + vy, z + vz, particle == EnumParticleTypes.NOTE ? note / 24D : 0, 0, 0);	
 			}
-			world.playSound(x, y, z, sound, SoundCategory.BLOCKS, Configurator.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
-			startSwaying(world.rand.nextBoolean());
+			if (lastJingledTick != tick) {
+				world.playSound(x, y, z, sound, SoundCategory.BLOCKS, Configurator.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
+				startSwaying(world.rand.nextBoolean());
+				lastJingledTick = tick;
+			}
 		}
 	}
 
@@ -169,6 +178,7 @@ public final class Light extends HangingFeature<Light> {
 				sway++;
 			}
 		}
+		tick++;
 	}
 
 	@Override
