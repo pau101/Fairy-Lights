@@ -82,7 +82,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	}
 
 	public void play(JingleLibrary library, Jingle jingle, int lightOffset) {
-		jinglePlayer.start(library, jingle, lightOffset);
+		jinglePlayer.play(library, jingle, lightOffset);
 	}
 
 	@Override
@@ -119,10 +119,8 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	@Override
 	public void onUpdateLate() {
+		jinglePlayer.tick(world, fastener.getConnectionPoint(), features, world.isRemote);
 		boolean playing = jinglePlayer.isPlaying();
-		if (playing) {
-			jinglePlayer.tick(world, fastener.getConnectionPoint(), features, world.isRemote);
-		}
 		if (playing || wasPlaying) {
 			updateNeighbors(fastener);
 			if (getDestination().isLoaded(world)) {

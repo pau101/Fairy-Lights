@@ -41,6 +41,14 @@ public final class Jingle implements NBTSerializable {
 		return artist;
 	}
 
+	public int getLength() {
+		int length = 0;
+		for (PlayTick playTick : ticks) {
+			length += playTick.getLength();
+		}
+		return length;
+	}
+
 	public List<PlayTick> getPlayTicks() {
 		return ticks;
 	}
