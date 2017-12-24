@@ -112,7 +112,6 @@ public final class JinglePlayer {
 	private static final class NotPlayingState extends State<NotPlayingState> {
 		public static final StateFactory<NotPlayingState> FACTORY = newFactory();
 
-
 		@Override
 		public Jingle getJingle() {
 			return null;
