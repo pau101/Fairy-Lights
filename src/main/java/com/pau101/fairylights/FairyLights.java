@@ -25,7 +25,7 @@ public final class FairyLights {
 
 	public static final String NAME = "Fairy Lights";
 
-	public static final String VERSION = "2.1.1";
+	public static final String VERSION = "2.1.2";
 
 	private static final class Holder {
 		private static final FairyLights INSTANCE = new FairyLights();
