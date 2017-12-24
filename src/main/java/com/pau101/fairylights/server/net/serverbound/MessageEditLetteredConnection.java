@@ -45,7 +45,7 @@ public class MessageEditLetteredConnection<C extends Connection & Lettered> exte
 
 	@Override
 	protected void process(MessageContext ctx, C connection) {
-		if (connection.isSuppportedText(text)) {
+		if (connection.isModifiable(ctx.getServerHandler().playerEntity) && connection.isSuppportedText(text)) {
 			connection.setText(text);
 		}
 	}

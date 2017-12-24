@@ -76,7 +76,7 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 	@Override
 	protected void process(MessageContext ctx, Connection connection) {
 		EntityPlayer player = ctx.getServerHandler().playerEntity;
-		if (player.getDistanceSq(connection.getFastener().getPos()) < RANGE && player.getDistanceSq(hit.xCoord, hit.yCoord, hit.zCoord) < REACH) {
+		if (player.getDistanceSq(connection.getFastener().getPos()) < RANGE && player.getDistanceSq(hit.xCoord, hit.yCoord, hit.zCoord) < REACH && connection.isModifiable(player)) {
 			if (type == PlayerAction.ATTACK) {
 				connection.disconnect(player, hit);
 			} else {
