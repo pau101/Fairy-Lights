@@ -177,6 +177,10 @@ public abstract class Connection implements NBTSerializable {
 		return fastener.isDynamic() || to.isDynamic();
 	}
 
+	public final boolean isModifiable(EntityPlayer player) {
+		return world.isBlockModifiable(player, fastener.getPos());
+	}
+
 	public final void addRemoveListener(Runnable listener) {
 		if (removeListeners == null) {
 			removeListeners = new ArrayList<>();
