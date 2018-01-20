@@ -74,7 +74,7 @@ public final class ServerEventHandler {
 	@SubscribeEvent
 	public void onGetCollisionBoxes(GetCollisionBoxesEvent event) {
 		Entity entity = event.getEntity();
-		if (entity != null && entity instanceof EntityPlayer) {
+		if (entity instanceof EntityPlayer) {
 			AxisAlignedBB bounds = event.getAabb();
 			List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.grow(1));
 			List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
