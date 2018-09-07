@@ -43,7 +43,7 @@ public final class ItemConnectionHangingLights extends ItemConnection {
 			}
 			for (int i = 0; i < tagCount; i++) {
 				NBTTagCompound lightCompound = tagList.getCompoundTagAt(i);
-				String variant = I18n.translateToLocal(FLItems.LIGHT.getUnlocalizedName() + '.' + LightVariant.getLightVariant(lightCompound.getInteger("light")).getUnlocalizedName() + ".name");
+				String variant = I18n.translateToLocal(FLItems.LIGHT.getTranslationKey() + '.' + LightVariant.getLightVariant(lightCompound.getInteger("light")).getUnlocalizedName() + ".name");
 				tooltip.add(I18n.translateToLocalFormatted("format.pattern.entry", Utils.formatColored(EnumDyeColor.byDyeDamage(lightCompound.getByte("color")), variant)));
 			}
 		}

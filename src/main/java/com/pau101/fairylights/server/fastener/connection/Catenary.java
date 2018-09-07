@@ -37,7 +37,7 @@ public final class Catenary {
 	}
 
 	public static Catenary from(Vec3d direction, CubicBezier bezier, float slack) {
-		float dist = (float) direction.lengthVector();
+		float dist = (float) direction.length();
 		float length;
 		if (slack < 1e-2 || Math.abs(direction.x) < 1e-6 && Math.abs(direction.z) < 1e-6) {
 			length = dist;

@@ -21,7 +21,7 @@ public final class ItemLight extends Item {
 
 	@Override
 	public String getItemStackDisplayName(ItemStack stack) {
-		String localizedLightName = I18n.translateToLocal(super.getUnlocalizedName(stack) + '.' + getLightVariant(stack.getMetadata()).getUnlocalizedName() + ".name");
+		String localizedLightName = I18n.translateToLocal(super.getTranslationKey(stack) + '.' + getLightVariant(stack.getMetadata()).getUnlocalizedName() + ".name");
 		return Utils.formatColored(getLightColor(stack.getMetadata()), localizedLightName);
 	}
 

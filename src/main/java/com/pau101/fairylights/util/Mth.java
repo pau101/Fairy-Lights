@@ -157,7 +157,7 @@ public final class Mth {
 	public static double angle(Vec3d a, Vec3d b) {
 		Objects.requireNonNull(a, "a vector");
 		Objects.requireNonNull(b, "b vector");
-		double theta = a.dotProduct(b) / (a.lengthVector() * b.lengthVector());
+		double theta = a.dotProduct(b) / (a.length() * b.length());
 		if (theta > 1) {
 			return 0;
 		}

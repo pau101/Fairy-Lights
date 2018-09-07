@@ -23,12 +23,12 @@ public final class Utils {
 	private static final Converter<String, String> UNDRSCR_TO_CML = CaseFormat.LOWER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL);
 
 	public static <I extends Item> I name(I item, String registryName) {
-		name(item, registryName, item::setUnlocalizedName);
+		name(item, registryName, item::setTranslationKey);
 		return item;
 	}
 
 	public static <B extends Block> B name(B block, String registryName) {
-		name(block, registryName, block::setUnlocalizedName);
+		name(block, registryName, block::setTranslationKey);
 		return block;
 	}
 
@@ -58,7 +58,7 @@ public final class Utils {
 	}
 
 	public static String formatColored(EnumDyeColor color, String name) {
-		return I18n.translateToLocalFormatted("format.colored", I18n.translateToLocal("color." + color.getUnlocalizedName() + ".name"), name);
+		return I18n.translateToLocalFormatted("format.colored", I18n.translateToLocal("color." + color.getTranslationKey() + ".name"), name);
 	}
 
 	public static String formatRecipeTooltip(String key) {

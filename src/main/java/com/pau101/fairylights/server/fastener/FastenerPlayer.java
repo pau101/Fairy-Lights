@@ -43,7 +43,7 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 		}
 		double dx = Math.cos(perpAngle) * perpDist - Math.cos(angle) * forwardDist;
 		double dz = Math.sin(perpAngle) * perpDist - Math.sin(angle) * forwardDist;
-		return point.addVector(dx, dy, dz);
+		return point.add(dx, dy, dz);
 	}
 
 	@Override

@@ -168,8 +168,8 @@ public class ForwardingBlockState implements IBlockState {
 	}
 
 	@Override
-	public EnumPushReaction getMobilityFlag() {
-		return state.getMobilityFlag();
+	public EnumPushReaction getPushReaction() {
+		return state.getPushReaction();
 	}
 
 	@Override
@@ -225,6 +225,11 @@ public class ForwardingBlockState implements IBlockState {
 	@Override
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side) {
 		return state.isSideSolid(world, pos, side);
+	}
+
+	@Override
+	public boolean doesSideBlockChestOpening(IBlockAccess world, BlockPos pos, EnumFacing side) {
+		return state.doesSideBlockChestOpening(world, pos, side);
 	}
 
 	@Override

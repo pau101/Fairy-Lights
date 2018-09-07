@@ -103,7 +103,7 @@ public final class BlockFastener extends BlockContainer {
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return getDefaultState()
-			.withProperty(FACING, EnumFacing.getFront(meta & 0b0111))
+			.withProperty(FACING, EnumFacing.byIndex(meta & 0b0111))
 			.withProperty(TRIGGERED, (meta & 0b1000) != 0);
 	}
 

@@ -143,7 +143,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	private void prepareResult() {
 		ItemStack result = this.result.get();
-		if (result.hasTagCompound() && result.getTagCompound().hasNoTags()) {
+		if (result.hasTagCompound() && result.getTagCompound().isEmpty()) {
 			result.setTagCompound(null);
 		}
 	}

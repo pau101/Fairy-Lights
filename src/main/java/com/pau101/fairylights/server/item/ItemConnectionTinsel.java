@@ -19,7 +19,7 @@ public final class ItemConnectionTinsel extends ItemConnection {
 
 	@Override
 	public String getItemStackDisplayName(ItemStack itemStack) {
-		String localizedTinselName = I18n.translateToLocal(super.getUnlocalizedName(itemStack) + ".name");
+		String localizedTinselName = I18n.translateToLocal(super.getTranslationKey(itemStack) + ".name");
 		if (itemStack.hasTagCompound()) {
 			NBTTagCompound compound = itemStack.getTagCompound();
 			return Utils.formatColored(EnumDyeColor.byDyeDamage(compound.getByte("color")), localizedTinselName);

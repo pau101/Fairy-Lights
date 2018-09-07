@@ -156,7 +156,7 @@ public abstract class Connection implements NBTSerializable {
 	public ItemStack getItemStack() {
 		ItemStack stack = new ItemStack(getType().getItem());
 		NBTTagCompound tagCompound = serializeLogic();
-		if (!tagCompound.hasNoTags()) {
+		if (!tagCompound.isEmpty()) {
 			stack.setTagCompound(tagCompound);
 		}
 		return stack;
@@ -327,7 +327,7 @@ public abstract class Connection implements NBTSerializable {
 	private void updateCatenary(Vec3d from, Fastener<?> dest, Vec3d point) {
 		if (updateCatenary || isDynamic(dest)) {
 			Vec3d vec = point.subtract(from);
-			if (vec.lengthVector() > 1e-6) {
+			if (vec.length() > 1e-6) {
 				catenary = Catenary.from(vec, SLACK_CURVE, slack);
 				onCalculateCatenary();
 				collision.update(this, from);

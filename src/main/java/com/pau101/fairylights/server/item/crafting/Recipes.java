@@ -373,7 +373,7 @@ public final class Recipes {
 				return ImmutableList.of();
 			}
 			NBTTagList pattern = compound.getTagList("pattern", NBT.TAG_COMPOUND);
-			if (pattern.hasNoTags()) {
+			if (pattern.isEmpty()) {
 				return ImmutableList.of();
 			}
 			ImmutableList.Builder<ImmutableList<ItemStack>> lights = ImmutableList.builder();
@@ -430,7 +430,7 @@ public final class Recipes {
 				return ImmutableList.of();
 			}
 			NBTTagList pattern = compound.getTagList("pattern", NBT.TAG_COMPOUND);
-			if (pattern.hasNoTags()) {
+			if (pattern.isEmpty()) {
 				return ImmutableList.of();
 			}
 			ImmutableList.Builder<ImmutableList<ItemStack>> pennants = ImmutableList.builder();

@@ -174,7 +174,7 @@ public final class ClientEventHandler {
 
 	private static void collectFasteners(AxisAlignedBB bounds, List<Fastener<?>> fasteners, Map<BlockPos, TileEntity> blockEntities) {
 		for (Entry<BlockPos, TileEntity> entry : blockEntities.entrySet()) {
-			Vec3d vec = new Vec3d(entry.getKey()).addVector(0.5, 0.5, 0.5);
+			Vec3d vec = new Vec3d(entry.getKey()).add(0.5, 0.5, 0.5);
 			if (!bounds.contains(vec)) {
 				continue;
 			}
@@ -193,7 +193,7 @@ public final class ClientEventHandler {
 		Vec3d origin = viewer.getPositionEyes(1);
 		Vec3d look = viewer.getLook(1);
 		double reach = Minecraft.getMinecraft().playerController.getBlockReachDistance();
-		Vec3d end = origin.addVector(look.x * reach, look.y * reach, look.z * reach);
+		Vec3d end = origin.add(look.x * reach, look.y * reach, look.z * reach);
 		Connection found = null;
 		Intersection rayTrace = null;
 		double distance = Double.MAX_VALUE;
@@ -254,7 +254,7 @@ public final class ClientEventHandler {
 
 	private void drawFenceFastenerHighlight(EntityPlayer player, EntityFenceFastener fence, float delta, double dx, double dy, double dz) {
 		// Check if the server will allow interaction
-		if (player.canEntityBeSeen(fence) || player.getDistanceSqToEntity(fence) <= 9) {
+		if (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9) {
 			AxisAlignedBB selection = fence.getEntityBoundingBox().offset(-dx, -dy, -dz).grow(0.002);
 			RenderGlobal.drawSelectionBoundingBox(selection, 0, 0, 0, HIGHLIGHT_ALPHA);
 		}

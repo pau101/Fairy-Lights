@@ -176,7 +176,7 @@ public final class ServerEventHandler {
 			int z = pos.getZ();
 			AxisAlignedBB area = new AxisAlignedBB(x - range, y - range, z - range, x + range, y + range, z + range);
 			for (EntityLiving entity : world.getEntitiesWithinAABB(EntityLiving.class, area)) {
-				if (entity.getLeashed() && entity.getLeashedToEntity() == player) {
+				if (entity.getLeashed() && entity.getLeashHolder() == player) {
 					checkHanging = true;
 					break;
 				}

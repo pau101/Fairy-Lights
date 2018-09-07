@@ -79,7 +79,7 @@ public abstract class ItemConnection extends Item {
 		Connection connection = attacher.getFirstConnection();
 		if (connection != null) {
 			NBTTagCompound nbt = connection.serializeLogic();
-			if (nbt.hasNoTags()) {
+			if (nbt.isEmpty()) {
 				return stack.hasTagCompound();
 			}
 			return !NBTUtil.areNBTEquals(nbt, stack.getTagCompound(), true);

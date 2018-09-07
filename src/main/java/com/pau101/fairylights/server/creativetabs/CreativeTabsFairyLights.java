@@ -12,7 +12,7 @@ public final class CreativeTabsFairyLights extends CreativeTabs {
 	}
 
 	@Override
-	public ItemStack getTabIconItem() {
+	public ItemStack createIcon() {
 		return new ItemStack(FLItems.HANGING_LIGHTS);
 	}
 }
