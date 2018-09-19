@@ -44,7 +44,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
-import shadersmod.client.Shaders;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -71,10 +70,6 @@ public final class ClientEventHandler {
 	private int connHighlightId;
 
 	private boolean useVBO;
-
-	public static boolean isShaders() {
-		return optifinePresent && Shaders.shaderPackLoaded;
-	}
 
 	public static Connection getHitConnection() {
 		return HIT_CONNECTION.connection;
@@ -297,19 +292,12 @@ public final class ClientEventHandler {
 		GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 		GlStateManager.glLineWidth(2);
 		GlStateManager.disableTexture2D();
-		if (isShaders()) {
-			// Gotta get that gbuffers_basic active to not get grainy color artifacts 
-			Shaders.disableTexture2D();
-		}
 		GlStateManager.depthMask(false);
 	}
 
 	private void restoreHighlightGL() {
 		GlStateManager.disableBlend();
 		GlStateManager.enableTexture2D();
-		if (isShaders()) {
-			Shaders.enableTexture2D();
-		}
 		GlStateManager.depthMask(true);
 	}
 
