@@ -25,15 +25,15 @@ archivesBaseName = "fairylights"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-	version = "1.12.2-14.23.4.2705"
+	version = "1.12.2-14.23.5.2768"
 	runDir = "run"
 	mappings = "stable_39"
 	makeObfSourceJar = false
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.12:4.7.0.68:api"
-	runtime "mezz.jei:jei_1.12:4.7.0.68"
+	deobfCompile "mezz.jei:jei_1.12.2:4.8.0.103:api"
+	runtime "mezz.jei:jei_1.12.2:4.8.0.103"
 }
 
 processResources {
