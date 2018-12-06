@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 	modid = FairyLights.ID,
 	name = FairyLights.NAME,
 	version = FairyLights.VERSION,
-	dependencies = "required-after:forge@[14.23.4.2705,)",
+	dependencies = "required-after:forge@[14.23.5.2768,)",
 	guiFactory = "com.pau101.fairylights.client.gui.FairyLightsGuiFactory"
 )
 public final class FairyLights {

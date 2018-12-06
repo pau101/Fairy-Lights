@@ -22,7 +22,7 @@ ext.modVersion = "2.1.4"
 version = "${modVersion}-1.12.2"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
 	version = "1.12.2-14.23.5.2768"
