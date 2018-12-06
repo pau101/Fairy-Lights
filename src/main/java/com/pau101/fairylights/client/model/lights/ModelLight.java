@@ -1,6 +1,7 @@
 package com.pau101.fairylights.client.model.lights;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
@@ -118,16 +119,6 @@ public abstract class ModelLight extends ModelBase {
 		GlStateManager.color(c, c, c);
 		amutachromicParts.render(scale);
 		GlStateManager.disableLighting();
-		int maxBrightness = 1;
-		float expand = 1.3F;
-		if (hsb[1] > 0) {
-			hsb[1] = brightness;
-			hsb[2] = 1;
-		}
-		colorRGB = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-		cr = (colorRGB >> 16 & 0xFF) / 255F;
-		cg = (colorRGB >> 8 & 0xFF) / 255F;
-		cb = (colorRGB & 0xff) / 255F;
 		Minecraft.getMinecraft().entityRenderer.disableLightmap();
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
 		GlStateManager.color(cr, cg, cb, brightness * 0.15F + 0.1F);
