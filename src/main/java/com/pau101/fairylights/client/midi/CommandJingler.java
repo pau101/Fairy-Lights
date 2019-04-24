@@ -1,38 +1,11 @@
 package com.pau101.fairylights.client.midi;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import javax.annotation.Nullable;
-import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiDeviceTransmitter;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.Sequencer;
-import javax.sound.midi.Transmitter;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
-
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.pau101.fairylights.client.ClientEventHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.util.Utils;
-
 import joptsimple.internal.Strings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -45,8 +18,32 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
+
+import javax.annotation.Nullable;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiDeviceTransmitter;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.Transmitter;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 public final class CommandJingler extends CommandBase {
 	private static final List<String> OPTIONS = Arrays.asList("open", "close", "list");
@@ -175,7 +172,7 @@ public final class CommandJingler extends CommandBase {
 				List<MidiDevice> devices = new ArrayList<>(deviceConnections.keySet());
 				devices.sort(Comparator.comparing(d -> d.getDeviceInfo().getName()));
 				for (MidiDevice device : devices) {
-					sender.sendMessage(new TextComponentString(ChatFormatting.GREEN + device.getDeviceInfo().getName()));
+					sender.sendMessage(new TextComponentString(TextFormatting.GREEN + device.getDeviceInfo().getName()));
 					for (ConnectionHangingLights connection : deviceConnections.get(device)) {
 						Fastener<?> fastener = connection.getFastener();
 						FastenerAccessor dest = connection.getDestination();
