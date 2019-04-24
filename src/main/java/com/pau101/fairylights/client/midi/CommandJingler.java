@@ -6,7 +6,6 @@ import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.util.Utils;
-import joptsimple.internal.Strings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
@@ -192,7 +191,7 @@ public final class CommandJingler extends CommandBase {
 	}
 
 	private MidiDevice getDeviceFromArgs(String[] args, int n) throws CommandException {
-		MidiDevice device = getDevice(getNoSpaceName(Strings.join(Arrays.copyOfRange(args, n, args.length), " ")));
+		MidiDevice device = getDevice(getNoSpaceName(String.join(" ", Arrays.copyOfRange(args, n, args.length))));
 		if (device == null) {
 			throw new CommandException("Device not found");
 		}
