@@ -21,19 +21,19 @@ public final class CapabilityHandler {
 	public static Capability<Fastener<?>> FASTENER_CAP = null;
 
 	public static void register() {
-		CapabilityManager.INSTANCE.register((Class<Fastener<?>>) (Class<?>) Fastener.class, new FastenerStorage(), () -> {
+		CapabilityManager.INSTANCE.register(Fastener.class, new FastenerStorage<>(), () -> {
 			throw new UnsupportedOperationException();
 		});
 	}
 
-	public static class FastenerStorage implements IStorage<Fastener<?>> {
+	public static class FastenerStorage<T extends Fastener<?>> implements IStorage<T> {
 		@Override
-		public NBTTagCompound writeNBT(Capability<Fastener<?>> capability, Fastener<?> instance, EnumFacing side) {
+		public NBTTagCompound writeNBT(Capability<T> capability, T instance, EnumFacing side) {
 			return instance.serializeNBT();
 		}
 
 		@Override
-		public void readNBT(Capability<Fastener<?>> capability, Fastener<?> instance, EnumFacing side, NBTBase nbt) {
+		public void readNBT(Capability<T> capability, T instance, EnumFacing side, NBTBase nbt) {
 			instance.deserializeNBT((NBTTagCompound) nbt);
 		}
 	}
