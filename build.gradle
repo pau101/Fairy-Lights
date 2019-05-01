@@ -14,11 +14,14 @@ repositories {
 	maven {
 		url "http://dvs1.progwml6.com/files/maven"
 	}
+	maven {
+		url "https://maven.daporkchop.net/"
+	}
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-ext.modVersion = "2.1.6"
+ext.modVersion = "2.1.7"
 version = "${modVersion}-1.12.2"
 group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
@@ -34,6 +37,7 @@ minecraft {
 dependencies {
 	deobfCompile "mezz.jei:jei_1.12.2:4.8.0.103:api"
 	runtime "mezz.jei:jei_1.12.2:4.8.0.103"
+	deobfCompile "valkyrienwarfare:valkyrienwarfare:0.9.5"
 }
 
 processResources {
