@@ -1,14 +1,9 @@
 package com.pau101.fairylights.server.fastener;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.UUID;
-
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorPlayer;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -17,6 +12,10 @@ import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 	public FastenerPlayer(EntityPlayer entity) {
 		super(entity);
@@ -24,7 +23,7 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 
 	@Override
 	public Vec3d getConnectionPoint() {
-		Vec3d point = getAbsolutePos();
+		Vec3d point = super.getConnectionPoint();
 		if (entity.isElytraFlying()) {
 			return point;
 		}

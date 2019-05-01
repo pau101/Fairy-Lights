@@ -160,7 +160,7 @@ public final class CommandJingler extends CommandBase {
 				sender.sendMessage(new TextComponentString("No connections to list"));
 			} else {
 				List<ConnectionHangingLights> allConnections = new ArrayList<>(TRANSMITTERS.keySet());
-				allConnections.sort(Comparator.comparingDouble(c -> sender.getPositionVector().distanceTo(c.getFastener().getAbsolutePos())));
+				allConnections.sort(Comparator.comparingDouble(c -> sender.getPositionVector().distanceTo(c.getFastener().getConnectionPoint())));
 				Map<MidiDevice, List<ConnectionHangingLights>> deviceConnections = new HashMap<>();
 				for (ConnectionHangingLights connection : allConnections) {
 					for (MidiDeviceTransmitter t : TRANSMITTERS.get(connection)) {

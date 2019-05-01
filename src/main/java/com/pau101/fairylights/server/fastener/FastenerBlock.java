@@ -1,9 +1,7 @@
 package com.pau101.fairylights.server.fastener;
 
-import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
-
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -29,18 +27,13 @@ public final class FastenerBlock extends FastenerDefault {
 	}
 
 	@Override
-	public Vec3d getOffsetPoint() {
-		return FLBlocks.FASTENER.getOffset(fastener.getFacing(), 0.125F);
-	}
-
-	@Override
 	public BlockPos getPos() {
 		return fastener.getPos();
 	}
 
 	@Override
-	public Vec3d getAbsolutePos() {
-		return new Vec3d(getPos());
+	public Vec3d getConnectionPoint() {
+		return new Vec3d(getPos()).add(fastener.getOffset());
 	}
 
 	@Override

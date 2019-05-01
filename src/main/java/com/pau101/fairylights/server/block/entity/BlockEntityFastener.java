@@ -14,12 +14,17 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public final class BlockEntityFastener extends TileEntity implements ITickable {
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return getFastener().getBounds().grow(1);
+	}
+
+	public Vec3d getOffset() {
+		return FLBlocks.FASTENER.getOffset(getFacing(), 0.125F);
 	}
 
 	public EnumFacing getFacing() {

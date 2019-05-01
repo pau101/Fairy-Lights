@@ -52,8 +52,6 @@ public final class FastenerRenderer {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.disableBlend();
 		GlStateManager.pushMatrix();
-		Vec3d offset = fastener.getOffsetPoint();
-		GlStateManager.translate(offset.x, offset.y, offset.z);
 		if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox() && !Minecraft.getMinecraft().isReducedDebug()) {
 			renderBoundingBox(fastener);
 		}
@@ -102,7 +100,7 @@ public final class FastenerRenderer {
 		GlStateManager.disableTexture2D();
 		GlStateManager.depthMask(false);
 		GlStateManager.glLineWidth(2);
-		Vec3d offset = fastener.getAbsolutePos();
+		Vec3d offset = fastener.getConnectionPoint();
 		RenderGlobal.drawSelectionBoundingBox(fastener.getBounds().offset(-offset.x, -offset.y, -offset.z), 1, 1, 1, 1);
 		/*/
 		offset = Mth.negate(offset).subtract(fastener.getOffsetPoint());

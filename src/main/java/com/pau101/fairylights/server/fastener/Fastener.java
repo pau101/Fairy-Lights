@@ -1,15 +1,8 @@
 package com.pau101.fairylights.server.fastener;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -18,6 +11,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.UUID;
+
 public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<NBTTagCompound> {
 	@Override
 	NBTTagCompound serializeNBT();
@@ -25,22 +22,14 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 	Map<UUID, Connection> getConnections();
 
 	default Connection getFirstConnection() {
-		Iterator<Connection> connections = getConnections().values().iterator();
-		if (connections.hasNext()) {
-			return connections.next();
-		}
-		return null;
+		return getConnections().values().stream().findFirst().orElse(null);
 	}
 
 	AxisAlignedBB getBounds();
 
 	Vec3d getConnectionPoint();
 
-	Vec3d getOffsetPoint();
-
 	BlockPos getPos();
-
-	Vec3d getAbsolutePos();
 
 	EnumFacing getFacing();
 

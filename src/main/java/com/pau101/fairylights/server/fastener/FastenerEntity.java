@@ -27,17 +27,12 @@ public abstract class FastenerEntity<E extends Entity> extends FastenerDefault<F
 	}
 
 	@Override
-	public Vec3d getOffsetPoint() {
-		return Vec3d.ZERO;
-	}
-
-	@Override
 	public BlockPos getPos() {
-		return new BlockPos(getAbsolutePos());
+		return new BlockPos(entity);
 	}
 
 	@Override
-	public Vec3d getAbsolutePos() {
+	public Vec3d getConnectionPoint() {
 		return new Vec3d(entity.posX, entity.posY, entity.posZ);
 	}
 

@@ -1,15 +1,5 @@
 package com.pau101.fairylights.server.fastener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
 import com.pau101.fairylights.server.fastener.connection.Catenary;
@@ -17,7 +7,6 @@ import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.Segment;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.util.AABBBuilder;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,6 +22,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 public abstract class FastenerDefault<F extends FastenerAccessor> implements Fastener<F> {
 	protected Map<UUID, Connection> connections = new HashMap<>();
 
@@ -45,17 +43,6 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 	private World world;
 
 	private boolean isDirty;
-
-	@Override
-	public Vec3d getConnectionPoint() {
-		if (point == null) {
-			point = getAbsolutePos().add(getOffsetPoint());
-		}
-		return point;
-	}
-
-	@Override
-	public abstract Vec3d getOffsetPoint();
 
 	@Override
 	public Map<UUID, Connection> getConnections() {
@@ -124,7 +111,7 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 			}
 			builder.include(segments[segments.length - 1].getEnd().scale(0.0625));
 		}
-		bounds = builder.add(getAbsolutePos()).build();
+		bounds = builder.add(getConnectionPoint()).build();
 	}
 
 	@Override
