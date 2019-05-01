@@ -175,8 +175,8 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 		}
 
 		public void inherit(F feature) {
-			prevRotation = feature.prevRotation;
-			rotation = feature.rotation;
+			prevRotation = new Vec3d(prevRotation.x, prevRotation.y, feature.prevRotation.z);
+			rotation = new Vec3d(rotation.x, rotation.y, feature.rotation.z);
 		}
 
 		public abstract double getWidth();
