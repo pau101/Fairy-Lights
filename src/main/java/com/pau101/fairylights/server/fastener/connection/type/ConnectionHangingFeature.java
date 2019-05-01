@@ -175,7 +175,8 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 		}
 
 		public void inherit(F feature) {
-			prevRotation = feature.rotation;
+			prevRotation = feature.prevRotation;
+			rotation = feature.rotation;
 		}
 
 		public abstract double getWidth();
