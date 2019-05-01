@@ -38,6 +38,11 @@ public final class Catenary {
 
 	public static Catenary from(Vec3d direction, CubicBezier bezier, float slack) {
 		float dist = (float) direction.length();
+		if (dist > 2.0F * Connection.MAX_LENGTH) {
+			final Segment seg = new Segment(Vec3d.ZERO);
+			seg.connectTo(direction.scale(SCALE));
+			return new Catenary(direction, new Segment[] { seg }, dist);
+		}
 		float length;
 		if (slack < 1e-2 || Math.abs(direction.x) < 1e-6 && Math.abs(direction.z) < 1e-6) {
 			length = dist;

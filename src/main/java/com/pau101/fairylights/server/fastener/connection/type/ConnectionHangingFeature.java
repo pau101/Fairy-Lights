@@ -59,6 +59,13 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 		Catenary catenary = getCatenary();
 		float spacing = getFeatureSpacing();
 		float totalLength = catenary.getLength();
+		if (totalLength > 2.0F * Connection.MAX_LENGTH * 16.0F) {
+			prevFeatures = features;
+			onBeforeUpdateFeatures(0);
+			features = createFeatures(0);
+			onAfterUpdateFeatures(0);
+			return;
+		}
 		/*
 		 * Distance starts at the value that will center the lights on the cord
 		 * Simplified version of t / 2 - ((int) (t / s) - 1) * s / 2

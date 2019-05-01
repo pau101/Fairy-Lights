@@ -351,6 +351,9 @@ public abstract class Connection implements NBTSerializable {
 
 	public void addCollision(List<Collidable> collision, Vec3d origin) {
 		Segment[] segments = catenary.getSegments();
+		if (segments.length < 2) {
+			return;
+		}
 		float radius = getRadius();
 		collision.add(FeatureCollisionTree.build(CORD_FEATURE, segments, s -> {
 			Vec3d start = s.getStart();
