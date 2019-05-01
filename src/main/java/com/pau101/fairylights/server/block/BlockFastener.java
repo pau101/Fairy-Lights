@@ -1,9 +1,5 @@
 package com.pau101.fairylights.server.block;
 
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.UUID;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.ServerEventHandler;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
@@ -23,6 +19,7 @@ import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -40,6 +37,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.UUID;
 
 public final class BlockFastener extends BlockContainer {
 	public static final PropertyDirection FACING = BlockDirectional.FACING;
@@ -68,6 +69,11 @@ public final class BlockFastener extends BlockContainer {
 		);
 		setResistance(2000);
 		Utils.name(this, "fastener");
+	}
+
+	@Override
+	public BlockFaceShape getBlockFaceShape(final IBlockAccess worldIn, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+		return BlockFaceShape.UNDEFINED;
 	}
 
 	@Override
@@ -139,7 +145,10 @@ public final class BlockFastener extends BlockContainer {
 
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP, null).dropItems(world, pos);
+		TileEntity entity = world.getTileEntity(pos);
+		if (entity instanceof BlockEntityFastener) {
+			entity.getCapability(CapabilityHandler.FASTENER_CAP, null).dropItems(world, pos);
+		}
 		super.breakBlock(world, pos, state);
 	}
 
@@ -188,7 +197,11 @@ public final class BlockFastener extends BlockContainer {
 
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
-		Fastener<?> fastener = world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP, null);
+		TileEntity entity = world.getTileEntity(pos);
+		if (!(entity instanceof BlockEntityFastener)) {
+			return super.getComparatorInputOverride(state, world, pos);
+		}
+		Fastener<?> fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
 		int level = 0;
 		for (Entry<UUID, Connection> e : fastener.getConnections().entrySet()) {
 			Connection connection = e.getValue();
@@ -200,7 +213,11 @@ public final class BlockFastener extends BlockContainer {
 			}
 			if (!connection.isOrigin()) {
 				BlockPos to = connection.getDestination().get(world).getPos();
-				fastener = world.getTileEntity(to).getCapability(CapabilityHandler.FASTENER_CAP, null);
+				entity = world.getTileEntity(to);
+				if (!(entity instanceof BlockEntityFastener)) {
+					continue;
+				}
+				fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
 				connection = fastener.getConnections().get(e.getKey());
 				if (connection == null) {
 					continue;
@@ -228,7 +245,11 @@ public final class BlockFastener extends BlockContainer {
 	}
 
 	private boolean jingle(World world, BlockPos pos) {
-		Fastener<?> fastener = world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP, null);
+		TileEntity entity = world.getTileEntity(pos);
+		if (!(entity instanceof BlockEntityFastener)) {
+			return false;
+		}
+		Fastener<?> fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
 		for (Entry<UUID, Connection> e : fastener.getConnections().entrySet()) {
 			Connection connection = e.getValue();
 			if (connection.getType() != ConnectionType.HANGING_LIGHTS) {
@@ -245,7 +266,11 @@ public final class BlockFastener extends BlockContainer {
 				continue;
 			}
 			if (!connection.isOrigin()) {
-				fastener = world.getTileEntity(to).getCapability(CapabilityHandler.FASTENER_CAP, null);
+				entity = world.getTileEntity(to);
+				if (!(entity instanceof BlockEntityFastener)) {
+					continue;
+				}
+				fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
 				connection = fastener.getConnections().get(e.getKey());
 				if (connection == null) {
 					continue;
