@@ -1,5 +1,6 @@
 package com.pau101.fairylights.client;
 
+import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -43,6 +44,7 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -74,6 +76,19 @@ public final class ClientEventHandler {
 	@Nullable
 	public static Connection getHitConnection() {
 		return hit == null || hit.result == null ? null : hit.result.connection;
+	}
+
+	@SubscribeEvent
+	public void onClientTick(final TickEvent.ClientTickEvent event) {
+		final World world = Minecraft.getMinecraft().world;
+		if (event.phase != TickEvent.Phase.START && world != null) {
+			world.loadedTileEntityList.stream()
+				.filter(BlockEntityFastener.class::isInstance)
+				.map(BlockEntityFastener.class::cast)
+				.forEach(f -> {
+					f.getCapability(CapabilityHandler.FASTENER_CAP, null).update();
+				});
+		}
 	}
 
 	@SubscribeEvent

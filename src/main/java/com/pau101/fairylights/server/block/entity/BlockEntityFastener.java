@@ -61,8 +61,8 @@ public final class BlockEntityFastener extends TileEntity implements ITickable {
 		Fastener<?> fastener = getFastener();
 		if (!world.isRemote && fastener.hasNoConnections()) {
 			world.setBlockToAir(pos);
-		} else if (fastener.update()) {
-			markDirty();	
+		} else if (!world.isRemote && fastener.update()) {
+			markDirty();
 			IBlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 		}
