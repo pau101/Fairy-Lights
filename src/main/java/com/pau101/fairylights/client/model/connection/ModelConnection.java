@@ -1,15 +1,10 @@
 package com.pau101.fairylights.client.model.connection;
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.Segment;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
@@ -21,6 +16,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 public abstract class ModelConnection<T extends Connection> extends ModelBase {
 	public ModelConnection() {
@@ -52,17 +50,32 @@ public abstract class ModelConnection<T extends Connection> extends ModelBase {
 		Segment[] segmentsOld = prevCatenary.getSegments();
 		GlStateManager.color(1, 1, 1);
 		GlStateManager.disableRescaleNormal();
-		for (int i = 0, count = segments.length; i < count; i++) {
+		final float sdelta;
+		if (segments.length >= segmentsOld.length) {
+			Segment[] t = segments;
+			segments = segmentsOld;
+			segmentsOld = t;
+			sdelta = 1 - delta;
+		} else {
+			sdelta = delta;
+		}
+		for (int i = 0; i < segments.length; i++) {
 			float v = i / (float) segments.length;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight * (1 - v) + toSunlight * v, moonlight * (1 - v) + toMoonlight * v);
 			Segment segment = segments[i];
-			Vec3d rotation = segment.getRotation();
-			double length = segment.getLength();
-			Vec3d vertex = segment.getStart();
-			Segment old = i < segmentsOld.length ? segmentsOld[i] : segment;
-			rotation = Mth.lerpAngles(rotation, old.getRotation(), 1 - delta);
-			length = length * delta + old.getLength() * (1 - delta);
-			vertex = Mth.lerp(vertex, old.getStart(), 1 - delta);
+			Segment old = segmentsOld[i];
+			Vec3d rotation;
+			double length;
+			Vec3d vertex = Mth.lerp(old.getStart(), segment.getStart(), sdelta);
+			if (segmentsOld.length > segment.getLength() && i == segments.length - 1) {
+				final Segment s = new Segment(vertex);
+				s.connectTo(Mth.lerp(segmentsOld[segmentsOld.length - 1].getEnd(), segment.getEnd(), sdelta));
+				rotation = s.getRotation();
+				length = s.getLength();
+			} else {
+				rotation = Mth.lerpAngles(old.getRotation(), segment.getRotation(), sdelta);
+				length = old.getLength() * (1.0F - sdelta) + segment.getLength() * sdelta;
+			}
 			renderSegment(connection, i, rotation.y, rotation.x, length, vertex.x, vertex.y, vertex.z, delta);
 		}
 		GlStateManager.enableRescaleNormal();
