@@ -51,7 +51,7 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 	}
 
 	@Override
-	public boolean isDynamic() {
+	public boolean isMoving() {
 		return true;
 	}
 

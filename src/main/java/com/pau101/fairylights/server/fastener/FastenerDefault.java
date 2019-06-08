@@ -37,9 +37,6 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 	protected AxisAlignedBB bounds = TileEntity.INFINITE_EXTENT_AABB;
 
 	@Nullable
-	private Vec3d point;
-
-	@Nullable
 	private World world;
 
 	private boolean isDirty;

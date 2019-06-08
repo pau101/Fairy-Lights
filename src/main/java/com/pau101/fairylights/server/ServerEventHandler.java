@@ -1,14 +1,5 @@
 package com.pau101.fairylights.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.UUID;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.block.BlockFastener;
 import com.pau101.fairylights.server.block.FLBlocks;
@@ -65,6 +56,15 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.UUID;
+
 public final class ServerEventHandler {
 	private final Random rng = new Random();
 
@@ -114,7 +114,7 @@ public final class ServerEventHandler {
 	public void onAttachBlockEntityCapability(AttachCapabilitiesEvent<TileEntity> event) {
 		TileEntity entity = event.getObject();
 		if (entity instanceof BlockEntityFastener) {
-			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerBlock((BlockEntityFastener) entity));
+			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerBlock((BlockEntityFastener) entity, ServerProxy.buildBlockView()));
 		}
 	}
 
@@ -251,7 +251,7 @@ public final class ServerEventHandler {
 		boolean arePlayersNear = nearPlayers.size() > 0;
 		for (Entry<UUID, Connection> connectionEntry : fastener.getConnections().entrySet()) {
 			Connection connection = connectionEntry.getValue();
-			if (connection.isOrigin() && connection.getDestination().isLoaded(world) && !connection.getDestination().get(world).isDynamic() && connection.getType() == ConnectionType.HANGING_LIGHTS) {
+			if (connection.isOrigin() && connection.getDestination().isLoaded(world) && connection.getType() == ConnectionType.HANGING_LIGHTS) {
 				ConnectionHangingLights connectionLogic = (ConnectionHangingLights) connection;
 				Light[] lightPoints = connectionLogic.getFeatures();
 				if (connectionLogic.canCurrentlyPlayAJingle()) {

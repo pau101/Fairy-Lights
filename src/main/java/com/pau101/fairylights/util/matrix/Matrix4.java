@@ -1,45 +1,46 @@
 package com.pau101.fairylights.util.matrix;
 
-import java.util.Objects;
-
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-public final class Mat4d {
-	public double m00;
+import java.util.Objects;
 
-	public double m01;
+public final class Matrix4 {
+	public float m00;
 
-	public double m02;
+	public float m01;
 
-	public double m03;
+	public float m02;
 
-	public double m10;
+	public float m03;
 
-	public double m11;
+	public float m10;
 
-	public double m12;
+	public float m11;
 
-	public double m13;
+	public float m12;
 
-	public double m20;
+	public float m13;
 
-	public double m21;
+	public float m20;
 
-	public double m22;
+	public float m21;
 
-	public double m23;
+	public float m22;
 
-	public double m30;
+	public float m23;
 
-	public double m31;
+	public float m30;
 
-	public double m32;
+	public float m31;
 
-	public double m33;
+	public float m32;
 
-	public Mat4d() {}
+	public float m33;
 
-	public Mat4d(Mat4d matrix) {
+	public Matrix4() {}
+
+	public Matrix4(Matrix4 matrix) {
 		Objects.requireNonNull(matrix, "matrix");
 		m00 = matrix.m00;
 		m01 = matrix.m01;
@@ -64,23 +65,23 @@ public final class Mat4d {
 		m01 = m02 = m03 = m10 = m12 = m13 = m20 = m21 = m23 = m30 = m31 = m32 = 0;
 	}
 
-	public void asTranslation(double x, double y, double z) {
+	public void asTranslation(float x, float y, float z) {
 		asIdentity();
 		m03 = x;
 		m13 = y;
 		m23 = z;
 	}
 
-	public void asRotation(double x, double y, double z, double angle) {
+	public void asRotation(float x, float y, float z, float angle) {
 		asIdentity();
-		double c = Math.cos(angle);
-		double s = Math.sin(angle);
-		double t = 1 - c;
+		float c = MathHelper.cos(angle);
+		float s = MathHelper.sin(angle);
+		float t = 1.0F - c;
 		m00 = c + x * x * t;
 		m11 = c + y * y * t;
 		m22 = c + z * z * t;
-		double a = x * y * t;
-		double b = z * s;
+		float a = x * y * t;
+		float b = z * s;
 		m10 = a + b;
 		m01 = a - b;
 		a = x * z * t;
@@ -93,9 +94,9 @@ public final class Mat4d {
 		m12 = a - b;
 	}
 
-	public void mul(Mat4d m) {
+	public void mul(Matrix4 m) {
 		Objects.requireNonNull(m, "m");
-		double m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
+		float m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
 		m00 = this.m00 * m.m00 + this.m01 * m.m10 + this.m02 * m.m20 + this.m03 * m.m30;
 		m01 = this.m00 * m.m01 + this.m01 * m.m11 + this.m02 * m.m21 + this.m03 * m.m31;
 		m02 = this.m00 * m.m02 + this.m01 * m.m12 + this.m02 * m.m22 + this.m03 * m.m32;

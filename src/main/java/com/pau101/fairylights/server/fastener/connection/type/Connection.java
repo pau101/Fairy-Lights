@@ -168,13 +168,9 @@ public abstract class Connection implements NBTSerializable {
 
 	public final boolean isDynamic() {
 		if (destination.isLoaded(world)) {
-			return isDynamic(destination.get(world));
+			return fastener.isMoving() || destination.get(world).isMoving();
 		}
-		return fastener.isDynamic();
-	}
-
-	private boolean isDynamic(Fastener<?> to) {
-		return fastener.isDynamic() || to.isDynamic();
+		return false;
 	}
 
 	public final boolean isModifiable(EntityPlayer player) {
@@ -305,7 +301,7 @@ public abstract class Connection implements NBTSerializable {
 			if (dist > MAX_LENGTH + PULL_RANGE) {
 				world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP, SoundCategory.BLOCKS, 0.75F, 0.8F + world.rand.nextFloat() * 0.3F);
 				forceRemove = true;
-			} else if (dest.isDynamic()) {
+			} else if (dest.isMoving()) {
 				dest.resistSnap(from);
 			}
 			onUpdateLate();
@@ -325,7 +321,7 @@ public abstract class Connection implements NBTSerializable {
 	}
 
 	private void updateCatenary(Vec3d from, Fastener<?> dest, Vec3d point) {
-		if (updateCatenary || isDynamic(dest)) {
+		if (updateCatenary || isDynamic()) {
 			Vec3d vec = point.subtract(from);
 			if (vec.length() > 1e-6) {
 				catenary = Catenary.from(vec, SLACK_CURVE, slack);

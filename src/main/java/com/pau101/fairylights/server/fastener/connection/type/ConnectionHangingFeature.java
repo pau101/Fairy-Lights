@@ -11,7 +11,7 @@ import com.pau101.fairylights.server.fastener.connection.collision.FeatureCollis
 import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingFeature.HangingFeature;
 import com.pau101.fairylights.util.AABBBuilder;
 import com.pau101.fairylights.util.Mth;
-import com.pau101.fairylights.util.matrix.Matrix;
+import com.pau101.fairylights.util.matrix.MatrixStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -110,7 +110,7 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 	public void addCollision(List<Collidable> collision, Vec3d origin) {
 		super.addCollision(collision, origin);
 		if (features.length > 0) {
-			Matrix matrix = new Matrix();
+			MatrixStack matrix = new MatrixStack();
 			collision.add(FeatureCollisionTree.build(FEATURE, features, f -> {
 				Vec3d pos = f.getPoint();
 				double x = origin.x + pos.x / 16;
@@ -121,10 +121,10 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 				matrix.push();
 				Vec3d rot = f.getRotation();
 				if (f.parallelsCord()) {
-					matrix.rotate(rot.x, 0, 1, 0);
-					matrix.rotate(rot.y, 1, 0, 0);
+					matrix.rotate((float) rot.x, 0, 1, 0);
+					matrix.rotate((float) rot.y, 1, 0, 0);
 				}
-				matrix.translate(0, 0.025, 0);
+				matrix.translate(0, 0.025F, 0);
 				AABBBuilder bounds = new AABBBuilder();
 				Vec3d[] verts = {
 					new Vec3d(-w, -h, -w),

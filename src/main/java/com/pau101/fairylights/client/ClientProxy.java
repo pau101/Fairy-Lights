@@ -1,9 +1,5 @@
 package com.pau101.fairylights.client;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Set;
-
 import com.google.common.collect.ForwardingSet;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.midi.CommandJingler;
@@ -40,6 +36,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Set;
+
 public final class ClientProxy extends ServerProxy {
 	public static FontRenderer recoloredFont;
 
@@ -51,7 +51,7 @@ public final class ClientProxy extends ServerProxy {
 
 	@Override
 	public void initRenders() {
-		ClientRegistry.bindTileEntitySpecialRenderer(BlockEntityFastener.class, new BlockEntityFastenerRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(BlockEntityFastener.class, new BlockEntityFastenerRenderer(ServerProxy.buildBlockView()));
 		ClientRegistry.bindTileEntitySpecialRenderer(FenceFastenerRepresentative.class, FenceFastenerRendererDispatcher.INSTANCE);
 		RenderingRegistry.registerEntityRenderingHandler(EntityFenceFastener.class, RenderFenceFastener::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityLadder.class, RenderLadder::new);

@@ -1,12 +1,12 @@
 package com.pau101.fairylights.server;
 
-import java.time.Month;
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.config.Configurator;
 import com.pau101.fairylights.server.creativetabs.CreativeTabsFairyLights;
+import com.pau101.fairylights.server.fastener.BlockView;
+import com.pau101.fairylights.server.fastener.CreateBlockViewEvent;
+import com.pau101.fairylights.server.fastener.RegularBlockView;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.net.FLMessage;
 import com.pau101.fairylights.server.net.clientbound.MessageJingle;
@@ -26,12 +26,17 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
+import valkyrienwarfare.ValkyrienWarfareMod;
+
+import javax.annotation.Nullable;
+import java.time.Month;
 
 public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	private int nextMessageId;
@@ -104,7 +109,25 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 		}
 	}
 
+	public static BlockView buildBlockView() {
+		final CreateBlockViewEvent evt = new CreateBlockViewEvent(new RegularBlockView());
+		MinecraftForge.EVENT_BUS.post(evt);
+		return evt.getView();
+	}
+
 	private void registerMessage(Class<? extends FLMessage> clazz, Side toSide) {
 		FairyLights.network.registerMessage(this, clazz, nextMessageId++, toSide);
+	}
+
+	public void initIntegration() {
+		if (Loader.isModLoaded(ValkyrienWarfareMod.MODID)) {
+			final Class<?> vw;
+			try {
+				vw = Class.forName("com.pau101.fairylights.server.integration.valkyrienwarfare.ValkyrienWarfare");
+			} catch (final ClassNotFoundException e) {
+				throw new AssertionError(e);
+			}
+			MinecraftForge.EVENT_BUS.register(vw);
+		}
 	}
 }

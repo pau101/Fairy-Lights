@@ -35,9 +35,4 @@ public abstract class FastenerEntity<E extends Entity> extends FastenerDefault<F
 	public Vec3d getConnectionPoint() {
 		return new Vec3d(entity.posX, entity.posY, entity.posZ);
 	}
-
-	@Override
-	public String toString() {
-		return entity.getName();
-	}
 }

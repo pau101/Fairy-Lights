@@ -10,40 +10,37 @@ import net.minecraft.util.math.Vec3d;
 public final class FastenerBlock extends FastenerDefault {
 	private final BlockEntityFastener fastener;
 
-	public FastenerBlock(BlockEntityFastener fastener) {
+	private final BlockView view;
+
+	public FastenerBlock(final BlockEntityFastener fastener, final BlockView view) {
 		this.fastener = fastener;
-		bounds = new AxisAlignedBB(fastener.getPos());
-		setWorld(fastener.getWorld());
+		this.view = view;
+		this.bounds = new AxisAlignedBB(fastener.getPos());
+		this.setWorld(fastener.getWorld());
 	}
 
 	@Override
 	public EnumFacing getFacing() {
-		return fastener.getFacing();
+		return this.fastener.getFacing();
 	}
 
 	@Override
-	public boolean isDynamic() {
-		return false;
+	public boolean isMoving() {
+		return this.view.isMoving(this.getWorld(), this.fastener.getPos());
 	}
 
 	@Override
 	public BlockPos getPos() {
-		return fastener.getPos();
+		return this.fastener.getPos();
 	}
 
 	@Override
 	public Vec3d getConnectionPoint() {
-		return new Vec3d(getPos()).add(fastener.getOffset());
+		return this.view.getPosition(this.getWorld(), this.fastener.getPos(), new Vec3d(this.getPos()).add(this.fastener.getOffset()));
 	}
 
 	@Override
 	public FastenerAccessorBlock createAccessor() {
 		return new FastenerAccessorBlock(this);
-	}
-
-	@Override
-	public String toString() {
-		BlockPos pos = fastener.getPos();
-		return pos.getX() + " " + pos.getY() + " " + pos.getZ();
 	}
 }

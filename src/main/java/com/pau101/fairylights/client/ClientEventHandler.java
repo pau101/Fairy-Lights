@@ -1,8 +1,10 @@
 package com.pau101.fairylights.client;
 
+import com.google.common.collect.Sets;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
+import com.pau101.fairylights.server.fastener.CollectFastenersEvent;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerType;
 import com.pau101.fairylights.server.fastener.connection.Catenary;
@@ -28,11 +30,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -42,19 +42,15 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public final class ClientEventHandler {
 
@@ -153,63 +149,34 @@ public final class ClientEventHandler {
 	@Nullable
 	private static HitResult getHitConnection(World world, Entity viewer) {
 		AxisAlignedBB bounds = new AxisAlignedBB(viewer.getPosition()).grow(Connection.MAX_LENGTH + 1);
-		List<Fastener<?>> fasteners = collectFasteners(world, bounds);
+		Set<Fastener<?>> fasteners = collectFasteners(world, bounds);
 		return getHitConnection(viewer, bounds, fasteners);
 	}
 
-	private static List<Fastener<?>> collectFasteners(World world, AxisAlignedBB bounds) {
-		List<Fastener<?>> fasteners = world.getEntitiesWithinAABB(EntityFenceFastener.class, bounds)
-			.stream()
-			.map(e -> e.<Fastener<?>>getCapability(CapabilityHandler.FASTENER_CAP, null))
-			.collect(Collectors.toCollection(ArrayList::new)
-		);
-        int minX = MathHelper.floor((bounds.minX - 1) / 16D);
-        int maxX = MathHelper.ceil((bounds.maxX + 1) / 16D);
-        int minZ = MathHelper.floor((bounds.minZ - 1) / 16D);
-        int maxZ = MathHelper.ceil((bounds.maxZ + 1) / 16D);
-        IChunkProvider provider = world.getChunkProvider();
+	private static Set<Fastener<?>> collectFasteners(final World world, final AxisAlignedBB bounds) {
+		final Set<Fastener<?>> fasteners = Sets.newLinkedHashSet();
+		final CollectFastenersEvent event = new CollectFastenersEvent(world, bounds, fasteners);
+		world.getEntitiesWithinAABB(EntityFenceFastener.class, bounds)
+			.forEach(event::accept);
+        final int minX = MathHelper.floor(bounds.minX / 16.0D);
+		final int maxX = MathHelper.ceil(bounds.maxX / 16.0D);
+		final int minZ = MathHelper.floor(bounds.minZ / 16.0D);
+		final int maxZ = MathHelper.ceil(bounds.maxZ / 16.0D);
+        final IChunkProvider provider = world.getChunkProvider();
         for (int x = minX; x < maxX; x++) {
         	for (int z = minZ; z < maxZ; z++) {
-        		// Since this is the client we use provideChunk
-        		Chunk chunk = provider.provideChunk(x, z);
-        		if (chunk.isEmpty()) {
-        			continue;
-        		}
-        		Map<BlockPos, TileEntity> blockEntities = chunk.getTileEntityMap();
-        		// In case it is fixed
-        		if (blockEntities instanceof ConcurrentHashMap) {
-        			collectFasteners(bounds, fasteners, blockEntities);
-        		} else {
-        			try {
-        				collectFasteners(bounds, fasteners, blockEntities);
-        			} catch (ConcurrentModificationException e) {
-        				/*
-        				 * Oh noes!.. I would guess a ChunkRenderWorker discovered
-        				 * an invalid block entity and graciously removed it, or
-        				 * something modded did.
-        				 */
-        			}
-        		}
+				final Chunk chunk = provider.getLoadedChunk(x, z);
+				if (chunk != null) {
+					event.accept(chunk);
+				}
         	}
         }
+		MinecraftForge.EVENT_BUS.post(event);
         return fasteners;
 	}
 
-	private static void collectFasteners(AxisAlignedBB bounds, List<Fastener<?>> fasteners, Map<BlockPos, TileEntity> blockEntities) {
-		for (Entry<BlockPos, TileEntity> entry : blockEntities.entrySet()) {
-			Vec3d vec = new Vec3d(entry.getKey()).add(0.5, 0.5, 0.5);
-			if (!bounds.contains(vec)) {
-				continue;
-			}
-			TileEntity blockEntity = entry.getValue();
-			if (blockEntity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) {
-				fasteners.add(blockEntity.getCapability(CapabilityHandler.FASTENER_CAP, null));
-			}
-		}
-	}
-
 	@Nullable
-	private static HitResult getHitConnection(Entity viewer, AxisAlignedBB bounds, List<Fastener<?>> fasteners) {
+	private static HitResult getHitConnection(Entity viewer, AxisAlignedBB bounds, Set<Fastener<?>> fasteners) {
 		if (fasteners.isEmpty()) {
 			return null;
 		}
@@ -221,9 +188,6 @@ public final class ClientEventHandler {
 		Intersection rayTrace = null;
 		double distance = Double.MAX_VALUE;
 		for (Fastener<?> fastener : fasteners) {
-			if (!bounds.intersects(fastener.getBounds())) {
-				continue;
-			}
 			for (Connection connection : fastener.getConnections().values()) {
 				if (!connection.isOrigin()) {
 					continue;

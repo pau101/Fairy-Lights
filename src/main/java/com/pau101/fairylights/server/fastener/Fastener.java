@@ -40,7 +40,7 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
 	F createAccessor();
 
-	boolean isDynamic();
+	boolean isMoving();
 
 	default void resistSnap(Vec3d from) {}
 

@@ -49,6 +49,7 @@ public final class FairyLights {
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {
 		proxy.initConfig(event);
+		proxy.initIntegration();
 		proxy.initGUI();
 		proxy.initRenders();
 		proxy.initNetwork();

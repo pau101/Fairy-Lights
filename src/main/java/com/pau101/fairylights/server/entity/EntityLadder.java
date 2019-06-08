@@ -4,7 +4,7 @@ import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.Utils;
-import com.pau101.fairylights.util.matrix.Matrix;
+import com.pau101.fairylights.util.matrix.MatrixStack;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -94,7 +94,7 @@ public final class EntityLadder extends EntityLivingBase implements IEntityAddit
 	}
 
 	public List<AxisAlignedBB> getCollisionSurfaces() {
-		Matrix mat = new Matrix();
+		MatrixStack mat = new MatrixStack();
 		mat.rotate(-rotationYaw * Mth.DEG_TO_RAD + Mth.PI, 0, 1, 0);
 		List<AxisAlignedBB> bounds = new ArrayList<>();
 		final float[][] steps = {
