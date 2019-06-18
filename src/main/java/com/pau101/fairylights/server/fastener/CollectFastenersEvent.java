@@ -8,6 +8,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import java.util.ConcurrentModificationException;
 import java.util.Set;
 
 public class CollectFastenersEvent extends Event {
@@ -32,8 +33,12 @@ public class CollectFastenersEvent extends Event {
 	}
 
 	public void accept(final Chunk chunk) {
-		for (final TileEntity entity : chunk.getTileEntityMap().values()) {
-			this.accept(entity);
+		try {
+			for (final TileEntity entity : chunk.getTileEntityMap().values()) {
+				this.accept(entity);
+			}
+		} catch (final ConcurrentModificationException e) {
+			// RenderChunk's may find an invalid block entity while building and trigger a remove not on main thread
 		}
 	}
 
