@@ -30,6 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -49,6 +50,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Set;
 
@@ -78,12 +83,21 @@ public final class ClientEventHandler {
 	public void onClientTick(final TickEvent.ClientTickEvent event) {
 		final World world = Minecraft.getMinecraft().world;
 		if (event.phase != TickEvent.Phase.START && world != null) {
-			world.loadedTileEntityList.stream()
+			getBlockEntities(world).stream()
 				.filter(BlockEntityFastener.class::isInstance)
 				.map(BlockEntityFastener.class::cast)
 				.forEach(f -> {
 					f.getCapability(CapabilityHandler.FASTENER_CAP, null).update();
 				});
+		}
+	}
+
+	private Collection<TileEntity> getBlockEntities(final World world) {
+		try {
+			return new ArrayList<>(world.loadedTileEntityList);
+		} catch (final ConcurrentModificationException e) {
+			// RenderChunk's may find an invalid block entity while building and trigger a remove not on main thread
+			return Collections.emptyList();
 		}
 	}
 
