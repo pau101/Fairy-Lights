@@ -1,0 +1,80 @@
+itemGroup.fairylights=Fairy Lights
+
+fairylights.config=Fairy Lights Seçenekleri
+
+tile.fairyLights.name=Bağ Kilidi
+
+item.hangingLights.name=Asma Lamba
+item.garland.name=Sarmaşık Çelenk
+item.tinsel.name=Tinsel Çelenk
+
+item.fairyLights.pattern=Desen:
+item.fairyLights.twinkle=Parlak
+item.fairyLights.tight=Kavissiz
+
+item.pennantBunting.name=Kiraz Kuşu Bayrak
+item.pennantBunting.colors=Renkler:
+
+item.letterBunting.name=Harf Kiraz Kuşu
+
+item.pennant.name=Kiraz Kuşu
+
+item.light.name=Işık
+item.light.fairy.name=Peri Işığı
+item.light.paper.name=Kağıt Lamba
+item.light.orb.name=Küre Fener
+item.light.flower.name=Çiçek Lambaıs
+item.light.ornate.name=Süslü Fener
+item.light.oil.name=Gaz Lambası
+item.light.luxoBall.name=Luxo Top
+item.light.jackOLantern.name=Jack o'Fener
+item.light.skull.name=Kurukafa Lambası
+item.light.ghost.name=Hayalet Lambası
+item.light.spider.name=Örümcek Lambası
+item.light.witch.name=Cadı Lambası
+item.light.snowflake.name=Kar Tanesi Işığı
+item.light.icicle.name=Buz Lambası
+item.light.meteor.name=Meteor Lamba
+
+item.ladder.name=Seyyar Merdiven
+
+entity.fairylights.fastener.name=Kilit
+entity.fairylights.ladder.name=Seyyar Merdiven
+
+gui.editLetteredConnection.name=Bayrak Yazısını Ayarla
+
+recipe.ingredient.tooltip=ยง7%s
+recipe.ingredient.auxiliary.optional=(İsteğe Bağlı)
+recipe.hangingLights.glowstone=Işıkların parıldamasını sağlar
+recipe.hangingLights.light=Deseni özelleştirmek için birden fazla lamba kullanın
+recipe.pennantBunting.pennant=Deseni özelleştirmek için birden fazla bayrak kullanın
+
+format.pattern.entry=  %1$s
+format.colored=%1$s %2$s
+format.text=Text: %1$s
+
+color.black.name=Siyah
+color.red.name=Kırmızı
+color.green.name=Yeşil
+color.brown.name=Kahverengi
+color.blue.name=Mavi
+color.purple.name=Mor
+color.cyan.name=Camgöbeği
+color.silver.name=Açık Gri
+color.gray.name=Gri
+color.pink.name=Pembe
+color.lime.name=Kireç
+color.yellow.name=Sarı
+color.lightBlue.name=Açık Mavi
+color.magenta.name=Eflatun
+color.orange.name=Turuncu
+color.white.name=Beyaz
+
+subtitles.block.jingleBell=Zil şıkırdıyor
+subtitles.block.cord.connect=Bağ bağlanıyor
+subtitles.block.cord.disconnect=Bağ kesiliyor
+subtitles.block.cord.stretch=Bağ geriliyor
+subtitles.block.cord.snap=Bağ kopuyor
+subtitles.block.feature.lightTurnOn=Işıklar açılıyor
+subtitles.block.feature.lightTurnOff=Işıklar kapanıyor
+subtitles.block.feature.colorChange=Renk patlıyor
