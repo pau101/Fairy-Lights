@@ -2,11 +2,16 @@ package com.pau101.fairylights.client.renderer;
 
 import com.pau101.fairylights.server.block.FLBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public final class FenceFastenerRepresentative extends TileEntity {
-	private FenceFastenerRepresentative() {}
+	private FenceFastenerRepresentative() {
+		super(TileEntityType.FURNACE);
+	}
 
 	public static final FenceFastenerRepresentative INSTANCE = new FenceFastenerRepresentative();
 
@@ -21,12 +26,23 @@ public final class FenceFastenerRepresentative extends TileEntity {
 	}
 
 	@Override
-	public Block getBlockType() {
-		return FLBlocks.FASTENER;
+	public BlockState getBlockState() {
+		return FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState();
 	}
 
 	@Override
-	public int getBlockMetadata() {
-		return 0;
+	public boolean hasWorld() {
+		return true;
+	}
+
+	@Override
+	public TileEntityType<?> getType() {
+		// FIXME
+		return new TileEntityType<FurnaceTileEntity>(null, null, null) {
+			@Override
+			public boolean isValidBlock(final Block block) {
+				return true;
+			}
+		};
 	}
 }

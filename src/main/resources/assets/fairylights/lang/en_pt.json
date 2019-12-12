@@ -1,0 +1,82 @@
+{
+    "itemGroup.fairylights": "Fairy Lights",
+
+    "fairylights.config": "Configur' yer Fairy Lights",
+
+    "block.fairylights.fastener": "Fasten yer ropes",
+
+    "item.fairylights.hanging_lights": "Roped Lanterns",
+    "item.fairylights.garland": "Hangin' Ivy",
+    "item.fairylights.tinsel": "Hangin' Metal Scraps",
+
+    "item.fairyLights.pattern": "Pattern:",
+    "item.fairyLights.twinkle": "Sparkly like gold",
+    "item.fairyLights.tight": "Pulled tight",
+
+    "item.fairylights.pennant_bunting": "Hangin' Flags",
+    "item.pennantBunting.colors": "Colors:",
+
+    "item.fairylights.letter_bunting": "Hangin' Letters",
+
+    "item.fairylights.pennant": "Flag",
+
+    "item.light.name": "Lantern",
+    "item.fairylights.fairy_light": "Small Lantern",
+    "item.fairylights.paper_lantern": "Lantern o' Paper",
+    "item.fairylights.orb_lantern": "Orb Lantern",
+    "item.fairylights.flower_light": "Lantern o' Flowers",
+    "item.fairylights.ornate_lantern": "Metal Lantern",
+    "item.fairylights.oil_lantern": "Oil Lantern",
+    "item.light.luxoBall.name": "Luxo Ball",
+    "item.fairylights.jack_o_lantern": "Jack o'Lantern",
+    "item.fairylights.skull_light": "Flamin' Skull",
+    "item.fairylights.ghost_light": "Lantern o' Dead Man's Spirit",
+    "item.fairylights.spider_light": "Lantern o' Spider",
+    "item.fairylights.witch_light": "Lantern o' Wizard",
+    "item.fairylights.snowflake_light": "Lantern o' Snowflake",
+    "item.fairylights.icicle_lights": "Lantern o' Frozen Ice",
+    "item.fairylights.meteor_light": "Lantern o' Meteor",
+
+    "item.fairylights.ladder": "Steps for Climbin'",
+
+    "entity.fairylights.fastener": "Fasten yer Ropes",
+    "entity.fairylights.ladder": "Steps for Climbin'",
+
+    "gui.editLetteredConnection.name": "Write yer Text",
+
+    "recipe.ingredient.tooltip": "§7%s",
+    "recipe.ingredient.auxiliary.optional": "(Optional)",
+    "recipe.hangingLights.glowstone": "Make yer lanterns sparkle",
+    "recipe.hangingLights.light": "Add some lanterns to customize yer pattern",
+    "recipe.pennantBunting.pennant": "Add some flags to customize yer pattern",
+
+    "format.pattern.entry": "  %1$s",
+    "format.colored": "%1$s %2$s",
+    "format.text": "Text: %1$s",
+
+    "color.black.name": "Dark Black",
+    "color.red.name": "Blood Red",
+    "color.green.name": "Great Green",
+    "color.brown.name": "Wood Brown",
+    "color.blue.name": "Deep Blue",
+    "color.purple.name": "Royal Purple",
+    "color.cyan.name": "Sea Cyan",
+    "color.light_gray.name": "Cannon Light Gray",
+    "color.gray.name": "Grand Gray",
+    "color.pink.name": "Bright Pink",
+    "color.lime.name": "Poison Lime",
+    "color.yellow.name": "Bright Yellow",
+    "color.light_blue.name": "Sky Light Blue",
+    "color.magenta.name": "Royal Magenta",
+    "color.orange.name": "Light Orange",
+    "color.white.name": "Sand White",
+
+    "subtitles.block.jingleBell": "Bell jangles",
+    "subtitles.block.cord.connect": "Rope ties up",
+    "subtitles.block.cord.disconnect": "Rope is cut",
+    "subtitles.block.cord.stretch": "Rope pulls",
+    "subtitles.block.cord.snap": "Rope whips",
+    "subtitles.block.feature.lightTurnOn": "Lanterns catch fire",
+    "subtitles.block.feature.lightTurnOff": "Lanterns burn out",
+    "subtitles.block.feature.colorChange": "Color plops"
+}

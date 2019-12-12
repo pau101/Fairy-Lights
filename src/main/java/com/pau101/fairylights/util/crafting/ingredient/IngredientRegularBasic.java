@@ -1,15 +1,13 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
-import java.util.Collections;
-import java.util.Objects;
-
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultRegular;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Collections;
+import java.util.Objects;
 
 public class IngredientRegularBasic implements IngredientRegular {
 	protected final ItemStack ingredient;
@@ -18,12 +16,8 @@ public class IngredientRegularBasic implements IngredientRegular {
 		this(new ItemStack(Objects.requireNonNull(item, "item")));
 	}
 
-	public IngredientRegularBasic(Item item, int metadata) {
-		this(new ItemStack(Objects.requireNonNull(item, "item"), 1, metadata));
-	}
-
 	public IngredientRegularBasic(Block block) {
-		this(new ItemStack(Objects.requireNonNull(block, "block"), 1, OreDictionary.WILDCARD_VALUE));
+		this(new ItemStack(Objects.requireNonNull(block, "block")));
 	}
 
 	public IngredientRegularBasic(ItemStack stack) {
@@ -33,7 +27,7 @@ public class IngredientRegularBasic implements IngredientRegular {
 
 	@Override
 	public final MatchResultRegular matches(ItemStack input, ItemStack output) {
-		return new MatchResultRegular(this, input, OreDictionary.itemMatches(ingredient, input, false), Collections.EMPTY_LIST);
+		return new MatchResultRegular(this, input, ingredient.getItem() == input.getItem(), Collections.emptyList());
 	}
 
 	@Override

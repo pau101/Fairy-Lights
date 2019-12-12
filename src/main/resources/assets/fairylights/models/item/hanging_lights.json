@@ -1,10 +1,10 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "fairylights:items/hanging_lights_0",
-        "layer1": "fairylights:items/hanging_lights_1",
-        "layer2": "fairylights:items/hanging_lights_2",
-        "layer3": "fairylights:items/hanging_lights_3",
-        "layer4": "fairylights:items/hanging_lights_4"
+        "layer0": "fairylights:item/hanging_lights_0",
+        "layer1": "fairylights:item/hanging_lights_1",
+        "layer2": "fairylights:item/hanging_lights_2",
+        "layer3": "fairylights:item/hanging_lights_3",
+        "layer4": "fairylights:item/hanging_lights_4"
     }
 }

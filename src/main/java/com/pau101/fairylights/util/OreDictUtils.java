@@ -1,107 +1,92 @@
 package com.pau101.fairylights.util;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.tags.Tag;
+import net.minecraftforge.common.Tags;
+
+import java.util.stream.Collectors;
 
 public final class OreDictUtils {
 	private OreDictUtils() {}
 
-	@Nullable
-	private static ImmutableMultimap<Integer, ItemStack> dyeItemStacks;
-
 	public static boolean isDye(ItemStack stack) {
 		if (!stack.isEmpty()) {
-			if (stack.getItem() == Items.DYE) {
+			if (stack.getItem() instanceof DyeItem) {
 				return true;
 			}
-			for (ItemStack dye : getAllDyes()) {
-				if (OreDictionary.itemMatches(dye, stack, false)) {
-					return true;
-				}
-			}
+			return stack.getItem().isIn(Tags.Items.DYES);
 		}
 		return false;
 	}
 
 	public static int getDyeMetadata(ItemStack stack) {
 		if (!stack.isEmpty()) {
-			if (stack.getItem() == Items.DYE) {
-				return stack.getMetadata();
+			if (stack.getItem() instanceof DyeItem) {
+				return ((DyeItem) stack.getItem()).getDyeColor().getId();
 			}
-			getDyeItemStacks();
 			for (Dye dye : Dye.values()) {
-				for (ItemStack dyeStack : getDyeItemStacks().get(dye.getDamage())) {
-					if (OreDictionary.itemMatches(dyeStack, stack, false)) {
-						return dye.getDamage();
-					}
+				if (stack.getItem().isIn(dye.getName())) {
+					return dye.getId();
 				}
 			}
 		}
 		return -1;
 	}
 
-	public static ImmutableList<ItemStack> getDyes(EnumDyeColor color) {
-		return getDyeItemStacks().get(color.getDyeDamage()).asList();
+	public static ImmutableList<ItemStack> getDyes(DyeColor color) {
+		return getDyeItemStacks().get(color.getId()).asList();
 	}
 
 	public static ImmutableList<ItemStack> getAllDyes() {
 		return getDyeItemStacks().values().asList();
 	}
 
-	public static boolean matches(ItemStack stack, String name) {
-		return OreDictionary.containsMatch(false, OreDictionary.getOres(name), stack);
-	}
-
 	private static ImmutableMultimap<Integer, ItemStack> getDyeItemStacks() {
-		if (dyeItemStacks == null) {
-			ImmutableMultimap.Builder<Integer, ItemStack> bob = ImmutableMultimap.builder();
-			for (Dye dye : Dye.values()) {
-				bob.putAll(dye.getDamage(), OreDictionary.getOres(dye.getName()));
-			}
-			dyeItemStacks = bob.build();
+		ImmutableMultimap.Builder<Integer, ItemStack> bob = ImmutableMultimap.builder();
+		for (Dye dye : Dye.values()) {
+			bob.putAll(dye.getId(), dye.getName().getAllElements().stream().map(ItemStack::new).collect(Collectors.toList()));
 		}
-		return dyeItemStacks;
+		return bob.build();
 	}
 
 	private enum Dye {
-		BLACK("dyeBlack"),
-		RED("dyeRed"),
-		GREEN("dyeGreen"),
-		BROWN("dyeBrown"),
-		BLUE("dyeBlue"),
-		PURPLE("dyePurple"),
-		CYAN("dyeCyan"),
-		LIGHT_GRAY("dyeLightGray"),
-		GRAY("dyeGray"),
-		PINK("dyePink"),
-		LIME("dyeLime"),
-		YELLOW("dyeYellow"),
-		LIGHT_BLUE("dyeLightBlue"),
-		MAGENTA("dyeMagenta"),
-		ORANGE("dyeOrange"),
-		WHITE("dyeWhite");
+		WHITE(Tags.Items.DYES_WHITE),
+		ORANGE(Tags.Items.DYES_ORANGE),
+		MAGENTA(Tags.Items.DYES_MAGENTA),
+		LIGHT_BLUE(Tags.Items.DYES_LIGHT_BLUE),
+		YELLOW(Tags.Items.DYES_YELLOW),
+		LIME(Tags.Items.DYES_LIME),
+		PINK(Tags.Items.DYES_PINK),
+		GRAY(Tags.Items.DYES_GRAY),
+		LIGHT_GRAY(Tags.Items.DYES_LIGHT_GRAY),
+		CYAN(Tags.Items.DYES_CYAN),
+		PURPLE(Tags.Items.DYES_PURPLE),
+		BLUE(Tags.Items.DYES_BLUE),
+		BROWN(Tags.Items.DYES_BROWN),
+		GREEN(Tags.Items.DYES_GRAY),
+		RED(Tags.Items.DYES_RED),
+		BLACK(Tags.Items.DYES_BLACK);
 
-		private final String name;
+		private final Tag<Item> name;
 
-		private final int damage;
+		private final int id;
 
-		Dye(String name) {
+		Dye(Tag<Item> name) {
 			this.name = name;
-			damage = ordinal();
+			id = ordinal();
 		}
 
-		private String getName() {
+		private Tag<Item> getName() {
 			return name;
 		}
 
-		private int getDamage() {
-			return damage;
+		private int getId() {
+			return id;
 		}
 	}
 }

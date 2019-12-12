@@ -4,8 +4,9 @@ import com.google.common.collect.Sets;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.server.jingle.Jingle.PlayTick;
 import com.pau101.fairylights.server.sound.FLSounds;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -43,11 +44,11 @@ public final class JinglePlayer {
 		state = state.tick(world, origin, lights, isClient);
 	}
 
-	public NBTTagCompound serialize() {
+	public CompoundNBT serialize() {
 		return StateType.serialize(state);
 	}
 
-	public void deserialize(NBTTagCompound compound) {
+	public void deserialize(CompoundNBT compound) {
 		state = StateType.deserialize(compound);
 	}
 
@@ -72,27 +73,27 @@ public final class JinglePlayer {
 			return factory;
 		}
 
-		public static <S extends State<S>> NBTTagCompound serialize(State<S> state) {
+		public static <S extends State<S>> CompoundNBT serialize(State<S> state) {
 			StateFactory<S> factory = state.getFactory();
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("state", factory.getId());
-			compound.setTag("data", factory.serialize(state.resolve()));
+			CompoundNBT compound = new CompoundNBT();
+			compound.putString("state", factory.getId());
+			compound.put("data", factory.serialize(state.resolve()));
 			return compound;
 		}
 
-		public static State<?> deserialize(NBTTagCompound compound) {
+		public static State<?> deserialize(CompoundNBT compound) {
 			return MAP.getOrDefault(compound.getString("state"), NOT_PLAYING)
 					.getFactory()
-					.deserialize(compound.getCompoundTag("data"));
+					.deserialize(compound.getCompound("data"));
 		}
 	}
 
 	private static abstract class StateFactory<S extends State<S>> {
 		public abstract String getId();
 
-		public abstract NBTTagCompound serialize(S state);
+		public abstract CompoundNBT serialize(S state);
 
-		public abstract State<?> deserialize(NBTTagCompound compound);
+		public abstract State<?> deserialize(CompoundNBT compound);
 	}
 
 	private static abstract class State<S extends State<S>> {
@@ -150,12 +151,12 @@ public final class JinglePlayer {
 				}
 
 				@Override
-				public NBTTagCompound serialize(NotPlayingState state) {
-					return new NBTTagCompound();
+				public CompoundNBT serialize(NotPlayingState state) {
+					return new CompoundNBT();
 				}
 
 				@Override
-				public NotPlayingState deserialize(NBTTagCompound compound) {
+				public NotPlayingState deserialize(CompoundNBT compound) {
 					return new NotPlayingState();
 				}
 			};
@@ -175,7 +176,7 @@ public final class JinglePlayer {
 
 		private final int length;
 
-		private final EnumParticleTypes[] noteParticle;
+		private final BasicParticleType[] noteParticle;
 
 		private int index;
 
@@ -187,7 +188,7 @@ public final class JinglePlayer {
 			this(library, jingle, lightOffset, jingle.getPlayTicks(), jingle.getLength(), getParticles(jingle));
 		}
 
-		private PlayingState(JingleLibrary library, Jingle jingle, int lightOffset, List<PlayTick> playTicks, int length, EnumParticleTypes[] noteParticle) {
+		private PlayingState(JingleLibrary library, Jingle jingle, int lightOffset, List<PlayTick> playTicks, int length, BasicParticleType[] noteParticle) {
 			this.library = library;
 			this.jingle = jingle;
 			this.lightOffset = lightOffset;
@@ -233,7 +234,7 @@ public final class JinglePlayer {
 			for (int note : playTick.getNotes()) {
 				int idx = note - jingle.getLowestNote() + lightOffset;
 				if (idx >= 0 && idx < lights.length) {
-					lights[idx].jingle(world, origin, note, FLSounds.JINGLE_BELL, noteParticle);
+					lights[idx].jingle(world, origin, note, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), noteParticle);
 				}
 			}
 		}
@@ -256,42 +257,42 @@ public final class JinglePlayer {
 				}
 
 				@Override
-				public NBTTagCompound serialize(PlayingState state) {
-					NBTTagCompound compound = new NBTTagCompound();
-					compound.setInteger("library", state.library.getId());
-					compound.setString("jingle", state.jingle.getId());
-					compound.setInteger("lightOffset", state.lightOffset);
-					compound.setInteger("index", state.index);
-					compound.setInteger("rest", state.rest);
-					compound.setInteger("time", state.time);
+				public CompoundNBT serialize(PlayingState state) {
+					CompoundNBT compound = new CompoundNBT();
+					compound.putInt("library", state.library.getId());
+					compound.putString("jingle", state.jingle.getId());
+					compound.putInt("lightOffset", state.lightOffset);
+					compound.putInt("index", state.index);
+					compound.putInt("rest", state.rest);
+					compound.putInt("time", state.time);
 					return compound;
 				}
 
 				@Override
-				public State<?> deserialize(NBTTagCompound compound) {
-					JingleLibrary library = JingleLibrary.fromId(compound.getInteger("library"));
+				public State<?> deserialize(CompoundNBT compound) {
+					JingleLibrary library = JingleLibrary.fromId(compound.getInt("library"));
 					Jingle jingle = library.get(compound.getString("jingle"));
 					if (jingle == null) {
 						return new NotPlayingState();
 					}
-					int lightOffset = compound.getInteger("lightOffset");
+					int lightOffset = compound.getInt("lightOffset");
 					PlayingState state = new PlayingState(library, jingle, lightOffset);
-					state.index = compound.getInteger("index");
-					state.rest = compound.getInteger("rest");
-					state.time = compound.getInteger("time");
+					state.index = compound.getInt("index");
+					state.rest = compound.getInt("rest");
+					state.time = compound.getInt("time");
 					return state;
 				}
 			};
 		}
 
-		private static EnumParticleTypes[] getParticles(Jingle jingle) {
+		private static BasicParticleType[] getParticles(Jingle jingle) {
 			if ("playing_with_fire".equals(jingle.getId())) {
-				return new EnumParticleTypes[] { EnumParticleTypes.NOTE, EnumParticleTypes.LAVA };
+				return new BasicParticleType[] { ParticleTypes.NOTE, ParticleTypes.LAVA };
 			}
 			if (WITH_LOVE.contains(jingle.getId())) {
-				return new EnumParticleTypes[] { EnumParticleTypes.NOTE, EnumParticleTypes.HEART };
+				return new BasicParticleType[] { ParticleTypes.NOTE, ParticleTypes.HEART };
 			}
-			return new EnumParticleTypes[] { EnumParticleTypes.NOTE };
+			return new BasicParticleType[] { ParticleTypes.NOTE };
 		}
 	}
 }

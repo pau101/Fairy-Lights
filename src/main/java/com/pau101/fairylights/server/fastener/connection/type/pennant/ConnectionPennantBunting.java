@@ -1,9 +1,5 @@
 package com.pau101.fairylights.server.fastener.connection.type.pennant;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
@@ -16,27 +12,30 @@ import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.OreDictUtils;
 import com.pau101.fairylights.util.styledstring.StyledString;
-
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public final class ConnectionPennantBunting extends ConnectionHangingFeature<Pennant> implements Lettered {
-	private List<EnumDyeColor> pattern;
+	private List<DyeColor> pattern;
 
 	private StyledString text;
 
-	public ConnectionPennantBunting(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+	public ConnectionPennantBunting(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 		super(world, fastener, uuid, destination, isOrigin, compound);
 	}
 
@@ -57,23 +56,23 @@ public final class ConnectionPennantBunting extends ConnectionHangingFeature<Pen
 	}
 
 	@Override
-	public void processClientAction(EntityPlayer player, PlayerAction action, Intersection intersection) {
+	public void processClientAction(PlayerEntity player, PlayerAction action, Intersection intersection) {
 		if (openTextGui(player, action, intersection)) {
 			super.processClientAction(player, action, intersection);
 		}
 	}
 
 	@Override
-	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, EnumHand hand) {
+	public boolean interact(PlayerEntity player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, Hand hand) {
 		if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
 			int index = feature % pattern.size();
-			EnumDyeColor patternColor = pattern.get(index);
-			EnumDyeColor color = EnumDyeColor.byDyeDamage(OreDictUtils.getDyeMetadata(heldStack));
+			DyeColor patternColor = pattern.get(index);
+			DyeColor color = DyeColor.getColor(heldStack);
 			if (patternColor != color) {
 				pattern.set(index, color);
 				dataUpdateState = true;
 				heldStack.shrink(1);
-				world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE, SoundCategory.BLOCKS, 1, 1);
+				world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
 				return true;
 			}
 		}
@@ -116,34 +115,34 @@ public final class ConnectionPennantBunting extends ConnectionHangingFeature<Pen
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public GuiScreen createTextGUI() {
+	@OnlyIn(Dist.CLIENT)
+	public Screen createTextGUI() {
 		return new GuiEditLetteredConnection<>(this);
 	}
 
 	@Override
-	public NBTTagCompound serializeLogic() {
-		NBTTagCompound compound = super.serializeLogic();
-		NBTTagList patternList = new NBTTagList();
-		for (EnumDyeColor color : pattern) {
-			NBTTagCompound colorCompound = new NBTTagCompound();
-			colorCompound.setByte("color", (byte) color.getDyeDamage());
-			patternList.appendTag(colorCompound);
+	public CompoundNBT serializeLogic() {
+		CompoundNBT compound = super.serializeLogic();
+		ListNBT patternList = new ListNBT();
+		for (DyeColor color : pattern) {
+			CompoundNBT colorCompound = new CompoundNBT();
+			colorCompound.putByte("color", (byte) color.getId());
+			patternList.add(colorCompound);
 		}
-		compound.setTag("pattern", patternList);
-		compound.setTag("text", StyledString.serialize(text));
+		compound.put("pattern", patternList);
+		compound.put("text", StyledString.serialize(text));
 		return compound;
 	}
 
 	@Override
-	public void deserializeLogic(NBTTagCompound compound) {
+	public void deserializeLogic(CompoundNBT compound) {
 		super.deserializeLogic(compound);
 		pattern = new ArrayList<>();
-		NBTTagList patternList = compound.getTagList("pattern", NBT.TAG_COMPOUND);
-		for (int i = 0; i < patternList.tagCount(); i++) {
-			NBTTagCompound colorCompound = patternList.getCompoundTagAt(i);
-			pattern.add(EnumDyeColor.byDyeDamage(colorCompound.getByte("color")));
+		ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
+		for (int i = 0; i < patternList.size(); i++) {
+			CompoundNBT colorCompound = patternList.getCompound(i);
+			pattern.add(DyeColor.byId(colorCompound.getByte("color")));
 		}
-		text = StyledString.deserialize(compound.getCompoundTag("text"));
+		text = StyledString.deserialize(compound.getCompound("text"));
 	}
 }

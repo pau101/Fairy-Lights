@@ -12,7 +12,7 @@ import com.pau101.fairylights.server.fastener.connection.type.ConnectionHangingF
 import com.pau101.fairylights.util.AABBBuilder;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.matrix.MatrixStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -29,7 +29,7 @@ public abstract class ConnectionHangingFeature<F extends HangingFeature> extends
 	@Nullable
 	protected F[] prevFeatures;
 
-	public ConnectionHangingFeature(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+	public ConnectionHangingFeature(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 		super(world, fastener, uuid, destination, isOrigin, compound);
 	}
 

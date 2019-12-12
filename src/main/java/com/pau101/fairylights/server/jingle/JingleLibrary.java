@@ -1,5 +1,17 @@
 package com.pau101.fairylights.server.jingle;
 
+import com.google.common.base.Throwables;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.io.Closeables;
+import com.pau101.fairylights.FairyLights;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.DefaultedRegistry;
+
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -8,23 +20,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
-import com.google.common.base.Throwables;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.io.Closeables;
-import com.pau101.fairylights.FairyLights;
-
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.registry.RegistryNamespacedDefaultedByKey;
-
 public class JingleLibrary {
 	private static final String UNKNOWN_ID = "";
 
-	private static final RegistryNamespacedDefaultedByKey<String, JingleLibrary> REGISTRY = new RegistryNamespacedDefaultedByKey<>(UNKNOWN_ID);
+	private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(UNKNOWN_ID);
 
 	private static final JingleLibrary UNKNOWN = register(new JingleLibrary(UNKNOWN_ID) {
 		@Override
@@ -48,7 +47,7 @@ public class JingleLibrary {
 	}
 
 	public int getId() {
-		return REGISTRY.getIDForObject(this);
+		return REGISTRY.getId(this);
 	}
 
 	public boolean contains(String id) {
@@ -97,12 +96,12 @@ public class JingleLibrary {
 		}
 	}
 
-	private synchronized void deserialize(NBTTagCompound library) {
+	private synchronized void deserialize(CompoundNBT library) {
 		jingles.clear();
 		jinglesWithinRange.clear();
 		rangeWeights.clear();
-		for (String id : library.getKeySet()) {
-			NBTTagCompound jingleCompound = library.getCompoundTag(id);
+		for (String id : library.keySet()) {
+			CompoundNBT jingleCompound = library.getCompound(id);
 			Jingle jingle = Jingle.from(jingleCompound);
 			if (jingle.isValid() && !contains(jingle.getId())) {
 				put(jingle.getId(), jingle);
@@ -115,12 +114,12 @@ public class JingleLibrary {
 	}
 
 	private static JingleLibrary register(JingleLibrary library) {
-		REGISTRY.register(nextFeatureId++, library.name, library);
+		REGISTRY.register(nextFeatureId++, new ResourceLocation(library.name), library);
 		return library;
 	}
 
 	public static JingleLibrary fromId(int id) {
-		return REGISTRY.getObjectById(id);
+		return REGISTRY.getByValue(id);
 	}
 
 	public static void loadAll() {

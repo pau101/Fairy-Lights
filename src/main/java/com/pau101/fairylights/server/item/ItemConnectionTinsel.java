@@ -1,40 +1,35 @@
 package com.pau101.fairylights.server.item;
 
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.util.Utils;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 
 public final class ItemConnectionTinsel extends ItemConnection {
-	public ItemConnectionTinsel() {
-		setCreativeTab(FairyLights.fairyLightsTab);
-		setHasSubtypes(true);
-		Utils.name(this, "tinsel");
+	public ItemConnectionTinsel(Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public String getItemStackDisplayName(ItemStack itemStack) {
-		String localizedTinselName = I18n.translateToLocal(super.getTranslationKey(itemStack) + ".name");
-		if (itemStack.hasTagCompound()) {
-			NBTTagCompound compound = itemStack.getTagCompound();
-			return Utils.formatColored(EnumDyeColor.byDyeDamage(compound.getByte("color")), localizedTinselName);
+	public ITextComponent getDisplayName(ItemStack stack) {
+		ITextComponent localizedTinselName = super.getDisplayName(stack);
+		if (stack.hasTag()) {
+			CompoundNBT compound = stack.getTag();
+			return Utils.formatColored(DyeColor.byId(compound.getByte("color")), localizedTinselName);
 		}
 		return localizedTinselName;
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (isInCreativeTab(tab)) {
-			for (int color = 0; color < ItemLight.COLOR_COUNT; color++) {
-				ItemStack tinsel = new ItemStack(this, 1);
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setByte("color", (byte) color);
-				tinsel.setTagCompound(compound);
+	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> items) {
+		if (isInGroup(tab)) {
+			for (DyeColor color : DyeColor.values()) {
+				ItemStack tinsel = new ItemStack(this);
+				tinsel.getOrCreateTag().putByte("color", (byte) color.getId());
 				items.add(tinsel);
 			}
 		}

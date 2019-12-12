@@ -1,16 +1,15 @@
 package com.pau101.fairylights.server.fastener.connection.type.garland;
 
-import java.util.UUID;
-
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
-
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
+import java.util.UUID;
+
 public final class ConnectionGarlandVine extends Connection {
-	public ConnectionGarlandVine(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+	public ConnectionGarlandVine(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 		super(world, fastener, uuid, destination, isOrigin, compound);
 	}
 

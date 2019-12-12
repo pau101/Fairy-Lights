@@ -1,14 +1,13 @@
 package com.pau101.fairylights.client.midi;
 
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
-
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.client.Minecraft;
+
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.ShortMessage;
 
 public final class MidiJingler implements Receiver {
 	private ConnectionHangingLights connection;
@@ -37,7 +36,7 @@ public final class MidiJingler implements Receiver {
 		int offset = lights.length / 2 - 12;
 		int idx = note + offset;
 		if (idx >= 0 && idx < lights.length) {
-			Minecraft.getMinecraft().addScheduledTask(() -> lights[idx].jingle(connection.getWorld(), connection.getFastener().getConnectionPoint(), note));
+			Minecraft.getInstance().execute(() -> lights[idx].jingle(connection.getWorld(), connection.getFastener().getConnectionPoint(), note));
 		}
 	}
 

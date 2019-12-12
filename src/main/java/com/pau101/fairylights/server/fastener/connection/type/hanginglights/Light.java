@@ -6,8 +6,8 @@ import com.pau101.fairylights.server.item.LightVariant;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.CubicBezier;
 import com.pau101.fairylights.util.Mth;
-
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -105,19 +105,19 @@ public final class Light extends HangingFeature<Light> {
 	}
 
 	public void jingle(World world, Vec3d origin, int note) {
-		jingle(world, origin, note, EnumParticleTypes.NOTE);
+		jingle(world, origin, note, ParticleTypes.NOTE);
 	}
 
-	public void jingle(World world, Vec3d origin, int note, EnumParticleTypes particle) {
-		jingle(world, origin, note, FLSounds.JINGLE_BELL, particle);
+	public void jingle(World world, Vec3d origin, int note, BasicParticleType particle) {
+		jingle(world, origin, note, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), particle);
 	}
 
-	public void jingle(World world, Vec3d origin, int note, SoundEvent sound, EnumParticleTypes... particles) {
+	public void jingle(World world, Vec3d origin, int note, SoundEvent sound, BasicParticleType... particles) {
 		if (world.isRemote) {
 			double x = origin.x + point.x / 16;
 			double y = origin.y + point.y / 16;
 			double z = origin.z + point.z / 16;
-			for (EnumParticleTypes particle : particles) {
+			for (BasicParticleType particle : particles) {
 				double vx = world.rand.nextGaussian();
 				double vy = world.rand.nextGaussian();
 				double vz = world.rand.nextGaussian();
@@ -126,7 +126,7 @@ public final class Light extends HangingFeature<Light> {
 				vx *= mag;
 				vy *= mag;
 				vz *= mag;
-				world.spawnParticle(particle, x + vx, y + vy, z + vz, particle == EnumParticleTypes.NOTE ? note / 24D : 0, 0, 0);	
+				world.addParticle(particle, x + vx, y + vy, z + vz, particle == ParticleTypes.NOTE ? note / 24D : 0, 0, 0);
 			}
 			if (lastJingledTick != tick) {
 				world.playSound(x, y, z, sound, SoundCategory.BLOCKS, Configurator.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);

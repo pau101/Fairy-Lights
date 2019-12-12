@@ -1,15 +1,14 @@
 package com.pau101.fairylights.server.fastener.connection.type;
 
-import java.util.function.Function;
-
 import com.pau101.fairylights.server.fastener.connection.PlayerAction;
 import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
 import com.pau101.fairylights.util.styledstring.StyledString;
 import com.pau101.fairylights.util.styledstring.StylingPresence;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+
+import java.util.function.Function;
 
 public interface Lettered {
 	int MAX_TEXT_LENGTH = 64;
@@ -45,11 +44,11 @@ public interface Lettered {
 		return IDENTITY_CHARACTER_TRANSFORMER;
 	}
 
-	GuiScreen createTextGUI();
+	Screen createTextGUI();
 
-	default boolean openTextGui(EntityPlayer player, PlayerAction action, Intersection intersection) {
+	default boolean openTextGui(PlayerEntity player, PlayerAction action, Intersection intersection) {
 		if (action == PlayerAction.INTERACT && player.isSneaking()) {
-			Minecraft.getMinecraft().displayGuiScreen(createTextGUI());
+			Minecraft.getInstance().displayGuiScreen(createTextGUI());
 			return false;
 		}
 		return true;

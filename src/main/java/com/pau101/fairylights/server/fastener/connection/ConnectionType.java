@@ -1,13 +1,5 @@
 package com.pau101.fairylights.server.fastener.connection;
 
-import java.util.UUID;
-
-import com.pau101.fairylights.client.model.connection.ModelConnection;
-import com.pau101.fairylights.client.model.connection.ModelConnectionGarland;
-import com.pau101.fairylights.client.model.connection.ModelConnectionHangingLights;
-import com.pau101.fairylights.client.model.connection.ModelConnectionLetterBunting;
-import com.pau101.fairylights.client.model.connection.ModelConnectionPennantBunting;
-import com.pau101.fairylights.client.model.connection.ModelConnectionTinsel;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.garland.ConnectionGarlandTinsel;
@@ -17,15 +9,16 @@ import com.pau101.fairylights.server.fastener.connection.type.letter.ConnectionL
 import com.pau101.fairylights.server.fastener.connection.type.pennant.ConnectionPennantBunting;
 import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.server.item.ItemConnection;
-
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.UUID;
 
 public enum ConnectionType {
 	HANGING_LIGHTS {
 		@Override
-		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 			return new ConnectionHangingLights(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
@@ -36,12 +29,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FLItems.HANGING_LIGHTS;
-		}
-
-		@Override
-		public ModelConnection createRenderer() {
-			return new ModelConnectionHangingLights();
+			return FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
@@ -51,7 +39,7 @@ public enum ConnectionType {
 	},
 	GARLAND {
 		@Override
-		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 			return new ConnectionGarlandVine(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
@@ -62,12 +50,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FLItems.GARLAND;
-		}
-
-		@Override
-		public ModelConnection createRenderer() {
-			return new ModelConnectionGarland();
+			return FLItems.GARLAND.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
@@ -77,7 +60,7 @@ public enum ConnectionType {
 	},
 	TINSEL {
 		@Override
-		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 			return new ConnectionGarlandTinsel(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
@@ -88,12 +71,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FLItems.TINSEL;
-		}
-
-		@Override
-		public ModelConnection createRenderer() {
-			return new ModelConnectionTinsel();
+			return FLItems.TINSEL.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
@@ -103,7 +81,7 @@ public enum ConnectionType {
 	},
 	PENNANT_BUNTING {
 		@Override
-		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 			return new ConnectionPennantBunting(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
@@ -114,12 +92,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FLItems.PENNANT_BUNTING;
-		}
-
-		@Override
-		public ModelConnection createRenderer() {
-			return new ModelConnectionPennantBunting();
+			return FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
@@ -129,7 +102,7 @@ public enum ConnectionType {
 	},
 	LETTER_BUNTING {
 		@Override
-		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 			return new ConnectionLetterBunting(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
@@ -140,12 +113,7 @@ public enum ConnectionType {
 
 		@Override
 		public ItemConnection getItem() {
-			return FLItems.LETTER_BUNTING;
-		}
-
-		@Override
-		public ModelConnection createRenderer() {
-			return new ModelConnectionLetterBunting();
+			return FLItems.LETTER_BUNTING.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
@@ -154,13 +122,11 @@ public enum ConnectionType {
 		}
 	};
 
-	public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid, Fastener<?> fastenerDestination, boolean isOrigin, NBTTagCompound compound);
+	public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid, Fastener<?> fastenerDestination, boolean isOrigin, CompoundNBT compound);
 
 	public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid);
 
 	public abstract ItemConnection getItem();
-
-	public abstract ModelConnection createRenderer();
 
 	public abstract boolean isConnectionThis(Connection connection);
 

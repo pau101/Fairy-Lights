@@ -1,15 +1,13 @@
 package com.pau101.fairylights.client.gui.component;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
 import com.pau101.fairylights.util.styledstring.StyledString;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.TextFormatting;
 
-public final class GuiButtonColor extends GuiButton {
+public final class GuiButtonColor extends Button {
 	private static final int TEX_U = 0;
 
 	private static final int TEX_V = 0;
@@ -22,13 +20,13 @@ public final class GuiButtonColor extends GuiButton {
 
 	private float displayColorB;
 
-	public GuiButtonColor(int id, int x, int y) {
-		super(id, x, y, 20, 20, "");
+	public GuiButtonColor(int x, int y, String msg, Button.IPressable onPress) {
+		super(x, y, 20, 20, msg, onPress);
 	}
 
-	public void setDisplayColor(FontRenderer font, TextFormatting color) {
+	public void setDisplayColor(TextFormatting color) {
 		displayColor = color;
-		int rgb = StyledString.getColor(font, color);
+		int rgb = StyledString.getColor(color);
 		displayColorR = (rgb >> 16 & 0xFF) / 255F;
 		displayColorG = (rgb >> 8 & 0xFF) / 255F;
 		displayColorB = (rgb & 0xFF) / 255F;
@@ -47,17 +45,16 @@ public final class GuiButtonColor extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float delta) {
+	public void renderButton(int mouseX, int mouseY, float delta) {
 		if (visible) {
-			mc.getTextureManager().bindTexture(GuiEditLetteredConnection.WIDGETS_TEXTURE);
-			GlStateManager.color(1, 1, 1);
-			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-			drawTexturedModalRect(x, y, TEX_U, hovered ? TEX_V + height : TEX_V, width, height);
+			Minecraft.getInstance().getTextureManager().bindTexture(GuiEditLetteredConnection.WIDGETS_TEXTURE);
+			GlStateManager.color3f(1, 1, 1);
+			blit(x, y, TEX_U, isHovered ? TEX_V + height : TEX_V, width, height);
 			if (displayColor != null) {
-				drawTexturedModalRect(x, y, TEX_U + width, TEX_V, width, height);
-				GlStateManager.color(displayColorR, displayColorG, displayColorB);
-				drawTexturedModalRect(x, y, TEX_U + width, TEX_V + height, width, height);
-				GlStateManager.color(1, 1, 1);
+				blit(x, y, TEX_U + width, TEX_V, width, height);
+				GlStateManager.color3f(displayColorR, displayColorG, displayColorB);
+				blit(x, y, TEX_U + width, TEX_V + height, width, height);
+				GlStateManager.color3f(1, 1, 1);
 			}
 		}
 	}

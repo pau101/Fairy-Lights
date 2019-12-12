@@ -1,51 +1,51 @@
 package com.pau101.fairylights.server.net.clientbound;
 
-import java.io.IOException;
-
 import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.net.FLMessage;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public final class MessageUpdateFastenerEntity extends FLMessage {
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
+public final class MessageUpdateFastenerEntity {
 	private int entityId;
 
-	private NBTTagCompound compound;
+	private CompoundNBT compound;
 
 	public MessageUpdateFastenerEntity() {}
 
-	public MessageUpdateFastenerEntity(Entity entity, NBTTagCompound compound) {
+	public MessageUpdateFastenerEntity(Entity entity, CompoundNBT compound) {
 		this.entityId = entity.getEntityId();
 		this.compound = compound;
 	}
 
-	@Override
-	public void serialize(PacketBuffer buf) {
-		buf.writeVarInt(entityId);
-		buf.writeCompoundTag(compound);
+	public static void serialize(MessageUpdateFastenerEntity message, PacketBuffer buf) {
+		buf.writeVarInt(message.entityId);
+		buf.writeCompoundTag(message.compound);
 	}
 
-	@Override
-	public void deserialize(PacketBuffer buf) throws IOException {
-		entityId = buf.readVarInt();
-		compound = buf.readCompoundTag();
+	public static MessageUpdateFastenerEntity deserialize(PacketBuffer buf) {
+		MessageUpdateFastenerEntity message = new MessageUpdateFastenerEntity();
+		message.entityId = buf.readVarInt();
+		message.compound = buf.readCompoundTag();
+		return message;
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void process(MessageContext ctx) {
-		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.world != null) {
-			Entity entity = mc.world.getEntityByID(entityId);
-			if (entity != null && entity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) {
-				entity.getCapability(CapabilityHandler.FASTENER_CAP, null).deserializeNBT(compound);
+	public static final class Handler implements BiConsumer<MessageUpdateFastenerEntity, Supplier<NetworkEvent.Context>> {
+		@Override
+		public void accept(MessageUpdateFastenerEntity message, Supplier<NetworkEvent.Context> contextSupplier) {
+			NetworkEvent.Context context = contextSupplier.get();
+			Minecraft mc = Minecraft.getInstance();
+			if (mc.world != null) {
+				Entity entity = mc.world.getEntityByID(message.entityId);
+				if (entity != null) {
+					entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.deserializeNBT(message.compound));
+				}
 			}
+			context.setPacketHandled(true);
 		}
 	}
 }

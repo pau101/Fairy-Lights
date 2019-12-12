@@ -1,5 +1,6 @@
 package com.pau101.fairylights.client.model.connection;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.lights.ModelLight;
 import com.pau101.fairylights.client.model.lights.ModelLightFairy;
@@ -21,10 +22,6 @@ import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
-
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -38,7 +35,6 @@ public final class ModelConnectionHangingLights extends ModelConnection<Connecti
 		new ModelLightFlower(),
 		new ModelLightOrnate(),
 		new ModelLightOil(),
-		new ModelLightLuxoBall(),
 		new ModelLightJackOLantern(),
 		new ModelLightSkull(),
 		new ModelLightGhost(),
@@ -59,7 +55,7 @@ public final class ModelConnectionHangingLights extends ModelConnection<Connecti
 		Light[] lights = hangingLights.getFeatures();
 		Light[] prevLights = hangingLights.getPrevFeatures();
 		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		GlStateManager.disableCull();
 		GlStateManager.disableLighting();
 		for (int i = 0, count = Math.min(lights.length, prevLights.length); i < count; i++) {

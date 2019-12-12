@@ -1,14 +1,5 @@
 package com.pau101.fairylights.server.fastener.connection.type.hanginglights;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.block.FLBlocks;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
@@ -21,24 +12,35 @@ import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.jingle.JinglePlayer;
 import com.pau101.fairylights.server.sound.FLSounds;
 import com.pau101.fairylights.util.OreDictUtils;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
+import net.minecraft.world.lighting.IWorldLightListener;
+import net.minecraft.world.lighting.LightEngine;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public final class ConnectionHangingLights extends ConnectionHangingFeature<Light> {
-	private static final int LIGHT_VALUE = 15;
+	private static final int MAX_LIGHT = 15;
 
 	private static final int LIGHT_UPDATE_WAIT = 400;
 
@@ -62,7 +64,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 
 	private int lightUpdateIndex;
 
-	public ConnectionHangingLights(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+	public ConnectionHangingLights(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 		super(world, fastener, uuid, destination, isOrigin, compound);
 	}
 
@@ -86,16 +88,16 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	}
 
 	@Override
-	public boolean interact(EntityPlayer player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, EnumHand hand) {
+	public boolean interact(PlayerEntity player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, Hand hand) {
 		if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
 			int index = feature % pattern.size();
 			ColoredLightVariant light = pattern.get(index);
-			EnumDyeColor color = EnumDyeColor.byDyeDamage(OreDictUtils.getDyeMetadata(heldStack));
+			DyeColor color = DyeColor.getColor(heldStack);
 			if (light.getColor() != color) {
 				pattern.set(index, light.withColor(color));
 				dataUpdateState = true;
 				heldStack.shrink(1);
-				world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE, SoundCategory.BLOCKS, 1, 1);
+				world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
 				return true;
 			}
 		}
@@ -106,10 +108,10 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 		SoundEvent lightSnd;
 		float pitch;
 		if (isOn) {
-			lightSnd = FLSounds.FEATURE_LIGHT_TURNON;
+			lightSnd = FLSounds.FEATURE_LIGHT_TURNON.orElseThrow(IllegalStateException::new);
 			pitch = 0.6F;
 		} else {
-			lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF;
+			lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.orElseThrow(IllegalStateException::new);
 			pitch = 0.5F;
 		}
 		world.playSound(null, hit.x, hit.y, hit.z, lightSnd, SoundCategory.BLOCKS, 1, pitch);
@@ -140,14 +142,14 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 					lightUpdateIndex = 0;
 					lightUpdateTime = world.rand.nextInt(LIGHT_UPDATE_WAIT / 2);
 				} else {
-					setLight(new BlockPos(features[lightUpdateIndex++].getAbsolutePoint(fastener)), LIGHT_VALUE);
+					setLight(new BlockPos(features[lightUpdateIndex++].getAbsolutePoint(fastener)));
 				}
 			}	
 		}
 	}
 
 	private void updateNeighbors(Fastener<?> fastener) {
-		world.updateComparatorOutputLevel(fastener.getPos(), FLBlocks.FASTENER);
+		world.updateComparatorOutputLevel(fastener.getPos(), FLBlocks.FASTENER.orElseThrow(IllegalStateException::new));
 	}
 
 	@Override
@@ -162,7 +164,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 		if (on && isOrigin()) {
 			BlockPos pos = new BlockPos(light.getAbsolutePoint(fastener));
 			litBlocks.add(pos);
-			setLight(pos, LIGHT_VALUE);
+			setLight(pos);
 		}
 		if (pattern.size() > 0) {
 			ColoredLightVariant lightData = pattern.get(index % pattern.size());
@@ -201,7 +203,7 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 		oldLitBlocks.removeAll(litBlocks);
 		Iterator<BlockPos> oldIter = oldLitBlocks.iterator();
 		while (oldIter.hasNext()) {
-			world.checkLightFor(EnumSkyBlock.BLOCK, oldIter.next());
+			world.getChunkProvider().getLightManager().checkBlock(oldIter.next());
 			oldIter.remove();
 		}
 	}
@@ -209,22 +211,23 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	@Override
 	public void onRemove() {
 		for (BlockPos pos : litBlocks) {
-			world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+			world.getChunkProvider().getLightManager().checkBlock(pos);
 		}
 	}
 
-	private void setLight(BlockPos pos, int value) {
-		if (world.isAirBlock(pos) && world.getLightFor(EnumSkyBlock.BLOCK, pos) != value) { 
-			world.setLightFor(EnumSkyBlock.BLOCK, pos, value);
-			for (EnumFacing dir : EnumFacing.values()) {
-				updateLight(pos.offset(dir), value);
+	private static final Method SET_LIGHT = ObfuscationReflectionHelper.findMethod(LightEngine.class, "func_215623_a", BlockPos.class, int.class);
+
+	private void setLight(BlockPos pos) {
+		if (world.isAirBlock(pos) && world.getLightFor(LightType.BLOCK, pos) < MAX_LIGHT) {
+			IWorldLightListener light = world.getChunkProvider().getLightManager().getLightEngine(LightType.BLOCK);
+			if (light instanceof LightEngine) {
+				LightEngine engine = (LightEngine) light;
+				try {
+					SET_LIGHT.invoke(engine, pos, MAX_LIGHT);
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
 			}
-		}
-	}
-
-	private void updateLight(BlockPos pos, int value) {
-		if (world.getLightFor(EnumSkyBlock.BLOCK, pos) != value) {
-			world.checkLightFor(EnumSkyBlock.BLOCK, pos);
 		}
 	}
 
@@ -237,45 +240,45 @@ public final class ConnectionHangingLights extends ConnectionHangingFeature<Ligh
 	}
 
 	@Override
-	public NBTTagCompound serialize() {
-		NBTTagCompound compound = super.serialize();
-		compound.setTag("jinglePlayer", jinglePlayer.serialize());
-		compound.setBoolean("isOn", isOn);
+	public CompoundNBT serialize() {
+		CompoundNBT compound = super.serialize();
+		compound.put("jinglePlayer", jinglePlayer.serialize());
+		compound.putBoolean("isOn", isOn);
 		return compound;
 	}
 
 	@Override
-	public void deserialize(NBTTagCompound compound) {
+	public void deserialize(CompoundNBT compound) {
 		super.deserialize(compound);
 		if (jinglePlayer == null) {
 			jinglePlayer = new JinglePlayer();
 		}
 		if (!jinglePlayer.isPlaying()) {
-			jinglePlayer.deserialize(compound.getCompoundTag("jinglePlayer"));
+			jinglePlayer.deserialize(compound.getCompound("jinglePlayer"));
 		}
 		isOn = compound.getBoolean("isOn");
 	}
 
 	@Override
-	public NBTTagCompound serializeLogic() {
-		NBTTagCompound compound = super.serializeLogic();
-		NBTTagList tagList = new NBTTagList();
+	public CompoundNBT serializeLogic() {
+		CompoundNBT compound = super.serializeLogic();
+		ListNBT tagList = new ListNBT();
 		for (ColoredLightVariant light : pattern) {
-			tagList.appendTag(light.serialize());
+			tagList.add(light.serialize());
 		}
-		compound.setTag("pattern", tagList);
-		compound.setBoolean("twinkle", twinkle);
-		compound.setBoolean("tight", slack == 0);
+		compound.put("pattern", tagList);
+		compound.putBoolean("twinkle", twinkle);
+		compound.putBoolean("tight", slack == 0);
 		return compound;
 	}
 
 	@Override
-	public void deserializeLogic(NBTTagCompound compound) {
+	public void deserializeLogic(CompoundNBT compound) {
 		super.deserializeLogic(compound);
-		NBTTagList patternList = compound.getTagList("pattern", NBT.TAG_COMPOUND);
+		ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
 		pattern = new ArrayList<>();
-		for (int i = 0; i < patternList.tagCount(); i++) {
-			NBTTagCompound lightCompound = patternList.getCompoundTagAt(i);
+		for (int i = 0; i < patternList.size(); i++) {
+			CompoundNBT lightCompound = patternList.getCompound(i);
 			pattern.add(ColoredLightVariant.from(lightCompound));
 		}
 		twinkle = compound.getBoolean("twinkle");

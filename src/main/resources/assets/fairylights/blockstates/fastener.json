@@ -1,11 +1,10 @@
 {
 	"variants": {
-		"facing=up":    { "model": "fairylights:fastener" },
-		"facing=down":  { "model": "fairylights:fastener", "x": 180 },
-		"facing=east":  { "model": "fairylights:fastener", "x": 90, "y": 90 },
-		"facing=west":  { "model": "fairylights:fastener", "x": 90, "y": 270 },
-		"facing=south": { "model": "fairylights:fastener", "x": 90, "y": 180 },
-		"facing=north": { "model": "fairylights:fastener", "x": 90 },
-		"fence":        { "model": "fairylights:fastener_fence" }
+		"facing=up":    { "model": "fairylights:block/fastener" },
+		"facing=down":  { "model": "fairylights:block/fastener", "x": 180 },
+		"facing=east":  { "model": "fairylights:block/fastener", "x": 90, "y": 90 },
+		"facing=west":  { "model": "fairylights:block/fastener", "x": 90, "y": 270 },
+		"facing=south": { "model": "fairylights:block/fastener", "x": 90, "y": 180 },
+		"facing=north": { "model": "fairylights:block/fastener", "x": 90 }
     }
 }

@@ -1,76 +1,42 @@
 package com.pau101.fairylights.server.sound;
 
 import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.util.Utils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import static com.pau101.fairylights.FairyLights.ID;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@EventBusSubscriber(modid = FairyLights.ID)
 public final class FLSounds {
 	private FLSounds() {}
 
-	private static final SoundEvent NIL = null;
+	public static final DeferredRegister<SoundEvent> REG = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, FairyLights.ID);
 
-	@ObjectHolder(ID + ":cord.stretch")
-	public static final SoundEvent CORD_STRETCH = NIL;
+	public static final RegistryObject<SoundEvent> CORD_STRETCH = create("cord.stretch");
 
-	@ObjectHolder(ID + ":cord.connect")
-	public static final SoundEvent CORD_CONNECT = NIL;
+	public static final RegistryObject<SoundEvent> CORD_CONNECT = create("cord.connect");
 
-	@ObjectHolder(ID + ":cord.disconnect")
-	public static final SoundEvent CORD_DISCONNECT = NIL;
+	public static final RegistryObject<SoundEvent> CORD_DISCONNECT = create("cord.disconnect");
 
-	@ObjectHolder(ID + ":cord.snap")
-	public static final SoundEvent CORD_SNAP = NIL;
+	public static final RegistryObject<SoundEvent> CORD_SNAP = create("cord.snap");
 
-	@ObjectHolder(ID + ":jingle_bell")
-	public static final SoundEvent JINGLE_BELL = NIL;
+	public static final RegistryObject<SoundEvent> JINGLE_BELL = create("jingle_bell");
 
-	@ObjectHolder(ID + ":feature.color_change")
-	public static final SoundEvent FEATURE_COLOR_CHANGE = NIL;
+	public static final RegistryObject<SoundEvent> FEATURE_COLOR_CHANGE = create("feature.color_change");
 
-	@ObjectHolder(ID + ":feature.light_turnon")
-	public static final SoundEvent FEATURE_LIGHT_TURNON = NIL;
+	public static final RegistryObject<SoundEvent> FEATURE_LIGHT_TURNON = create("feature.light_turnon");
 
-	@ObjectHolder(ID + ":feature.light_turnoff")
-	public static final SoundEvent FEATURE_LIGHT_TURNOFF = NIL;
+	public static final RegistryObject<SoundEvent> FEATURE_LIGHT_TURNOFF = create("feature.light_turnoff");
 
-	@ObjectHolder(ID + ":entity.ladder.break")
-	public static final SoundEvent LADDER_BREAK = NIL;
+	public static final RegistryObject<SoundEvent> LADDER_BREAK = create("entity.ladder.break");
 
-	@ObjectHolder(ID + ":entity.ladder.fall")
-	public static final SoundEvent LADDER_FALL = NIL;
+	public static final RegistryObject<SoundEvent> LADDER_FALL = create("entity.ladder.fall");
 
-	@ObjectHolder(ID + ":entity.ladder.hit")
-	public static final SoundEvent LADDER_HIT = NIL;
+	public static final RegistryObject<SoundEvent> LADDER_HIT = create("entity.ladder.hit");
 
-	@ObjectHolder(ID + ":entity.ladder.place")
-	public static final SoundEvent LADDER_PLACE = NIL;
+	public static final RegistryObject<SoundEvent> LADDER_PLACE = create("entity.ladder.place");
 
-	@SubscribeEvent
-	public static void register(RegistryEvent.Register<SoundEvent> event) {
-		event.getRegistry().registerAll(
-			create("cord.stretch"),
-			create("cord.connect"),
-			create("cord.disconnect"),
-			create("cord.snap"),
-			create("jingle_bell"),
-			create("feature.color_change"),
-			create("feature.light_turnon"),
-			create("feature.light_turnoff"),
-			create("entity.ladder.break"),
-			create("entity.ladder.fall"),
-			create("entity.ladder.hit"),
-			create("entity.ladder.place")
-		);
-	}
-
-	private static SoundEvent create(String name) {
-		return new SoundEvent(new ResourceLocation(FairyLights.ID, name)).setRegistryName(name);
+	private static RegistryObject<SoundEvent> create(String name) {
+		return REG.register(name, () -> new SoundEvent(new ResourceLocation(FairyLights.ID, name)));
 	}
 }

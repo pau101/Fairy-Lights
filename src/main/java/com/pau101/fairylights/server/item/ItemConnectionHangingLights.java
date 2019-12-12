@@ -1,58 +1,58 @@
 package com.pau101.fairylights.server.item;
 
-import java.util.List;
-
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.item.crafting.Recipes;
 import com.pau101.fairylights.util.Utils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 public final class ItemConnectionHangingLights extends ItemConnection {
-	public ItemConnectionHangingLights() {
-		setCreativeTab(FairyLights.fairyLightsTab);
-		Utils.name(this, "hanging_lights");
+	public ItemConnectionHangingLights(Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-		if (!stack.hasTagCompound()) {
+	public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<ITextComponent> tooltip, final ITooltipFlag flagIn) {
+		if (!stack.hasTag()) {
 			return;
 		}
-		NBTTagCompound compound = stack.getTagCompound();
+		CompoundNBT compound = stack.getTag();
 		if (compound.getBoolean("twinkle")) {
-			tooltip.add(I18n.translateToLocal("item.fairyLights.twinkle"));
+			tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle"));
 		}
 		if (compound.getBoolean("tight")) {
-			tooltip.add(I18n.translateToLocal("item.fairyLights.tight"));
+			tooltip.add(new TranslationTextComponent("item.fairyLights.tight"));
 		}
-		if (compound.hasKey("pattern", NBT.TAG_LIST)) {
-			NBTTagList tagList = compound.getTagList("pattern", NBT.TAG_COMPOUND);
-			int tagCount = tagList.tagCount();
+		if (compound.contains("pattern", NBT.TAG_LIST)) {
+			ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);
+			int tagCount = tagList.size();
 			if (tagCount > 0) {
-				tooltip.add(I18n.translateToLocal("item.fairyLights.pattern"));
+				tooltip.add(new TranslationTextComponent("item.fairyLights.pattern"));
 			}
 			for (int i = 0; i < tagCount; i++) {
-				NBTTagCompound lightCompound = tagList.getCompoundTagAt(i);
-				String variant = I18n.translateToLocal(FLItems.LIGHT.getTranslationKey() + '.' + LightVariant.getLightVariant(lightCompound.getInteger("light")).getUnlocalizedName() + ".name");
-				tooltip.add(I18n.translateToLocalFormatted("format.pattern.entry", Utils.formatColored(EnumDyeColor.byDyeDamage(lightCompound.getByte("color")), variant)));
+				CompoundNBT lightCompound = tagList.getCompound(i);
+				ITextComponent variant = LightVariant.getLightVariant(lightCompound.getInt("light")).getItem().getName();
+				tooltip.add(new TranslationTextComponent("format.pattern.entry", Utils.formatColored(DyeColor.byId(lightCompound.getByte("color")), variant)));
 			}
 		}
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-		if (isInCreativeTab(tab)) {
-			for (EnumDyeColor color : EnumDyeColor.values()) {
+	public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
+		if (isInGroup(tab)) {
+			for (DyeColor color : DyeColor.values()) {
 				subItems.add(Recipes.makeHangingLights(new ItemStack(this), color));
 			}
 		}

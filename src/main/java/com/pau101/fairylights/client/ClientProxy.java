@@ -2,7 +2,6 @@ package com.pau101.fairylights.client;
 
 import com.google.common.collect.ForwardingSet;
 import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.client.midi.CommandJingler;
 import com.pau101.fairylights.client.renderer.FenceFastenerRendererDispatcher;
 import com.pau101.fairylights.client.renderer.FenceFastenerRepresentative;
 import com.pau101.fairylights.client.renderer.block.entity.BlockEntityFastenerRenderer;
@@ -14,34 +13,52 @@ import com.pau101.fairylights.server.entity.EntityFenceFastener;
 import com.pau101.fairylights.server.entity.EntityLadder;
 import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.server.item.ItemLight;
-import com.pau101.fairylights.server.item.LightVariant;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
+import com.pau101.fairylights.server.net.clientbound.MessageJingle;
+import com.pau101.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
+import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
 import com.pau101.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.ITickableTextureObject;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.item.DyeColor;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.resource.VanillaResourceType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public final class ClientProxy extends ServerProxy {
-	public static FontRenderer recoloredFont;
+	@Override
+	protected BiConsumer<MessageJingle, Supplier<NetworkEvent.Context>> createJingleHandler() {
+		return new MessageJingle.Handler();
+	}
+
+	@Override
+	protected BiConsumer<MessageUpdateFastenerEntity, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
+		return new MessageUpdateFastenerEntity.Handler();
+	}
+
+	@Override
+	protected BiConsumer<MessageOpenEditLetteredConnectionGUI, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
+		return new MessageOpenEditLetteredConnectionGUI.Handler();
+	}
 
 	@Override
 	public void initHandlers() {
@@ -59,58 +76,73 @@ public final class ClientProxy extends ServerProxy {
 
 	@Override
 	public void initRendersLate() {
-		ItemColors colors = Minecraft.getMinecraft().getItemColors();
-		colors.registerItemColorHandler((stack, index) -> {
-			if (index == 0 || ItemLight.getLightVariant(stack.getMetadata()) == LightVariant.LUXO_BALL) {
-				return 0xFFFFFFFF;
-			}
-			return ItemLight.getColorValue(ItemLight.getLightColor(stack.getMetadata()));
-		}, FLItems.LIGHT);
-		colors.registerItemColorHandler((stack, index) -> {
+		ItemColors colors = Minecraft.getInstance().getItemColors();
+		colors.register((stack, index) -> {
 			if (index == 0) {
 				return 0xFFFFFFFF;
 			}
-			if (stack.hasTagCompound()) {
-				NBTTagList tagList = stack.getTagCompound().getTagList("pattern", NBT.TAG_COMPOUND);
-				if (tagList.tagCount() > 0) {
-					return ItemLight.getColorValue(EnumDyeColor.byDyeDamage(tagList.getCompoundTagAt((index - 1) % tagList.tagCount()).getByte("color")));
+			return ItemLight.getColorValue(ItemLight.getLightColor(stack));
+		},
+			FLItems.FAIRY_LIGHT.orElseThrow(IllegalStateException::new),
+			FLItems.PAPER_LANTERN.orElseThrow(IllegalStateException::new),
+			FLItems.ORB_LANTERN.orElseThrow(IllegalStateException::new),
+			FLItems.FLOWER_LIGHT.orElseThrow(IllegalStateException::new),
+			FLItems.ORNATE_LANTERN.orElseThrow(IllegalStateException::new),
+			FLItems.OIL_LANTERN.orElseThrow(IllegalStateException::new),
+			FLItems.JACK_O_LANTERN.orElseThrow(IllegalStateException::new),
+			FLItems.SKULL_LIGHT.orElseThrow(IllegalStateException::new),
+			FLItems.GHOST_LIGHT.orElseThrow(IllegalStateException::new),
+			FLItems.SPIDER_LIGHT.orElseThrow(IllegalStateException::new),
+			FLItems.WITCH_LIGHT.orElseThrow(IllegalStateException::new),
+			FLItems.SNOWFLAKE_LIGHT.orElseThrow(IllegalStateException::new),
+			FLItems.ICICLE_LIGHTS.orElseThrow(IllegalStateException::new),
+			FLItems.METEOR_LIGHT.orElseThrow(IllegalStateException::new)
+		);
+		colors.register((stack, index) -> {
+			if (index == 0) {
+				return 0xFFFFFFFF;
+			}
+			if (stack.hasTag()) {
+				ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
+				if (tagList.size() > 0) {
+					return ItemLight.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
 				}
 			}
 			if (FairyLights.christmas.isOcurringNow()) {
 				return (index + System.currentTimeMillis() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
 			}
 			return 0xFFD584;
-		}, FLItems.HANGING_LIGHTS);
-		colors.registerItemColorHandler((stack, index) -> {
-			EnumDyeColor color;
-			if (stack.hasTagCompound()) {
-				color = EnumDyeColor.byDyeDamage(stack.getTagCompound().getByte("color"));
+		}, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
+		colors.register((stack, index) -> {
+			DyeColor color;
+			if (stack.hasTag()) {
+				color = DyeColor.byId(stack.getTag().getByte("color"));
 			} else {
-				color = EnumDyeColor.BLACK;
+				color = DyeColor.BLACK;
 			}
 			return ItemLight.getColorValue(color);
-		}, FLItems.TINSEL);
-		colors.registerItemColorHandler((stack, index) -> {
+		}, FLItems.TINSEL.orElseThrow(IllegalStateException::new));
+		colors.register((stack, index) -> {
 			if (index == 0) {
 				return 0xFFFFFFFF;
 			}
-			if (stack.hasTagCompound()) {
-				NBTTagList tagList = stack.getTagCompound().getTagList("pattern", NBT.TAG_COMPOUND);
-				if (tagList.tagCount() > 0) {
-					return ItemLight.getColorValue(EnumDyeColor.byDyeDamage(tagList.getCompoundTagAt((index - 1) % tagList.tagCount()).getByte("color")));
+			if (stack.hasTag()) {
+				ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
+				if (tagList.size() > 0) {
+					return ItemLight.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
 				}
 			}
 			return 0xFFFFFFFF;
-		}, FLItems.PENNANT_BUNTING);
-		colors.registerItemColorHandler((stack, index) -> {
+		}, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new));
+		colors.register((stack, index) -> {
 			if (index == 0) {
 				return 0xFFFFFF;
 			}
-			return ItemLight.getColorValue(EnumDyeColor.byDyeDamage(stack.getMetadata()));
-		}, FLItems.PENNANT);
-		colors.registerItemColorHandler((stack, index) -> {
-			if (index > 0 && stack.hasTagCompound()) {
-				StyledString str = StyledString.deserialize(stack.getTagCompound().getCompoundTag("text"));
+			return ItemLight.getColorValue(ItemLight.getLightColor(stack));
+		}, FLItems.PENNANT.orElseThrow(IllegalStateException::new));
+		colors.register((stack, index) -> {
+			if (index > 0 && stack.hasTag()) {
+				StyledString str = StyledString.deserialize(stack.getTag().getCompound("text"));
 				if (str.length() > 0) {
 					TextFormatting lastColor = null, color = null;
 					int n = (index - 1) % str.length();
@@ -120,19 +152,18 @@ public final class ClientProxy extends ServerProxy {
 							break;
 						}
 					}
-					return StyledString.getColor(recoloredFont, color) | 0xFF000000;
+					return StyledString.getColor(color) | 0xFF000000;
 				}
 			}
 			return 0xFFFFFFFF;
-		}, FLItems.LETTER_BUNTING);
-		initRecoloredFont();
+		}, FLItems.LETTER_BUNTING.orElseThrow(IllegalStateException::new));
 		try {
 			setupRenderGlobal();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		// Early runTick hook after getMouseOver
-		Minecraft.getMinecraft().getTextureManager().loadTickableTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new ITickableTextureObject() {
+		Minecraft.getInstance().getTextureManager().loadTickableTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new ITickableTextureObject() {
 			@Override
 			public void tick() {
 				ClientEventHandler.updateHitConnection();
@@ -145,7 +176,7 @@ public final class ClientProxy extends ServerProxy {
 			public void restoreLastBlurMipmap() {}
 
 			@Override
-			public void loadTexture(IResourceManager mgr) {}
+			public void loadTexture(IResourceManager manager) {}
 
 			@Override
 			public int getGlTextureId() {
@@ -154,30 +185,13 @@ public final class ClientProxy extends ServerProxy {
 		});
 	}
 
-	private void initRecoloredFont() {
-		recoloredFont = new FontRenderer(
-			Minecraft.getMinecraft().gameSettings,
-			new ResourceLocation("textures/font/ascii.png"),
-			Minecraft.getMinecraft().renderEngine, false
-		);
-		int[] colorCode = ReflectionHelper.getPrivateValue(FontRenderer.class, recoloredFont, "field_78285_g", "colorCode");
-		// Brighten black a bit to make it visible on black
-		colorCode[0] = 0x191919;
-		colorCode[16] = 0x040404;
-		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(recoloredFont);
-	}
-
-	@Override
-	public void initEggs() {
-		super.initEggs();
-		CommandJingler cmd = new CommandJingler();
-		ClientCommandHandler.instance.registerCommand(cmd);
-		MinecraftForge.EVENT_BUS.register(cmd);
-	}
-
 	@Override
 	protected void loadJingleLibraries() {
-		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(m -> JingleLibrary.loadAll());
+		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener((ISelectiveResourceReloadListener) (resourceManager, resourcePredicate) -> {
+			if (resourcePredicate.test(VanillaResourceType.SOUNDS)) {
+				JingleLibrary.loadAll();
+			}
+		});
 	}
 
 	/*
@@ -201,8 +215,8 @@ public final class ClientProxy extends ServerProxy {
 	 * rendering a normal block entity.
 	 */
 	private void setupRenderGlobal() throws Exception {
-		RenderGlobal render = Minecraft.getMinecraft().renderGlobal;
-		Field setTileEntities = ReflectionHelper.findField(RenderGlobal.class, "field_181024_n", "setTileEntities");
+		WorldRenderer render = Minecraft.getInstance().worldRenderer;
+		Field setTileEntities = ObfuscationReflectionHelper.findField(WorldRenderer.class, "field_181024_n");
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		modifiers.set(setTileEntities, setTileEntities.getModifiers() & ~Modifier.FINAL);

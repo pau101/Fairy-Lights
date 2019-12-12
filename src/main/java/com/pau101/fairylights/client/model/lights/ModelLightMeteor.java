@@ -1,18 +1,16 @@
 package com.pau101.fairylights.client.model.lights;
 
-import java.awt.Color;
-
-import org.lwjgl.opengl.GL11;
-
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.Color;
 
 public final class ModelLightMeteor extends ModelLight {
 	private AdvancedModelRenderer[] lights;
@@ -73,7 +71,7 @@ public final class ModelLightMeteor extends ModelLight {
 				brightness = 1;
 			}
 			float b = Math.max(Math.max(brightness, world.getSunBrightness(1) * 0.95F + 0.05F) * 240, sunlight);
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b, moonlight);
+			GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, b, moonlight);
 			GlStateManager.enableLighting();
 			for (int n = 0; n < lights.length; n++) {
 				lights[n].isHidden = i != n;
@@ -84,24 +82,24 @@ public final class ModelLightMeteor extends ModelLight {
 			hsb[2] = brightness * 0.75F + 0.25F;
 			int colorRGB = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
 			float cr = (colorRGB >> 16 & 0xFF) / 255F, cg = (colorRGB >> 8 & 0xFF) / 255F, cb = (colorRGB & 0xFF) / 255F;
-			GlStateManager.color(cr, cg, cb);
+			GlStateManager.color3f(cr, cg, cb);
 			colorableParts.render(scale);
 			if (i == 0 || i == lights.length - 1) {
-				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight, moonlight);
+				GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, sunlight, moonlight);
 				float c = b / 255;
 				if (c < 0.5F) {
 					c = 0.5F;
 				}
-				GlStateManager.color(c, c, c);
+				GlStateManager.color3f(c, c, c);
 				connector.isHidden = i != 0;
 				cap.isHidden = i == 0;
 				amutachromicParts.render(scale);
 				GlStateManager.disableLighting();
 			}
 		}
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight, moonlight);
+		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, sunlight, moonlight);
 		GlStateManager.disableLighting();
-		Minecraft.getMinecraft().entityRenderer.disableLightmap();
+		Minecraft.getInstance().gameRenderer.disableLightmap();
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
 		colorableParts.isGlowing = true;
 		GlStateManager.depthMask(false);
@@ -122,7 +120,7 @@ public final class ModelLightMeteor extends ModelLight {
 			}
 			int colorRGB = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
 			float cr = (colorRGB >> 16 & 0xFF) / 255F, cg = (colorRGB >> 8 & 0xFF) / 255F, cb = (colorRGB & 0xFF) / 255F;
-			GlStateManager.color(cr, cg, cb, brightness * 0.15F + 0.1F);
+			GlStateManager.color4f(cr, cg, cb, brightness * 0.15F + 0.1F);
 			for (int n = 0; n < lights.length; n++) {
 				lights[n].isHidden = i != n;
 			}
@@ -131,8 +129,8 @@ public final class ModelLightMeteor extends ModelLight {
 		GlStateManager.depthMask(true);
 		colorableParts.isGlowing = false;
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-		Minecraft.getMinecraft().entityRenderer.enableLightmap();
-		GlStateManager.disableAlpha();
+		Minecraft.getInstance().gameRenderer.enableLightmap();
+		GlStateManager.disableAlphaTest();
 		GlStateManager.colorMask(false, false, false, false);
 		rodDepthMask.isHidden = false;
 		connector.isHidden = true;
@@ -141,6 +139,6 @@ public final class ModelLightMeteor extends ModelLight {
 		connector.isHidden = false;
 		cap.isHidden = false;
 		GlStateManager.colorMask(true, true, true, true);
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 	}
 }

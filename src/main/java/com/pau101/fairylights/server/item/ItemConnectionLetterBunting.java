@@ -1,48 +1,45 @@
 package com.pau101.fairylights.server.item;
 
-import java.util.List;
-
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
-import com.pau101.fairylights.util.Utils;
 import com.pau101.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import java.util.List;
+
 public class ItemConnectionLetterBunting extends ItemConnection {
-	public ItemConnectionLetterBunting() {
-		setCreativeTab(FairyLights.fairyLightsTab);
-		Utils.name(this, "letter_bunting");
+	public ItemConnectionLetterBunting(Item.Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-		if (!stack.hasTagCompound()) {
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		if (!stack.hasTag()) {
 			return;
 		}
-		NBTTagCompound compound = stack.getTagCompound();
-		if (compound.hasKey("text", NBT.TAG_COMPOUND)) {
-			NBTTagCompound text = compound.getCompoundTag("text");
+		CompoundNBT compound = stack.getTag();
+		if (compound.contains("text", NBT.TAG_COMPOUND)) {
+			CompoundNBT text = compound.getCompound("text");
 			String val = text.getString("value");
 			if (val.length() > 0) {
-				tooltip.add(I18n.translateToLocalFormatted("format.text", val));
+				tooltip.add(new TranslationTextComponent("format.text", val));
 			}
 		}
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (isInCreativeTab(tab)) {
+	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> items) {
+		if (isInGroup(tab)) {
 			ItemStack bunting = new ItemStack(this, 1);
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setTag("text", StyledString.serialize(new StyledString()));
-			bunting.setTagCompound(compound);
+			bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
 			items.add(bunting);
 		}
 	}

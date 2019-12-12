@@ -1,16 +1,14 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
-import java.util.Collections;
-import java.util.Objects;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResultAuxiliary;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Collections;
+import java.util.Objects;
 
 public abstract class IngredientAuxiliaryBasic<A> implements IngredientAuxiliary<A> {
 	protected final ItemStack ingredient;
@@ -23,12 +21,8 @@ public abstract class IngredientAuxiliaryBasic<A> implements IngredientAuxiliary
 		this(new ItemStack(Objects.requireNonNull(item, "item")), isRequired, limit);
 	}
 
-	public IngredientAuxiliaryBasic(Item item, int metadata, boolean isRequired, int limit) {
-		this(new ItemStack(Objects.requireNonNull(item, "item"), 1, metadata), isRequired, limit);
-	}
-
 	public IngredientAuxiliaryBasic(Block block, boolean isRequired, int limit) {
-		this(new ItemStack(Objects.requireNonNull(block, "block"), 1, OreDictionary.WILDCARD_VALUE), isRequired, limit);
+		this(new ItemStack(Objects.requireNonNull(block, "block")), isRequired, limit);
 	}
 
 	public IngredientAuxiliaryBasic(ItemStack stack, boolean isRequired, int limit) {
@@ -40,7 +34,7 @@ public abstract class IngredientAuxiliaryBasic<A> implements IngredientAuxiliary
 
 	@Override
 	public final MatchResultAuxiliary matches(ItemStack input, ItemStack output) {
-		return new MatchResultAuxiliary(this, input, OreDictionary.itemMatches(ingredient, input, false), Collections.EMPTY_LIST);
+		return new MatchResultAuxiliary(this, input, ingredient.getItem() == input.getItem(), Collections.emptyList());
 	}
 
 	@Override

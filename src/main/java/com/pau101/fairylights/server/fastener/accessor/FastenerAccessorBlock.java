@@ -1,19 +1,19 @@
 package com.pau101.fairylights.server.fastener.accessor;
 
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerBlock;
 import com.pau101.fairylights.server.fastener.FastenerType;
-
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 public final class FastenerAccessorBlock implements FastenerAccessor {
-	private BlockPos pos = BlockPos.ORIGIN;
+	private BlockPos pos = BlockPos.ZERO;
 
 	public FastenerAccessorBlock() {}
 
@@ -27,17 +27,22 @@ public final class FastenerAccessorBlock implements FastenerAccessor {
 
 	@Override
 	public Fastener<?> get(World world) {
-		return world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP, null);
+		// FIXME
+		return world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
 	}
 
 	@Override
 	public boolean isLoaded(World world) {
-		return world.isBlockLoaded(pos, false) && world.getTileEntity(pos) != null;
+		if (world.isBlockLoaded(pos)) {
+			TileEntity entity = world.getTileEntity(pos);
+			return entity != null && !entity.isRemoved();
+		}
+		return false;
 	}
 
 	@Override
 	public boolean exists(World world) {
-		return !world.isBlockLoaded(pos, false) || world.getTileEntity(pos) != null;
+		return !world.isBlockLoaded(pos) || world.getTileEntity(pos) != null;
 	}
 
 	@Override
@@ -57,12 +62,12 @@ public final class FastenerAccessorBlock implements FastenerAccessor {
 	}
 
 	@Override
-	public NBTTagCompound serialize() {
-		return NBTUtil.createPosTag(pos);
+	public CompoundNBT serialize() {
+		return NBTUtil.writeBlockPos(pos);
 	}
 
 	@Override
-	public void deserialize(NBTTagCompound nbt) {
-		pos = NBTUtil.getPosFromTag(nbt);
+	public void deserialize(CompoundNBT nbt) {
+		pos = NBTUtil.readBlockPos(nbt);
 	}
 }

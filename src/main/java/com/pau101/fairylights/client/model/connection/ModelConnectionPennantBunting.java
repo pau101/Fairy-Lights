@@ -1,5 +1,6 @@
 package com.pau101.fairylights.client.model.connection;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
 import com.pau101.fairylights.server.fastener.Fastener;
@@ -7,10 +8,8 @@ import com.pau101.fairylights.server.fastener.connection.type.pennant.Connection
 import com.pau101.fairylights.server.fastener.connection.type.pennant.Pennant;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.styledstring.StyledString;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -48,11 +47,11 @@ public class ModelConnectionPennantBunting extends ModelConnection<ConnectionPen
 		for (int i = 0, count = Math.min(pennants.length, prevPennants.length); i < count; i++) {
 			AdvancedModelRenderer model = preparePennantModel(pennants, prevPennants, i, delta);
 			int rgb = pennants[i].getColor();
-			GlStateManager.color(((rgb >> 16) & 0xFF) / 255F, ((rgb >> 8) & 0xFF) / 255F, (rgb & 0xFF) / 255F);
+			GlStateManager.color3f(((rgb >> 16) & 0xFF) / 255F, ((rgb >> 8) & 0xFF) / 255F, (rgb & 0xFF) / 255F);
 			model.render(0.0625F);
 		}
 		GlStateManager.enableCull();
-		GlStateManager.color(1, 1, 1);
+		GlStateManager.color3f(1, 1, 1);
 	}
 
 	@Override
@@ -70,7 +69,7 @@ public class ModelConnectionPennantBunting extends ModelConnection<ConnectionPen
 		} else {
 			offset = pennantCount / 2 - text.length() / 2;
 		}
-		FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer font = Minecraft.getInstance().fontRenderer;
 		for (int i = 0; i < text.length(); i++) {
 			int pennantIndex = i + offset;
 			StyledString chrA = text.substring(i, i + 1);
@@ -82,16 +81,16 @@ public class ModelConnectionPennantBunting extends ModelConnection<ConnectionPen
 			model.postRender(0.0625F);
 			float s = 0.03075F;
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0, -0.25F, -0.04F);
-			GlStateManager.scale(-s, -s, s);
-			GlStateManager.translate(-font.getStringWidth(charAStr) / 2F + 0.5F, -4, 0);
-			GlStateManager.glNormal3f(0, 0, 1);
+			GlStateManager.translatef(0, -0.25F, -0.04F);
+			GlStateManager.scalef(-s, -s, s);
+			GlStateManager.translatef(-font.getStringWidth(charAStr) / 2F + 0.5F, -4, 0);
+			GlStateManager.normal3f(0, 0, 1);
 			font.drawString(charAStr, 0, 0, 0xFFFFFFFF);
 			GlStateManager.popMatrix();
-			GlStateManager.translate(0, -0.25F, 0.04F);
-			GlStateManager.scale(s, -s, s);
-			GlStateManager.translate(-font.getStringWidth(charBStr) / 2F + 0.5F, -4, 0);
-			GlStateManager.glNormal3f(0, 0, -1);
+			GlStateManager.translatef(0, -0.25F, 0.04F);
+			GlStateManager.scalef(s, -s, s);
+			GlStateManager.translatef(-font.getStringWidth(charBStr) / 2F + 0.5F, -4, 0);
+			GlStateManager.normal3f(0, 0, -1);
 			font.drawString(charBStr, 0, 0, 0xFFFFFFFF);
 			GlStateManager.popMatrix();
 		}

@@ -22,39 +22,37 @@ import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.net.clientbound.MessageJingle;
 import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
 import com.pau101.fairylights.server.sound.FLSounds;
-import com.pau101.fairylights.server.world.ServerWorldEventListener;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFence;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FenceBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityHanging;
-import net.minecraft.entity.EntityLeashKnot;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.item.HangingEntity;
+import net.minecraft.entity.item.LeashKnotEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.SPacketBlockAction;
+import net.minecraft.item.Items;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.play.server.SBlockActionPacket;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,10 +69,11 @@ public final class ServerEventHandler {
 	// Every 5 minutes on average a jingle will attempt to play
 	private float jingleProbability = 1F / (5 * 60 * 20);
 
+	// TODO: ladder collision
 	@SubscribeEvent
 	public void onGetCollisionBoxes(GetCollisionBoxesEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof EntityPlayer) {
+		if (entity instanceof PlayerEntity) {
 			AxisAlignedBB bounds = event.getAabb();
 			List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.grow(1));
 			List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
@@ -93,18 +92,10 @@ public final class ServerEventHandler {
 	}
 
 	@SubscribeEvent
-	public void onWorldLoad(WorldEvent.Load event) {
-		World world = event.getWorld();
-		if (!world.isRemote) {
-			world.addEventListener(new ServerWorldEventListener());
-		}
-	}
-
-	@SubscribeEvent
 	public void onAttachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
 		Entity entity = event.getObject();
-		if (entity instanceof EntityPlayer) {
-			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerPlayer((EntityPlayer) entity));
+		if (entity instanceof PlayerEntity) {
+			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerPlayer((PlayerEntity) entity));
 		} else if (entity instanceof EntityFenceFastener) {
 			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerFence((EntityFenceFastener) entity));
 		}
@@ -121,7 +112,8 @@ public final class ServerEventHandler {
 	@SubscribeEvent
 	public void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
-			Fastener fastener = event.player.getCapability(CapabilityHandler.FASTENER_CAP, null);
+			// FIXME
+			Fastener fastener = event.player.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
 			if (fastener.update() && !event.player.world.isRemote) {
 				ServerProxy.sendToPlayersWatchingEntity(new MessageUpdateFastenerEntity(event.player, fastener.serializeNBT()), event.player.world, event.player);
 			}
@@ -130,19 +122,20 @@ public final class ServerEventHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onNoteBlockPlay(NoteBlockEvent.Play event) {
-		World world = event.getWorld();
+		World world = (World) event.getWorld();
 		BlockPos pos = event.getPos();
 		Block noteBlock = world.getBlockState(pos).getBlock();
-		IBlockState below = world.getBlockState(pos.down());
-		if (below.getBlock() == FLBlocks.FASTENER && below.getValue(BlockFastener.FACING) == EnumFacing.DOWN) {
+		BlockState below = world.getBlockState(pos.down());
+		// FIXME
+		if (below.getBlock() == FLBlocks.FASTENER.orElseThrow(IllegalStateException::new) && below.get(BlockFastener.FACING) == Direction.DOWN) {
 			int note = event.getVanillaNoteId();
 	        float pitch = (float) Math.pow(2, (note - 12) / 12D);
-	        world.playSound(null, pos, FLSounds.JINGLE_BELL, SoundCategory.RECORDS, 3, pitch);
-	        world.spawnParticle(EnumParticleTypes.NOTE, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5, note / 24D, 0, 0);
+	        world.playSound(null, pos, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), SoundCategory.RECORDS, 3, pitch);
+	        world.addParticle(ParticleTypes.NOTE, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5, note / 24D, 0, 0);
 	        if (!world.isRemote) {
-	        	Packet<?> pkt = new SPacketBlockAction(pos, noteBlock, event.getInstrument().ordinal(), note);
-	        	PlayerList players = ((WorldServer) world).getMinecraftServer().getPlayerList();
-	        	players.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, world.provider.getDimension(), pkt);
+	        	IPacket<?> pkt = new SBlockActionPacket(pos, noteBlock, event.getInstrument().ordinal(), note);
+	        	PlayerList players = world.getServer().getPlayerList();
+	        	players.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, world.getDimension().getType(), pkt);
 	        }
 			event.setCanceled(true);
 		}
@@ -152,20 +145,20 @@ public final class ServerEventHandler {
 	public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		World world = event.getWorld();
 		BlockPos pos = event.getPos();
-		if (!(world.getBlockState(pos).getBlock() instanceof BlockFence)) {
+		if (!(world.getBlockState(pos).getBlock() instanceof FenceBlock)) {
 			return;
 		}
 		ItemStack stack = event.getItemStack();
 		boolean checkHanging = stack.getItem() == Items.LEAD;
-		EntityPlayer player = event.getEntityPlayer();
-		if (event.getHand() == EnumHand.MAIN_HAND) {
+		PlayerEntity player = event.getPlayer();
+		if (event.getHand() == Hand.MAIN_HAND) {
 			ItemStack offhandStack = player.getHeldItemOffhand();
 			if (offhandStack.getItem() instanceof ItemConnection) {
 				if (checkHanging) {
 					event.setCanceled(true);
 					return;
 				} else {
-					event.setUseBlock(Result.DENY);
+					event.setUseBlock(Event.Result.DENY);
 				}
 			}
 		}
@@ -175,7 +168,7 @@ public final class ServerEventHandler {
 			int y = pos.getY();
 			int z = pos.getZ();
 			AxisAlignedBB area = new AxisAlignedBB(x - range, y - range, z - range, x + range, y + range, z + range);
-			for (EntityLiving entity : world.getEntitiesWithinAABB(EntityLiving.class, area)) {
+			for (MobEntity entity : world.getEntitiesWithinAABB(MobEntity.class, area)) {
 				if (entity.getLeashed() && entity.getLeashHolder() == player) {
 					checkHanging = true;
 					break;
@@ -183,8 +176,8 @@ public final class ServerEventHandler {
 			}
 		}
 		if (checkHanging) {
-			EntityHanging entity = EntityFenceFastener.findHanging(world, pos);
-			if (entity != null && !(entity instanceof EntityLeashKnot)) {
+			HangingEntity entity = EntityFenceFastener.findHanging(world, pos);
+			if (entity != null && !(entity instanceof LeashKnotEntity)) {
 				event.setCanceled(true);
 			}
 		}
@@ -200,23 +193,21 @@ public final class ServerEventHandler {
 			List<Vec3d> playingSources = new ArrayList<>();
 			Map<Fastener<?>, List<Entry<UUID, Connection>>> feasibleConnections = new HashMap<>();
 			for (TileEntity tileEntity : tileEntities) {
-				if (tileEntity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) {
-					Fastener<?> fastener = tileEntity.getCapability(CapabilityHandler.FASTENER_CAP, null);
+				tileEntity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
 					List<Vec3d> newPlayingSources = getPlayingLightSources(event.world, feasibleConnections, fastener);
 					if (newPlayingSources != null && newPlayingSources.size() > 0) {
 						playingSources.addAll(newPlayingSources);
 					}
-				}
+				});
 			}
-			for (Entity entity : event.world.loadedEntityList) {
-				if (entity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) {
-					Fastener<?> fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
+			((ServerWorld) event.world).getEntities().forEach(entity -> {
+				entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
 					List<Vec3d> newPlayingSources = getPlayingLightSources(event.world, feasibleConnections, fastener);
 					if (newPlayingSources != null && newPlayingSources.size() > 0) {
 						playingSources.addAll(newPlayingSources);
 					}
-				}
-			}
+				});
+			});
 			Iterator<Fastener<?>> feasibleFasteners = feasibleConnections.keySet().iterator();
 			while (feasibleFasteners.hasNext()) {
 				Fastener fastener = feasibleFasteners.next();
@@ -247,7 +238,7 @@ public final class ServerEventHandler {
 		List<Vec3d> points = new ArrayList<>();
 		double expandAmount = Configurator.getJingleAmplitude();
 		AxisAlignedBB listenerRegion = fastener.getBounds().expand(expandAmount, expandAmount, expandAmount);
-		List<EntityPlayer> nearPlayers = fastener.getWorld().getEntitiesWithinAABB(EntityPlayer.class, listenerRegion);
+		List<PlayerEntity> nearPlayers = fastener.getWorld().getEntitiesWithinAABB(PlayerEntity.class, listenerRegion);
 		boolean arePlayersNear = nearPlayers.size() > 0;
 		for (Entry<UUID, Connection> connectionEntry : fastener.getConnections().entrySet()) {
 			Connection connection = connectionEntry.getValue();

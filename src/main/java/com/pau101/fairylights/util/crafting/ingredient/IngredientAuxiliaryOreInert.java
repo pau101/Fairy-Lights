@@ -1,12 +1,14 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
+
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-
 public class IngredientAuxiliaryOreInert extends IngredientAuxiliaryOre<Void> {
-	public IngredientAuxiliaryOreInert(String name, boolean isRequired, int limit) {
-		super(name, isRequired, limit);
+	public IngredientAuxiliaryOreInert(Tag<Item> tag, boolean isRequired, int limit) {
+		super(tag, isRequired, limit);
 	}
 
 	@Nullable

@@ -1,22 +1,47 @@
 package com.pau101.fairylights.server.integration.jei;
 
+import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.util.crafting.GenericRecipe;
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
-import mezz.jei.api.JEIPlugin;
-import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.util.ResourceLocation;
 
-@JEIPlugin
+import java.util.stream.Collectors;
+
+@JeiPlugin
 public final class FairyLightsJEIPlugin implements IModPlugin {
 	@Override
-	public void register(IModRegistry registry) {
-		registry.handleRecipes(GenericRecipe.class, GenericRecipeWrapper::new, VanillaRecipeCategoryUid.CRAFTING);
+	public ResourceLocation getPluginUid() {
+		return new ResourceLocation(FairyLights.ID, "plugin");
 	}
 
 	@Override
-	public void registerItemSubtypes(ISubtypeRegistry registry) {
-		registry.registerSubtypeInterpreter(FLItems.TINSEL, new TinselSubtypeInterpreter());
+	public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
+		registration.getCraftingCategory().addCategoryExtension(GenericRecipe.class, GenericRecipeWrapper::new);
+	}
+
+	@Override
+	public void registerRecipes(IRecipeRegistration registration) {
+		ClientWorld world = Minecraft.getInstance().world;
+		RecipeManager recipeManager = world.getRecipeManager();
+		registration.addRecipes(recipeManager.getRecipes().stream()
+			.filter(GenericRecipe.class::isInstance)
+			.collect(Collectors.toList()),
+			VanillaRecipeCategoryUid.CRAFTING
+		);
+	}
+
+	@Override
+	public void registerItemSubtypes(ISubtypeRegistration registry) {
+		registry.registerSubtypeInterpreter(FLItems.TINSEL.orElseThrow(IllegalStateException::new), new TinselSubtypeInterpreter());
+		//registry.useNbtForSubtypes(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
 	}
 }

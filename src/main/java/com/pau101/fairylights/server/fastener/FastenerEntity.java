@@ -1,9 +1,8 @@
 package com.pau101.fairylights.server.fastener;
 
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorEntity;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -18,8 +17,8 @@ public abstract class FastenerEntity<E extends Entity> extends FastenerDefault<F
 	}
 
 	@Override
-	public EnumFacing getFacing() {
-		return EnumFacing.UP;
+	public Direction getFacing() {
+		return Direction.UP;
 	}
 
 	public E getEntity() {

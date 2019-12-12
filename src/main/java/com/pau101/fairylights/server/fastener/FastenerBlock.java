@@ -2,7 +2,7 @@ package com.pau101.fairylights.server.fastener;
 
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -20,7 +20,7 @@ public final class FastenerBlock extends FastenerDefault {
 	}
 
 	@Override
-	public EnumFacing getFacing() {
+	public Direction getFacing() {
 		return this.fastener.getFacing();
 	}
 

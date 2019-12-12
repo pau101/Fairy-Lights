@@ -1,21 +1,19 @@
 package com.pau101.fairylights.server.fastener.accessor;
 
-import java.util.List;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerEntity;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class FastenerAccessorEntity<E extends Entity> implements FastenerAccessor {
 	private Class<? extends E> entityClass;
@@ -57,17 +55,18 @@ public abstract class FastenerAccessorEntity<E extends Entity> implements Fasten
 
 	@Override
 	public Fastener<?> get(World world) {
-		return entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
+		// FIXME
+		return entity.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
 	}
 
 	@Override
 	public boolean isLoaded(World world) {
-		return entity != null;
+		return entity != null && entity.isAlive();
 	}
 
 	@Override
 	public boolean exists(World world) {
-		return entity == null || !entity.isDead;
+		return entity == null || entity.isAlive();
 	}
 
 	@Override
@@ -96,13 +95,13 @@ public abstract class FastenerAccessorEntity<E extends Entity> implements Fasten
 	}
 
 	@Override
-	public NBTTagCompound serialize() {
-		return NBTUtil.createUUIDTag(uuid);
+	public CompoundNBT serialize() {
+		return NBTUtil.writeUniqueId(uuid);
 	}
 
 	@Override
-	public void deserialize(NBTTagCompound nbt) {
-		uuid = NBTUtil.getUUIDFromTag(nbt);
+	public void deserialize(CompoundNBT nbt) {
+		uuid = NBTUtil.readUniqueId(nbt);
 		entity = null;
 	}
 }

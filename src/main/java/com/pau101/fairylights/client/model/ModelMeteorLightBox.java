@@ -1,10 +1,10 @@
 package com.pau101.fairylights.client.model;
 
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.client.renderer.model.PositionTextureVertex;
+import net.minecraft.client.renderer.model.TexturedQuad;
 
 public final class ModelMeteorLightBox extends ModelBox {
 	private PositionTextureVertex[] vertexPositions;
@@ -25,7 +25,7 @@ public final class ModelMeteorLightBox extends ModelBox {
 
 	private int type;
 
-	public ModelMeteorLightBox(ModelRenderer renderer, int textureX, int textureY, float x, float y, float z, int width, int height, int depth, int type) {
+	public ModelMeteorLightBox(RendererModel renderer, int textureX, int textureY, float x, float y, float z, int width, int height, int depth, int type) {
 		super(renderer, textureX, textureY, x, y, z, width, height, depth, 0);
 		this.type = type;
 		posX1 = x;

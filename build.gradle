@@ -1,53 +1,81 @@
 buildscript {
 	repositories {
-		jcenter()
 		maven {
-			url = "http://files.minecraftforge.net/maven"
+			url "http://files.minecraftforge.net/maven"
 		}
+		jcenter()
+		mavenCentral()
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+		classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
 	}
 }
 
-repositories {
-	maven {
-		url "http://dvs1.progwml6.com/files/maven"
-	}
-	maven {
-		url "https://maven.daporkchop.net/"
-	}
-}
+apply plugin: "net.minecraftforge.gradle"
 
-apply plugin: "net.minecraftforge.gradle.forge"
-
-ext.modVersion = "2.1.9"
-version = "${modVersion}-1.12.2"
-group= "com.pau101.fairylights"
+version = "2.1.10"
+group = "com.pau101.fairylights"
 archivesBaseName = "fairylights"
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-	version = "1.12.2-14.23.5.2768"
-	runDir = "run"
-	mappings = "stable_39"
-	makeObfSourceJar = false
+	mappings channel: "snapshot", version: "20191108-1.14.3"
+	runs {
+		client {
+			workingDirectory project.file("run")
+			property "forge.logging.markers", "REGISTRIES,REGISTRYDUMP"
+			property "forge.logging.console.level", "debug"
+			mods {
+				fairylights {
+					source sourceSets.main
+				}
+			}
+		}
+		server {
+			workingDirectory project.file("run")
+			property "forge.logging.markers", "REGISTRIES,REGISTRYDUMP"
+			property "forge.logging.console.level", "debug"
+			mods {
+				fairylights {
+					source sourceSets.main
+				}
+			}
+		}
+	}
+}
+
+jar {
+	classifier "1.14.4"
+}
+
+repositories {
+	maven {
+		name = "Progwml6 maven"
+		url = "https://dvs1.progwml6.com/files/maven/"
+	}
+	maven {
+		name = "ModMaven"
+		url = "https://modmaven.k-4u.nl"
+	}
 }
 
 dependencies {
-	deobfCompile "mezz.jei:jei_1.12.2:4.8.0.103:api"
-	runtime "mezz.jei:jei_1.12.2:4.8.0.103"
-	deobfCompile "valkyrienwarfare:valkyrienwarfare:0.9.5"
+	minecraft "net.minecraftforge:forge:1.14.4-28.1.0"
+	compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.25:api")
+	runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.25")
 }
 
 processResources {
-	inputs.property "version", project.modVersion
-	inputs.property "mcversion", project.minecraft.version
+	def vars = [
+		"version": project.version
+	]
+	inputs.properties(vars)
 	from (sourceSets.main.resources.srcDirs) {
-		include "mcmod.info"
-		expand "version": project.modVersion, "mcversion": project.minecraft.version
+		include("META-INF/mods.toml")
+		expand(vars)
 	}
 	from (sourceSets.main.resources.srcDirs) {
-		exclude "mcmod.info"
+		exclude("META-INF/mods.toml")
+		exclude("**/*.xcf")
 	}
 }

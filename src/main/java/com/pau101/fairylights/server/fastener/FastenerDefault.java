@@ -7,13 +7,13 @@ import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.Segment;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.util.AABBBuilder;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -21,6 +21,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -124,12 +125,14 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 		for (Connection connection : connections.values()) {
 			if (connection.shouldDrop()) {
 				ItemStack stack = connection.getItemStack();
-				EntityItem entityItem = new EntityItem(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
+				ItemEntity entityItem = new ItemEntity(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
 				float scale = 0.05F;
-				entityItem.motionX = world.rand.nextGaussian() * scale;
-				entityItem.motionY = world.rand.nextGaussian() * scale + 0.2F;
-				entityItem.motionZ = world.rand.nextGaussian() * scale;
-				world.spawnEntity(entityItem);
+				entityItem.setMotion(
+					world.rand.nextGaussian() * scale,
+					world.rand.nextGaussian() * scale + 0.2F,
+					world.rand.nextGaussian() * scale
+				);
+				world.addEntity(entityItem);
 			}
 		}
 	}
@@ -214,7 +217,7 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 	}
 
 	@Override
-	public Connection connectWith(World world, Fastener<?> destination, ConnectionType type, NBTTagCompound compound) {
+	public Connection connectWith(World world, Fastener<?> destination, ConnectionType type, CompoundNBT compound) {
 		UUID uuid = MathHelper.getRandomUUID();
 		connections.put(uuid, createConnection(world, uuid, destination, type, true, compound));
 		Connection c = destination.createConnection(world, uuid, this, type, false, compound);
@@ -223,39 +226,39 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 	}
 
 	@Override
-	public Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, NBTTagCompound compound) {
+	public Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, CompoundNBT compound) {
 		return type.createConnection(world, this, uuid, destination, isOrigin, compound);
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT() {
-		NBTTagCompound compound = new NBTTagCompound();
-		NBTTagList listConnections = new NBTTagList();
+	public CompoundNBT serializeNBT() {
+		CompoundNBT compound = new CompoundNBT();
+		ListNBT listConnections = new ListNBT();
 		for (Entry<UUID, Connection> connectionEntry : connections.entrySet()) {
 			UUID uuid = connectionEntry.getKey();
 			Connection connection = connectionEntry.getValue();
-			NBTTagCompound connectionCompound = new NBTTagCompound();
-			connectionCompound.setTag("connection", connection.serialize());
-			connectionCompound.setByte("type", (byte) connection.getType().ordinal());
-			connectionCompound.setTag("uuid", NBTUtil.createUUIDTag(uuid));
-			listConnections.appendTag(connectionCompound);
+			CompoundNBT connectionCompound = new CompoundNBT();
+			connectionCompound.put("connection", connection.serialize());
+			connectionCompound.putByte("type", (byte) connection.getType().ordinal());
+			connectionCompound.put("uuid", NBTUtil.writeUniqueId(uuid));
+			listConnections.add(connectionCompound);
 		}
-		compound.setTag("connections", listConnections);
+		compound.put("connections", listConnections);
 		return compound;
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound compound) {
-		if (!compound.hasKey("connections", NBT.TAG_LIST)) {
+	public void deserializeNBT(CompoundNBT compound) {
+		if (!compound.contains("connections", NBT.TAG_LIST)) {
 			return;
 		}
-		NBTTagList listConnections = compound.getTagList("connections", NBT.TAG_COMPOUND);
+		ListNBT listConnections = compound.getList("connections", NBT.TAG_COMPOUND);
 		List<UUID> nbtUUIDs = new ArrayList<>();
-		for (int i = 0; i < listConnections.tagCount(); i++) {
-			NBTTagCompound connectionCompound = listConnections.getCompoundTagAt(i);
+		for (int i = 0; i < listConnections.size(); i++) {
+			CompoundNBT connectionCompound = listConnections.getCompound(i);
 			UUID uuid;
-			if (connectionCompound.hasKey("uuid", NBT.TAG_COMPOUND)) {
-				uuid = NBTUtil.getUUIDFromTag(connectionCompound.getCompoundTag("uuid"));
+			if (connectionCompound.contains("uuid", NBT.TAG_COMPOUND)) {
+				uuid = NBTUtil.readUniqueId(connectionCompound.getCompound("uuid"));
 			} else {
 				uuid = MathHelper.getRandomUUID();
 			}
@@ -268,7 +271,7 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 				connection = type.createConnection(world, this, uuid);
 				connections.put(uuid, connection);
 			}
-			connection.deserialize(connectionCompound.getCompoundTag("connection"));
+			connection.deserialize(connectionCompound.getCompound("connection"));
 		}
 		Iterator<Entry<UUID, Connection>> connectionsIter = connections.entrySet().iterator();
 		while (connectionsIter.hasNext()) {
@@ -278,20 +281,12 @@ public abstract class FastenerDefault<F extends FastenerAccessor> implements Fas
 				connection.getValue().remove();
 			}
 		}
-		if (world != null) {
-			for (Connection connection : connections.values()) {
-				connection.updateCatenary(getConnectionPoint());
-			}
-		}
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityHandler.FASTENER_CAP;
-	}
+	private final LazyOptional<Fastener<?>> lazyOptional = LazyOptional.of(() -> this);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return hasCapability(capability, facing) ? CapabilityHandler.FASTENER_CAP.cast(this) : null;
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+		return capability == CapabilityHandler.FASTENER_CAP ? lazyOptional.cast() : LazyOptional.empty();
 	}
 }

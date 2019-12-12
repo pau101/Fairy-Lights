@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "fairylights:items/ladder"
+        "layer0": "fairylights:item/ladder"
     }
 }

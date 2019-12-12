@@ -1,7 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "fairylights:items/meteor_0",
-        "layer1": "fairylights:items/meteor_1"
-    }
-}

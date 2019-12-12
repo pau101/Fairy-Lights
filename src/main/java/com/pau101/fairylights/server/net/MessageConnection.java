@@ -1,19 +1,18 @@
 package com.pau101.fairylights.server.net;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerType;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public abstract class MessageConnection<C extends Connection> extends FLMessage {
+import javax.annotation.Nullable;
+import java.util.UUID;
+import java.util.function.Predicate;
+
+public abstract class MessageConnection<C extends Connection> {
 	public BlockPos pos;
 
 	public FastenerAccessor accessor;
@@ -29,36 +28,29 @@ public abstract class MessageConnection<C extends Connection> extends FLMessage 
 		uuid = connection.getUUID();
 	}
 
-	protected abstract boolean isInstanceOfType(Class<? extends Connection> connection);
-
-	@Override
-	public void serialize(PacketBuffer buf) {
-		buf.writeBlockPos(pos);
-		buf.writeCompoundTag(FastenerType.serialize(accessor));
-		buf.writeUniqueId(uuid);
+	public static void serialize(MessageConnection message, PacketBuffer buf) {
+		buf.writeBlockPos(message.pos);
+		buf.writeCompoundTag(FastenerType.serialize(message.accessor));
+		buf.writeUniqueId(message.uuid);
 	}
 
-	@Override
-	public void deserialize(PacketBuffer buf) throws IOException {
-		pos = buf.readBlockPos();
-		accessor = FastenerType.deserialize(buf.readCompoundTag());
-		uuid = buf.readUniqueId();
+	public static void deserialize(MessageConnection message, PacketBuffer buf) {
+		message.pos = buf.readBlockPos();
+		message.accessor = FastenerType.deserialize(buf.readCompoundTag());
+		message.uuid = buf.readUniqueId();
 	}
 
-	@Override
-	public final void process(MessageContext ctx) {
-		World world = getWorld(ctx);
-		accessor.update(world, pos);
-		if (accessor.isLoaded(world)) {
-			Fastener<?> fastener = accessor.get(world);
-			Connection connection = fastener.getConnections().get(uuid);
-			if (connection != null && isInstanceOfType(connection.getClass())) {
-				process(ctx, (C) connection);
+	@Nullable
+	public static <C extends Connection> C getConnection(MessageConnection<C> message, Predicate<? super Connection> typePredicate, World world) {
+		message.accessor.update(world, message.pos);
+		if (message.accessor.isLoaded(world)) {
+			Fastener<?> fastener = message.accessor.get(world);
+			Connection c = fastener.getConnections().get(message.uuid);
+			if (typePredicate.test(c)) {
+				//noinspection unchecked
+				return (C) c;
 			}
 		}
+		return null;
 	}
-
-	protected abstract World getWorld(MessageContext ctx);
-
-	protected abstract void process(MessageContext ctx, C connection);
 }

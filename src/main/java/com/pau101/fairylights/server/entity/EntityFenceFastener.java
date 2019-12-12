@@ -7,39 +7,49 @@ import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
-import com.pau101.fairylights.util.Utils;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityHanging;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.item.HangingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-public final class EntityFenceFastener extends EntityHanging implements IEntityAdditionalSpawnData {
+public final class EntityFenceFastener extends HangingEntity implements IEntityAdditionalSpawnData {
+	private int surfaceCheckTime;
+
+	public EntityFenceFastener(EntityType<? extends EntityFenceFastener> type, World world) {
+		super(type, world);
+	}
+
 	public EntityFenceFastener(World world) {
-		super(world);
+		this(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), world);
 	}
 
 	public EntityFenceFastener(World world, BlockPos pos) {
-		super(world);
+		this(world);
 		setPosition(pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -54,7 +64,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public float getEyeHeight() {
+	public float getEyeHeight(Pose pose, EntitySize size) {
 		/*
 		 * Because this entity is inside of a block when
 		 * EntityLivingBase#canEntityBeSeen performs its
@@ -77,7 +87,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	public float getBrightness() {
 		BlockPos pos = new BlockPos(this);
 		if (world.isBlockLoaded(pos)) {
-			return world.getLightBrightness(pos);
+			return world.getBrightness(pos);
 		}
 		return 0;
 	}
@@ -103,31 +113,26 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 
 	@Override
 	public boolean onValidSurface() {
-		return ItemConnection.isFence(world.getBlockState(hangingPosition), world.getTileEntity(hangingPosition));
+		return ItemConnection.isFence(world.getBlockState(hangingPosition));
 	}
 
 	@Override
-	public void setDead() {
-		super.setDead();
+	public void remove() {
 		getFastener().remove();
-	}
-
-	@Override
-	public String getName() {
-		return Utils.getEntityName(this);
+		super.remove();
 	}
 
 	@Override
 	public void onBroken(@Nullable Entity breaker) {
 		getFastener().dropItems(world, hangingPosition);
 		if (breaker != null) {
-			world.playEvent(2001, hangingPosition, Block.getStateId(FLBlocks.FASTENER.getDefaultState()));
+			world.playEvent(2001, hangingPosition, Block.getStateId(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState()));
 		}
 	}
 
 	@Override
 	public void playPlaceSound() {
-		SoundType sound = FLBlocks.FASTENER.getSoundType(FLBlocks.FASTENER.getDefaultState(), world, getHangingPosition(), null);
+		SoundType sound = FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getSoundType(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState(), world, getHangingPosition(), null);
 		playSound(sound.getPlaceSound(), (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8F);
 	}
 
@@ -142,7 +147,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public void updateFacingWithBoundingBox(EnumFacing facing) {}
+	public void updateFacingWithBoundingBox(Direction facing) {}
 
 	@Override
 	protected void updateBoundingBox() {
@@ -151,7 +156,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 		posZ = hangingPosition.getZ() + 0.5;
 		final float w = 3 / 16F;
 		final float h = 3 / 16F;
-		setEntityBoundingBox(new AxisAlignedBB(posX - w, posY - h, posZ - w, posX + w, posY + h, posZ + w));
+		setBoundingBox(new AxisAlignedBB(posX - w, posY - h, posZ - w, posX + w, posY + h, posZ + w));
 	}
 
 	@Override
@@ -160,20 +165,30 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public void onUpdate() {
-		super.onUpdate();
+	public void tick() {
+		prevPosX = posX;
+		prevPosY = posY;
+		prevPosZ = posZ;
 		Fastener<?> fastener = getFastener();
-		if (!world.isRemote && fastener.hasNoConnections()) {
-			setDead();
+		if (!world.isRemote && (fastener.hasNoConnections() || checkSurface())) {
 			onBroken(null);
+			remove();
 		} else if (fastener.update() && !world.isRemote) {
 			MessageUpdateFastenerEntity msg = new MessageUpdateFastenerEntity(this, fastener.serializeNBT());
 			ServerProxy.sendToPlayersWatchingEntity(msg, world, this);
 		}
 	}
 
+	private boolean checkSurface() {
+		if (surfaceCheckTime++ == 100) {
+			surfaceCheckTime = 0;
+			return !onValidSurface();
+		}
+		return false;
+	}
+
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
+	public boolean processInitialInteract(PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.getItem() instanceof ItemConnection) {
 			if (world.isRemote) {
@@ -187,17 +202,17 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound compound) {
-		compound.setTag("pos", NBTUtil.createPosTag(hangingPosition));
+	public void writeAdditional(CompoundNBT compound) {
+		compound.put("pos", NBTUtil.writeBlockPos(hangingPosition));
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound compound) {
-		hangingPosition = NBTUtil.getPosFromTag(compound.getCompoundTag("pos"));
+	public void readAdditional(CompoundNBT compound) {
+		hangingPosition = NBTUtil.readBlockPos(compound.getCompound("pos"));
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf buf) {
+	public void writeSpawnData(PacketBuffer buf) {
 		Fastener<?> fastener = getFastener();
 		try {
 			CompressedStreamTools.write(fastener.serializeNBT(), new ByteBufOutputStream(buf));
@@ -207,7 +222,7 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf buf) {
+	public void readSpawnData(PacketBuffer buf) {
 		Fastener<?> fastener = getFastener();
 		try {
 			fastener.deserializeNBT(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(0x200000)));
@@ -216,21 +231,27 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 		}
 	}
 
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
 	private Fastener<?> getFastener() {
-		return getCapability(CapabilityHandler.FASTENER_CAP, null);
+		// FIXME
+		return getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
 	}
 
 	public static EntityFenceFastener create(World world, BlockPos fence) {
 		EntityFenceFastener fastener = new EntityFenceFastener(world, fence);
 		fastener.forceSpawn = true;
-		world.spawnEntity(fastener);
+		world.addEntity(fastener);
 		fastener.playPlaceSound();
 		return fastener;
 	}
 
 	@Nullable
 	public static EntityFenceFastener find(World world, BlockPos pos) {
-		EntityHanging entity = findHanging(world, pos);
+		HangingEntity entity = findHanging(world, pos);
 		if (entity instanceof EntityFenceFastener) {
 			return (EntityFenceFastener) entity;
 		}
@@ -238,8 +259,8 @@ public final class EntityFenceFastener extends EntityHanging implements IEntityA
 	}
 
 	@Nullable
-	public static EntityHanging findHanging(World world, BlockPos pos) {
-		for (EntityHanging e : world.getEntitiesWithinAABB(EntityHanging.class, new AxisAlignedBB(pos).grow(2))) {
+	public static HangingEntity findHanging(World world, BlockPos pos) {
+		for (HangingEntity e : world.getEntitiesWithinAABB(HangingEntity.class, new AxisAlignedBB(pos).grow(2))) {
 			if (e.getHangingPosition().equals(pos)) {
 				return e;
 			}

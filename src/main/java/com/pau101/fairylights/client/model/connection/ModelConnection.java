@@ -1,26 +1,21 @@
 package com.pau101.fairylights.client.model.connection;
 
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.Segment;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.util.Mth;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.TextureOffset;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
-public abstract class ModelConnection<T extends Connection> extends ModelBase {
+public abstract class ModelConnection<T extends Connection> extends Model {
 	public ModelConnection() {
 		textureWidth = textureHeight = 128;
 	}
@@ -48,7 +43,7 @@ public abstract class ModelConnection<T extends Connection> extends ModelBase {
 		int toMoonlight = toBlockBrightness / 65536;
 		Segment[] segments = connection.getCatenary().getSegments();
 		Segment[] segmentsOld = prevCatenary.getSegments();
-		GlStateManager.color(1, 1, 1);
+		GlStateManager.color3f(1, 1, 1);
 		GlStateManager.disableRescaleNormal();
 		final float sdelta;
 		if (segments.length >= segmentsOld.length) {
@@ -61,7 +56,7 @@ public abstract class ModelConnection<T extends Connection> extends ModelBase {
 		}
 		for (int i = 0; i < segments.length; i++) {
 			float v = i / (float) segments.length;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight * (1 - v) + toSunlight * v, moonlight * (1 - v) + toMoonlight * v);
+			GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, sunlight * (1 - v) + toSunlight * v, moonlight * (1 - v) + toMoonlight * v);
 			Segment segment = segments[i];
 			Segment old = segmentsOld[i];
 			Vec3d rotation;
@@ -82,39 +77,4 @@ public abstract class ModelConnection<T extends Connection> extends ModelBase {
 	}
 
 	protected abstract void renderSegment(T connection, int index, double angleX, double angleY, double length, double x, double y, double z, float delta);
-
-	@Override
-	public final ModelRenderer getRandomModelBox(Random rand) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final TextureOffset getTextureOffset(String partName) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void render(Entity entity, float speed, float swing, float entityAge, float yaw, float pitch, float scale) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void setLivingAnimations(EntityLivingBase entity, float yaw, float pitch, float delta) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void setModelAttributes(ModelBase model) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void setRotationAngles(float speed, float swing, float entityAge, float yaw, float pitch, float scale, Entity entity) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected final void setTextureOffset(String partName, int x, int y) {
-		throw new UnsupportedOperationException();
-	}
 }

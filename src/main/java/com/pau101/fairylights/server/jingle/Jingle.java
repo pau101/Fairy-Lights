@@ -1,16 +1,15 @@
 package com.pau101.fairylights.server.jingle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import com.google.common.base.Strings;
 import com.google.common.primitives.UnsignedBytes;
 import com.pau101.fairylights.util.NBTSerializable;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public final class Jingle implements NBTSerializable {
 	private static final Pattern LOWER_UNDERSCORE_CASE = Pattern.compile("[a-z0-9]+(_[a-z0-9]+)*");
@@ -103,36 +102,36 @@ public final class Jingle implements NBTSerializable {
 	}
 
 	@Override
-	public NBTTagCompound serialize() {
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("id", id);
-		compound.setString("name", name);
-		compound.setString("artist", artist);
-		NBTTagList tickList = new NBTTagList();
+	public CompoundNBT serialize() {
+		CompoundNBT compound = new CompoundNBT();
+		compound.putString("id", id);
+		compound.putString("name", name);
+		compound.putString("artist", artist);
+		ListNBT tickList = new ListNBT();
 		for (PlayTick tick : ticks) {
-			NBTTagCompound tickCompound = new NBTTagCompound();
+			CompoundNBT tickCompound = new CompoundNBT();
 			int notes = 0;
 			for (int note : tick.notes) {
 				notes |= 1 << note;
 			}
-			tickCompound.setInteger("notes", notes);
-			tickCompound.setByte("length", UnsignedBytes.checkedCast(tick.length));
-			tickList.appendTag(tickCompound);
+			tickCompound.putInt("notes", notes);
+			tickCompound.putByte("length", UnsignedBytes.checkedCast(tick.length));
+			tickList.add(tickCompound);
 		}
-		compound.setTag("ticks", tickList);
+		compound.put("ticks", tickList);
 		return compound;
 	}
 
 	@Override
-	public void deserialize(NBTTagCompound compound) {
+	public void deserialize(CompoundNBT compound) {
 		id = compound.getString("id");
 		name = compound.getString("name");
 		artist = compound.getString("artist");
-		NBTTagList tickList = compound.getTagList("ticks", NBT.TAG_COMPOUND);
-		ticks = new ArrayList<>(tickList.tagCount());
-		for (int i = 0; i < tickList.tagCount(); i++) {
-			NBTTagCompound tickCompound = tickList.getCompoundTagAt(i);
-			int noteBits = tickCompound.getInteger("notes");
+		ListNBT tickList = compound.getList("ticks", NBT.TAG_COMPOUND);
+		ticks = new ArrayList<>(tickList.size());
+		for (int i = 0; i < tickList.size(); i++) {
+			CompoundNBT tickCompound = tickList.getCompound(i);
+			int noteBits = tickCompound.getInt("notes");
 			int[] notes = new int[Integer.bitCount(noteBits)];
 			for (int idx = 0, note = 0; note < 25; note++) {
 				if ((noteBits & (1 << note)) > 0) {
@@ -140,7 +139,7 @@ public final class Jingle implements NBTSerializable {
 				}
 			}
 			int length;
-			if (tickCompound.hasKey("length", NBT.TAG_ANY_NUMERIC)) {
+			if (tickCompound.contains("length", NBT.TAG_ANY_NUMERIC)) {
 				length = tickCompound.getByte("length") & 0xFF;
 			} else {
 				length = DEFAULT_LENGTH;
@@ -169,7 +168,7 @@ public final class Jingle implements NBTSerializable {
 		}
 	}
 
-	public static Jingle from(NBTTagCompound compound) {
+	public static Jingle from(CompoundNBT compound) {
 		Jingle jingle = new Jingle();
 		jingle.deserialize(compound);
 		return jingle;

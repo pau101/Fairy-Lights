@@ -1,22 +1,17 @@
 package com.pau101.fairylights.server.net.clientbound;
 
-import java.io.IOException;
-
-import javax.annotation.Nullable;
-
-import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
 import com.pau101.fairylights.server.jingle.Jingle;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
 import com.pau101.fairylights.server.net.MessageConnection;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public final class MessageJingle extends MessageConnection<Connection> {
 	private int lightOffset;
@@ -35,37 +30,31 @@ public final class MessageJingle extends MessageConnection<Connection> {
 		this.jingle = jingle;
 	}
 
-	@Override
-	public void serialize(PacketBuffer buf) {
-		super.serialize(buf);
-		buf.writeVarInt(lightOffset);
-		buf.writeByte(library.getId());
-		buf.writeString(jingle.getId());
+	public static void serialize(MessageJingle message, PacketBuffer buf) {
+		MessageConnection.serialize(message, buf);
+		buf.writeVarInt(message.lightOffset);
+		buf.writeByte(message.library.getId());
+		buf.writeString(message.jingle.getId());
 	}
 
-	@Override
-	public void deserialize(PacketBuffer buf) throws IOException {
-		super.deserialize(buf);
-		lightOffset = buf.readVarInt();
-		library = JingleLibrary.fromId(buf.readUnsignedByte());
-		jingle = library.get(buf.readString(64));
+	public static MessageJingle deserialize(PacketBuffer buf) {
+		MessageJingle message = new MessageJingle();
+		MessageConnection.deserialize(message, buf);
+		message.lightOffset = buf.readVarInt();
+		message.library = JingleLibrary.fromId(buf.readUnsignedByte());
+		message.jingle = message.library.get(buf.readString());
+		return message;
 	}
 
-	@Override
-	protected boolean isInstanceOfType(Class<? extends Connection> connection) {
-		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	protected World getWorld(MessageContext ctx) {
-		return Minecraft.getMinecraft().world;
-	}
-
-	@Override
-	protected void process(MessageContext ctx, Connection connection) {
-		if (jingle != null && connection.getType() == ConnectionType.HANGING_LIGHTS) {
-			((ConnectionHangingLights) connection).play(library, jingle, lightOffset);
+	public static class Handler implements BiConsumer<MessageJingle, Supplier<NetworkEvent.Context>> {
+		@Override
+		public void accept(MessageJingle message, Supplier<NetworkEvent.Context> contextSupplier) {
+			NetworkEvent.Context context = contextSupplier.get();
+			Connection connection = MessageConnection.getConnection(message, c -> true, Minecraft.getInstance().world);
+			if (message.jingle != null && connection instanceof ConnectionHangingLights) {
+				((ConnectionHangingLights) connection).play(message.library, message.jingle, message.lightOffset);
+			}
+			context.setPacketHandled(true);
 		}
 	}
 }

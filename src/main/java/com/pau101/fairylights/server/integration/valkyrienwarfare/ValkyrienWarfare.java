@@ -1,22 +1,7 @@
 package com.pau101.fairylights.server.integration.valkyrienwarfare;
 
-import com.pau101.fairylights.server.fastener.BlockView;
-import com.pau101.fairylights.server.fastener.CollectFastenersEvent;
-import com.pau101.fairylights.server.fastener.CreateBlockViewEvent;
-import com.pau101.fairylights.util.matrix.Matrix;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import valkyrienwarfare.api.Vector;
-import valkyrienwarfare.math.Quaternion;
-import valkyrienwarfare.physics.TransformType;
-import valkyrienwarfare.physics.management.PhysicsObject;
-import valkyrienwarfare.physics.management.PhysicsWrapperEntity;
-import valkyrienwarfare.util.RealMethods;
-
 public class ValkyrienWarfare {
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public static void onCollectFasteners(final CollectFastenersEvent event) {
 		event.getWorld().loadedEntityList.stream()
 			.filter(PhysicsWrapperEntity.class::isInstance)
@@ -85,5 +70,5 @@ public class ValkyrienWarfare {
 			final Quaternion rotation = object.coordTransform.getCurrentTickTransform().createRotationQuaternion(TransformType.GLOBAL_TO_LOCAL);
 			return Quaternion.slerpInterpolate(prevRotation, rotation, delta);
 		}
-	}
+	}*/
 }

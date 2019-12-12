@@ -4,11 +4,11 @@ import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorPlayer;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.item.ItemConnection;
 import com.pau101.fairylights.util.Mth;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.play.server.SPacketEntityVelocity;
+import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
-	public FastenerPlayer(EntityPlayer entity) {
+public final class FastenerPlayer extends FastenerEntity<PlayerEntity> {
+	public FastenerPlayer(PlayerEntity entity) {
 		super(entity);
 	}
 
@@ -78,7 +78,7 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 		if (!((ItemConnection) stack.getItem()).getConnectionType().isConnectionThis(getFirstConnection())) {
 			return false;
 		}
-		if (stack.hasTagCompound() && !NBTUtil.areNBTEquals(getFirstConnection().serializeLogic(), stack.getTagCompound(), true)) {
+		if (stack.hasTag() && !NBTUtil.areNBTEquals(getFirstConnection().serializeLogic(), stack.getTag(), true)) {
 			return false;
 		}
 		return true;
@@ -95,24 +95,27 @@ public final class FastenerPlayer extends FastenerEntity<EntityPlayer> {
 			double vectorY = dy / dist;
 			double vectorZ = dz / dist;
 			double factor = Math.min((dist - Connection.MAX_LENGTH) / Connection.PULL_RANGE, Connection.PULL_RANGE);
-			double tangent = Math.cos(MathHelper.atan2(dy, Math.sqrt(dx * dx + dz * dz))) * Math.signum(entity.motionY);
-			double speed = Math.sqrt(entity.motionX * entity.motionX + entity.motionY * entity.motionY + entity.motionZ * entity.motionZ);
-			double swing = Math.abs(speed) < 1e-6 ? 0 : (1 - Math.abs(entity.motionY / speed - tangent)) * 0.1;
-			double mag = Math.sqrt(entity.motionX * entity.motionX + tangent * tangent + entity.motionZ * entity.motionZ);
+			Vec3d motion = entity.getMotion();
+			double tangent = Math.cos(MathHelper.atan2(dy, Math.sqrt(dx * dx + dz * dz))) * Math.signum(motion.y);
+			double speed = motion.length();
+			double swing = Math.abs(speed) < 1e-6 ? 0 : (1 - Math.abs(motion.y / speed - tangent)) * 0.1;
+			double mag = Math.sqrt(motion.x * motion.x + tangent * tangent + motion.z * motion.z);
 			double arcX, arcY, arcZ;
 			if (dy > 0 || Math.abs(mag) < 1e-6) {
 				arcX = arcY = arcZ = 0;
 			} else {
-				arcX = entity.motionX / mag * swing;
+				arcX = motion.x / mag * swing;
 				arcY = tangent / mag * swing;
-				arcZ = entity.motionZ / mag * swing;
+				arcZ = motion.z / mag * swing;
 			}
-			entity.motionX += vectorX * -Math.abs(vectorX) * factor + arcX;
-			entity.motionY += vectorY * -Math.abs(vectorY) * factor + arcY;
-			entity.motionZ += vectorZ * -Math.abs(vectorZ) * factor + arcZ;
+			entity.setMotion(
+				motion.x + vectorX * -Math.abs(vectorX) * factor + arcX,
+				motion.y + vectorY * -Math.abs(vectorY) * factor + arcY,
+				motion.z + vectorZ * -Math.abs(vectorZ) * factor + arcZ
+			);
 			entity.fallDistance = 0;
-			if (entity instanceof EntityPlayerMP) {
-				((EntityPlayerMP) entity).connection.sendPacket(new SPacketEntityVelocity(entity));	
+			if (entity instanceof ServerPlayerEntity) {
+				((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
 			}
 		}
 	}

@@ -1,0 +1,82 @@
+﻿{
+    "itemGroup.fairylights": "sʇɥᵷᴉ˥ ʎɹᴉɐℲ",
+
+    "fairylights.config": "uoᴉʇɐɹnᵷᴉɟuoƆ  sʇɥᵷᴉ˥ ʎɹᴉɐℲ",
+
+    "block.fairylights.fastener": "ɹǝuǝʇsɐℲ uoᴉʇɔǝuuoƆ",
+
+    "item.fairylights.hanging_lights": "sʇɥᵷᴉ˥ ᵷuᴉᵷuɐH",
+    "item.fairylights.garland": "puɐlɹɐפ ǝuᴉΛ",
+    "item.fairylights.tinsel": "puɐlɹɐפ lǝsuᴉ┴",
+
+    "item.fairyLights.pattern": ":uɹǝʇʇɐԀ",
+    "item.fairyLights.twinkle": "ǝlʞuᴉʍ┴",
+    "item.fairyLights.tight": "pǝʌɹnɔu∩",
+
+    "item.fairylights.pennant_bunting": "ᵷuᴉʇunq ᵷ",
+    "item.pennantBunting.colors": ":sɹoloƆ",
+
+    "item.fairylights.letter_bunting": "ᵷuᴉʇunq ɹǝʇʇǝ˥",
+
+    "item.fairylights.pennant": "ʇuɐuuǝԀ",
+
+    "item.light.name": "ʇɥᵷᴉ˥",
+    "item.fairylights.fairy_light": "ʇɥᵷᴉ˥ ʎɹᴉɐℲ",
+    "item.fairylights.paper_lantern": "uɹǝʇuɐ˥ ɹǝdɐԀ",
+    "item.fairylights.orb_lantern": "uɹǝʇuɐ˥ qɹO",
+    "item.fairylights.flower_light": "ʇɥᵷᴉ˥ ɹǝʍolℲ",
+    "item.fairylights.ornate_lantern": "uɹǝʇuɐ˥ ǝʇɐuɹO",
+    "item.fairylights.oil_lantern": "uɹǝʇuɐ˥ lᴉO",
+    "item.light.luxoBall.name": "llɐq oxn˥",
+    "item.fairylights.jack_o_lantern": "uɹǝʇuɐ˥,o ʞɔɐſ",
+    "item.fairylights.skull_light": "ʇɥᵷᴉ˥ llnʞS",
+    "item.fairylights.ghost_light": "ʇɥᵷᴉ˥ ʇsoɥפ",
+    "item.fairylights.spider_light": "ʇɥᵷᴉ˥ ɹǝpᴉdS",
+    "item.fairylights.witch_light": "ʇɥᵷᴉ˥ ɥɔʇᴉM",
+    "item.fairylights.snowflake_light": "ʇɥᵷᴉ˥ ǝʞɐlɟʍouS",
+    "item.fairylights.icicle_lights": "sʇɥᵷᴉ˥ ǝlɔᴉɔI",
+    "item.fairylights.meteor_light": "ʇɥᵷᴉ˥ ɹoǝʇǝW",
+
+    "item.fairylights.ladder": "ɹǝppɐl-dǝʇS",
+
+    "entity.fairylights.fastener": "ɹǝuǝʇsɐℲ",
+    "entity.fairylights.ladder": "ɹǝppɐl-dǝʇS",
+
+    "gui.editLetteredConnection.name": "ʇxǝ┴ ᵷuᴉʇunq ʇǝS",
+
+    "recipe.ingredient.tooltip": "§7%s",
+    "recipe.ingredient.auxiliary.optional": "(lɐuoᴉʇdO)",
+    "recipe.hangingLights.glowstone": "ǝlʞuᴉʍʇ oʇ sʇɥᵷᴉl sǝsnɐƆ",
+    "recipe.hangingLights.light": "uɹǝʇʇɐd ǝzᴉɯoʇsnɔ oʇ sʇɥᵷᴉl ǝldᴉʇlnɯ pp∀",
+    "recipe.pennantBunting.pennant": "uɹǝʇʇɐd ǝzᴉɯoʇsnɔ oʇ sʇuɐuuǝd ǝldᴉʇlnɯ pp∀",
+
+    "format.pattern.entry": "%1$s  ",
+    "format.colored": "%2$s %1$s",
+    "format.text": "%1$s :ʇxǝ┴",
+
+    "color.black.name": "ʞɔɐlq",
+    "color.red.name": "pǝɹ",
+    "color.green.name": "uǝǝɹפ",
+    "color.brown.name": "uʍoɹq",
+    "color.blue.name": "ǝnlq",
+    "color.purple.name": "ǝldɹnԀ",
+    "color.cyan.name": "uɐʎƆ",
+    "color.light_gray.name": "ʎɐɹפ ʇɥᵷᴉ˥",
+    "color.gray.name": "ʎɐɹפ",
+    "color.pink.name": "ʞuᴉԀ",
+    "color.lime.name": "ǝɯᴉ˥",
+    "color.yellow.name": "ʍollǝ⅄",
+    "color.light_blue.name": "ǝnlq ʇɥᵷᴉ˥",
+    "color.magenta.name": "ɐʇuǝᵷɐW",
+    "color.orange.name": "ǝᵷuɐɹO",
+    "color.white.name": "ǝʇᴉɥM",
+
+    "subtitles.block.jingleBell": "sǝlᵷuᴉɾ llǝq",
+    "subtitles.block.cord.connect": "sʇɔǝuuoɔ pɹoƆ",
+    "subtitles.block.cord.disconnect": "sʇɔǝuuoɔsᴉp pɹoƆ",
+    "subtitles.block.cord.stretch": "sǝɥɔʇǝɹʇs pɹoƆ",
+    "subtitles.block.cord.snap": "sdɐus pɹoƆ",
+    "subtitles.block.feature.lightTurnOn": "uo ʞɔᴉlɔ sʇɥᵷᴉ˥",
+    "subtitles.block.feature.lightTurnOff": "ɟɟo ʞɔᴉlɔ sʇɥᵷᴉ˥",
+    "subtitles.block.feature.colorChange": "sdold ɹoloƆ"
+}

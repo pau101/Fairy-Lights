@@ -1,13 +1,5 @@
 package com.pau101.fairylights.util.crafting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Strings;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryBasicInert;
@@ -16,14 +8,26 @@ import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularBasic;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularList;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularOre;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public final class GenericRecipeBuilder {
 	private static final char EMPTY_SPACE = ' ';
+
+	private ResourceLocation name;
+
+	private IRecipeSerializer<GenericRecipe> serializer;
 
 	@Nullable
 	private ItemStack output;
@@ -38,35 +42,23 @@ public final class GenericRecipeBuilder {
 
 	private final List<IngredientAuxiliary> auxiliaryIngredients = new ArrayList<>();
 
-	public GenericRecipeBuilder(Item item) {
-		this(item, 0);
+	public GenericRecipeBuilder(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer, Item item) {
+		this(name, serializer, new ItemStack(item));
 	}
 
-	public GenericRecipeBuilder(Item item, int metadata) {
-		this(item, 1, metadata);
+	public GenericRecipeBuilder(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer, Block block) {
+		this(name, serializer, new ItemStack(block));
 	}
 
-	public GenericRecipeBuilder(Item item, int size, int metadata) {
-		this(new ItemStack(item, size, metadata));
-	}
-
-	public GenericRecipeBuilder(Block block) {
-		this(block, OreDictionary.WILDCARD_VALUE);
-	}
-
-	public GenericRecipeBuilder(Block block, int metadata) {
-		this(block, 1, metadata);
-	}
-
-	public GenericRecipeBuilder(Block block, int size, int metadata) {
-		this(new ItemStack(block, size, metadata));
-	}
-
-	public GenericRecipeBuilder(ItemStack output) {
+	public GenericRecipeBuilder(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer, ItemStack output) {
+		this(name, serializer);
 		this.output = Objects.requireNonNull(output, "output");
 	}
 
-	public GenericRecipeBuilder() {}
+	public GenericRecipeBuilder(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer) {
+		this.name = name;
+		this.serializer = serializer;
+	}
 
 	public GenericRecipeBuilder withShape(String... shape) {
 		Objects.requireNonNull(shape, "shape");
@@ -91,27 +83,19 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withOutput(Item item) {
-		return withOutput(Objects.requireNonNull(item, "item"), 0);
+		return withOutput(Objects.requireNonNull(item, "item"), 1);
 	}
 
-	public GenericRecipeBuilder withOutput(Item item, int metadata) {
-		return withOutput(Objects.requireNonNull(item, "item"), 1, metadata);
-	}
-
-	public GenericRecipeBuilder withOutput(Item item, int size, int metadata) {
-		return withOutput(new ItemStack(Objects.requireNonNull(item, "item"), size, metadata));
+	public GenericRecipeBuilder withOutput(Item item, int size) {
+		return withOutput(new ItemStack(Objects.requireNonNull(item, "item"), size));
 	}
 
 	public GenericRecipeBuilder withOutput(Block block) {
-		return withOutput(Objects.requireNonNull(block, "block"), OreDictionary.WILDCARD_VALUE);
+		return withOutput(Objects.requireNonNull(block, "block"), 1);
 	}
 
-	public GenericRecipeBuilder withOutput(Block block, int metadata) {
-		return withOutput(Objects.requireNonNull(block, "block"), 1, metadata);
-	}
-
-	public GenericRecipeBuilder withOutput(Block block, int size, int metadata) {
-		return withOutput(new ItemStack(Objects.requireNonNull(block, "block"), size, metadata));
+	public GenericRecipeBuilder withOutput(Block block, int size) {
+		return withOutput(new ItemStack(Objects.requireNonNull(block, "block"), size));
 	}
 
 	public GenericRecipeBuilder withOutput(ItemStack output) {
@@ -120,27 +104,19 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, Item item) {
-		return withIngredient(key, item, 0);
+		return withIngredient(key, new ItemStack(Objects.requireNonNull(item, "item"), 1));
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, Block block) {
-		return withIngredient(key, block, OreDictionary.WILDCARD_VALUE);
-	}
-
-	public GenericRecipeBuilder withIngredient(char key, Item item, int metadata) {
-		return withIngredient(key, new ItemStack(Objects.requireNonNull(item, "item"), 1, metadata));
-	}
-
-	public GenericRecipeBuilder withIngredient(char key, Block block, int metadata) {
-		return withIngredient(key, new ItemStack(Objects.requireNonNull(block, "block"), 1, metadata));
+		return withIngredient(key, new ItemStack(Objects.requireNonNull(block, "block"), 1));
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, ItemStack stack) {
 		return withIngredient(key, new IngredientRegularBasic(Objects.requireNonNull(stack, "stack")));
 	}
 
-	public GenericRecipeBuilder withIngredient(char key, String name) {
-		return withIngredient(key, new IngredientRegularOre(name));
+	public GenericRecipeBuilder withIngredient(char key, Tag<Item> tag) {
+		return withIngredient(key, new IngredientRegularOre(tag));
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, IngredientRegular ingredient) {
@@ -159,35 +135,19 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(Item item) {
-		return withAuxiliaryIngredient(item, 0);
+		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(item, "item")));
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(Item item, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(item, 0, isRequired, limit);
+		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(item, "item")), isRequired, limit);
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(Block block) {
-		return withAuxiliaryIngredient(block, OreDictionary.WILDCARD_VALUE);
+		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(block, "block")));
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(Block block, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(block, OreDictionary.WILDCARD_VALUE, isRequired, limit);
-	}
-
-	public GenericRecipeBuilder withAuxiliaryIngredient(Item item, int metadata) {
-		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(item, "item"), 1, metadata));
-	}
-
-	public GenericRecipeBuilder withAuxiliaryIngredient(Item item, int metadata, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(item, "item"), 1, metadata), isRequired, limit);
-	}
-
-	public GenericRecipeBuilder withAuxiliaryIngredient(Block block, int metadata) {
-		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(block, "block"), 1, metadata));
-	}
-
-	public GenericRecipeBuilder withAuxiliaryIngredient(Block block, int metadata, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(block, "block"), 1, metadata), isRequired, limit);
+		return withAuxiliaryIngredient(new ItemStack(Objects.requireNonNull(block, "block")), isRequired, limit);
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(ItemStack stack) {
@@ -198,12 +158,12 @@ public final class GenericRecipeBuilder {
 		return withAuxiliaryIngredient(new IngredientAuxiliaryBasicInert(Objects.requireNonNull(stack, "stack"), isRequired, limit));
 	}
 
-	public GenericRecipeBuilder withAuxiliaryIngredient(String name) {
-		return withAuxiliaryIngredient(name, false, 1);
+	public GenericRecipeBuilder withAuxiliaryIngredient(Tag<Item> tag) {
+		return withAuxiliaryIngredient(tag, false, 1);
 	}
 
-	public GenericRecipeBuilder withAuxiliaryIngredient(String name, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(new IngredientAuxiliaryOreInert(name, isRequired, limit));
+	public GenericRecipeBuilder withAuxiliaryIngredient(Tag<Item> tag, boolean isRequired, int limit) {
+		return withAuxiliaryIngredient(new IngredientAuxiliaryOreInert(tag, isRequired, limit));
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(IngredientAuxiliary<?> ingredient) {
@@ -227,7 +187,7 @@ public final class GenericRecipeBuilder {
 		IngredientAuxiliary<?>[] auxiliaryIngredients = this.auxiliaryIngredients.toArray(
 			new IngredientAuxiliary<?>[this.auxiliaryIngredients.size()]
 		);
-		return new GenericRecipe(output, ingredients, auxiliaryIngredients, width, height);
+		return new GenericRecipe(name, serializer, output, ingredients, auxiliaryIngredients, width, height);
 	}
 
 	private static IngredientRegular asIngredient(Object object) {
@@ -235,13 +195,13 @@ public final class GenericRecipeBuilder {
 			return new IngredientRegularBasic(new ItemStack((Item) object));
 		}
 		if (object instanceof Block) {
-			return new IngredientRegularBasic(new ItemStack((Block) object, 1, OreDictionary.WILDCARD_VALUE));
+			return new IngredientRegularBasic(new ItemStack((Block) object));
 		}
 		if (object instanceof ItemStack) {
 			return new IngredientRegularBasic((ItemStack) object);
 		}
-		if (object instanceof String) {
-			return new IngredientRegularOre((String) object);
+		if (object instanceof Tag) {
+			return new IngredientRegularOre((Tag<Item>) object);
 		}
 		if (object instanceof IngredientRegular) {
 			return (IngredientRegular) object;

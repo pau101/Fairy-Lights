@@ -1,17 +1,15 @@
 package com.pau101.fairylights.client.model.connection;
 
-import org.lwjgl.opengl.GL11;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.renderer.FastenerRenderer;
 import com.pau101.fairylights.server.fastener.connection.type.garland.ConnectionGarlandVine;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.RandomArray;
-
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public final class ModelConnectionGarland extends ModelConnection<ConnectionGarlandVine> {
 	private static final int RING_COUNT = 8;
@@ -34,9 +32,9 @@ public final class ModelConnectionGarland extends ModelConnection<ConnectionGarl
 	private void generateGarlandRings() {
 		ringId = GLAllocation.generateDisplayLists(RING_COUNT);
 		for (int i = 0; i < RING_COUNT; i++) {
-			GlStateManager.glNewList(ringId + i, GL11.GL_COMPILE);
+			GlStateManager.newList(ringId + i, GL11.GL_COMPILE);
 			FastenerRenderer.render3DTexture(8, 8, i * 8, 64);
-			GlStateManager.glEndList();
+			GlStateManager.endList();
 		}
 	}
 
@@ -57,27 +55,27 @@ public final class ModelConnectionGarland extends ModelConnection<ConnectionGarl
 		cordModel.setRotationPoint(x, y, z);
 		cordModel.render(0.0625F);
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x / 16, y / 16, z / 16);
-		GlStateManager.rotate((float) angleY * Mth.RAD_TO_DEG, 0, 1, 0);
-		GlStateManager.rotate((float) angleX * Mth.RAD_TO_DEG, 1, 0, 0);
+		GlStateManager.translated(x / 16, y / 16, z / 16);
+		GlStateManager.rotatef((float) angleY * Mth.RAD_TO_DEG, 0, 1, 0);
+		GlStateManager.rotatef((float) angleX * Mth.RAD_TO_DEG, 1, 0, 0);
 		int rings = MathHelper.ceil(length * RINGS_PER_METER / 16) + 1;
 		for (int i = 0; i < rings; i++) {
 			double t = i / (float) rings * length / 16;
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0, 0, t);
+			GlStateManager.translated(0, 0, t);
 			float rotZ = RAND.get(index + i + uniquifier) * 45;
 			float rotY = RAND.get(index + i + 8 + uniquifier) * 60 + 90;
 			GlStateManager.pushMatrix();
-			GlStateManager.rotate(rotZ, 0, 0, 1);
-			GlStateManager.rotate(rotY, 0, 1, 0);
-			GlStateManager.translate(-4 / 16F, -4 / 16F, -0.5F / 16);
+			GlStateManager.rotatef(rotZ, 0, 0, 1);
+			GlStateManager.rotatef(rotY, 0, 1, 0);
+			GlStateManager.translated(-4 / 16F, -4 / 16F, -0.5F / 16);
 			int ring = ringId + index % RING_COUNT;
 			GlStateManager.callList(ring);
 			GlStateManager.popMatrix();
-			GlStateManager.rotate(rotZ + 90, 0, 0, 1);
-			GlStateManager.rotate(rotY, 0, 1, 0);
-			GlStateManager.scale(7 / 8F, 7 / 8F, 7 / 8F);
-			GlStateManager.translate(-4 / 16F, -4 / 16F, -0.5F / 16);
+			GlStateManager.rotatef(rotZ + 90, 0, 0, 1);
+			GlStateManager.rotatef(rotY, 0, 1, 0);
+			GlStateManager.scalef(7 / 8F, 7 / 8F, 7 / 8F);
+			GlStateManager.translatef(-4 / 16F, -4 / 16F, -0.5F / 16);
 			GlStateManager.callList(ring);
 			GlStateManager.popMatrix();
 		}

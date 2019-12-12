@@ -1,22 +1,28 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.google.common.collect.ImmutableList;
+import com.pau101.fairylights.util.crafting.GenericRecipe;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
 
-import com.google.common.base.Preconditions;
+import java.util.Collections;
+import java.util.Objects;
 
-import net.minecraftforge.oredict.OreDictionary;
+public class IngredientRegularOre implements IngredientRegular {
+	private final Tag<Item> tag;
 
-public class IngredientRegularOre extends IngredientRegularList {
-	private final String name;
-
-	public IngredientRegularOre(String name) {
-		super(getOres(name));
-		this.name = name;
+	public IngredientRegularOre(Tag<Item> tag) {
+		this.tag = Objects.requireNonNull(tag, "tag");
 	}
 
-	private static List<IngredientRegular> getOres(String name) {
-		Preconditions.checkArgument(OreDictionary.doesOreNameExist(name), "Ore name must exist");
-		return OreDictionary.getOres(name).stream().map(IngredientRegularBasic::new).collect(Collectors.toList());
+	@Override
+	public GenericRecipe.MatchResultRegular matches(final ItemStack input, final ItemStack output) {
+		return new GenericRecipe.MatchResultRegular(this, input, input.getItem().isIn(tag), Collections.emptyList());
+	}
+
+	@Override
+	public ImmutableList<ItemStack> getInputs() {
+		return tag.getAllElements().stream().map(ItemStack::new).collect(ImmutableList.toImmutableList());
 	}
 }

@@ -3,8 +3,8 @@ package com.pau101.fairylights.server.fastener;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessor;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
-public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<NBTTagCompound> {
+public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<CompoundNBT> {
 	@Override
-	NBTTagCompound serializeNBT();
+	CompoundNBT serializeNBT();
 
 	Map<UUID, Connection> getConnections();
 
@@ -31,7 +31,7 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
 	BlockPos getPos();
 
-	EnumFacing getFacing();
+	Direction getFacing();
 
 	void setWorld(World world);
 
@@ -72,7 +72,7 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 	@Nullable
 	Connection reconnect(Fastener<?> oldDestination, Fastener<?> newDestination);
 
-	Connection connectWith(World world, Fastener<?> destination, ConnectionType type, NBTTagCompound compound);
+	Connection connectWith(World world, Fastener<?> destination, ConnectionType type, CompoundNBT compound);
 
-	Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, NBTTagCompound compound);
+	Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, CompoundNBT compound);
 }

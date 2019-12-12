@@ -1,10 +1,10 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "fairylights:items/pennant_bunting_0",
-        "layer1": "fairylights:items/pennant_bunting_1",
-        "layer2": "fairylights:items/pennant_bunting_2",
-        "layer3": "fairylights:items/pennant_bunting_3",
-        "layer4": "fairylights:items/pennant_bunting_4"
+        "layer0": "fairylights:item/pennant_bunting_0",
+        "layer1": "fairylights:item/pennant_bunting_1",
+        "layer2": "fairylights:item/pennant_bunting_2",
+        "layer3": "fairylights:item/pennant_bunting_3",
+        "layer4": "fairylights:item/pennant_bunting_4"
     }
 }

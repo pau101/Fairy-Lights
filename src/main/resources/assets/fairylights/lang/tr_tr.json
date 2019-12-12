@@ -1,0 +1,82 @@
+{
+    "itemGroup.fairylights": "Fairy Lights",
+
+    "fairylights.config": "Fairy Lights Seçenekleri",
+
+    "block.fairylights.fastener": "Bağ Kilidi",
+
+    "item.fairylights.hanging_lights": "Asma Lamba",
+    "item.fairylights.garland": "Sarmaşık Çelenk",
+    "item.fairylights.tinsel": "Tinsel Çelenk",
+
+    "item.fairyLights.pattern": "Desen:",
+    "item.fairyLights.twinkle": "Parlak",
+    "item.fairyLights.tight": "Kavissiz",
+
+    "item.fairylights.pennant_bunting": "Kiraz Kuşu Bayrak",
+    "item.pennantBunting.colors": "Renkler:",
+
+    "item.fairylights.letter_bunting": "Harf Kiraz Kuşu",
+
+    "item.fairylights.pennant": "Kiraz Kuşu",
+
+    "item.light.name": "Işık",
+    "item.fairylights.fairy_light": "Peri Işığı",
+    "item.fairylights.paper_lantern": "Kağıt Lamba",
+    "item.fairylights.orb_lantern": "Küre Fener",
+    "item.fairylights.flower_light": "Çiçek Lambaıs",
+    "item.fairylights.ornate_lantern": "Süslü Fener",
+    "item.fairylights.oil_lantern": "Gaz Lambası",
+    "item.light.luxoBall.name": "Luxo Top",
+    "item.fairylights.jack_o_lantern": "Jack o'Fener",
+    "item.fairylights.skull_light": "Kurukafa Lambası",
+    "item.fairylights.ghost_light": "Hayalet Lambası",
+    "item.fairylights.spider_light": "Örümcek Lambası",
+    "item.fairylights.witch_light": "Cadı Lambası",
+    "item.fairylights.snowflake_light": "Kar Tanesi Işığı",
+    "item.fairylights.icicle_lights": "Buz Lambası",
+    "item.fairylights.meteor_light": "Meteor Lamba",
+
+    "item.fairylights.ladder": "Seyyar Merdiven",
+
+    "entity.fairylights.fastener": "Kilit",
+    "entity.fairylights.ladder": "Seyyar Merdiven",
+
+    "gui.editLetteredConnection.name": "Bayrak Yazısını Ayarla",
+
+    "recipe.ingredient.tooltip": "ยง7%s",
+    "recipe.ingredient.auxiliary.optional": "(İsteğe Bağlı)",
+    "recipe.hangingLights.glowstone": "Işıkların parıldamasını sağlar",
+    "recipe.hangingLights.light": "Deseni özelleştirmek için birden fazla lamba kullanın",
+    "recipe.pennantBunting.pennant": "Deseni özelleştirmek için birden fazla bayrak kullanın",
+
+    "format.pattern.entry": "  %1$s",
+    "format.colored": "%1$s %2$s",
+    "format.text": "Text: %1$s",
+
+    "color.black.name": "Siyah",
+    "color.red.name": "Kırmızı",
+    "color.green.name": "Yeşil",
+    "color.brown.name": "Kahverengi",
+    "color.blue.name": "Mavi",
+    "color.purple.name": "Mor",
+    "color.cyan.name": "Camgöbeği",
+    "color.light_gray.name": "Açık Gri",
+    "color.gray.name": "Gri",
+    "color.pink.name": "Pembe",
+    "color.lime.name": "Kireç",
+    "color.yellow.name": "Sarı",
+    "color.light_blue.name": "Açık Mavi",
+    "color.magenta.name": "Eflatun",
+    "color.orange.name": "Turuncu",
+    "color.white.name": "Beyaz",
+
+    "subtitles.block.jingleBell": "Zil şıkırdıyor",
+    "subtitles.block.cord.connect": "Bağ bağlanıyor",
+    "subtitles.block.cord.disconnect": "Bağ kesiliyor",
+    "subtitles.block.cord.stretch": "Bağ geriliyor",
+    "subtitles.block.cord.snap": "Bağ kopuyor",
+    "subtitles.block.feature.lightTurnOn": "Işıklar açılıyor",
+    "subtitles.block.feature.lightTurnOff": "Işıklar kapanıyor",
+    "subtitles.block.feature.colorChange": "Renk patlıyor"
+}

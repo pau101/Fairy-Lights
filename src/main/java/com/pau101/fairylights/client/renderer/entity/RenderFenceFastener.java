@@ -1,21 +1,25 @@
 package com.pau101.fairylights.client.renderer.entity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.renderer.FastenerRenderer;
-import com.pau101.fairylights.client.renderer.block.FastenerStateMapper;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.entity.EntityFenceFastener;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.util.ResourceLocation;
 
-public final class RenderFenceFastener extends Render<EntityFenceFastener> {
-	public RenderFenceFastener(RenderManager mgr) {
+public final class RenderFenceFastener extends EntityRenderer<EntityFenceFastener> {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/fastener.png");
+
+	private FastenerModel model;
+
+	public RenderFenceFastener(EntityRendererManager mgr) {
 		super(mgr);
+		model = new FastenerModel();
 	}
 
 	@Override
@@ -27,22 +31,19 @@ public final class RenderFenceFastener extends Render<EntityFenceFastener> {
 	public void doRender(EntityFenceFastener fastener, double x, double y, double z, float yaw, float delta) {
 		GlStateManager.pushMatrix();
 		GlStateManager.disableCull();
-		GlStateManager.translate(x, y, z);
+		GlStateManager.translated(x, y, z);
 		GlStateManager.enableRescaleNormal();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		if (renderOutlines) {
 			GlStateManager.enableColorMaterial();
-			GlStateManager.enableOutlineMode(getTeamColor(fastener));
+			GlStateManager.setupSolidRenderingTextureCombine(getTeamColor(fastener));
 		}
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(-0.5, -0.5, 0.5);
-		renderManager.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(FastenerStateMapper.FENCE_FASTENER_STATE, fastener.getBrightness());
-		GlStateManager.popMatrix();
+		bindTexture(TEXTURE);
+		model.render(0.0625F);
 		bindEntityTexture(fastener);
-		FastenerRenderer.render(fastener.getCapability(CapabilityHandler.FASTENER_CAP, null), delta);
+		FastenerRenderer.render(fastener.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new), delta);
 		if (renderOutlines) {
-			GlStateManager.disableOutlineMode();
+			GlStateManager.tearDownSolidRenderingTextureCombine();
 			GlStateManager.disableColorMaterial();
 		}
 		GlStateManager.popMatrix();
@@ -52,5 +53,20 @@ public final class RenderFenceFastener extends Render<EntityFenceFastener> {
 	@Override
 	protected ResourceLocation getEntityTexture(EntityFenceFastener entity) {
 		return FastenerRenderer.TEXTURE;
+	}
+
+	static class FastenerModel extends Model {
+		RendererModel root;
+
+		FastenerModel() {
+			textureWidth = 32;
+			textureHeight = 32;
+			root = new RendererModel(this);
+			root.addBox(-3.0F, -3.0F, -3.0F, 6, 6, 6);
+		}
+
+		void render(float scale) {
+			root.render(scale);
+		}
 	}
 }

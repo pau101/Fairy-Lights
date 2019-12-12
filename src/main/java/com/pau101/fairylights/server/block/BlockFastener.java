@@ -4,241 +4,217 @@ import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.ServerEventHandler;
 import com.pau101.fairylights.server.block.entity.BlockEntityFastener;
 import com.pau101.fairylights.server.capability.CapabilityHandler;
-import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.accessor.FastenerAccessorBlock;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
-import com.pau101.fairylights.util.Utils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.DirectionalBlock;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import java.util.Random;
-import java.util.UUID;
+import java.util.stream.Stream;
 
-public final class BlockFastener extends BlockContainer {
-	public static final PropertyDirection FACING = BlockDirectional.FACING;
+public final class BlockFastener extends DirectionalBlock {
+	public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
 
-	public static final PropertyBool TRIGGERED = PropertyBool.create("triggered");
+	private static final VoxelShape NORTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 12.0D, 10.0D, 10.0D, 16.0D);
 
-	private static final AxisAlignedBB BOUNDS_DOWN = createAABB(EnumFacing.DOWN);
+	private static final VoxelShape SOUTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 4.0D);
 
-	private static final AxisAlignedBB BOUNDS_UP = createAABB(EnumFacing.UP);
+	private static final VoxelShape WEST_AABB = Block.makeCuboidShape(12.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D);
 
-	private static final AxisAlignedBB BOUNDS_NORTH = createAABB(EnumFacing.NORTH);
+	private static final VoxelShape EAST_AABB = Block.makeCuboidShape(0.0D, 6.0D, 6.0D, 4.0D, 10.0D, 10.0D);
 
-	private static final AxisAlignedBB BOUNDS_SOUTH = createAABB(EnumFacing.SOUTH);
+	private static final VoxelShape DOWN_AABB = Block.makeCuboidShape(6.0D, 12.0D, 6.0D, 10.0D, 16.0D, 10.0D);
 
-	private static final AxisAlignedBB BOUNDS_WEST = createAABB(EnumFacing.WEST);
+	private static final VoxelShape UP_AABB = Block.makeCuboidShape(6.0D, 0.0D, 6.0D, 10.0D, 4.0D, 10.0D);
 
-	private static final AxisAlignedBB BOUNDS_EAST = createAABB(EnumFacing.EAST);
-
-	private static final AxisAlignedBB[] BOUNDS = { BOUNDS_DOWN, BOUNDS_UP, BOUNDS_NORTH, BOUNDS_SOUTH, BOUNDS_WEST, BOUNDS_EAST };
-
-	public BlockFastener() {
-		super(Material.CIRCUITS);
-		setDefaultState(blockState.getBaseState()
-			.withProperty(FACING, EnumFacing.NORTH)
-			.withProperty(TRIGGERED, false)
+	public BlockFastener(Block.Properties properties) {
+		super(properties);
+		setDefaultState(stateContainer.getBaseState()
+			.with(FACING, Direction.NORTH)
+			.with(TRIGGERED, false)
 		);
-		setResistance(2000);
-		Utils.name(this, "fastener");
 	}
 
 	@Override
-	public BlockFaceShape getBlockFaceShape(final IBlockAccess worldIn, final IBlockState state, final BlockPos pos, final EnumFacing face) {
-		return BlockFaceShape.UNDEFINED;
+	public BlockRenderLayer getRenderLayer() {
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
-	public boolean isOpaqueCube(IBlockState state) {
-		return false;
+	protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
+		builder.add(FACING, TRIGGERED);
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state) {
-		return false;
+	public BlockState rotate(final BlockState state, final Rotation rot) {
+		return state.with(FACING, rot.rotate(state.get(FACING)));
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.MODEL;
+	public BlockState mirror(final BlockState state, final Mirror mirrorIn) {
+		return state.with(FACING, mirrorIn.mirror(state.get(FACING)));
 	}
 
 	@Override
-	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+	public VoxelShape getShape(final BlockState state, final IBlockReader worldIn, final BlockPos pos, final ISelectionContext context) {
+		switch (state.get(FACING)) {
+			case NORTH:
+				return NORTH_AABB;
+			case SOUTH:
+				return SOUTH_AABB;
+			case WEST:
+				return WEST_AABB;
+			case EAST:
+				return EAST_AABB;
+			case DOWN:
+				return DOWN_AABB;
+			case UP:
+			default:
+				return UP_AABB;
+		}
+	}
+
+	@Override
+	public boolean hasTileEntity(final BlockState state) {
 		return true;
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FACING, TRIGGERED);
-	}
-
-	@Override
-	public int getMetaFromState(IBlockState state) {
-		return state.getValue(FACING).getIndex() | (state.getValue(TRIGGERED) ? 0b1000 : 0);
-	}
-
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState()
-			.withProperty(FACING, EnumFacing.byIndex(meta & 0b0111))
-			.withProperty(TRIGGERED, (meta & 0b1000) != 0);
-	}
-
-	@Override
-	public IBlockState withRotation(IBlockState state, Rotation rot) {
-		return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-	}
-
-	@Override
-	public IBlockState withMirror(IBlockState state, Mirror mirror) {
-		return state.withRotation(mirror.toRotation(state.getValue(FACING)));
-	}
-
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		return BOUNDS[state.getValue(FACING).ordinal()];
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(World world, int data) {
+	public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
 		return new BlockEntityFastener();
 	}
 
 	@Override
-	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public Item getItemDropped(IBlockState state, Random random, int fortune) {
-		return Items.AIR;
-	}
-
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileEntity entity = world.getTileEntity(pos);
-		if (entity instanceof BlockEntityFastener) {
-			entity.getCapability(CapabilityHandler.FASTENER_CAP, null).dropItems(world, pos);
-		}
-		super.breakBlock(world, pos, state);
-	}
-
-	@Override
-	public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side) {
-		IBlockState blockState = world.getBlockState(pos);
-		Block blockPlacingOn = blockState.getBlock();
-		return world.isSideSolid(pos, side) || blockPlacingOn instanceof BlockSlab && (side.getAxis() != Axis.Y || side == EnumFacing.DOWN && blockState.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM) || blockPlacingOn instanceof BlockLeaves || blockPlacingOn instanceof BlockStairs;
-	}
-
-	@Override
-	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return worldIn.isSideSolid(pos.offset(facing.getOpposite()), facing, true) ? getDefaultState().withProperty(FACING, facing) : getDefaultState().withProperty(FACING, EnumFacing.DOWN);
-	}
-
-	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-		if (world.isBlockPowered(pos.offset(state.getValue(FACING).getOpposite()))) {
-			world.setBlockState(pos, state.withProperty(TRIGGERED, true), 3);
+	public void onReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
+		if (state.getBlock() != newState.getBlock()) {
+			TileEntity entity = world.getTileEntity(pos);
+			if (entity instanceof BlockEntityFastener) {
+				entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.dropItems(world, pos));
+			}
+			super.onReplaced(state, world, pos, newState, isMoving);
 		}
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos) {
-		EnumFacing facing = state.getValue(FACING);
-		BlockPos blockOnPos = pos.offset(facing.getOpposite());
-		if (canPlaceBlockOnSide(world, blockOnPos, facing)) {
+	public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
+		final Direction facing = state.get(FACING);
+		final BlockPos attachedPos = pos.offset(facing.getOpposite());
+		return world.getBlockState(attachedPos).func_224755_d(world, attachedPos, facing);
+	}
+
+	@Nullable
+	@Override
+	public BlockState getStateForPlacement(final BlockItemUseContext context) {
+		BlockState result = this.getDefaultState();
+		final IWorldReader world = context.getWorld();
+		final BlockPos pos = context.getPos();
+		for (final Direction dir : context.getNearestLookingDirections()) {
+			result = result.with(FACING, dir.getOpposite());
+			if (result.isValidPosition(world, pos)) {
+				return result;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public BlockState updatePostPlacement(final BlockState state, final Direction facing, final BlockState facingState, final IWorld world, final BlockPos currentPos, final BlockPos facingPos) {
+		if (facing.getOpposite() == state.get(FACING) && !state.isValidPosition(world, currentPos)) {
+			return Blocks.AIR.getDefaultState();
+		}
+		return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+	}
+
+	@Override
+	public void onBlockAdded(final BlockState state, final World world, final BlockPos pos, final BlockState oldState, final boolean isMoving) {
+		if (oldState.getBlock() != state.getBlock()) {
+			if (world.isBlockPowered(pos.offset(state.get(FACING).getOpposite()))) {
+				world.setBlockState(pos, state.with(TRIGGERED, true), 3);
+			}
+		}
+	}
+
+	@Override
+	public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block blockIn, final BlockPos fromPos, final boolean isMoving) {
+		if (state.isValidPosition(world, pos)) {
 			boolean receivingPower = world.isBlockPowered(pos);
-			boolean isPowered = state.getValue(TRIGGERED);
+			boolean isPowered = state.get(TRIGGERED);
 			if (receivingPower && !isPowered) {
-				world.scheduleUpdate(pos, this, tickRate(world));
-				world.setBlockState(pos, state.withProperty(TRIGGERED, true), 4);
+				world.getPendingBlockTicks().scheduleTick(pos, this, tickRate(world));
+				world.setBlockState(pos, state.with(TRIGGERED, true), 4);
 			} else if (!receivingPower && isPowered) {
-				world.setBlockState(pos, state.withProperty(TRIGGERED, false), 4);
+				world.setBlockState(pos, state.with(TRIGGERED, false), 4);
 			}
 		} else {
-			dropBlockAsItem(world, pos, state, 0);
-			world.setBlockToAir(pos);
+			TileEntity entity = world.getTileEntity(pos);
+			spawnDrops(state, world, pos, entity);
+			world.removeBlock(pos, false);
 		}
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(IBlockState state) {
+	public boolean hasComparatorInputOverride(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
+	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
 		TileEntity entity = world.getTileEntity(pos);
 		if (!(entity instanceof BlockEntityFastener)) {
 			return super.getComparatorInputOverride(state, world, pos);
 		}
-		Fastener<?> fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
-		int level = 0;
-		for (Entry<UUID, Connection> e : fastener.getConnections().entrySet()) {
-			Connection connection = e.getValue();
-			if (connection.getType() != ConnectionType.HANGING_LIGHTS) {
-				continue;
-			}
-			if (!connection.getDestination().isLoaded(world)) {
-				continue;
-			}
-			if (!connection.isOrigin()) {
+		return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
+			.filter(e -> {
+				Connection connection = e.getValue();
+				return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
+			})
+			.flatMap(e -> {
+				Connection connection = e.getValue();
+				if (connection.isOrigin()) {
+					return Stream.of(connection);
+				}
 				BlockPos to = connection.getDestination().get(world).getPos();
-				entity = world.getTileEntity(to);
-				if (!(entity instanceof BlockEntityFastener)) {
-					continue;
+				TileEntity toEntity = world.getTileEntity(to);
+				if (!(toEntity instanceof BlockEntityFastener)) {
+					return Stream.empty();
 				}
-				fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
-				connection = fastener.getConnections().get(e.getKey());
-				if (connection == null) {
-					continue;
-				}
-			}
-			ConnectionHangingLights logic = (ConnectionHangingLights) connection;
-			int lvl = (int) Math.ceil(logic.getJingleProgress() * 15);
-			if (lvl > level) {
-				level = lvl;
-			}
-		}
-		return level;
+				return toEntity.getCapability(CapabilityHandler.FASTENER_CAP)
+					.map(toFastener -> Stream.of(toFastener.getConnections().get(e.getKey())))
+					.orElse(Stream.empty());
+			})
+			.mapToInt(c -> (int) Math.ceil(((ConnectionHangingLights) c).getJingleProgress() * 15))
+			.max().orElse(0);
 	}
 
 	@Override
-	public int tickRate(World world) {
+	public int tickRate(IWorldReader world) {
 		return 2;
 	}
 
 	@Override
-	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
+	public void tick(final BlockState state, final World world, final BlockPos pos, final Random random) {
 		if (!world.isRemote) {
 			jingle(world, pos);
 		}
@@ -249,55 +225,40 @@ public final class BlockFastener extends BlockContainer {
 		if (!(entity instanceof BlockEntityFastener)) {
 			return false;
 		}
-		Fastener<?> fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
-		for (Entry<UUID, Connection> e : fastener.getConnections().entrySet()) {
-			Connection connection = e.getValue();
-			if (connection.getType() != ConnectionType.HANGING_LIGHTS) {
-				continue;
-			}
-			if (!connection.getDestination().isLoaded(world)) {
-				continue;
-			}
-			BlockPos to = connection.getDestination().get(world).getPos();
-			if (!connection.isDestination(new FastenerAccessorBlock(to))) {
-				continue;
-			}
-			if (!world.getBlockState(to).getValue(TRIGGERED)) {
-				continue;
-			}
-			if (!connection.isOrigin()) {
-				entity = world.getTileEntity(to);
-				if (!(entity instanceof BlockEntityFastener)) {
-					continue;
+		return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
+			.filter(e -> {
+				Connection connection = e.getValue();
+				return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
+			})
+			.flatMap(e -> {
+				Connection connection = e.getValue();
+				BlockPos to = connection.getDestination().get(world).getPos();
+				if (!connection.isDestination(new FastenerAccessorBlock(to))) {
+					return Stream.empty();
 				}
-				fastener = entity.getCapability(CapabilityHandler.FASTENER_CAP, null);
-				connection = fastener.getConnections().get(e.getKey());
-				if (connection == null) {
-					continue;
+				if (!world.getBlockState(to).get(TRIGGERED)) {
+					return Stream.empty();
 				}
-			}
-			ConnectionHangingLights logic = (ConnectionHangingLights) connection;
-			if (!logic.canCurrentlyPlayAJingle()) {
-				continue;
-			}
-			if (ServerEventHandler.tryJingle(world, connection, logic, FairyLights.randomJingles)) {
-				return true;
-			}
-		}
-		return false;
+				if (connection.isOrigin()) {
+					return Stream.of(connection);
+				}
+				TileEntity toEntity = world.getTileEntity(to);
+				if (!(toEntity instanceof BlockEntityFastener)) {
+					return Stream.empty();
+				}
+				return toEntity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> Stream.of(f.getConnections().get(e.getKey()))).orElse(Stream.empty());
+			})
+			.anyMatch(connection -> {
+				ConnectionHangingLights logic = (ConnectionHangingLights) connection;
+				return logic.canCurrentlyPlayAJingle() && ServerEventHandler.tryJingle(world, connection, logic, FairyLights.randomJingles);
+			});
 	}
 
-	public Vec3d getOffset(EnumFacing facing, float offset) {
+	public Vec3d getOffset(Direction facing, float offset) {
 		return getFastenerOffset(facing, offset);
 	}
 
-	private static AxisAlignedBB createAABB(EnumFacing facing) {
-		Vec3d offset = getFastenerOffset(facing, 0);
-		double x = offset.x, y = offset.y, z = offset.z;
-		return new AxisAlignedBB(x, y, z, x + 0.25, y + 0.25, z + 0.25);
-	}
-
-	public static Vec3d getFastenerOffset(EnumFacing facing, float offset) {
+	public static Vec3d getFastenerOffset(Direction facing, float offset) {
 		double x = offset, y = offset, z = offset;
 		switch (facing) {
 			case DOWN:

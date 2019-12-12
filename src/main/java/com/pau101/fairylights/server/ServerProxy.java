@@ -8,7 +8,6 @@ import com.pau101.fairylights.server.fastener.BlockView;
 import com.pau101.fairylights.server.fastener.CreateBlockViewEvent;
 import com.pau101.fairylights.server.fastener.RegularBlockView;
 import com.pau101.fairylights.server.jingle.JingleLibrary;
-import com.pau101.fairylights.server.net.FLMessage;
 import com.pau101.fairylights.server.net.clientbound.MessageJingle;
 import com.pau101.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
 import com.pau101.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
@@ -16,37 +15,30 @@ import com.pau101.fairylights.server.net.serverbound.MessageConnectionInteractio
 import com.pau101.fairylights.server.net.serverbound.MessageEditLetteredConnection;
 import com.pau101.fairylights.util.CalendarEvent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.PlayerChunkMap;
-import net.minecraft.server.management.PlayerChunkMapEntry;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import valkyrienwarfare.ValkyrienWarfareMod;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-import javax.annotation.Nullable;
 import java.time.Month;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
+public class ServerProxy {
 	private int nextMessageId;
 
-	public void initConfig(FMLPreInitializationEvent event) {
-		Configurator.initConfig(event);
+	public void initConfig() {
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configurator.GENERAL_SPEC);
 	}
 
 	public void initGUI() {
-		FairyLights.fairyLightsTab = new CreativeTabsFairyLights();
 	}
 
 	/*
@@ -72,41 +64,53 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	}
 
 	public void initNetwork() {
-		FairyLights.network = NetworkRegistry.INSTANCE.newSimpleChannel(FairyLights.ID);
-		registerMessage(MessageJingle.class, Side.CLIENT);
-		registerMessage(MessageUpdateFastenerEntity.class, Side.CLIENT);
-		registerMessage(MessageOpenEditLetteredConnectionGUI.class, Side.CLIENT);
-		registerMessage(MessageConnectionInteraction.class, Side.SERVER);
-		registerMessage(MessageEditLetteredConnection.class, Side.SERVER);
+		String version = "1";
+		FairyLights.network = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(FairyLights.ID, "net"))
+			.networkProtocolVersion(() -> version)
+			.clientAcceptedVersions(version::equals)
+			.serverAcceptedVersions(version::equals)
+			.simpleChannel();
+		registerMessage(MessageJingle.class, MessageJingle::serialize, MessageJingle::deserialize, createJingleHandler());
+		registerMessage(MessageUpdateFastenerEntity.class, MessageUpdateFastenerEntity::serialize, MessageUpdateFastenerEntity::deserialize, createUpdateFastenerEntityHandler());
+		registerMessage(MessageOpenEditLetteredConnectionGUI.class, MessageOpenEditLetteredConnectionGUI::serialize, MessageOpenEditLetteredConnectionGUI::deserialize, createOpenEditLetteredConnectionGUIHandler());
+		registerMessage(MessageConnectionInteraction.class, MessageConnectionInteraction::serialize, MessageConnectionInteraction::deserialize, createConnectionInteractionHandler());
+		registerMessage(MessageEditLetteredConnection.class, MessageEditLetteredConnection::serialize, MessageEditLetteredConnection::deserialize, createEditLetteredConnectionHandler());
+	}
+
+	private <T> BiConsumer<T, Supplier<NetworkEvent.Context>> noHandler() {
+		return (msg, ctx) -> ctx.get().setPacketHandled(true);
+	}
+
+	protected BiConsumer<MessageJingle, Supplier<NetworkEvent.Context>> createJingleHandler() {
+		return noHandler();
+	}
+
+	protected BiConsumer<MessageUpdateFastenerEntity, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
+		return noHandler();
+	}
+
+	protected BiConsumer<MessageOpenEditLetteredConnectionGUI, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
+		return noHandler();
+	}
+
+	protected BiConsumer<MessageConnectionInteraction, Supplier<NetworkEvent.Context>> createConnectionInteractionHandler() {
+		return new MessageConnectionInteraction.Handler();
+	}
+
+	protected BiConsumer<MessageEditLetteredConnection, Supplier<NetworkEvent.Context>> createEditLetteredConnectionHandler() {
+		return new MessageEditLetteredConnection.Handler();
 	}
 
 	public void initRenders() {}
 
 	public void initRendersLate() {}
 
-	@Nullable
-	@Override
-	public IMessage onMessage(FLMessage message, MessageContext ctx) {
-		IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.netHandler);
-		thread.addScheduledTask(() -> message.process(ctx));
-		return null;
+	public static void sendToPlayersWatchingChunk(Object message, World world, BlockPos pos) {
+		FairyLights.network.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
 	}
 
-	public static void sendToPlayersWatchingChunk(FLMessage message, World world, BlockPos pos) {
-		PlayerChunkMap map = ((WorldServer) world).getPlayerChunkMap();
-		PlayerChunkMapEntry e = map.getEntry(pos.getX() >> 4, pos.getZ() >> 4);
-		if (e != null) {	
-			e.sendPacket(FairyLights.network.getPacketFrom(message));
-		}
-	}
-
-	public static void sendToPlayersWatchingEntity(FLMessage message, World world, Entity entity) {
-		for (EntityPlayer player : ((WorldServer) world).getEntityTracker().getTrackingPlayers(entity)) {
-			FairyLights.network.sendTo(message, (EntityPlayerMP) player);
-		}
-		if (entity instanceof EntityPlayerMP) {
-			FairyLights.network.sendTo(message, (EntityPlayerMP) entity);
-		}
+	public static void sendToPlayersWatchingEntity(Object message, World world, Entity entity) {
+		FairyLights.network.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
 	}
 
 	public static BlockView buildBlockView() {
@@ -115,12 +119,15 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 		return evt.getView();
 	}
 
-	private void registerMessage(Class<? extends FLMessage> clazz, Side toSide) {
-		FairyLights.network.registerMessage(this, clazz, nextMessageId++, toSide);
+	private <MSG> void registerMessage(Class<MSG> clazz, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
+		FairyLights.network.messageBuilder(clazz, nextMessageId++)
+			.encoder(encoder).decoder(decoder)
+			.consumer(consumer)
+			.add();
 	}
 
 	public void initIntegration() {
-		if (Loader.isModLoaded(ValkyrienWarfareMod.MODID)) {
+		/*if (Loader.isModLoaded(ValkyrienWarfareMod.MODID)) {
 			final Class<?> vw;
 			try {
 				vw = Class.forName("com.pau101.fairylights.server.integration.valkyrienwarfare.ValkyrienWarfare");
@@ -128,6 +135,6 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 				throw new AssertionError(e);
 			}
 			MinecraftForge.EVENT_BUS.register(vw);
-		}
+		}*/
 	}
 }

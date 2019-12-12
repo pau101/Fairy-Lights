@@ -1,21 +1,20 @@
 package com.pau101.fairylights.client.model;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.util.Mth;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelBox;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class AdvancedModelRenderer extends ModelRenderer {
+public final class AdvancedModelRenderer extends RendererModel {
 	protected int textureOffsetX;
 
 	protected int textureOffsetY;
@@ -24,7 +23,7 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 
 	public int displayList = -1;
 
-	protected ModelBase modelBase;
+	protected Model modelBase;
 
 	public float scaleX;
 
@@ -59,16 +58,16 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 
 	public float glowExpandAmount = 0.7F;
 
-	public AdvancedModelRenderer(ModelBase modelBase) {
+	public AdvancedModelRenderer(Model modelBase) {
 		this(modelBase, null);
 	}
 
-	public AdvancedModelRenderer(ModelBase modelBase, int textureOffsetX, int textureOffsetY) {
+	public AdvancedModelRenderer(Model modelBase, int textureOffsetX, int textureOffsetY) {
 		this(modelBase);
 		setTextureOffset(textureOffsetX, textureOffsetY);
 	}
 
-	public AdvancedModelRenderer(ModelBase modelBase, String name) {
+	public AdvancedModelRenderer(Model modelBase, String name) {
 		super(modelBase, name);
 		this.modelBase = modelBase;
 		setTextureSize(modelBase.textureWidth, modelBase.textureHeight);
@@ -96,11 +95,15 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 	}
 
 	@Override
-	public AdvancedModelRenderer addBox(String name, float posX, float posY, float posZ, int width, int height, int depth) {
+	public RendererModel addBox(final float offX, final float offY, final float offZ, final int width, final int height, final int depth, final boolean mirrored) {
+		return super.addBox(offX, offY, offZ, width, height, depth, mirrored);
+	}
+
+	@Override
+	public RendererModel func_217178_a(String name, float posX, float posY, float posZ, int width, int height, int depth, float expand, int u, int v) {
 		name = boxName + "." + name;
-		TextureOffset textureoffset = modelBase.getTextureOffset(name);
-		setTextureOffset(textureoffset.textureOffsetX, textureoffset.textureOffsetY);
-		cubeList.add(new ModelBox(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height, depth, 0.0F).setBoxName(name));
+		setTextureOffset(u, v);
+		cubeList.add(new ModelBox(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height, depth, expand).setBoxName(name));
 		return this;
 	}
 
@@ -115,12 +118,12 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 
 	protected void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
-		GlStateManager.glNewList(displayList, GL11.GL_COMPILE);
+		GlStateManager.newList(displayList, GL11.GL_COMPILE);
 		BufferBuilder buf = Tessellator.getInstance().getBuffer();
 		for (ModelBox box : cubeList) {
 			box.render(buf, scale);
 		}
-		GlStateManager.glEndList();
+		GlStateManager.endList();
 		compiled = true;
 	}
 
@@ -130,11 +133,11 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 			if (!compiled) {
 				compileDisplayList(scale);
 			}
-			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+			GlStateManager.translatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 			rotationOrder.rotate(rotateAngleX * Mth.RAD_TO_DEG, rotateAngleY * Mth.RAD_TO_DEG, rotateAngleZ * Mth.RAD_TO_DEG);
 			secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
-			GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-			GlStateManager.scale(scaleX, scaleY, scaleZ);
+			GlStateManager.translatef(aftMoveX, aftMoveY, aftMoveZ);
+			GlStateManager.scalef(scaleX, scaleY, scaleZ);
 		}
 	}
 
@@ -159,8 +162,8 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 					float scaleY = newHeight / height;
 					float scaleZ = newDepth / depth;
 					GlStateManager.pushMatrix();
-					GlStateManager.translate((box.posX1 - glowExpandAmount - scaleX * box.posX1) / 16, (box.posY1 - (isMeteorLightGlow ? meteorExpandY : glowExpandAmount) - scaleY * box.posY1) / 16, (box.posZ1 - glowExpandAmount - scaleZ * box.posZ1) / 16 * (box instanceof Model3DTexture ? -1 : 1));
-					GlStateManager.scale(scaleX, scaleY, scaleZ);
+					GlStateManager.translatef((box.posX1 - glowExpandAmount - scaleX * box.posX1) / 16, (box.posY1 - (isMeteorLightGlow ? meteorExpandY : glowExpandAmount) - scaleY * box.posY1) / 16, (box.posZ1 - glowExpandAmount - scaleZ * box.posZ1) / 16 * (box instanceof Model3DTexture ? -1 : 1));
+					GlStateManager.scalef(scaleX, scaleY, scaleZ);
 					box.render(buf, scale);
 					GlStateManager.popMatrix();
 				}
@@ -184,43 +187,43 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 			if (!compiled) {
 				compileDisplayList(scale);
 			}
-			GlStateManager.translate(offsetX, offsetY, offsetZ);
+			GlStateManager.translatef(offsetX, offsetY, offsetZ);
 			if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
 				if (rotationPointX == 0 && rotationPointY == 0 && rotationPointZ == 0) {
 					if (scaleX == 1 && scaleY == 1 && scaleZ == 1) {
 						GlStateManager.pushMatrix();
 						secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
-						GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
+						GlStateManager.translatef(aftMoveX, aftMoveY, aftMoveZ);
 						baseRender(scale);
 						GlStateManager.popMatrix();
 					} else {
 						GlStateManager.pushMatrix();
 						secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
-						GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-						GlStateManager.scale(scaleX, scaleY, scaleZ);
+						GlStateManager.translatef(aftMoveX, aftMoveY, aftMoveZ);
+						GlStateManager.scalef(scaleX, scaleY, scaleZ);
 						baseRender(scale);
 						GlStateManager.popMatrix();
 					}
 				} else {
 					GlStateManager.pushMatrix();
-					GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+					GlStateManager.translatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 					secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
-					GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-					GlStateManager.scale(scaleX, scaleY, scaleZ);
+					GlStateManager.translatef(aftMoveX, aftMoveY, aftMoveZ);
+					GlStateManager.scalef(scaleX, scaleY, scaleZ);
 					baseRender(scale);
 					GlStateManager.popMatrix();
 				}
 			} else {
 				GlStateManager.pushMatrix();
-				GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+				GlStateManager.translatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 				rotationOrder.rotate(rotateAngleX * Mth.RAD_TO_DEG, rotateAngleY * Mth.RAD_TO_DEG, rotateAngleZ * Mth.RAD_TO_DEG);
 				secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
-				GlStateManager.translate(aftMoveX, aftMoveY, aftMoveZ);
-				GlStateManager.scale(scaleX, scaleY, scaleZ);
+				GlStateManager.translatef(aftMoveX, aftMoveY, aftMoveZ);
+				GlStateManager.scalef(scaleX, scaleY, scaleZ);
 				baseRender(scale);
 				GlStateManager.popMatrix();
 			}
-			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+			GlStateManager.translatef(-offsetX, -offsetY, -offsetZ);
 		}
 	}
 
@@ -231,10 +234,10 @@ public final class AdvancedModelRenderer extends ModelRenderer {
 				compileDisplayList(scale);
 			}
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+			GlStateManager.translatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 			rotationOrder.rotate(rotateAngleX * Mth.RAD_TO_DEG, rotateAngleY * Mth.RAD_TO_DEG, rotateAngleZ * Mth.RAD_TO_DEG);
 			secondaryRotationOrder.rotate(secondaryRotateAngleX * Mth.RAD_TO_DEG, secondaryRotateAngleY * Mth.RAD_TO_DEG, secondaryRotateAngleZ * Mth.RAD_TO_DEG);
-			GlStateManager.scale(scaleX, scaleY, scaleZ);
+			GlStateManager.scalef(scaleX, scaleY, scaleZ);
 			baseRender(scale);
 			GlStateManager.popMatrix();
 		}

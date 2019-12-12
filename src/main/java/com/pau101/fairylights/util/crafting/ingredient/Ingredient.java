@@ -2,8 +2,8 @@ package com.pau101.fairylights.util.crafting.ingredient;
 
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.crafting.GenericRecipe.MatchResult;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -46,8 +46,8 @@ public interface Ingredient<I extends Ingredient, M extends MatchResult<I, M>> {
 		Objects.requireNonNull(stack, "stack");
 		NonNullList<ItemStack> subtypes = NonNullList.create();
 		Item item = stack.getItem();
-		for (CreativeTabs tab : item.getCreativeTabs()) {
-			item.getSubItems(tab, subtypes);
+		for (ItemGroup tab : item.getCreativeTabs()) {
+			item.fillItemGroup(tab, subtypes);
 		}
 		Iterator<ItemStack> iter = subtypes.iterator();
 		while (iter.hasNext()) {

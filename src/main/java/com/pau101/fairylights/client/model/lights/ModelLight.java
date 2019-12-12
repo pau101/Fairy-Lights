@@ -1,23 +1,20 @@
 package com.pau101.fairylights.client.model.lights;
 
-import java.awt.Color;
-import java.util.Arrays;
-
-import org.lwjgl.opengl.GL11;
-
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.client.model.AdvancedModelRenderer;
 import com.pau101.fairylights.client.model.RotationOrder;
 import com.pau101.fairylights.server.fastener.connection.type.hanginglights.Light;
 import com.pau101.fairylights.util.Mth;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
-public abstract class ModelLight extends ModelBase {
+import java.awt.Color;
+
+public abstract class ModelLight extends Model {
 	protected final AdvancedModelRenderer colorableParts;
 
 	// amutachromic [A - without] + [MUT - change] + [CHROM - color]
@@ -99,7 +96,7 @@ public abstract class ModelLight extends ModelBase {
 			amutachromicLitParts.secondaryRotateAngleY = randomOffset;
 		}
 		float b = Math.max(Math.max(brightness, world.getSunBrightness(1) * 0.95F + 0.05F) * 240, sunlight);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b, moonlight);
+		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, b, moonlight);
 		GlStateManager.enableLighting();
 		amutachromicLitParts.render(scale);
 		float[] hsb = new float[3];
@@ -109,23 +106,23 @@ public abstract class ModelLight extends ModelBase {
 		hsb[1] = hsb[2] = 1;//*/
 		int colorRGB = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2] * 0.75F + (brightness * 0.75F + 0.25F) * 0.25F);
 		float cr = (colorRGB >> 16 & 0xFF) / 255F, cg = (colorRGB >> 8 & 0xFF) / 255F, cb = (colorRGB & 0xFF) / 255F;
-		GlStateManager.color(cr, cg, cb);
+		GlStateManager.color3f(cr, cg, cb);
 		colorableParts.render(scale);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, sunlight, moonlight);
+		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, sunlight, moonlight);
 		float c = b / 255;
 		if (c < 0.5F) {
 			c = 0.5F;
 		}
-		GlStateManager.color(c, c, c);
+		GlStateManager.color3f(c, c, c);
 		amutachromicParts.render(scale);
 		GlStateManager.disableLighting();
-		Minecraft.getMinecraft().entityRenderer.disableLightmap();
+		Minecraft.getInstance().gameRenderer.disableLightmap();
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
-		GlStateManager.color(cr, cg, cb, brightness * 0.15F + 0.1F);
+		GlStateManager.color4f(cr, cg, cb, brightness * 0.15F + 0.1F);
 		colorableParts.isGlowing = true;
 		colorableParts.render(scale);
 		colorableParts.isGlowing = false;
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-		Minecraft.getMinecraft().entityRenderer.enableLightmap();
+		Minecraft.getInstance().gameRenderer.enableLightmap();
 	}
 }

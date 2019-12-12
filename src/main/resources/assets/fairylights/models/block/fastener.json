@@ -1,7 +1,7 @@
 {
 	"textures": {
-		"texture": "fairylights:blocks/fastener",
-		"particle": "fairylights:blocks/fastener"
+		"texture": "fairylights:block/fastener",
+		"particle": "fairylights:block/fastener"
 	},
 	"elements": [{
 		"from": [ 6, 0, 6 ],

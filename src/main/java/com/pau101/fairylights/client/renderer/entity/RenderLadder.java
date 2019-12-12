@@ -1,41 +1,38 @@
 package com.pau101.fairylights.client.renderer.entity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.model.ModelLadder;
 import com.pau101.fairylights.server.entity.EntityLadder;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class RenderLadder extends RenderLivingBase<EntityLadder> {
+public class RenderLadder extends LivingRenderer<EntityLadder, ModelLadder> {
 	public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/ladder.png");
 
-	public RenderLadder(RenderManager mgr) {
+	public RenderLadder(EntityRendererManager mgr) {
 		super(mgr, new ModelLadder(), 0);
 	}
 
 	@Override
 	public void doRender(EntityLadder ladder, double x, double y, double z, float yaw, float delta) {
 		super.doRender(ladder, x, y, z, yaw, delta);
-		if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox() && !ladder.isInvisible() && !Minecraft.getMinecraft().isReducedDebug()) {
+		if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox() && !ladder.isInvisible() && !Minecraft.getInstance().isReducedDebug()) {
 			GlStateManager.enableBlend();
 			GlStateManager.disableLighting();
-			GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-			GlStateManager.glLineWidth(2);
-			GlStateManager.disableTexture2D();
+			GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+			GlStateManager.lineWidth(2);
+			GlStateManager.disableTexture();
 			GlStateManager.depthMask(false);
 			for (AxisAlignedBB s : ladder.getCollisionSurfaces()) {
-				RenderGlobal.drawSelectionBoundingBox(s.grow(0.002).offset(-ladder.posX + x, -ladder.posY + y, -ladder.posZ + z), 1, 1, 1, 1);
+				WorldRenderer.drawSelectionBoundingBox(s.grow(0.002).offset(-ladder.posX + x, -ladder.posY + y, -ladder.posZ + z), 1, 1, 1, 1);
 			}
 			GlStateManager.depthMask(true);
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 			GlStateManager.disableBlend();
 			GlStateManager.enableLighting();
 		}
@@ -48,6 +45,6 @@ public class RenderLadder extends RenderLivingBase<EntityLadder> {
 
 	@Override
 	protected boolean canRenderName(EntityLadder ladder) {
-		return ladder.getAlwaysRenderNameTag();
+		return ladder.getAlwaysRenderNameTagForRender();
 	}
 }

@@ -4,11 +4,12 @@ import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.fastener.connection.type.Lettered;
 import com.pau101.fairylights.server.net.MessageConnection;
 import com.pau101.fairylights.util.styledstring.StyledString;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public class MessageEditLetteredConnection<C extends Connection & Lettered> extends MessageConnection<C> {
 	private StyledString text;
@@ -20,32 +21,34 @@ public class MessageEditLetteredConnection<C extends Connection & Lettered> exte
 		this.text = text;
 	}
 
-	@Override
-	public void serialize(PacketBuffer buf) {
-		super.serialize(buf);
-		buf.writeCompoundTag(StyledString.serialize(text));
+	public static void serialize(MessageEditLetteredConnection<?> message, PacketBuffer buf) {
+		MessageConnection.serialize(message, buf);
+		buf.writeCompoundTag(StyledString.serialize(message.text));
 	}
 
-	@Override
-	public void deserialize(PacketBuffer buf) throws IOException {
-		super.deserialize(buf);
-		text = StyledString.deserialize(buf.readCompoundTag());
+	public static <C extends Connection & Lettered> MessageEditLetteredConnection<C> deserialize(PacketBuffer buf) {
+		MessageEditLetteredConnection<C> message = new MessageEditLetteredConnection<>();
+		MessageConnection.deserialize(message, buf);
+		message.text = StyledString.deserialize(buf.readCompoundTag());
+		return message;
 	}
 
-	@Override
-	protected boolean isInstanceOfType(Class<? extends Connection> connection) {
-		return Lettered.class.isAssignableFrom(connection);
-	}
+	public static final class Handler implements BiConsumer<MessageEditLetteredConnection, Supplier<NetworkEvent.Context>> {
+		@Override
+		public void accept(final MessageEditLetteredConnection message, final Supplier<NetworkEvent.Context> contextSupplier) {
+			NetworkEvent.Context context = contextSupplier.get();
+			accept((MessageEditLetteredConnection<?>) message, context);
+			context.setPacketHandled(true);
+		}
 
-	@Override
-	protected World getWorld(MessageContext ctx) {
-		return ctx.getServerHandler().player.world;
-	}
-
-	@Override
-	protected void process(MessageContext ctx, C connection) {
-		if (connection.isModifiable(ctx.getServerHandler().player) && connection.isSuppportedText(text)) {
-			connection.setText(text);
+		private <C extends Connection & Lettered> void accept(final MessageEditLetteredConnection<C> message, NetworkEvent.Context context) {
+			ServerPlayerEntity player = context.getSender();
+			if (player != null) {
+				C connection = MessageConnection.getConnection(message, c -> c instanceof Lettered, player.world);
+				if (connection != null && connection.isModifiable(player) && connection.isSuppportedText(message.text)) {
+					connection.setText(message.text);
+				}
+			}
 		}
 	}
 }

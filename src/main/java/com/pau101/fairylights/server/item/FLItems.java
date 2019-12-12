@@ -1,45 +1,63 @@
 package com.pau101.fairylights.server.item;
 
 import com.pau101.fairylights.FairyLights;
-import com.pau101.fairylights.util.Utils;
 import net.minecraft.item.Item;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@ObjectHolder(FairyLights.ID)
-@EventBusSubscriber(modid = FairyLights.ID)
 public final class FLItems {
 	private FLItems() {}
 
-	public static final ItemLight LIGHT = null;
+	public static final DeferredRegister<Item> REG = new DeferredRegister<>(ForgeRegistries.ITEMS, FairyLights.ID);
 
-	public static final ItemConnection HANGING_LIGHTS = null;
+	public static final RegistryObject<ItemLight> FAIRY_LIGHT = REG.register("fairy_light", FLItems::createLight);
 
-	public static final ItemConnection GARLAND = null;
+	public static final RegistryObject<ItemLight> PAPER_LANTERN = REG.register("paper_lantern", FLItems::createLight);
 
-	public static final ItemConnection TINSEL = null;
+	public static final RegistryObject<ItemLight> ORB_LANTERN = REG.register("orb_lantern", FLItems::createLight);
 
-	public static final ItemConnection PENNANT_BUNTING = null;
+	public static final RegistryObject<ItemLight> FLOWER_LIGHT = REG.register("flower_light", FLItems::createLight);
 
-	public static final ItemConnection LETTER_BUNTING = null;
+	public static final RegistryObject<ItemLight> ORNATE_LANTERN = REG.register("ornate_lantern", FLItems::createLight);
 
-	public static final Item PENNANT = null;
+	public static final RegistryObject<ItemLight> OIL_LANTERN = REG.register("oil_lantern", FLItems::createLight);
 
-	public static final Item LADDER = null;
+	public static final RegistryObject<ItemLight> JACK_O_LANTERN = REG.register("jack_o_lantern", FLItems::createLight);
 
-	@SubscribeEvent
-	public static void register(RegistryEvent.Register<Item> event) {
-		event.getRegistry().registerAll(
-			new ItemLight(),
-			new ItemConnectionHangingLights(),
-			new ItemConnectionGarland(),
-			new ItemConnectionTinsel(),
-			new ItemConnectionPennantBunting(),
-			new ItemConnectionLetterBunting(),
-			new ItemPennant(),
-			new ItemLadder()
-		);
+	public static final RegistryObject<ItemLight> SKULL_LIGHT = REG.register("skull_light", FLItems::createLight);
+
+	public static final RegistryObject<ItemLight> GHOST_LIGHT = REG.register("ghost_light", FLItems::createLight);
+
+	public static final RegistryObject<ItemLight> SPIDER_LIGHT = REG.register("spider_light", FLItems::createLight);
+
+	public static final RegistryObject<ItemLight> WITCH_LIGHT = REG.register("witch_light", FLItems::createLight);
+
+	public static final RegistryObject<ItemLight> SNOWFLAKE_LIGHT = REG.register("snowflake_light", FLItems::createLight);
+
+	public static final RegistryObject<ItemLight> ICICLE_LIGHTS = REG.register("icicle_lights", FLItems::createLight);
+
+	public static final RegistryObject<ItemLight> METEOR_LIGHT = REG.register("meteor_light", FLItems::createLight);
+
+	public static final RegistryObject<ItemConnection> HANGING_LIGHTS = REG.register("hanging_lights", () -> new ItemConnectionHangingLights(defaultProperties()));
+
+	public static final RegistryObject<ItemConnection> GARLAND = REG.register("garland", () -> new ItemConnectionGarland(defaultProperties()));
+
+	public static final RegistryObject<ItemConnection> TINSEL = REG.register("tinsel", () -> new ItemConnectionTinsel(defaultProperties()));
+
+	public static final RegistryObject<ItemConnection> PENNANT_BUNTING = REG.register("pennant_bunting", () -> new ItemConnectionPennantBunting(defaultProperties()));
+
+	public static final RegistryObject<ItemConnection> LETTER_BUNTING = REG.register("letter_bunting", () -> new ItemConnectionLetterBunting(defaultProperties()));
+
+	public static final RegistryObject<Item> PENNANT = REG.register("pennant", () -> new ItemPennant(defaultProperties()));
+
+	public static final RegistryObject<Item> LADDER = REG.register("ladder", () -> new ItemLadder(defaultProperties()));
+
+	private static Item.Properties defaultProperties() {
+		return new Item.Properties().group(FairyLights.fairyLightsTab);
+	}
+
+	private static ItemLight createLight() {
+		return new ItemLight(defaultProperties().maxStackSize(16));
 	}
 }

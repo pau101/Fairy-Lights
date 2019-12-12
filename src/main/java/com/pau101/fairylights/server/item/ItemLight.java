@@ -1,74 +1,43 @@
 package com.pau101.fairylights.server.item;
 
-import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.util.Utils;
-
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 
 public final class ItemLight extends Item {
-	public static final int COLOR_COUNT = 16;
-
-	public ItemLight() {
-		setCreativeTab(FairyLights.fairyLightsTab);
-		setHasSubtypes(true);
-		Utils.name(this, "light");
+	public ItemLight(Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public String getItemStackDisplayName(ItemStack stack) {
-		String localizedLightName = I18n.translateToLocal(super.getTranslationKey(stack) + '.' + getLightVariant(stack.getMetadata()).getUnlocalizedName() + ".name");
-		return Utils.formatColored(getLightColor(stack.getMetadata()), localizedLightName);
+	public ITextComponent getDisplayName(ItemStack stack) {
+		return Utils.formatColored(ItemLight.getLightColor(stack), super.getDisplayName(stack));
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-		if (isInCreativeTab(tab)) {
-			LightVariant[] variants = LightVariant.values();
-			for (int variant = 0; variant < variants.length; variant++) {
-				if (variants[variant] == LightVariant.LUXO_BALL) {
-					continue;
-				}
-				for (int color = 0; color < COLOR_COUNT; color++) {
-					subItems.add(new ItemStack(this, 1, variant * COLOR_COUNT + color));
-				}
+	public void fillItemGroup(final ItemGroup group, final NonNullList<ItemStack> items) {
+		if (isInGroup(group)) {
+			for (DyeColor dye : DyeColor.values()) {
+				ItemStack stack = new ItemStack(this);
+				stack.getOrCreateTag().putByte("color", (byte) dye.getId());
+				items.add(stack);
 			}
 		}
 	}
 
-	public static final int getLightMeta(LightVariant variant, EnumDyeColor color) {
-		return getLightMeta(variant, color.ordinal());
+	public static DyeColor getLightColor(ItemStack stack) {
+		return stack.hasTag() ? DyeColor.byId(stack.getTag().getByte("color")) : DyeColor.YELLOW;
 	}
 
-	public static final int getLightMeta(LightVariant variant, int color) {
-		return variant.ordinal() * COLOR_COUNT + color;
-	}
-
-	public static final EnumDyeColor getLightColor(int meta) {
-		return EnumDyeColor.byDyeDamage(getLightColorOrdinal(meta));
-	}
-
-	public static final LightVariant getLightVariant(int meta) {
-		return LightVariant.getLightVariant(getLightVariantOrdinal(meta));
-	}
-
-	public static final byte getLightColorOrdinal(int meta) {
-		return (byte) (meta % COLOR_COUNT); 
-	}
-
-	public static final int getLightVariantOrdinal(int meta) {
-		return meta / COLOR_COUNT; 
-	}
-
-	public static final int getColorValue(EnumDyeColor color) {
-		if (color == EnumDyeColor.BLACK) {
+	public static int getColorValue(DyeColor color) {
+		if (color == DyeColor.BLACK) {
 			return 0x323232;
 		}
-		if (color == EnumDyeColor.GRAY) {
+		if (color == DyeColor.GRAY) {
 			return 0x606060;
 		}
 		float[] rgb = color.getColorComponentValues();

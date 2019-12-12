@@ -2,12 +2,11 @@ package com.pau101.fairylights.server.fastener.connection.collision;
 
 import com.pau101.fairylights.server.fastener.connection.Feature;
 import com.pau101.fairylights.server.fastener.connection.FeatureType;
-
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 
 public final class Intersection {
-	private final RayTraceResult result;
+	private final Vec3d result;
 
 	private final AxisAlignedBB hitBox;
 
@@ -15,14 +14,14 @@ public final class Intersection {
 
 	private final Feature feature;
 
-	public Intersection(RayTraceResult result, AxisAlignedBB hitBox, FeatureType featureType, Feature feature) {
+	public Intersection(Vec3d result, AxisAlignedBB hitBox, FeatureType featureType, Feature feature) {
 		this.result = result;
 		this.hitBox = hitBox;
 		this.featureType = featureType;
 		this.feature = feature;
 	}
 
-	public RayTraceResult getResult() {
+	public Vec3d getResult() {
 		return result;
 	}
 

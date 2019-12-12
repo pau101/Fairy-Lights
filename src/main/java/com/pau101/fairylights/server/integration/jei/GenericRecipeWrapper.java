@@ -1,31 +1,32 @@
 package com.pau101.fairylights.server.integration.jei;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-
 import com.google.common.collect.ImmutableList;
 import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.crafting.GenericRecipe;
 import com.pau101.fairylights.util.crafting.ingredient.Ingredient;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITooltipCallback;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.IFocus.Mode;
-import mezz.jei.api.recipe.wrapper.ICustomCraftingRecipeWrapper;
-import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICustomCraftingCategoryExtension;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.Size2i;
 
-public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper, ICustomCraftingRecipeWrapper {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
+
+public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtension {
 	private final GenericRecipe recipe;
 
 	private final ImmutableList<ImmutableList<ItemStack>> allInputs;
@@ -99,15 +100,15 @@ public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper,
 	}
 
 	private void forOutputMatches(BiConsumer<ItemStack, ItemStack> outputConsumer) {
-		InventoryCrafting crafting = new InventoryCrafting(new Container() {
+		CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
 			@Override
-			public boolean canInteractWith(EntityPlayer player) {
+			public boolean canInteractWith(PlayerEntity player) {
 				return false;
 			}
 
 			@Override
 			public void onCraftMatrixChanged(IInventory inventory) {}
-		}, getWidth(), getHeight());
+		}, getSize().width, getSize().height);
 		if (subtypeIndex == -1) {
 			for (int i = 0; i < minimalInputStacks.size(); i++) {
 				List<ItemStack> stacks = minimalInputStacks.get(i);
@@ -136,13 +137,8 @@ public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper,
 	}
 
 	@Override
-	public int getWidth() {
-		return 3;
-	}
-
-	@Override
-	public int getHeight() {
-		return 3;
+	public Size2i getSize() {
+		return new Size2i(3, 3);
 	}
 
 	public Input getInputsForOutput(ItemStack output) {
@@ -194,20 +190,20 @@ public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper,
 	}
 
 	private Input getInputsForIngredient(ItemStack ingredient) {
-		InventoryCrafting crafting = new InventoryCrafting(new Container() {
+		CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
 			@Override
-			public boolean canInteractWith(EntityPlayer player) {
+			public boolean canInteractWith(PlayerEntity player) {
 				return false;
 			}
 
 			@Override
 			public void onCraftMatrixChanged(IInventory inventory) {}
-		}, getWidth(), getHeight());
+		}, getSize().width, getSize().height);
 		 for (int i = 0; i < allInputs.size(); i++) {
 			 List<ItemStack> options = allInputs.get(i);
 			 ItemStack matched = null;
 			 for (ItemStack o : options) {
-				 if (ingredient.getItem() == o.getItem() && ingredient.getItemDamage() == o.getItemDamage()) {
+				 if (ingredient.getItem() == o.getItem()) {
 					 matched = ingredient.copy();
 					 matched.setCount(1);
 					 break;
@@ -234,15 +230,15 @@ public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper,
 	}
 
 	public List<List<ItemStack>> getOutput(List<List<ItemStack>> inputs) {
-		InventoryCrafting crafting = new InventoryCrafting(new Container() {
+		CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
 			@Override
-			public boolean canInteractWith(EntityPlayer player) {
+			public boolean canInteractWith(PlayerEntity player) {
 				return false;
 			}
 
 			@Override
 			public void onCraftMatrixChanged(IInventory inventory) {}
-		}, getWidth(), getHeight());
+		}, getSize().width, getSize().height);
 		int size = 1;
 		for (List<ItemStack> stack : inputs) {
 			if (stack.size() > 0) {
@@ -265,9 +261,9 @@ public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper,
 	}
 
 	@Override
-	public void getIngredients(IIngredients ingredients) {
-		ingredients.setInputLists(ItemStack.class, (List<List<ItemStack>>) (List<?>) allInputs);
-		ingredients.setOutputs(ItemStack.class, outputs);
+	public void setIngredients(IIngredients ingredients) {
+		ingredients.setInputLists(VanillaTypes.ITEM, (List<List<ItemStack>>) (List<?>) allInputs);
+		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 	}
 
 	@Override
@@ -283,8 +279,8 @@ public final class GenericRecipeWrapper implements IShapedCraftingRecipeWrapper,
 				input = getInputsForIngredient(stack);
 			}
 			if (input != null) {
-				ingredients.setInputLists(ItemStack.class, input.inputs);
-				ingredients.setOutputLists(ItemStack.class, getOutput(input.inputs));
+				ingredients.setInputLists(VanillaTypes.ITEM, input.inputs);
+				ingredients.setOutputLists(VanillaTypes.ITEM, getOutput(input.inputs));
 				group.addTooltipCallback(new Tooltips(input.ingredients));
 			} else {
 				// Some Ingredient is picky with requirements, should allow a GenericRecipe to have a "smart input provider"

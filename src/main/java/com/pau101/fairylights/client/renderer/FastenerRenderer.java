@@ -1,7 +1,14 @@
 package com.pau101.fairylights.client.renderer;
 
+import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.client.model.connection.ModelConnection;
+import com.pau101.fairylights.client.model.connection.ModelConnectionGarland;
+import com.pau101.fairylights.client.model.connection.ModelConnectionHangingLights;
+import com.pau101.fairylights.client.model.connection.ModelConnectionLetterBunting;
+import com.pau101.fairylights.client.model.connection.ModelConnectionPennantBunting;
+import com.pau101.fairylights.client.model.connection.ModelConnectionTinsel;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.connection.Catenary;
 import com.pau101.fairylights.server.fastener.connection.ConnectionType;
@@ -9,13 +16,11 @@ import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.util.Mth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -36,15 +41,13 @@ public final class FastenerRenderer {
 
 	public static final int TEXTURE_HEIGHT = 128;
 
-	private static final ModelConnection[] CONNECTION_RENDERERS;
-
-	static {
-		ConnectionType[] types = ConnectionType.values();
-		CONNECTION_RENDERERS = new ModelConnection[types.length];
-		for (int i = 0; i < types.length; i++) {
-			CONNECTION_RENDERERS[i] = types[i].createRenderer();
-		}
-	}
+	private static final ImmutableMap<ConnectionType, ModelConnection> MODELS = new ImmutableMap.Builder<ConnectionType, ModelConnection>()
+		.put(ConnectionType.HANGING_LIGHTS, new ModelConnectionHangingLights())
+		.put(ConnectionType.GARLAND, new ModelConnectionGarland())
+		.put(ConnectionType.TINSEL, new ModelConnectionTinsel())
+		.put(ConnectionType.PENNANT_BUNTING, new ModelConnectionPennantBunting())
+		.put(ConnectionType.LETTER_BUNTING, new ModelConnectionLetterBunting())
+		.build();
 
 	public static void render(Fastener<?> fastener, float delta) {
 		World world = fastener.getWorld();
@@ -52,7 +55,7 @@ public final class FastenerRenderer {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.disableBlend();
 		GlStateManager.pushMatrix();
-		if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox() && !Minecraft.getMinecraft().isReducedDebug()) {
+		if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox() && !Minecraft.getInstance().isReducedDebug()) {
 			renderBoundingBox(fastener);
 		}
 		int blockBrightness = fastener.getWorld().getCombinedLight(fastener.getPos(), 0);
@@ -72,7 +75,7 @@ public final class FastenerRenderer {
 		List<TexturedRender> texturedRenders = new ArrayList<>();
 		for (Connection connection : connections) {
 			if (connection.isOrigin()) {
-				ModelConnection renderer = CONNECTION_RENDERERS[connection.getType().ordinal()];
+				ModelConnection renderer = MODELS.get(connection.getType());
 				renderer.render(fastener, connection, world, skylight, moonlight, delta);
 				if (renderer.hasTexturedRender()) {
 					texturedRenders.add(new TexturedRender(connection, renderer));
@@ -83,7 +86,7 @@ public final class FastenerRenderer {
 				shouldRenderBow = false;
 			}
 		}
-		TextureManager texturer = Minecraft.getMinecraft().getTextureManager();
+		TextureManager texturer = Minecraft.getInstance().getTextureManager();
 		for (TexturedRender render : texturedRenders) {
 			ResourceLocation tex = render.renderer.getAlternateTexture();
 			if (tex != null) {
@@ -92,16 +95,16 @@ public final class FastenerRenderer {
 			render.renderer.renderTexturePass(fastener, render.connection, world, skylight, moonlight, delta);
 		}
 		GlStateManager.popMatrix();
-		GlStateManager.color(1, 1, 1);
+		GlStateManager.color3f(1, 1, 1);
 	}
 
 	private static void renderBoundingBox(Fastener<?> fastener) {
 		GlStateManager.disableLighting();
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.depthMask(false);
-		GlStateManager.glLineWidth(2);
+		GlStateManager.lineWidth(2);
 		Vec3d offset = fastener.getConnectionPoint();
-		RenderGlobal.drawSelectionBoundingBox(fastener.getBounds().offset(-offset.x, -offset.y, -offset.z), 1, 1, 1, 1);
+		WorldRenderer.drawSelectionBoundingBox(fastener.getBounds().offset(-offset.x, -offset.y, -offset.z), 1, 1, 1, 1);
 		/*/
 		offset = Mth.negate(offset).subtract(fastener.getOffsetPoint());
 		for (Connection connection : fastener.getConnections().values()) {
@@ -110,7 +113,7 @@ public final class FastenerRenderer {
 			}
 		}//*/
 		GlStateManager.enableLighting();
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 		GlStateManager.depthMask(true);
 	}
 
@@ -127,17 +130,17 @@ public final class FastenerRenderer {
 	}//*/
 
 	private static void renderBow(Fastener fastener, Collection<Connection> connections, float delta) {
-		EnumFacing facing = fastener.getFacing();
-		if (facing.getAxis() == Axis.Y) {
+		Direction facing = fastener.getFacing();
+		if (facing.getAxis() == Direction.Axis.Y) {
 			return;
 		}
 		Vec3d fastenerDir = new Vec3d(facing.getDirectionVec());
 		float yaw = (float) -MathHelper.atan2(fastenerDir.z, fastenerDir.x) - Mth.HALF_PI;
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(fastenerDir.x * 1.5F / 16, 0, fastenerDir.z * 1.5F / 16);
-		GlStateManager.rotate(yaw * Mth.RAD_TO_DEG, 0, 1, 0);
-		GlStateManager.translate(-9F / 16, -6F / 16, -0.5F / 16);
-		GlStateManager.scale(1, 1, 2.5F);
+		GlStateManager.translated(fastenerDir.x * 1.5F / 16, 0, fastenerDir.z * 1.5F / 16);
+		GlStateManager.rotatef(yaw * Mth.RAD_TO_DEG, 0, 1, 0);
+		GlStateManager.translatef(-9F / 16, -6F / 16, -0.5F / 16);
+		GlStateManager.scalef(1, 1, 2.5F);
 		render3DTexture(18, 12, 0, 72);
 		GlStateManager.popMatrix();
 	}
@@ -169,19 +172,19 @@ public final class FastenerRenderer {
 		float v1 = v / (float) texHeight;
 		float v2 = (v + height) / (float) texHeight;
 		GlStateManager.pushMatrix();
-		GlStateManager.scale(width / 16F, height / 16F, 1);
+		GlStateManager.scalef(width / 16F, height / 16F, 1);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder render = tessellator.getBuffer();
 		float depth = 0.0625F;
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		GlStateManager.glNormal3f(0, 0, 1);
+		GlStateManager.normal3f(0, 0, 1);
 		render.pos(0, 0, 0).tex(u1, v2).endVertex();
 		render.pos(1, 0, 0).tex(u2, v2).endVertex();
 		render.pos(1, 1, 0).tex(u2, v1).endVertex();
 		render.pos(0, 1, 0).tex(u1, v1).endVertex();
 		tessellator.draw();
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		GlStateManager.glNormal3f(0, 0, -1);
+		GlStateManager.normal3f(0, 0, -1);
 		render.pos(0, 1, -depth).tex(u1, v1).endVertex();
 		render.pos(1, 1, -depth).tex(u2, v1).endVertex();
 		render.pos(1, 0, -depth).tex(u2, v2).endVertex();
@@ -190,7 +193,7 @@ public final class FastenerRenderer {
 		float widthStretch = 0.5F * (u1 - u2) / width;
 		float heightStretch = 0.5F * (v2 - v1) / height;
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		GlStateManager.glNormal3f(1, 0, 0);
+		GlStateManager.normal3f(1, 0, 0);
 		for (int p = 0; p < width; p++) {
 			float x = (float) p / width;
 			float ui = u1 + (u2 - u1) * x - widthStretch;
@@ -201,7 +204,7 @@ public final class FastenerRenderer {
 		}
 		tessellator.draw();
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		GlStateManager.glNormal3f(-1, 0, 0);
+		GlStateManager.normal3f(-1, 0, 0);
 		for (int p = 0; p < width; p++) {
 			float xi = (float) p / width;
 			float ui = u1 + (u2 - u1) * xi - widthStretch;
@@ -213,7 +216,7 @@ public final class FastenerRenderer {
 		}
 		tessellator.draw();
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		GlStateManager.glNormal3f(0, 1, 0);
+		GlStateManager.normal3f(0, 1, 0);
 		for (int p = 0; p < height; p++) {
 			float yi = (float) p / height;
 			float vi = v2 + (v1 - v2) * yi - heightStretch;
@@ -225,7 +228,7 @@ public final class FastenerRenderer {
 		}
 		tessellator.draw();
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		GlStateManager.glNormal3f(0, -1, 0);
+		GlStateManager.normal3f(0, -1, 0);
 		for (int p = 0; p < height; p++) {
 			float y = (float) p / height;
 			float vi = v2 + (v1 - v2) * y - heightStretch;

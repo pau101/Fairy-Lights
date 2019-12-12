@@ -9,7 +9,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.swing.text.AttributeSet;
@@ -722,9 +722,9 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 		return str.toStyledString();
 	}
 
-	public static NBTTagCompound serialize(StyledString str) {
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("value", str.value);
+	public static CompoundNBT serialize(StyledString str) {
+		CompoundNBT compound = new CompoundNBT();
+		compound.putString("value", str.value);
 		short[] styling = str.styling;
 		byte[] nbtStyling = new byte[styling.length * 2];
 		for (int i = 0, j = 0; i < styling.length; i++) {
@@ -732,11 +732,11 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 			nbtStyling[j++] = (byte) (s >> 8 & 0x1);
 			nbtStyling[j++] = (byte) (s & 0xFF);
 		}
-		compound.setByteArray("styling", nbtStyling);
+		compound.putByteArray("styling", nbtStyling);
 		return compound;
 	}
 
-	public static StyledString deserialize(NBTTagCompound compound) {
+	public static StyledString deserialize(CompoundNBT compound) {
 		String value = compound.getString("value");
 		byte[] nbtStyling = compound.getByteArray("styling");
 		if (nbtStyling.length == value.length() * 2) {
@@ -889,7 +889,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 				boolean isStrikethrough = StyleConstants.isStrikeThrough(attrs) || StyleConstants.isStrikeThrough(node.getAttributes());
 				boolean isUnderline = StyleConstants.isUnderline(attrs) || StyleConstants.isUnderline(node.getAttributes());
 				boolean isItalic = StyleConstants.isItalic(attrs) || StyleConstants.isItalic(node.getAttributes());
-				str.append(CharMatcher.WHITESPACE.replaceFrom(s, ' '), Style.getShortStyling(getNearestColor(font, color), isBold, isStrikethrough, isUnderline, isItalic));
+				str.append(CharMatcher.WHITESPACE.replaceFrom(s, ' '), Style.getShortStyling(getNearestColor(color), isBold, isStrikethrough, isUnderline, isItalic));
 				/*/
 				if (s.trim().length() > 0) {
 					System.out.printf("%s\n", s.trim());
@@ -908,20 +908,20 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 		}
 	}
 
-	public static StyledString fromRTF(FontRenderer font, InputStream in) {
+	public static StyledString fromRTF(InputStream in) {
 		try {
 			RTFEditorKit kit = new RTFEditorKit();
 			Document doc = kit.createDefaultDocument();
 			kit.read(in, doc, 0);
 			StyledStringBuilder str = new StyledStringBuilder();
-			renderRTFContent(font, str, doc.getDefaultRootElement());
+			renderRTFContent(str, doc.getDefaultRootElement());
 			return str.toStyledString().trim();
 		} catch (IOException | BadLocationException e) {
 			return null;
 		}
 	}
 
-	private static void renderRTFContent(FontRenderer font, StyledStringBuilder str, Element node) throws BadLocationException {
+	private static void renderRTFContent(StyledStringBuilder str, Element node) throws BadLocationException {
 		if (node.isLeaf()) {
 			AttributeSet attrs = node.getAttributes();
 			int start = node.getStartOffset();
@@ -934,7 +934,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 				boolean isStrikethrough = MoreObjects.firstNonNull((Boolean) attrs.getAttribute("strike"), false);
 				boolean isUnderline = StyleConstants.isUnderline(attrs);
 				boolean isItalic = StyleConstants.isItalic(attrs);
-				str.append(CharMatcher.whitespace().replaceFrom(s, ' '), Style.getShortStyling(getNearestColor(font, color), isBold, isStrikethrough, isUnderline, isItalic));
+				str.append(CharMatcher.whitespace().replaceFrom(s, ' '), Style.getShortStyling(getNearestColor(color), isBold, isStrikethrough, isUnderline, isItalic));
 				/*/
 				Enumeration<?> e = attrs.getAttributeNames();
 				System.out.printf("%s\n", s);
@@ -946,19 +946,21 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 			}
 		} else {
 			for (int i = 0; i < node.getElementCount(); i++) {
-				renderRTFContent(font, str, node.getElement(i));
+				renderRTFContent(str, node.getElement(i));
 			}
 		}
 	}
 
-	private static TextFormatting getNearestColor(FontRenderer font, Color c) {
+	private static TextFormatting getNearestColor(Color c) {
 		int r = c.getRed(), g = c.getGreen(), b = c.getBlue();
 		TextFormatting nearest = TextFormatting.BLACK;
 		TextFormatting[] styles = TextFormatting.values();
 		int minDist = Integer.MAX_VALUE;
-		char[] colors = "0123456789abcdef".toCharArray();
-		for (int i = 0; i < colors.length; i++) {
-			int color = font.getColorCode(colors[i]);	
+		for (int i = 0; i < styles.length; i++) {
+			Integer color = styles[i].getColor();
+			if (color == null) {
+				continue;
+			}
 			int rd = r - ((color >> 16) & 0xFF);	
 			int gd = g - ((color >> 8) & 0xFF);	
 			int bd = b - (color & 0xFF);
@@ -1041,7 +1043,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 				if (style > -1) {
 					stm.print("</span>");
 				}
-				int color = getColor(font, Style.getColorFromStyle(s));
+				int color = getColor(Style.getColorFromStyle(s));
 				Set<TextFormatting> f = Style.getFancyStylingFromStyle(s);
 				stm.printf(
 					spanFormat,
@@ -1077,8 +1079,9 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 		}
 	}
 
-	public static int getColor(FontRenderer font, TextFormatting color) {
-		Preconditions.checkArgument(color.isColor(), "Must be a color");
-		return font.getColorCode(color.toString().charAt(1));
+	public static int getColor(TextFormatting color) {
+        Integer rgb = color.getColor();
+		Preconditions.checkNotNull(rgb, "Must be a color");
+		return rgb;
 	}
 }

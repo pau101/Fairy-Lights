@@ -1,47 +1,75 @@
 package com.pau101.fairylights.server.item.crafting;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
 import com.pau101.fairylights.FairyLights;
 import com.pau101.fairylights.server.item.FLItems;
 import com.pau101.fairylights.server.item.ItemLight;
 import com.pau101.fairylights.server.item.LightVariant;
-import com.pau101.fairylights.util.Mth;
 import com.pau101.fairylights.util.OreDictUtils;
 import com.pau101.fairylights.util.Utils;
+import com.pau101.fairylights.util.crafting.GenericRecipe;
 import com.pau101.fairylights.util.crafting.GenericRecipeBuilder;
 import com.pau101.fairylights.util.crafting.ingredient.Ingredient;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryBasic;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryBasicInert;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryListInert;
+import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliaryOre;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularBasic;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularDye;
-import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularOre;
 import com.pau101.fairylights.util.styledstring.StyledString;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.commons.lang3.mutable.MutableInt;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = FairyLights.ID)
 public final class Recipes {
 	private Recipes() {}
 
+	public static final DeferredRegister<IRecipeSerializer<?>> REG = new DeferredRegister<>(ForgeRegistries.RECIPE_SERIALIZERS, FairyLights.ID);
+
+	private static final RegistryObject<IRecipeSerializer<GenericRecipe>> FAIRY_LIGHTS = REG.register("crafting_special_fairy_lights", makeSerializer(Recipes::createFairyLights));
+
+	private static final RegistryObject<IRecipeSerializer<GenericRecipe>> FAIRY_LIGHTS_AUGMENTATION = REG.register("crafting_special_fairy_lights_augmentation", makeSerializer(Recipes::createFairyLightsAugmentation));
+
+	private static final RegistryObject<IRecipeSerializer<GenericRecipe>> TINSEL_GARLAND = REG.register("crafting_special_tinsel_garland", makeSerializer(Recipes::createTinselGarland));
+
+	private static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT_BUNTING = REG.register("crafting_special_pennant_bunting", makeSerializer(Recipes::createPennantBunting));
+
+	private static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT_BUNTING_AUGMENTATION = REG.register("crafting_special_pennant_bunting_augmentation", makeSerializer(Recipes::createPennantBuntingAugmentation));
+
+	private static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT = REG.register("crafting_special_pennant", makeSerializer(Recipes::createPennant));
+
+	static {
+		for (LightVariant variant : LightVariant.values()) {
+			REG.register("crafting_special_" + variant.getName(), makeSerializer(variant::getRecipe));
+		}
+	}
+
 	public static final IngredientRegular LIGHT_DYE = new IngredientRegularDye() {
 		@Override
 		public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-			return ImmutableList.of(OreDictUtils.getDyes(ItemLight.getLightColor(output.getItemDamage())));
+			return ImmutableList.of(OreDictUtils.getDyes(ItemLight.getLightColor(output)));
 		}
 
 		@Override
@@ -51,30 +79,32 @@ public final class Recipes {
 
 		@Override
 		public void matched(ItemStack ingredient, ItemStack output) {
-			output.setItemDamage(Mth.floorInterval(output.getMetadata(), ItemLight.COLOR_COUNT) + OreDictUtils.getDyeMetadata(ingredient));
+			output.getTag().putByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
 		}
 	};
 
-	@SubscribeEvent
-	public static void register(RegistryEvent.Register<IRecipe> event) {
-		IForgeRegistry<IRecipe> registry = event.getRegistry();
-		registry.registerAll(
-			createFairyLights(),
-			createFairyLightsAugmentation(),
-			createTinselGarland(),
-			createPennantBunting(),
-			createPennantBuntingAugmentation(),
-			createPennant()
-		);
-		for (LightVariant variant : LightVariant.values()) {
-			registry.register(variant.getRecipe());
+	private static Supplier<IRecipeSerializer<GenericRecipe>> makeSerializer(BiFunction<ResourceLocation, IRecipeSerializer<GenericRecipe>, GenericRecipe> factory) {
+		class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<GenericRecipe> {
+			@Override
+			public GenericRecipe read(final ResourceLocation recipeId, final JsonObject json) {
+				return factory.apply(recipeId, this);
+			}
+
+			@Override
+			public GenericRecipe read(final ResourceLocation recipeId, final PacketBuffer buffer) {
+				return factory.apply(recipeId, this);
+			}
+
+			@Override
+			public void write(final PacketBuffer buffer, final GenericRecipe recipe) {}
 		}
+		return Serializer::new;
 	}
 
-	private static IRecipe createFairyLights() {
-		return new GenericRecipeBuilder(FLItems.HANGING_LIGHTS)
+	private static GenericRecipe createFairyLights(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer) {
+		return new GenericRecipeBuilder(name, serializer, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new))
 			.withShape("I-I")
-			.withIngredient('I', "ingotIron")
+			.withIngredient('I', Tags.Items.INGOTS_IRON)
 			.withAnyIngredient('-',
 				new IngredientRegularBasic(Items.STRING) {
 					@Override
@@ -82,7 +112,7 @@ public final class Recipes {
 						return useInputsForTagBool(this, output, "tight", false) ? super.getInput(output) : ImmutableList.of();
 					}
 				},
-				new IngredientRegularOre("stickWood") {
+				new IngredientRegularBasic(Items.STICK) {
 					@Override
 					public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
 						return useInputsForTagBool(this, output, "tight", true) ? super.getInput(output) : ImmutableList.of();
@@ -90,12 +120,12 @@ public final class Recipes {
 
 					@Override
 					public void present(ItemStack output) {
-						output.getTagCompound().setBoolean("tight", true);
+						output.getTag().putBoolean("tight", true);
 					}
 
 					@Override
 					public void absent(ItemStack output) {
-						output.getTagCompound().setBoolean("tight", false);
+						output.getTag().putBoolean("tight", false);
 					}
 				}
 			)
@@ -108,12 +138,12 @@ public final class Recipes {
 
 				@Override
 				public void present(ItemStack output) {
-					output.getTagCompound().setBoolean("twinkle", true);
+					output.getTag().putBoolean("twinkle", true);
 				}
 
 				@Override
 				public void absent(ItemStack output) {
-					output.getTagCompound().setBoolean("twinkle", false);
+					output.getTag().putBoolean("twinkle", false);
 				}
 
 				@Override
@@ -122,12 +152,11 @@ public final class Recipes {
 					tooltip.add(Utils.formatRecipeTooltip("recipe.hangingLights.glowstone"));
 				}
 			})
-			.build()
-			.setRegistryName("fairy_lights");
+			.build();
 	}
 
 	private static boolean useInputsForTagBool(Ingredient ingredient, ItemStack output, String key, boolean value) {
-		NBTTagCompound compound = output.getTagCompound();
+		CompoundNBT compound = output.getTag();
 		return compound != null && compound.getBoolean(key) == value;
 	}
 
@@ -136,34 +165,34 @@ public final class Recipes {
 	 *  different recipe layouts the the input ingredients can be generated for so I could show applying a
 	 *  new light pattern as well.
 	 */
-	private static IRecipe createFairyLightsAugmentation() {
-		return new GenericRecipeBuilder(FLItems.HANGING_LIGHTS)
+	private static GenericRecipe createFairyLightsAugmentation(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer) {
+		return new GenericRecipeBuilder(name, serializer, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new))
 			.withShape("F")
-			.withIngredient('F', new IngredientRegularBasic(FLItems.HANGING_LIGHTS) {
+			.withIngredient('F', new IngredientRegularBasic(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new)) {
 				@Override
 				public ImmutableList<ItemStack> getInputs() {
 					ItemStack stack = ingredient.copy();
-					stack.setTagCompound(new NBTTagCompound());
+					stack.setTag(new CompoundNBT());
 					return makeHangingLightsExamples(stack);
 				}
 
 				@Override
 				public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
 					ItemStack stack = output.copy();
-					NBTTagCompound compound = stack.getTagCompound();
+					CompoundNBT compound = stack.getTag();
 					if (compound == null) {
 						return ImmutableList.of();
 					}
 					stack.setCount(1);
-					compound.setBoolean("twinkle", false);
+					compound.putBoolean("twinkle", false);
 					return ImmutableList.of(ImmutableList.of(stack));
 				}
 
 				@Override
 				public void matched(ItemStack ingredient, ItemStack output) {
-					NBTTagCompound compound = ingredient.getTagCompound();
+					CompoundNBT compound = ingredient.getTag();
 					if (compound != null) {
-						output.setTagCompound(compound.copy());
+						output.setTag(compound.copy());
 					}
 				}
 			})
@@ -193,63 +222,62 @@ public final class Recipes {
 					@Override
 					public boolean finish(MutableInt count, ItemStack output) {
 						if (count.intValue() > 0) {
-							if (output.getTagCompound().getBoolean("twinkle")) {
+							if (output.getTag().getBoolean("twinkle")) {
 								return true;
 							}
-							output.getTagCompound().setBoolean("twinkle", true);
+							output.getTag().putBoolean("twinkle", true);
 						}
 						return false;
 					}
 				}
 			))
-			.build()
-			.setRegistryName("fairy_lights_augmentation");
+			.build();
 	}
 
 	private static ImmutableList<ItemStack> makeHangingLightsExamples(ItemStack stack) {
 		return ImmutableList.of(
-			makeHangingLights(stack, EnumDyeColor.CYAN, EnumDyeColor.MAGENTA, EnumDyeColor.CYAN, EnumDyeColor.WHITE),
-			makeHangingLights(stack, EnumDyeColor.CYAN, EnumDyeColor.LIGHT_BLUE, EnumDyeColor.CYAN, EnumDyeColor.LIGHT_BLUE),
-			makeHangingLights(stack, EnumDyeColor.SILVER, EnumDyeColor.PINK, EnumDyeColor.CYAN, EnumDyeColor.GREEN),
-			makeHangingLights(stack, EnumDyeColor.SILVER, EnumDyeColor.PURPLE, EnumDyeColor.SILVER, EnumDyeColor.GREEN),
-			makeHangingLights(stack, EnumDyeColor.CYAN, EnumDyeColor.YELLOW, EnumDyeColor.CYAN, EnumDyeColor.PURPLE)
+			makeHangingLights(stack, DyeColor.CYAN, DyeColor.MAGENTA, DyeColor.CYAN, DyeColor.WHITE),
+			makeHangingLights(stack, DyeColor.CYAN, DyeColor.LIGHT_BLUE, DyeColor.CYAN, DyeColor.LIGHT_BLUE),
+			makeHangingLights(stack, DyeColor.LIGHT_GRAY, DyeColor.PINK, DyeColor.CYAN, DyeColor.GREEN),
+			makeHangingLights(stack, DyeColor.LIGHT_GRAY, DyeColor.PURPLE, DyeColor.LIGHT_GRAY, DyeColor.GREEN),
+			makeHangingLights(stack, DyeColor.CYAN, DyeColor.YELLOW, DyeColor.CYAN, DyeColor.PURPLE)
 		);
 	}
 
-	public static ItemStack makeHangingLights(ItemStack base, EnumDyeColor... colors) {
+	public static ItemStack makeHangingLights(ItemStack base, DyeColor... colors) {
 		ItemStack stack = base.copy();
-		NBTTagCompound compound = stack.getTagCompound();
-		NBTTagList lights = new NBTTagList();
-		for (EnumDyeColor color : colors) {
-			NBTTagCompound light = new NBTTagCompound();
-			light.setByte("color", (byte) color.getDyeDamage());
-			light.setInteger("light", LightVariant.FAIRY.ordinal());
-			lights.appendTag(light);
+		CompoundNBT compound = stack.getTag();
+		ListNBT lights = new ListNBT();
+		for (DyeColor color : colors) {
+			CompoundNBT light = new CompoundNBT();
+			light.putByte("color", (byte) color.getId());
+			light.putInt("light", LightVariant.FAIRY.ordinal());
+			lights.add(light);
 		}
 		if (compound == null) {
-			compound = new NBTTagCompound();
-			stack.setTagCompound(compound);
+			compound = new CompoundNBT();
+			stack.setTag(compound);
 		}
-		compound.setTag("pattern", lights);
-		compound.setBoolean("twinkle", false);
-		compound.setBoolean("tight", false);
+		compound.put("pattern", lights);
+		compound.putBoolean("twinkle", false);
+		compound.putBoolean("tight", false);
 		return stack;
 	}
 
-	private static IRecipe createTinselGarland() {
-		return new GenericRecipeBuilder(FLItems.TINSEL)
+	private static GenericRecipe createTinselGarland(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer) {
+		return new GenericRecipeBuilder(name, serializer, FLItems.TINSEL.orElseThrow(IllegalStateException::new))
 			.withShape(" P ", "I-I", " D ")
 			.withIngredient('P', Items.PAPER)
-			.withIngredient('I', "ingotIron")
+			.withIngredient('I', Tags.Items.INGOTS_IRON)
 			.withIngredient('-', Items.STRING)
 			.withIngredient('D', new IngredientRegularDye() {
 				@Override
 				public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-					NBTTagCompound compound = output.getTagCompound();
+					CompoundNBT compound = output.getTag();
 					if (compound == null) {
 						return ImmutableList.of();
 					}
-					return ImmutableList.of(OreDictUtils.getDyes(EnumDyeColor.byDyeDamage(compound.getByte("color"))));
+					return ImmutableList.of(OreDictUtils.getDyes(DyeColor.byId(compound.getByte("color"))));
 				}
 
 				@Override
@@ -259,37 +287,35 @@ public final class Recipes {
 
 				@Override
 				public void matched(ItemStack ingredient, ItemStack output) {
-					output.getTagCompound().setByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
+					output.getTag().putByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
 				}
 			})
-			.build()
-			.setRegistryName("tinsel_garland");
+			.build();
 	}
 
-	private static IRecipe createPennantBunting() {
-		return new GenericRecipeBuilder(FLItems.PENNANT_BUNTING)
+	private static GenericRecipe createPennantBunting(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer) {
+		return new GenericRecipeBuilder(name, serializer, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))
 			.withShape("I-I")
-			.withIngredient('I', "ingotIron")
+			.withIngredient('I', Tags.Items.INGOTS_IRON)
 			.withIngredient('-', Items.STRING)
 			.withAuxiliaryIngredient(new PennantIngredient())
-			.build()
-			.setRegistryName("pennant_bunting");
+			.build();
 	}
 
-	private static IRecipe createPennantBuntingAugmentation() {
-		return new GenericRecipeBuilder(FLItems.PENNANT_BUNTING)
+	private static GenericRecipe createPennantBuntingAugmentation(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer) {
+		return new GenericRecipeBuilder(name, serializer, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))
 			.withShape("B")
-			.withIngredient('B', new IngredientRegularBasic(FLItems.PENNANT_BUNTING) {
+			.withIngredient('B', new IngredientRegularBasic(FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new)) {
 				@Override
 				public ImmutableList<ItemStack> getInputs() {
 					ItemStack stack = ingredient.copy();
-					stack.setTagCompound(new NBTTagCompound());
+					stack.setTag(new CompoundNBT());
 					return makePennantExamples(stack);
 				}
 
 				@Override
 				public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-					NBTTagCompound compound = output.getTagCompound();
+					CompoundNBT compound = output.getTag();
 					if (compound == null) {
 						return ImmutableList.of();
 					}
@@ -298,53 +324,52 @@ public final class Recipes {
 
 				@Override
 				public void matched(ItemStack ingredient, ItemStack output) {
-					NBTTagCompound compound = ingredient.getTagCompound();
+					CompoundNBT compound = ingredient.getTag();
 					if (compound != null) {
-						output.setTagCompound(compound.copy());
+						output.setTag(compound.copy());
 					}
 				}
 			})
 			.withAuxiliaryIngredient(new PennantIngredient())
-			.build()
-			.setRegistryName("pennant_bunting_augmentation");
+			.build();
 	}
 
 	private static ImmutableList<ItemStack> makePennantExamples(ItemStack stack) {
 		return ImmutableList.of(
-			makePennant(stack, EnumDyeColor.BLUE, EnumDyeColor.YELLOW, EnumDyeColor.RED),
-			makePennant(stack, EnumDyeColor.PINK, EnumDyeColor.LIGHT_BLUE),
-			makePennant(stack, EnumDyeColor.ORANGE, EnumDyeColor.WHITE),
-			makePennant(stack, EnumDyeColor.LIME, EnumDyeColor.YELLOW)
+			makePennant(stack, DyeColor.BLUE, DyeColor.YELLOW, DyeColor.RED),
+			makePennant(stack, DyeColor.PINK, DyeColor.LIGHT_BLUE),
+			makePennant(stack, DyeColor.ORANGE, DyeColor.WHITE),
+			makePennant(stack, DyeColor.LIME, DyeColor.YELLOW)
 		);
 	}
 
-	public static ItemStack makePennant(ItemStack base, EnumDyeColor... colors) {
+	public static ItemStack makePennant(ItemStack base, DyeColor... colors) {
 		ItemStack stack = base.copy();
-		NBTTagCompound compound = stack.getTagCompound();
-		NBTTagList pennants = new NBTTagList();
-		for (EnumDyeColor color : colors) {
-			NBTTagCompound pennant = new NBTTagCompound();
-			pennant.setByte("color", (byte) color.getDyeDamage());
-			pennants.appendTag(pennant);
+		CompoundNBT compound = stack.getTag();
+		ListNBT pennants = new ListNBT();
+		for (DyeColor color : colors) {
+			CompoundNBT pennant = new CompoundNBT();
+			pennant.putByte("color", (byte) color.getId());
+			pennants.add(pennant);
 		}
 		if (compound == null) {
-			compound = new NBTTagCompound();
-			stack.setTagCompound(compound);
+			compound = new CompoundNBT();
+			stack.setTag(compound);
 		}
-		compound.setTag("pattern", pennants);
-		compound.setTag("text", StyledString.serialize(new StyledString()));
+		compound.put("pattern", pennants);
+		compound.put("text", StyledString.serialize(new StyledString()));
 		return stack;
 	}
 
-	private static IRecipe createPennant() {
-		return new GenericRecipeBuilder(FLItems.PENNANT)
+	private static GenericRecipe createPennant(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer) {
+		return new GenericRecipeBuilder(name, serializer, FLItems.PENNANT.orElseThrow(IllegalStateException::new))
 			.withShape("- -", "PDP", " P ")
 			.withIngredient('P', Items.PAPER)
 			.withIngredient('-', Items.STRING)
 			.withIngredient('D', new IngredientRegularDye() {
 				@Override
 				public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-					return ImmutableList.of(OreDictUtils.getDyes(EnumDyeColor.byDyeDamage(output.getItemDamage())));
+					return ImmutableList.of(OreDictUtils.getDyes(ItemLight.getLightColor(output)));
 				}
 
 				@Override
@@ -354,33 +379,33 @@ public final class Recipes {
 
 				@Override
 				public void matched(ItemStack ingredient, ItemStack output) {
-					output.setItemDamage(OreDictUtils.getDyeMetadata(ingredient));
+					output.getOrCreateTag().putByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
 				}
 			})
-			.build()
-			.setRegistryName("pennant");
+			.build();
 	}
 
-	private static class LightIngredient extends IngredientAuxiliaryBasic<NBTTagList> {
+	private static class LightIngredient extends IngredientAuxiliaryOre<ListNBT> {
 		private LightIngredient(boolean isRequired) {
-			super(FLItems.LIGHT, OreDictionary.WILDCARD_VALUE, isRequired, 8);
+			super(new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights")), isRequired, 8);
 		}
 
 		@Override
 		public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-			NBTTagCompound compound = output.getTagCompound();
+			CompoundNBT compound = output.getTag();
 			if (compound == null) {
 				return ImmutableList.of();
 			}
-			NBTTagList pattern = compound.getTagList("pattern", NBT.TAG_COMPOUND);
+			ListNBT pattern = compound.getList("pattern", Constants.NBT.TAG_COMPOUND);
 			if (pattern.isEmpty()) {
 				return ImmutableList.of();
 			}
 			ImmutableList.Builder<ImmutableList<ItemStack>> lights = ImmutableList.builder();
-			for (int i = 0; i < pattern.tagCount(); i++) {
-				NBTTagCompound light = pattern.getCompoundTagAt(i);
-				int meta = light.getInteger("light") * ItemLight.COLOR_COUNT + light.getByte("color");
-				lights.add(ImmutableList.of(new ItemStack(FLItems.LIGHT, 1, meta)));
+			for (int i = 0; i < pattern.size(); i++) {
+				CompoundNBT light = pattern.getCompound(i);
+				ItemStack stack = new ItemStack(LightVariant.getLightVariant(light.getInt("light")).getItem());
+				stack.getOrCreateTag().putByte("color", light.getByte("color"));
+				lights.add(ImmutableList.of(stack));
 			}
 			return lights.build();
 		}
@@ -391,22 +416,25 @@ public final class Recipes {
 		}
 
 		@Override
-		public NBTTagList accumulator() {
-			return new NBTTagList();
+		public ListNBT accumulator() {
+			return new ListNBT();
 		}
 
 		@Override
-		public void consume(NBTTagList patternList, ItemStack ingredient) {
-			int variant = ingredient.getMetadata();
-			NBTTagCompound light = new NBTTagCompound();
-			light.setInteger("light", ItemLight.getLightVariantOrdinal(variant));
-			light.setByte("color", ItemLight.getLightColorOrdinal(variant));
-			patternList.appendTag(light);
+		public void consume(ListNBT patternList, ItemStack ingredient) {
+			CompoundNBT light = new CompoundNBT();
+			light.putInt("light", Arrays.stream(LightVariant.values())
+				.filter(v -> ingredient.getItem().equals(v.getItem()))
+				.mapToInt(Enum::ordinal)
+				.findFirst().orElse(0)
+			);
+			light.putByte("color", (byte) ItemLight.getLightColor(ingredient).getId());
+			patternList.add(light);
 		}
 
 		@Override
-		public boolean finish(NBTTagList pattern, ItemStack output) {
-			if (pattern.tagCount() > 0) {
+		public boolean finish(ListNBT pattern, ItemStack output) {
+			if (pattern.size() > 0) {
 				output.setTagInfo("pattern", pattern);
 			}
 			return false;
@@ -418,25 +446,27 @@ public final class Recipes {
 		}
 	}
 
-	private static class PennantIngredient extends IngredientAuxiliaryBasic<NBTTagList> {
+	private static class PennantIngredient extends IngredientAuxiliaryBasic<ListNBT> {
 		private PennantIngredient() {
-			super(new ItemStack(FLItems.PENNANT, 1, OreDictionary.WILDCARD_VALUE), true, 8);
+			super(new ItemStack(FLItems.PENNANT.orElseThrow(IllegalStateException::new)), true, 8);
 		}
 
 		@Override
 		public ImmutableList<ImmutableList<ItemStack>> getInput(ItemStack output) {
-			NBTTagCompound compound = output.getTagCompound();
+			CompoundNBT compound = output.getTag();
 			if (compound == null) {
 				return ImmutableList.of();
 			}
-			NBTTagList pattern = compound.getTagList("pattern", NBT.TAG_COMPOUND);
+			ListNBT pattern = compound.getList("pattern", Constants.NBT.TAG_COMPOUND);
 			if (pattern.isEmpty()) {
 				return ImmutableList.of();
 			}
 			ImmutableList.Builder<ImmutableList<ItemStack>> pennants = ImmutableList.builder();
-			for (int i = 0; i < pattern.tagCount(); i++) {
-				NBTTagCompound pennant = pattern.getCompoundTagAt(i);
-				pennants.add(ImmutableList.of(new ItemStack(FLItems.PENNANT, 1, pennant.getByte("color"))));
+			for (int i = 0; i < pattern.size(); i++) {
+				CompoundNBT pennant = pattern.getCompound(i);
+				ItemStack stack = new ItemStack(FLItems.PENNANT.orElseThrow(IllegalStateException::new));
+				stack.getOrCreateTag().putByte("color", pennant.getByte("color"));
+				pennants.add(ImmutableList.of(stack));
 			}
 			return pennants.build();
 		}
@@ -447,20 +477,20 @@ public final class Recipes {
 		}
 
 		@Override
-		public NBTTagList accumulator() {
-			return new NBTTagList();
+		public ListNBT accumulator() {
+			return new ListNBT();
 		}
 
 		@Override
-		public void consume(NBTTagList patternList, ItemStack ingredient) {
-			NBTTagCompound pennant = new NBTTagCompound();
-			pennant.setByte("color", (byte) ingredient.getMetadata());
-			patternList.appendTag(pennant);
+		public void consume(ListNBT patternList, ItemStack ingredient) {
+			CompoundNBT pennant = new CompoundNBT();
+			pennant.putByte("color", (byte) ItemLight.getLightColor(ingredient).getId());
+			patternList.add(pennant);
 		}
 
 		@Override
-		public boolean finish(NBTTagList pattern, ItemStack output) {
-			if (pattern.tagCount() > 0) {
+		public boolean finish(ListNBT pattern, ItemStack output) {
+			if (pattern.size() > 0) {
 				output.setTagInfo("pattern", pattern);
 				output.setTagInfo("text", StyledString.serialize(new StyledString()));
 			}

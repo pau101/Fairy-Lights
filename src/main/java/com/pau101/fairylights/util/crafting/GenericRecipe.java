@@ -1,14 +1,5 @@
 package com.pau101.fairylights.util.crafting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.IntUnaryOperator;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.LinkedListMultimap;
@@ -18,17 +9,28 @@ import com.pau101.fairylights.util.crafting.ingredient.Ingredient;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientAuxiliary;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegular;
 import com.pau101.fairylights.util.crafting.ingredient.IngredientRegularEmpty;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.IntUnaryOperator;
+
+public final class GenericRecipe extends SpecialRecipe {
 	public static final IngredientRegularEmpty EMPTY = new IngredientRegularEmpty();
+
+	private final IRecipeSerializer<GenericRecipe> serializer;
 
 	private final ItemStack output;
 
@@ -46,13 +48,16 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	private final NonNullList<net.minecraft.item.crafting.Ingredient> displayIngredients;
 
-	GenericRecipe(ItemStack output, IngredientRegular[] ingredients, IngredientAuxiliary<?>[] auxiliaryIngredients, int width, int height) {
+	GenericRecipe(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer, ItemStack output, IngredientRegular[] ingredients, IngredientAuxiliary<?>[] auxiliaryIngredients, int width, int height) {
+		super(name);
+		Objects.requireNonNull(serializer, "serializer");
 		Objects.requireNonNull(output, "output");
 		Objects.requireNonNull(ingredients, "ingredients");
 		Objects.requireNonNull(auxiliaryIngredients, "auxiliaryIngredients");
 		checkIngredients(ingredients, auxiliaryIngredients);
 		Preconditions.checkArgument(width >= 0, "width must be greater than or equal to zero");
 		Preconditions.checkArgument(height >= 0, "height must be greater than or equal to zero");
+		this.serializer = serializer;
 		this.output = output;
 		this.ingredients = ingredients;
 		this.auxiliaryIngredients = auxiliaryIngredients;
@@ -79,6 +84,11 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 			}
 		}
 		return ingredients;
+	}
+
+	@Override
+	public IRecipeSerializer<?> getSerializer() {
+		return serializer;
 	}
 
 	public ItemStack getOutput() {
@@ -112,7 +122,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inventory, World world) {
+	public boolean matches(CraftingInventory inventory, World world) {
 		if (!canFit(inventory.getWidth(), inventory.getHeight())) {
 			return false;
 		}
@@ -135,20 +145,20 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	private ItemStack prepareOutput() {
 		ItemStack result = output.copy();
-		if (!result.hasTagCompound()) {
-			result.setTagCompound(new NBTTagCompound());
+		if (!result.hasTag()) {
+			result.setTag(new CompoundNBT());
 		}
 		return result;
 	}
 
 	private void prepareResult() {
 		ItemStack result = this.result.get();
-		if (result.hasTagCompound() && result.getTagCompound().isEmpty()) {
-			result.setTagCompound(null);
+		if (result.hasTag() && result.getTag().isEmpty()) {
+			result.setTag(null);
 		}
 	}
 
-	private ItemStack getResult(InventoryCrafting inventory, ItemStack output, int originX, int originY, IntUnaryOperator funcX) {
+	private ItemStack getResult(CraftingInventory inventory, ItemStack output, int originX, int originY, IntUnaryOperator funcX) {
 		MatchResultRegular[] match = new MatchResultRegular[ingredients.length];
 		Multimap<IngredientAuxiliary<?>, MatchResultAuxiliary> auxMatchResults = LinkedListMultimap.create();
 		Map<IngredientAuxiliary<?>, Integer> auxMatchTotals = new HashMap<>();
@@ -158,7 +168,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 			int x = i % w, y = i / w;
 			int ingX = x - originX;
 			int ingY = y - originY;
-			ItemStack input = inventory.getStackInRowAndColumn(x, y);
+			ItemStack input = inventory.getStackInSlot(i);
 			if (contains(ingX, ingY)) {
 				int index = funcX.applyAsInt(ingX) + ingY * width;
 				IngredientRegular ingredient = ingredients[index];
@@ -208,7 +218,7 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inventory) {
+	public ItemStack getCraftingResult(CraftingInventory inventory) {
 		ItemStack result = this.result.get();
 		return result.isEmpty() ? result : result.copy();
 	}
@@ -216,11 +226,6 @@ public final class GenericRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 	@Override
 	public ItemStack getRecipeOutput() {
 		return output;
-	}
-
-	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inventory) {
-		return ForgeHooks.defaultRecipeGetRemainingItems(inventory);
 	}
 
 	public interface MatchResult<I extends Ingredient, M extends MatchResult<I, M>> {

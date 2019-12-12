@@ -2,17 +2,16 @@ package com.pau101.fairylights.server.fastener.accessor;
 
 import com.pau101.fairylights.server.fastener.FastenerPlayer;
 import com.pau101.fairylights.server.fastener.FastenerType;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
-public final class FastenerAccessorPlayer extends FastenerAccessorEntity<EntityPlayer> {
+public final class FastenerAccessorPlayer extends FastenerAccessorEntity<PlayerEntity> {
 	public FastenerAccessorPlayer() {
-		super(EntityPlayer.class);
+		super(PlayerEntity.class);
 	}
 
 	public FastenerAccessorPlayer(FastenerPlayer fastener) {
-		super(EntityPlayer.class, fastener);
+		super(PlayerEntity.class, fastener);
 	}
 
 	@Override
@@ -20,8 +19,8 @@ public final class FastenerAccessorPlayer extends FastenerAccessorEntity<EntityP
 		if (super.equalsUUID(entity)) {
 			return true;
 		}
-		if (entity instanceof EntityPlayer) {
-			return EntityPlayer.getUUID(((EntityPlayer) entity).getGameProfile()).equals(getUUID());
+		if (entity instanceof PlayerEntity) {
+			return PlayerEntity.getUUID(((PlayerEntity) entity).getGameProfile()).equals(getUUID());
 		}
 		return false;
 	}

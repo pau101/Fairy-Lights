@@ -6,7 +6,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 import java.util.ConcurrentModificationException;
 import java.util.Set;
@@ -43,10 +43,7 @@ public class CollectFastenersEvent extends Event {
 	}
 
 	public void accept(final ICapabilityProvider provider) {
-		final Fastener<?> fastener = provider.getCapability(CapabilityHandler.FASTENER_CAP, null);
-		if (fastener != null) {
-			this.accept(fastener);
-		}
+		provider.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(this::accept);
 	}
 
 	public void accept(final Fastener<?> fastener) {

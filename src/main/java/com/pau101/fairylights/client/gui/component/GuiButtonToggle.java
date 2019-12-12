@@ -1,22 +1,21 @@
 package com.pau101.fairylights.client.gui.component;
 
-import org.lwjgl.input.Mouse;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.pau101.fairylights.client.gui.GuiEditLetteredConnection;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.widget.button.Button;
 
-public class GuiButtonToggle extends GuiButton {
+public class GuiButtonToggle extends Button {
 	private int u;
 
 	private int v;
 
 	private boolean value;
 
-	public GuiButtonToggle(int id, int x, int y, int u, int v) {
-		super(id, x, y, 20, 20, "");
+	private boolean pressed;
+
+	public GuiButtonToggle(int x, int y, int u, int v, String msg, Button.IPressable pressable) {
+		super(x, y, 20, 20, msg, pressable);
 		this.u = u;
 		this.v = v;
 	}
@@ -30,23 +29,25 @@ public class GuiButtonToggle extends GuiButton {
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-		if (super.mousePressed(mc, mouseX, mouseY)) {
-			value = !value;
-			return true;
-		}
-		return false;
+	public void onPress() {
+		value = !value;
+		pressed = true;
+		super.onPress();
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float delta) {
+	public void onRelease(final double mouseX, final double mouseY) {
+		pressed = false;
+	}
+
+	@Override
+	public void renderButton(int mouseX, int mouseY, float delta) {
 		if (visible) {
-			mc.getTextureManager().bindTexture(GuiEditLetteredConnection.WIDGETS_TEXTURE);
-			GlStateManager.color(1, 1, 1);
-			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+			Minecraft.getInstance().getTextureManager().bindTexture(GuiEditLetteredConnection.WIDGETS_TEXTURE);
+			GlStateManager.color3f(1, 1, 1);
 			int t;
-			if (hovered) {
-				if (Mouse.isButtonDown(0)) {
+			if (isHovered) {
+				if (pressed) {
 					t = 2;
 				} else {
 					t = 1;
@@ -58,7 +59,7 @@ public class GuiButtonToggle extends GuiButton {
 					t = 0;
 				}
 			}
-			drawTexturedModalRect(x, y, u, v + height * t, width, height);
+			blit(x, y, u, v + height * t, width, height);
 		}
 	}
 }

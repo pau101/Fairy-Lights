@@ -6,16 +6,16 @@ import com.pau101.fairylights.server.fastener.connection.collision.Intersection;
 import com.pau101.fairylights.server.fastener.connection.type.Connection;
 import com.pau101.fairylights.server.net.MessageConnection;
 import com.pau101.fairylights.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public final class MessageConnectionInteraction extends MessageConnection<Connection> {
 	private static final float RANGE = (Connection.MAX_LENGTH + 1) * (Connection.MAX_LENGTH + 1);
@@ -35,70 +35,75 @@ public final class MessageConnectionInteraction extends MessageConnection<Connec
 	public MessageConnectionInteraction(Connection connection, PlayerAction type, Intersection intersection) {
 		super(connection);
 		this.type = type;
-		hit = intersection.getResult().hitVec;
+		hit = intersection.getResult();
 		featureType = intersection.getFeatureType();
 		featureId = intersection.getFeature().getId();
 	}
 
-	@Override
-	public void serialize(PacketBuffer buf) {
-		super.serialize(buf);
-		buf.writeByte(type.ordinal());
-		buf.writeDouble(hit.x);
-		buf.writeDouble(hit.y);
-		buf.writeDouble(hit.z);
-		buf.writeVarInt(featureType.getId());
-		buf.writeVarInt(featureId);
+	public static void serialize(MessageConnectionInteraction message, PacketBuffer buf) {
+		MessageConnection.serialize(message, buf);
+		buf.writeByte(message.type.ordinal());
+		buf.writeDouble(message.hit.x);
+		buf.writeDouble(message.hit.y);
+		buf.writeDouble(message.hit.z);
+		buf.writeVarInt(message.featureType.getId());
+		buf.writeVarInt(message.featureId);
 	}
 
-	@Override
-	public void deserialize(PacketBuffer buf) throws IOException {
-		super.deserialize(buf);
-		type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
-		hit = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		featureType = FeatureType.fromId(buf.readVarInt());
-		featureId = buf.readVarInt();
+	public static MessageConnectionInteraction deserialize(PacketBuffer buf) {
+		MessageConnectionInteraction message = new MessageConnectionInteraction();
+		MessageConnection.deserialize(message, buf);
+		message.type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
+		message.hit = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+		message.featureType = FeatureType.fromId(buf.readVarInt());
+		message.featureId = buf.readVarInt();
+		return message;
 	}
 
-	@Override
-	protected boolean isInstanceOfType(Class<? extends Connection> connection) {
-		return true;
-	}
+	public static final class Handler implements BiConsumer<MessageConnectionInteraction, Supplier<NetworkEvent.Context>> {
+		@Override
+		public void accept(final MessageConnectionInteraction message, final Supplier<NetworkEvent.Context> contextSupplier) {
+			NetworkEvent.Context context = contextSupplier.get();
+			handle(message, context);
+			context.setPacketHandled(true);
+		}
 
-	@Override
-	protected World getWorld(MessageContext ctx) {
-		return ctx.getServerHandler().player.world;
-	}
-
-	@Override
-	protected void process(MessageContext ctx, Connection connection) {
-		EntityPlayer player = ctx.getServerHandler().player;
-		if (player.getDistanceSq(connection.getFastener().getPos()) < RANGE && player.getDistanceSq(hit.x, hit.y, hit.z) < REACH && connection.isModifiable(player)) {
-			if (type == PlayerAction.ATTACK) {
-				connection.disconnect(player, hit);
-			} else {
-				interact(player, connection, hit);
+		private void handle(MessageConnectionInteraction message, NetworkEvent.Context context) {
+			PlayerEntity player = context.getSender();
+			if (player == null) {
+				return;
+			}
+			Connection connection = getConnection(message, c -> true, player.world);
+			if (connection == null) {
+				return;
+			}
+			if (player.getPositionVec().squareDistanceTo(new Vec3d(connection.getFastener().getPos())) < RANGE && player.getDistanceSq(message.hit.x, message.hit.y, message.hit.z) < REACH && connection.isModifiable(player)) {
+				if (message.type == PlayerAction.ATTACK) {
+					connection.disconnect(player, message.hit);
+				} else {
+					interact(message, player, connection, message.hit);
+				}
 			}
 		}
-	}
 
-	private void interact(EntityPlayer player, Connection connection, Vec3d hit) {
-		for (EnumHand hand : EnumHand.values()) {
-			ItemStack stack = player.getHeldItem(hand);
-			ItemStack oldStack = stack.copy();
-			if (connection.interact(player, hit, featureType, featureId, stack, hand)) {
-				updateItem(player, oldStack, stack, hand);
-				break;
+		private void interact(MessageConnectionInteraction message, PlayerEntity player, Connection connection, Vec3d hit) {
+			for (Hand hand : Hand.values()) {
+				ItemStack stack = player.getHeldItem(hand);
+				ItemStack oldStack = stack.copy();
+				if (connection.interact(player, hit, message.featureType, message.featureId, stack, hand)) {
+					updateItem(player, oldStack, stack, hand);
+					break;
+				}
 			}
 		}
-	}
 
-	private void updateItem(EntityPlayer player, ItemStack oldStack, ItemStack stack, EnumHand hand) {
-		if (stack.getCount() <= 0 && !player.capabilities.isCreativeMode) {
-			ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
-			player.setHeldItem(hand, ItemStack.EMPTY);
-		} else if (stack.getCount() < oldStack.getCount() && player.capabilities.isCreativeMode) {
-			stack.setCount(oldStack.getCount());
+		private void updateItem(PlayerEntity player, ItemStack oldStack, ItemStack stack, Hand hand) {
+			if (stack.getCount() <= 0 && !player.abilities.isCreativeMode) {
+				ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
+				player.setHeldItem(hand, ItemStack.EMPTY);
+			} else if (stack.getCount() < oldStack.getCount() && player.abilities.isCreativeMode) {
+				stack.setCount(oldStack.getCount());
+			}
 		}
 	}
 }

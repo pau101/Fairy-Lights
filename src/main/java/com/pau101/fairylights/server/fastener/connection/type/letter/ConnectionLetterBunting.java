@@ -14,15 +14,16 @@ import com.pau101.fairylights.server.fastener.connection.type.Lettered;
 import com.pau101.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
 import com.pau101.fairylights.util.styledstring.StyledString;
 import com.pau101.fairylights.util.styledstring.StylingPresence;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 
 	private Letter[] prevLetters;
 
-	public ConnectionLetterBunting(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, NBTTagCompound compound) {
+	public ConnectionLetterBunting(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
 		super(world, fastener, uuid, destination, isOrigin, compound);
 	}
 
@@ -70,16 +71,16 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 	}
 
 	@Override
-	public void processClientAction(EntityPlayer player, PlayerAction action, Intersection intersection) {
+	public void processClientAction(PlayerEntity player, PlayerAction action, Intersection intersection) {
 		if (openTextGui(player, action, intersection)) {
 			super.processClientAction(player, action, intersection);
 		}
 	}
 
 	@Override
-	public void onConnect(World world, EntityPlayer user, ItemStack heldStack) {
+	public void onConnect(World world, PlayerEntity user, ItemStack heldStack) {
 		if (text.isEmpty()) {
-			FairyLights.network.sendTo(new MessageOpenEditLetteredConnectionGUI<>(this), (EntityPlayerMP) user);
+			FairyLights.network.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) user), new MessageOpenEditLetteredConnectionGUI<>(this));
 		}
 	}
 
@@ -196,21 +197,21 @@ public final class ConnectionLetterBunting extends Connection implements Lettere
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public GuiScreen createTextGUI() {
+	@OnlyIn(Dist.CLIENT)
+	public Screen createTextGUI() {
 		return new GuiEditLetteredConnection<>(this);
 	}
 
 	@Override
-	public NBTTagCompound serializeLogic() {
-		NBTTagCompound compound = super.serializeLogic();
-		compound.setTag("text", StyledString.serialize(text));
+	public CompoundNBT serializeLogic() {
+		CompoundNBT compound = super.serializeLogic();
+		compound.put("text", StyledString.serialize(text));
 		return compound;
 	}
 
 	@Override
-	public void deserializeLogic(NBTTagCompound compound) {
+	public void deserializeLogic(CompoundNBT compound) {
 		super.deserializeLogic(compound);
-		text = StyledString.deserialize(compound.getCompoundTag("text"));
+		text = StyledString.deserialize(compound.getCompound("text"));
 	}
 }

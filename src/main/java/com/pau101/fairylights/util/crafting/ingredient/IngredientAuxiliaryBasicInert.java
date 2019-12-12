@@ -1,18 +1,14 @@
 package com.pau101.fairylights.util.crafting.ingredient;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nullable;
+
 public class IngredientAuxiliaryBasicInert extends IngredientAuxiliaryBasic<Void> {
 	public IngredientAuxiliaryBasicInert(Item item, boolean isRequired, int limit) {
 		super(item, isRequired, limit);
-	}
-
-	public IngredientAuxiliaryBasicInert(Item item, int metadata, boolean isRequired, int limit) {
-		super(item, metadata, isRequired, limit);
 	}
 
 	public IngredientAuxiliaryBasicInert(Block block, boolean isRequired, int limit) {
