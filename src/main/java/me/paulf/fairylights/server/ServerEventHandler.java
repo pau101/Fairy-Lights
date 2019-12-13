@@ -84,7 +84,7 @@ public final class ServerEventHandler {
 				List<AxisAlignedBB> surfaces = ladder.getCollisionSurfaces();
 				for (AxisAlignedBB surface : surfaces) {
 					if (surface.intersects(bounds)) {
-						boxes.add(surface);	
+						boxes.add(surface);
 					}
 				}
 			}
@@ -112,11 +112,11 @@ public final class ServerEventHandler {
 	@SubscribeEvent
 	public void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
-			// FIXME
-			Fastener fastener = event.player.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
-			if (fastener.update() && !event.player.world.isRemote) {
-				ServerProxy.sendToPlayersWatchingEntity(new MessageUpdateFastenerEntity(event.player, fastener.serializeNBT()), event.player.world, event.player);
-			}
+			event.player.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
+				if (fastener.update() && !event.player.world.isRemote) {
+					ServerProxy.sendToPlayersWatchingEntity(new MessageUpdateFastenerEntity(event.player, fastener.serializeNBT()), event.player.world, event.player);
+				}
+			});
 		}
 	}
 
@@ -126,7 +126,6 @@ public final class ServerEventHandler {
 		BlockPos pos = event.getPos();
 		Block noteBlock = world.getBlockState(pos).getBlock();
 		BlockState below = world.getBlockState(pos.down());
-		// FIXME
 		if (below.getBlock() == FLBlocks.FASTENER.orElseThrow(IllegalStateException::new) && below.get(BlockFastener.FACING) == Direction.DOWN) {
 			int note = event.getVanillaNoteId();
 	        float pitch = (float) Math.pow(2, (note - 12) / 12D);

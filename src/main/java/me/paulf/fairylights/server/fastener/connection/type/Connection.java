@@ -378,9 +378,6 @@ public abstract class Connection implements NBTSerializable {
 	public void deserialize(CompoundNBT compound) {
 		isOrigin = compound.getBoolean("isOrigin");
 		destination = FastenerType.deserialize(compound.getCompound("destination"));
-		if (world != null) {
-			destination.update(world, fastener.getPos());
-		}
 		deserializeLogic(compound.getCompound("logic"));
 		slack = compound.contains("slack", NBT.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;
 		updateCatenary = true;

@@ -21,6 +21,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -89,9 +90,10 @@ public abstract class ItemConnection extends Item {
 	}
 
 	private void connect(ItemStack stack, PlayerEntity user, World world, BlockPos pos) {
-		// FIXME
-		Fastener fastener = world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
-		connect(stack, user, world, fastener);
+		TileEntity entity = world.getTileEntity(pos);
+		if (entity != null) {
+			entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> connect(stack, user, world, fastener));
+		}
 	}
 
 	private void connect(ItemStack stack, PlayerEntity user, World world, BlockPos pos, BlockState state) {
@@ -104,9 +106,10 @@ public abstract class ItemConnection extends Item {
 				(sound.getVolume() + 1) / 2,
 				sound.getPitch() * 0.8F
 			);
-			// FIXME
-			Fastener destination = world.getTileEntity(pos).getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
-			connect(stack, user, world, destination, false);
+			TileEntity entity = world.getTileEntity(pos);
+			if (entity != null) {
+				entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(destination -> connect(stack, user, world, destination, false));
+			}
 		}
 	}
 
@@ -115,25 +118,26 @@ public abstract class ItemConnection extends Item {
 	}
 
 	public void connect(ItemStack stack, PlayerEntity user, World world, Fastener<?> fastener, boolean playConnectSound) {
-		// FIXME
-		Fastener<?> attacher = user.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
-		Connection conn = attacher.getFirstConnection();
-		if (conn == null) {
-			CompoundNBT data = MoreObjects.firstNonNull(stack.getTag(), new CompoundNBT());
-			fastener.connectWith(world, attacher, getConnectionType(), data);
-		} else if (conn.getDestination().isLoaded(world)) {
-			Connection c = conn.getDestination().get(world).reconnect(attacher, fastener);
-			if (c == null) {
-				playConnectSound = false;
-			} else {
-				c.onConnect(world, user, stack);
-				stack.shrink(1);
+		user.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(attacher -> {
+			boolean playSound = playConnectSound;
+			Connection conn = attacher.getFirstConnection();
+			if (conn == null) {
+				CompoundNBT data = MoreObjects.firstNonNull(stack.getTag(), new CompoundNBT());
+				fastener.connectWith(world, attacher, getConnectionType(), data);
+			} else if (conn.getDestination().isLoaded(world)) {
+				Connection c = conn.getDestination().get(world).reconnect(attacher, fastener);
+				if (c == null) {
+					playSound = false;
+				} else {
+					c.onConnect(world, user, stack);
+					stack.shrink(1);
+				}
 			}
-		}
-		if (playConnectSound) {
-			Vec3d pos = fastener.getConnectionPoint();
-			world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
-		}
+			if (playSound) {
+				Vec3d pos = fastener.getConnectionPoint();
+				world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+			}
+		});
 	}
 
 	private void connectFence(ItemStack stack, PlayerEntity user, World world, BlockPos pos, EntityFenceFastener fastener) {
