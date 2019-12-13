@@ -5,7 +5,6 @@ import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.renderer.FastenerRenderer;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.entity.EntityFenceFastener;
-import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.model.RendererModel;
@@ -20,11 +19,6 @@ public final class RenderFenceFastener extends EntityRenderer<EntityFenceFastene
 	public RenderFenceFastener(EntityRendererManager mgr) {
 		super(mgr);
 		model = new FastenerModel();
-	}
-
-	@Override
-	public boolean shouldRender(EntityFenceFastener livingEntity, ICamera camera, double x, double y, double z) {
-		return false;
 	}
 
 	@Override
