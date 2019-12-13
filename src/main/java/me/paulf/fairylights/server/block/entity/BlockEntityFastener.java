@@ -14,6 +14,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class BlockEntityFastener extends TileEntity implements ITickableTileEntity {
 	public BlockEntityFastener() {
@@ -22,7 +23,7 @@ public final class BlockEntityFastener extends TileEntity implements ITickableTi
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		return getFastener().getBounds().grow(1);
+		return getFastener().map(fastener -> fastener.getBounds().grow(1)).orElseGet(super::getRenderBoundingBox);
 	}
 
 	public Vec3d getOffset() {
@@ -55,34 +56,34 @@ public final class BlockEntityFastener extends TileEntity implements ITickableTi
 	@Override
 	public void setWorld(World world) {
 		super.setWorld(world);
-		getFastener().setWorld(world);
+		getFastener().ifPresent(fastener -> fastener.setWorld(world));
 	}
 
 	@Override
 	public void tick() {
-		Fastener<?> fastener = getFastener();
-		if (!world.isRemote && fastener.hasNoConnections()) {
-			world.removeBlock(pos, false);
-		} else if (!world.isRemote && fastener.update()) {
-			markDirty();
-			BlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state, state, 3);
-		}
+		getFastener().ifPresent(fastener -> {
+			if (!world.isRemote && fastener.hasNoConnections()) {
+				world.removeBlock(pos, false);
+			} else if (!world.isRemote && fastener.update()) {
+				markDirty();
+				BlockState state = world.getBlockState(pos);
+				world.notifyBlockUpdate(pos, state, state, 3);
+			}
+		});
 	}
 
 	@Override
 	public void remove() {
-		getFastener().remove();
+		getFastener().ifPresent(Fastener::remove);
 		super.remove();
 	}
 
 	@Override
 	public void onChunkUnloaded() {
-		getFastener().remove();
+		getFastener().ifPresent(Fastener::remove);
 	}
 
-	private Fastener<?> getFastener() {
-		// FIXME
-		return getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
+	private LazyOptional<Fastener<?>> getFastener() {
+		return getCapability(CapabilityHandler.FASTENER_CAP);
 	}
 }
