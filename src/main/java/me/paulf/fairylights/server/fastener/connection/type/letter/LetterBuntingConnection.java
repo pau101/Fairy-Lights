@@ -134,7 +134,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 					if (pointOffset < distance + length) {
 						double t = (pointOffset - distance) / length;
 						Vec3d point = seg.pointAt(t);
-						Letter letter = new Letter(pointIdx, point, seg.getRotation(), SYMBOLS, text.charAt(pointIdx));
+						Letter letter = new Letter(pointIdx, point, seg.getRotation(), SYMBOLS, text.charAt(pointIdx), text.styleAt(pointIdx));
 						if (hasPrevLetters && pointIdx < prevLetters.length) {
 							letter.inherit(prevLetters[pointIdx]);
 						}

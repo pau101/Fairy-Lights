@@ -1,6 +1,7 @@
 package me.paulf.fairylights.server.fastener.connection.type.letter;
 
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
+import me.paulf.fairylights.util.styledstring.Style;
 import net.minecraft.util.math.Vec3d;
 
 public final class Letter extends HangingFeatureConnection.HangingFeature<Letter> {
@@ -8,14 +9,21 @@ public final class Letter extends HangingFeatureConnection.HangingFeature<Letter
 
 	private final char letter;
 
-	public Letter(int index, Vec3d point, Vec3d rotation, SymbolSet symbols, char letter) {
+	private final Style style;
+
+	public Letter(int index, Vec3d point, Vec3d rotation, SymbolSet symbols, char letter, Style style) {
 		super(index, point, rotation);
 		this.symbols = symbols;
 		this.letter = letter;
+		this.style = style;
 	}
 
 	public char getLetter() {
 		return letter;
+	}
+
+	public Style getStyle() {
+		return style;
 	}
 
 	public int getU() {

@@ -50,7 +50,7 @@ public class LetterBuntingConnectionModel extends ConnectionModel<LetterBuntingC
 			GlStateManager.rotatef((float) rotation.x * Mth.RAD_TO_DEG, 0, 1, 0);
 			GlStateManager.rotatef((float) rotation.y * Mth.RAD_TO_DEG, 1, 0, 0);
 			GlStateManager.rotatef((float) rotation.z * Mth.RAD_TO_DEG, 0, 0, 1);
-			int rgb = StyledString.getColor(letterBunting.getText().colorAt(i));
+			int rgb = StyledString.getColor(letter.getStyle().getColor());
 			GlStateManager.color3f((rgb >> 16 & 0xFF) / 255F, (rgb >> 8 & 0xFF) / 255F, (rgb & 0xFF) / 255F);
 			GlStateManager.rotatef(-90, 0, 1, 0);
 			GlStateManager.scalef(1, 1, 1.2F);
