@@ -1,14 +1,13 @@
 package me.paulf.fairylights.server.entity;
 
-import com.google.common.base.Throwables;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.item.ConnectionItem;
 import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
@@ -31,6 +30,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -118,13 +118,13 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 
 	@Override
 	public void remove() {
-		getFastener().remove();
+		getFastener().ifPresent(Fastener::remove);
 		super.remove();
 	}
 
 	@Override
 	public void onBroken(@Nullable Entity breaker) {
-		getFastener().dropItems(world, hangingPosition);
+		getFastener().ifPresent(fastener -> fastener.dropItems(world, hangingPosition));
 		if (breaker != null) {
 			world.playEvent(2001, hangingPosition, Block.getStateId(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState()));
 		}
@@ -161,7 +161,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		return getFastener().getBounds().grow(1);
+		return getFastener().map(fastener -> fastener.getBounds().grow(1)).orElseGet(super::getRenderBoundingBox);
 	}
 
 	@Override
@@ -169,14 +169,15 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 		prevPosX = posX;
 		prevPosY = posY;
 		prevPosZ = posZ;
-		Fastener<?> fastener = getFastener();
-		if (!world.isRemote && (fastener.hasNoConnections() || checkSurface())) {
-			onBroken(null);
-			remove();
-		} else if (fastener.update() && !world.isRemote) {
-			UpdateEntityFastenerMessage msg = new UpdateEntityFastenerMessage(this, fastener.serializeNBT());
-			ServerProxy.sendToPlayersWatchingEntity(msg, world, this);
-		}
+		getFastener().ifPresent(fastener -> {
+			if (!world.isRemote && (fastener.hasNoConnections() || checkSurface())) {
+				onBroken(null);
+				remove();
+			} else if (fastener.update() && !world.isRemote) {
+				UpdateEntityFastenerMessage msg = new UpdateEntityFastenerMessage(this, fastener.serializeNBT());
+				ServerProxy.sendToPlayersWatchingEntity(msg, world, this);
+			}
+		});
 	}
 
 	private boolean checkSurface() {
@@ -194,7 +195,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 			if (world.isRemote) {
 				player.swingArm(hand);
 			} else {
-				((ConnectionItem) stack.getItem()).connect(stack, player, world, getFastener());
+				getFastener().ifPresent(fastener -> ((ConnectionItem) stack.getItem()).connect(stack, player, world, fastener));
 			}
 			return true;
 		}
@@ -213,22 +214,24 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 
 	@Override
 	public void writeSpawnData(PacketBuffer buf) {
-		Fastener<?> fastener = getFastener();
-		try {
-			CompressedStreamTools.write(fastener.serializeNBT(), new ByteBufOutputStream(buf));
-		} catch (IOException e) {
-			Throwables.propagate(e);
-		}
+		getFastener().ifPresent(fastener -> {
+			try {
+				CompressedStreamTools.write(fastener.serializeNBT(), new ByteBufOutputStream(buf));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	@Override
 	public void readSpawnData(PacketBuffer buf) {
-		Fastener<?> fastener = getFastener();
-		try {
-			fastener.deserializeNBT(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(0x200000)));
-		} catch (IOException e) {
-			Throwables.propagate(e);
-		}
+		getFastener().ifPresent(fastener -> {
+			try {
+				fastener.deserializeNBT(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(0x200000)));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	@Override
@@ -236,9 +239,8 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	private Fastener<?> getFastener() {
-		// FIXME
-		return getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
+	private LazyOptional<Fastener<?>> getFastener() {
+		return getCapability(CapabilityHandler.FASTENER_CAP);
 	}
 
 	public static FenceFastenerEntity create(World world, BlockPos fence) {
