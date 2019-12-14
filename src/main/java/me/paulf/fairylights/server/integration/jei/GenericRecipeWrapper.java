@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientAuxiliary;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientRegular;
+import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -44,15 +44,15 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
 		this.recipe = recipe;
 		ImmutableList.Builder<ImmutableList<ItemStack>> allInputs = ImmutableList.builder();
 		ImmutableList.Builder<ImmutableList<ItemStack>> minimalInputStacks = ImmutableList.builder();
-		IngredientRegular[] ingredients = recipe.getGenericIngredients();
-		IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
+		RegularIngredient[] ingredients = recipe.getGenericIngredients();
+		AuxiliaryIngredient<?>[] aux = recipe.getAuxiliaryIngredients();
 		ingredientMatrix = new Ingredient<?, ?>[9];
 		int subtypeIndex = -1;
 		for (int i = 0, auxIdx = 0; i < 9; i++) {
 			int x = i % 3, y = i / 3;
 			boolean isEmpty = true;
 			if (x < recipe.getWidth() && y < recipe.getHeight()) {
-				IngredientRegular ingredient = ingredients[x + y * recipe.getWidth()];
+				RegularIngredient ingredient = ingredients[x + y * recipe.getWidth()];
 				ImmutableList<ItemStack> ingInputs = ingredient.getInputs();
 				if (ingInputs.size() > 0) {
 					if (ingredient.dictatesOutputType()) {
@@ -67,7 +67,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
 				}
 			}
 			if (isEmpty) {
-				IngredientAuxiliary<?> ingredient = null;
+				AuxiliaryIngredient<?> ingredient = null;
 				ImmutableList<ItemStack> stacks = null;
 				boolean dictator = false;
 				for (; auxIdx < aux.length;) {
@@ -142,10 +142,10 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
 	}
 
 	public Input getInputsForOutput(ItemStack output) {
-		IngredientRegular[] ingredients = recipe.getGenericIngredients();
+		RegularIngredient[] ingredients = recipe.getGenericIngredients();
 		List<List<ItemStack>> inputs = new ArrayList<>(9);
 		Ingredient<?, ?>[] ingredientMat = new Ingredient<?, ?>[9];
-		IngredientAuxiliary<?>[] aux = recipe.getAuxiliaryIngredients();
+		AuxiliaryIngredient<?>[] aux = recipe.getAuxiliaryIngredients();
 		for (int i = 0, auxIngIdx = 0, auxIdx = 0; i < 9; i++) {
 			int x = i % 3, y = i / 3;
 			ImmutableList<ImmutableList<ItemStack>> ingInputs;
@@ -160,7 +160,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
 				boolean isEmpty = true;
 				if (auxIngIdx < aux.length) {
 					ImmutableList<ImmutableList<ItemStack>> auxInputs = null;
-					IngredientAuxiliary<?> ingredientAux = null;
+					AuxiliaryIngredient<?> ingredientAux = null;
 					for (; auxIngIdx < aux.length; auxIngIdx++) {
 						ingredientAux = aux[auxIngIdx];
 						auxInputs = ingredientAux.getInput(output);

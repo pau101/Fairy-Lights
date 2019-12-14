@@ -1,19 +1,19 @@
 package me.paulf.fairylights.client;
 
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.client.renderer.block.entity.BlockEntityFastenerRenderer;
-import me.paulf.fairylights.client.renderer.entity.RenderFenceFastener;
-import me.paulf.fairylights.client.renderer.entity.RenderLadder;
+import me.paulf.fairylights.client.renderer.block.entity.FastenerBlockEntityRenderer;
+import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
+import me.paulf.fairylights.client.renderer.entity.LadderRenderer;
 import me.paulf.fairylights.server.ServerProxy;
-import me.paulf.fairylights.server.block.entity.BlockEntityFastener;
-import me.paulf.fairylights.server.entity.EntityFenceFastener;
-import me.paulf.fairylights.server.entity.EntityLadder;
+import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
+import me.paulf.fairylights.server.entity.FenceFastenerEntity;
+import me.paulf.fairylights.server.entity.LadderEntity;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.ItemLight;
+import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
-import me.paulf.fairylights.server.net.clientbound.MessageJingle;
-import me.paulf.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
-import me.paulf.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
+import me.paulf.fairylights.server.net.clientbound.JingleMessage;
+import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
+import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.ItemColors;
@@ -37,18 +37,18 @@ import java.util.function.Supplier;
 
 public final class ClientProxy extends ServerProxy {
 	@Override
-	protected BiConsumer<MessageJingle, Supplier<NetworkEvent.Context>> createJingleHandler() {
-		return new MessageJingle.Handler();
+	protected BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> createJingleHandler() {
+		return new JingleMessage.Handler();
 	}
 
 	@Override
-	protected BiConsumer<MessageUpdateFastenerEntity, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
-		return new MessageUpdateFastenerEntity.Handler();
+	protected BiConsumer<UpdateEntityFastenerMessage, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
+		return new UpdateEntityFastenerMessage.Handler();
 	}
 
 	@Override
-	protected BiConsumer<MessageOpenEditLetteredConnectionGUI, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
-		return new MessageOpenEditLetteredConnectionGUI.Handler();
+	protected BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
+		return new OpenEditLetteredConnectionScreenMessage.Handler();
 	}
 
 	@Override
@@ -59,9 +59,9 @@ public final class ClientProxy extends ServerProxy {
 
 	@Override
 	public void initRenders() {
-		ClientRegistry.bindTileEntitySpecialRenderer(BlockEntityFastener.class, new BlockEntityFastenerRenderer(ServerProxy.buildBlockView()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityFenceFastener.class, RenderFenceFastener::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityLadder.class, RenderLadder::new);
+		ClientRegistry.bindTileEntitySpecialRenderer(FastenerBlockEntity.class, new FastenerBlockEntityRenderer(ServerProxy.buildBlockView()));
+		RenderingRegistry.registerEntityRenderingHandler(FenceFastenerEntity.class, FenceFastenerRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(LadderEntity.class, LadderRenderer::new);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public final class ClientProxy extends ServerProxy {
 			if (index == 0) {
 				return 0xFFFFFFFF;
 			}
-			return ItemLight.getColorValue(ItemLight.getLightColor(stack));
+			return LightItem.getColorValue(LightItem.getLightColor(stack));
 		},
 			FLItems.FAIRY_LIGHT.orElseThrow(IllegalStateException::new),
 			FLItems.PAPER_LANTERN.orElseThrow(IllegalStateException::new),
@@ -95,7 +95,7 @@ public final class ClientProxy extends ServerProxy {
 			if (stack.hasTag()) {
 				ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
 				if (tagList.size() > 0) {
-					return ItemLight.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
+					return LightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
 				}
 			}
 			if (FairyLights.christmas.isOcurringNow()) {
@@ -110,7 +110,7 @@ public final class ClientProxy extends ServerProxy {
 			} else {
 				color = DyeColor.BLACK;
 			}
-			return ItemLight.getColorValue(color);
+			return LightItem.getColorValue(color);
 		}, FLItems.TINSEL.orElseThrow(IllegalStateException::new));
 		colors.register((stack, index) -> {
 			if (index == 0) {
@@ -119,7 +119,7 @@ public final class ClientProxy extends ServerProxy {
 			if (stack.hasTag()) {
 				ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
 				if (tagList.size() > 0) {
-					return ItemLight.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
+					return LightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
 				}
 			}
 			return 0xFFFFFFFF;
@@ -128,7 +128,7 @@ public final class ClientProxy extends ServerProxy {
 			if (index == 0) {
 				return 0xFFFFFF;
 			}
-			return ItemLight.getColorValue(ItemLight.getLightColor(stack));
+			return LightItem.getColorValue(LightItem.getLightColor(stack));
 		}, FLItems.PENNANT.orElseThrow(IllegalStateException::new));
 		colors.register((stack, index) -> {
 			if (index > 0 && stack.hasTag()) {

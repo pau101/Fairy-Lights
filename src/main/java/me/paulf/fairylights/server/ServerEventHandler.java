@@ -1,26 +1,26 @@
 package me.paulf.fairylights.server;
 
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.server.block.BlockFastener;
 import me.paulf.fairylights.server.block.FLBlocks;
-import me.paulf.fairylights.server.block.entity.BlockEntityFastener;
+import me.paulf.fairylights.server.block.FastenerBlock;
+import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.config.Configurator;
-import me.paulf.fairylights.server.entity.EntityFenceFastener;
-import me.paulf.fairylights.server.entity.EntityLadder;
+import me.paulf.fairylights.server.config.FLConfig;
+import me.paulf.fairylights.server.entity.FenceFastenerEntity;
+import me.paulf.fairylights.server.entity.LadderEntity;
 import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.FastenerBlock;
-import me.paulf.fairylights.server.fastener.FastenerFence;
-import me.paulf.fairylights.server.fastener.FastenerPlayer;
+import me.paulf.fairylights.server.fastener.BlockFastener;
+import me.paulf.fairylights.server.fastener.FenceFastener;
+import me.paulf.fairylights.server.fastener.PlayerFastener;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.item.ItemConnection;
+import me.paulf.fairylights.server.item.ConnectionItem;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
-import me.paulf.fairylights.server.net.clientbound.MessageJingle;
-import me.paulf.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
+import me.paulf.fairylights.server.net.clientbound.JingleMessage;
+import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -75,9 +75,9 @@ public final class ServerEventHandler {
 		Entity entity = event.getEntity();
 		if (entity instanceof PlayerEntity) {
 			AxisAlignedBB bounds = event.getAabb();
-			List<EntityLadder> ladders = event.getWorld().getEntitiesWithinAABB(EntityLadder.class, bounds.grow(1));
+			List<LadderEntity> ladders = event.getWorld().getEntitiesWithinAABB(LadderEntity.class, bounds.grow(1));
 			List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
-			for (EntityLadder ladder : ladders) {
+			for (LadderEntity ladder : ladders) {
 				if (entity == ladder) {
 					continue;
 				}
@@ -95,17 +95,17 @@ public final class ServerEventHandler {
 	public void onAttachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
 		Entity entity = event.getObject();
 		if (entity instanceof PlayerEntity) {
-			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerPlayer((PlayerEntity) entity));
-		} else if (entity instanceof EntityFenceFastener) {
-			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerFence((EntityFenceFastener) entity));
+			event.addCapability(CapabilityHandler.FASTENER_ID, new PlayerFastener((PlayerEntity) entity));
+		} else if (entity instanceof FenceFastenerEntity) {
+			event.addCapability(CapabilityHandler.FASTENER_ID, new FenceFastener((FenceFastenerEntity) entity));
 		}
 	}
 
 	@SubscribeEvent
 	public void onAttachBlockEntityCapability(AttachCapabilitiesEvent<TileEntity> event) {
 		TileEntity entity = event.getObject();
-		if (entity instanceof BlockEntityFastener) {
-			event.addCapability(CapabilityHandler.FASTENER_ID, new FastenerBlock((BlockEntityFastener) entity, ServerProxy.buildBlockView()));
+		if (entity instanceof FastenerBlockEntity) {
+			event.addCapability(CapabilityHandler.FASTENER_ID, new BlockFastener((FastenerBlockEntity) entity, ServerProxy.buildBlockView()));
 		}
 	}
 
@@ -114,7 +114,7 @@ public final class ServerEventHandler {
 		if (event.phase == TickEvent.Phase.END) {
 			event.player.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
 				if (fastener.update() && !event.player.world.isRemote) {
-					ServerProxy.sendToPlayersWatchingEntity(new MessageUpdateFastenerEntity(event.player, fastener.serializeNBT()), event.player.world, event.player);
+					ServerProxy.sendToPlayersWatchingEntity(new UpdateEntityFastenerMessage(event.player, fastener.serializeNBT()), event.player.world, event.player);
 				}
 			});
 		}
@@ -126,7 +126,7 @@ public final class ServerEventHandler {
 		BlockPos pos = event.getPos();
 		Block noteBlock = world.getBlockState(pos).getBlock();
 		BlockState below = world.getBlockState(pos.down());
-		if (below.getBlock() == FLBlocks.FASTENER.orElseThrow(IllegalStateException::new) && below.get(BlockFastener.FACING) == Direction.DOWN) {
+		if (below.getBlock() == FLBlocks.FASTENER.orElseThrow(IllegalStateException::new) && below.get(FastenerBlock.FACING) == Direction.DOWN) {
 			int note = event.getVanillaNoteId();
 	        float pitch = (float) Math.pow(2, (note - 12) / 12D);
 	        world.playSound(null, pos, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), SoundCategory.RECORDS, 3, pitch);
@@ -152,7 +152,7 @@ public final class ServerEventHandler {
 		PlayerEntity player = event.getPlayer();
 		if (event.getHand() == Hand.MAIN_HAND) {
 			ItemStack offhandStack = player.getHeldItemOffhand();
-			if (offhandStack.getItem() instanceof ItemConnection) {
+			if (offhandStack.getItem() instanceof ConnectionItem) {
 				if (checkHanging) {
 					event.setCanceled(true);
 					return;
@@ -175,7 +175,7 @@ public final class ServerEventHandler {
 			}
 		}
 		if (checkHanging) {
-			HangingEntity entity = EntityFenceFastener.findHanging(world, pos);
+			HangingEntity entity = FenceFastenerEntity.findHanging(world, pos);
 			if (entity != null && !(entity instanceof LeashKnotEntity)) {
 				event.setCanceled(true);
 			}
@@ -187,7 +187,7 @@ public final class ServerEventHandler {
 		if (event.phase == TickEvent.Phase.START) {
 			return;
 		}
-		if (FairyLights.christmas.isOcurringNow() && Configurator.isJingleEnabled() && rng.nextFloat() < jingleProbability) {
+		if (FairyLights.christmas.isOcurringNow() && FLConfig.isJingleEnabled() && rng.nextFloat() < jingleProbability) {
 			List<TileEntity> tileEntities = event.world.loadedTileEntityList;
 			List<Vec3d> playingSources = new ArrayList<>();
 			Map<Fastener<?>, List<Entry<UUID, Connection>>> feasibleConnections = new HashMap<>();
@@ -214,7 +214,7 @@ public final class ServerEventHandler {
 				Iterator<Entry<UUID, Connection>> connectionIterator = connections.iterator();
 				while (connectionIterator.hasNext()) {
 					Connection connection = connectionIterator.next().getValue();
-					if (isTooCloseTo(fastener, ((ConnectionHangingLights) connection).getFeatures(), playingSources)) {
+					if (isTooCloseTo(fastener, ((HangingLightsConnection) connection).getFeatures(), playingSources)) {
 						connectionIterator.remove();
 					}
 				}
@@ -229,20 +229,20 @@ public final class ServerEventHandler {
 			List<Entry<UUID, Connection>> connections = feasibleConnections.get(fastener);
 			Entry<UUID, Connection> connectionEntry = connections.get(rng.nextInt(connections.size()));
 			Connection connection = connectionEntry.getValue();
-			tryJingle(event.world, connection, (ConnectionHangingLights) connection, FairyLights.christmasJingles);
+			tryJingle(event.world, connection, (HangingLightsConnection) connection, FairyLights.christmasJingles);
 		}
 	}
 
 	private List<Vec3d> getPlayingLightSources(World world, Map<Fastener<?>, List<Entry<UUID, Connection>>> feasibleConnections, Fastener<?> fastener) {
 		List<Vec3d> points = new ArrayList<>();
-		double expandAmount = Configurator.getJingleAmplitude();
+		double expandAmount = FLConfig.getJingleAmplitude();
 		AxisAlignedBB listenerRegion = fastener.getBounds().expand(expandAmount, expandAmount, expandAmount);
 		List<PlayerEntity> nearPlayers = fastener.getWorld().getEntitiesWithinAABB(PlayerEntity.class, listenerRegion);
 		boolean arePlayersNear = nearPlayers.size() > 0;
 		for (Entry<UUID, Connection> connectionEntry : fastener.getConnections().entrySet()) {
 			Connection connection = connectionEntry.getValue();
 			if (connection.isOrigin() && connection.getDestination().isLoaded(world) && connection.getType() == ConnectionType.HANGING_LIGHTS) {
-				ConnectionHangingLights connectionLogic = (ConnectionHangingLights) connection;
+				HangingLightsConnection connectionLogic = (HangingLightsConnection) connection;
 				Light[] lightPoints = connectionLogic.getFeatures();
 				if (connectionLogic.canCurrentlyPlayAJingle()) {
 					if (arePlayersNear) {
@@ -267,7 +267,7 @@ public final class ServerEventHandler {
 	public boolean isTooCloseTo(Fastener fastener, Light[] lights, List<Vec3d> playingSources) {
 		for (Light light : lights) {
 			for (Vec3d point : playingSources) {
-				if (light.getAbsolutePoint(fastener).distanceTo(point) <= Configurator.getJingleAmplitude()) {
+				if (light.getAbsolutePoint(fastener).distanceTo(point) <= FLConfig.getJingleAmplitude()) {
 					return true;
 				}
 			}
@@ -275,13 +275,13 @@ public final class ServerEventHandler {
 		return false;
 	}
 
-	public static boolean tryJingle(World world, Connection connection, ConnectionHangingLights hangingLights, JingleLibrary library) {
+	public static boolean tryJingle(World world, Connection connection, HangingLightsConnection hangingLights, JingleLibrary library) {
 		Light[] lights = hangingLights.getFeatures();
 		Jingle jingle = library.getRandom(world.rand, lights.length);
 		if (jingle != null) {
 			int lightOffset = lights.length / 2 - jingle.getRange() / 2;
 			hangingLights.play(library, jingle, lightOffset);
-			ServerProxy.sendToPlayersWatchingChunk(new MessageJingle(connection, lightOffset, library, jingle), world, connection.getFastener().getPos());
+			ServerProxy.sendToPlayersWatchingChunk(new JingleMessage(connection, lightOffset, library, jingle), world, connection.getFastener().getPos());
 			return true;
 		}
 		return false;

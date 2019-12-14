@@ -2,16 +2,16 @@ package me.paulf.fairylights.server;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.config.Configurator;
+import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.fastener.BlockView;
 import me.paulf.fairylights.server.fastener.CreateBlockViewEvent;
 import me.paulf.fairylights.server.fastener.RegularBlockView;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
-import me.paulf.fairylights.server.net.clientbound.MessageJingle;
-import me.paulf.fairylights.server.net.clientbound.MessageOpenEditLetteredConnectionGUI;
-import me.paulf.fairylights.server.net.clientbound.MessageUpdateFastenerEntity;
-import me.paulf.fairylights.server.net.serverbound.MessageConnectionInteraction;
-import me.paulf.fairylights.server.net.serverbound.MessageEditLetteredConnection;
+import me.paulf.fairylights.server.net.clientbound.JingleMessage;
+import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
+import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
+import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
+import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
 import me.paulf.fairylights.util.CalendarEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
@@ -34,7 +34,7 @@ public class ServerProxy {
 	private int nextMessageId;
 
 	public void initConfig() {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configurator.GENERAL_SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
 	}
 
 	public void initGUI() {
@@ -69,35 +69,35 @@ public class ServerProxy {
 			.clientAcceptedVersions(version::equals)
 			.serverAcceptedVersions(version::equals)
 			.simpleChannel();
-		registerMessage(MessageJingle.class, MessageJingle::serialize, MessageJingle::deserialize, createJingleHandler());
-		registerMessage(MessageUpdateFastenerEntity.class, MessageUpdateFastenerEntity::serialize, MessageUpdateFastenerEntity::deserialize, createUpdateFastenerEntityHandler());
-		registerMessage(MessageOpenEditLetteredConnectionGUI.class, MessageOpenEditLetteredConnectionGUI::serialize, MessageOpenEditLetteredConnectionGUI::deserialize, createOpenEditLetteredConnectionGUIHandler());
-		registerMessage(MessageConnectionInteraction.class, MessageConnectionInteraction::serialize, MessageConnectionInteraction::deserialize, createConnectionInteractionHandler());
-		registerMessage(MessageEditLetteredConnection.class, MessageEditLetteredConnection::serialize, MessageEditLetteredConnection::deserialize, createEditLetteredConnectionHandler());
+		registerMessage(JingleMessage.class, JingleMessage::serialize, JingleMessage::deserialize, createJingleHandler());
+		registerMessage(UpdateEntityFastenerMessage.class, UpdateEntityFastenerMessage::serialize, UpdateEntityFastenerMessage::deserialize, createUpdateFastenerEntityHandler());
+		registerMessage(OpenEditLetteredConnectionScreenMessage.class, OpenEditLetteredConnectionScreenMessage::serialize, OpenEditLetteredConnectionScreenMessage::deserialize, createOpenEditLetteredConnectionGUIHandler());
+		registerMessage(InteractionConnectionMessage.class, InteractionConnectionMessage::serialize, InteractionConnectionMessage::deserialize, createConnectionInteractionHandler());
+		registerMessage(EditLetteredConnectionMessage.class, EditLetteredConnectionMessage::serialize, EditLetteredConnectionMessage::deserialize, createEditLetteredConnectionHandler());
 	}
 
 	private <T> BiConsumer<T, Supplier<NetworkEvent.Context>> noHandler() {
 		return (msg, ctx) -> ctx.get().setPacketHandled(true);
 	}
 
-	protected BiConsumer<MessageJingle, Supplier<NetworkEvent.Context>> createJingleHandler() {
+	protected BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> createJingleHandler() {
 		return noHandler();
 	}
 
-	protected BiConsumer<MessageUpdateFastenerEntity, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
+	protected BiConsumer<UpdateEntityFastenerMessage, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
 		return noHandler();
 	}
 
-	protected BiConsumer<MessageOpenEditLetteredConnectionGUI, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
+	protected BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
 		return noHandler();
 	}
 
-	protected BiConsumer<MessageConnectionInteraction, Supplier<NetworkEvent.Context>> createConnectionInteractionHandler() {
-		return new MessageConnectionInteraction.Handler();
+	protected BiConsumer<InteractionConnectionMessage, Supplier<NetworkEvent.Context>> createConnectionInteractionHandler() {
+		return new InteractionConnectionMessage.Handler();
 	}
 
-	protected BiConsumer<MessageEditLetteredConnection, Supplier<NetworkEvent.Context>> createEditLetteredConnectionHandler() {
-		return new MessageEditLetteredConnection.Handler();
+	protected BiConsumer<EditLetteredConnectionMessage, Supplier<NetworkEvent.Context>> createEditLetteredConnectionHandler() {
+		return new EditLetteredConnectionMessage.Handler();
 	}
 
 	public void initRenders() {}

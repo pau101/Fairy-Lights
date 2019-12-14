@@ -1,9 +1,9 @@
 package me.paulf.fairylights.server.fastener.connection.type.pennant;
 
-import me.paulf.fairylights.server.fastener.connection.type.ConnectionHangingFeature;
+import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
 import net.minecraft.util.math.Vec3d;
 
-public class Pennant extends ConnectionHangingFeature.HangingFeature<Pennant> {
+public class Pennant extends HangingFeatureConnection.HangingFeature<Pennant> {
 	private int color;
 
 	public Pennant(int index, Vec3d point, Vec3d rotation) {

@@ -1,13 +1,13 @@
 package me.paulf.fairylights.util.crafting;
 
 import com.google.common.base.Strings;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientAuxiliary;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientAuxiliaryBasicInert;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientAuxiliaryOreInert;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientRegular;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientRegularBasic;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientRegularList;
-import me.paulf.fairylights.util.crafting.ingredient.IngredientRegularOre;
+import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.InertOreAuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.ListRegularIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.OreRegularIngredient;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,9 +38,9 @@ public final class GenericRecipeBuilder {
 
 	private int height;
 
-	private final Map<Character, IngredientRegular> ingredients = new HashMap<>();
+	private final Map<Character, RegularIngredient> ingredients = new HashMap<>();
 
-	private final List<IngredientAuxiliary> auxiliaryIngredients = new ArrayList<>();
+	private final List<AuxiliaryIngredient> auxiliaryIngredients = new ArrayList<>();
 
 	public GenericRecipeBuilder(ResourceLocation name, IRecipeSerializer<GenericRecipe> serializer, Item item) {
 		this(name, serializer, new ItemStack(item));
@@ -112,25 +112,25 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, ItemStack stack) {
-		return withIngredient(key, new IngredientRegularBasic(Objects.requireNonNull(stack, "stack")));
+		return withIngredient(key, new BasicRegularIngredient(Objects.requireNonNull(stack, "stack")));
 	}
 
 	public GenericRecipeBuilder withIngredient(char key, Tag<Item> tag) {
-		return withIngredient(key, new IngredientRegularOre(tag));
+		return withIngredient(key, new OreRegularIngredient(tag));
 	}
 
-	public GenericRecipeBuilder withIngredient(char key, IngredientRegular ingredient) {
+	public GenericRecipeBuilder withIngredient(char key, RegularIngredient ingredient) {
 		ingredients.put(key, Objects.requireNonNull(ingredient, "ingredient"));
 		return this;
 	}
 
 	public GenericRecipeBuilder withAnyIngredient(char key, Object... objects) {
 		Objects.requireNonNull(objects, "objects");
-		List<IngredientRegular> ingredients = new ArrayList<>(objects.length);
+		List<RegularIngredient> ingredients = new ArrayList<>(objects.length);
 		for (int i = 0; i < objects.length; i++) {
 			ingredients.add(asIngredient(objects[i]));
 		}
-		this.ingredients.put(key, new IngredientRegularList(ingredients));
+		this.ingredients.put(key, new ListRegularIngredient(ingredients));
 		return this;
 	}
 
@@ -155,7 +155,7 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(ItemStack stack, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(new IngredientAuxiliaryBasicInert(Objects.requireNonNull(stack, "stack"), isRequired, limit));
+		return withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Objects.requireNonNull(stack, "stack"), isRequired, limit));
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(Tag<Item> tag) {
@@ -163,19 +163,19 @@ public final class GenericRecipeBuilder {
 	}
 
 	public GenericRecipeBuilder withAuxiliaryIngredient(Tag<Item> tag, boolean isRequired, int limit) {
-		return withAuxiliaryIngredient(new IngredientAuxiliaryOreInert(tag, isRequired, limit));
+		return withAuxiliaryIngredient(new InertOreAuxiliaryIngredient(tag, isRequired, limit));
 	}
 
-	public GenericRecipeBuilder withAuxiliaryIngredient(IngredientAuxiliary<?> ingredient) {
+	public GenericRecipeBuilder withAuxiliaryIngredient(AuxiliaryIngredient<?> ingredient) {
 		auxiliaryIngredients.add(Objects.requireNonNull(ingredient, "ingredient"));
 		return this;
 	}
 
 	public GenericRecipe build() {
-		IngredientRegular[] ingredients = new IngredientRegular[width * height];
+		RegularIngredient[] ingredients = new RegularIngredient[width * height];
 		for (int i = 0; i < shape.length; i++) {
 			char key = shape[i];
-			IngredientRegular ingredient = this.ingredients.get(key);
+			RegularIngredient ingredient = this.ingredients.get(key);
 			if (ingredient == null) {
 				if (key != EMPTY_SPACE) {
 					throw new IllegalArgumentException("An ingredient is missing for the shape, \"" + key + "\"");
@@ -184,27 +184,27 @@ public final class GenericRecipeBuilder {
 			}
 			ingredients[i] = ingredient;
 		}
-		IngredientAuxiliary<?>[] auxiliaryIngredients = this.auxiliaryIngredients.toArray(
-			new IngredientAuxiliary<?>[this.auxiliaryIngredients.size()]
+		AuxiliaryIngredient<?>[] auxiliaryIngredients = this.auxiliaryIngredients.toArray(
+			new AuxiliaryIngredient<?>[this.auxiliaryIngredients.size()]
 		);
 		return new GenericRecipe(name, serializer, output, ingredients, auxiliaryIngredients, width, height);
 	}
 
-	private static IngredientRegular asIngredient(Object object) {
+	private static RegularIngredient asIngredient(Object object) {
 		if (object instanceof Item) {
-			return new IngredientRegularBasic(new ItemStack((Item) object));
+			return new BasicRegularIngredient(new ItemStack((Item) object));
 		}
 		if (object instanceof Block) {
-			return new IngredientRegularBasic(new ItemStack((Block) object));
+			return new BasicRegularIngredient(new ItemStack((Block) object));
 		}
 		if (object instanceof ItemStack) {
-			return new IngredientRegularBasic((ItemStack) object);
+			return new BasicRegularIngredient((ItemStack) object);
 		}
 		if (object instanceof Tag) {
-			return new IngredientRegularOre((Tag<Item>) object);
+			return new OreRegularIngredient((Tag<Item>) object);
 		}
-		if (object instanceof IngredientRegular) {
-			return (IngredientRegular) object;
+		if (object instanceof RegularIngredient) {
+			return (RegularIngredient) object;
 		}
 		throw new IllegalArgumentException("Unknown ingredient object: " + object);
 	}

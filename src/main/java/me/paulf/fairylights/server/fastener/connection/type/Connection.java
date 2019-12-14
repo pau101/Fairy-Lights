@@ -14,8 +14,8 @@ import me.paulf.fairylights.server.fastener.connection.collision.Collidable;
 import me.paulf.fairylights.server.fastener.connection.collision.ConnectionCollision;
 import me.paulf.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
-import me.paulf.fairylights.server.item.ItemConnection;
-import me.paulf.fairylights.server.net.serverbound.MessageConnectionInteraction;
+import me.paulf.fairylights.server.item.ConnectionItem;
+import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.NBTSerializable;
@@ -200,7 +200,7 @@ public abstract class Connection implements NBTSerializable {
 	}
 
 	public void processClientAction(PlayerEntity player, PlayerAction action, Intersection intersection) {
-		FairyLights.network.sendToServer(new MessageConnectionInteraction(this, action, intersection));
+		FairyLights.network.sendToServer(new InteractionConnectionMessage(this, action, intersection));
 	}
 
 	public void disconnect(PlayerEntity player, Vec3d hit) {
@@ -225,7 +225,7 @@ public abstract class Connection implements NBTSerializable {
 
 	public boolean interact(PlayerEntity player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, Hand hand) {
 		Item item = heldStack.getItem();
-		if (item instanceof ItemConnection) {
+		if (item instanceof ConnectionItem) {
 			if (destination.isLoaded(world)) {
 				replace(player, hit, heldStack);
 				return true;
@@ -250,7 +250,7 @@ public abstract class Connection implements NBTSerializable {
 			player.inventory.addItemStackToInventory(getItemStack());
 		}
 		CompoundNBT data = MoreObjects.firstNonNull(heldStack.getTag(), new CompoundNBT());
-		ConnectionType type = ((ItemConnection) heldStack.getItem()).getConnectionType();
+		ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
 		fastener.connectWith(world, dest, type, data).onConnect(player.world, player, heldStack);
 		heldStack.shrink(1);
 		world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);

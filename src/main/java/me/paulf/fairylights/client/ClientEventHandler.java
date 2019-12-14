@@ -3,9 +3,9 @@ package me.paulf.fairylights.client;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
-import me.paulf.fairylights.server.block.entity.BlockEntityFastener;
+import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.entity.EntityFenceFastener;
+import me.paulf.fairylights.server.entity.FenceFastenerEntity;
 import me.paulf.fairylights.server.fastener.CollectFastenersEvent;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
@@ -15,7 +15,7 @@ import me.paulf.fairylights.server.fastener.connection.Segment;
 import me.paulf.fairylights.server.fastener.connection.collision.ConnectionCollision;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.Minecraft;
@@ -86,8 +86,8 @@ public final class ClientEventHandler {
 		final World world = Minecraft.getInstance().world;
 		if (event.phase != TickEvent.Phase.START && world != null) {
 			getBlockEntities(world).stream()
-				.filter(BlockEntityFastener.class::isInstance)
-				.map(BlockEntityFastener.class::cast)
+				.filter(FastenerBlockEntity.class::isInstance)
+				.map(FastenerBlockEntity.class::cast)
 				.flatMap(f -> f.getCapability(CapabilityHandler.FASTENER_CAP).map(Stream::of).orElse(Stream.empty()))
 				.forEach(Fastener::update);
 		}
@@ -108,10 +108,10 @@ public final class ClientEventHandler {
 			return;
 		}
 		Connection conn = hit.result.connection;
-		if (!(conn instanceof ConnectionHangingLights)) {
+		if (!(conn instanceof HangingLightsConnection)) {
 			return;
 		}
-		Jingle jingle = ((ConnectionHangingLights) conn).getPlayingJingle();
+		Jingle jingle = ((HangingLightsConnection) conn).getPlayingJingle();
 		if (jingle != null) {
 			List<String> lines = event.getRight();
 			if (lines.size() > 0) {
@@ -171,7 +171,7 @@ public final class ClientEventHandler {
 	private static Set<Fastener<?>> collectFasteners(final World world, final AxisAlignedBB bounds) {
 		final Set<Fastener<?>> fasteners = Sets.newLinkedHashSet();
 		final CollectFastenersEvent event = new CollectFastenersEvent(world, bounds, fasteners);
-		world.getEntitiesWithinAABB(EntityFenceFastener.class, bounds)
+		world.getEntitiesWithinAABB(FenceFastenerEntity.class, bounds)
 			.forEach(event::accept);
         final int minX = MathHelper.floor(bounds.minX / 16.0D);
 		final int maxX = MathHelper.ceil(bounds.maxX / 16.0D);
@@ -231,7 +231,7 @@ public final class ClientEventHandler {
 	@SubscribeEvent
 	public void drawBlockHighlight(DrawBlockHighlightEvent event) {
 		RayTraceResult over = event.getTarget();
-		boolean isFence = over instanceof EntityRayTraceResult && ((EntityRayTraceResult) over).getEntity() instanceof EntityFenceFastener;
+		boolean isFence = over instanceof EntityRayTraceResult && ((EntityRayTraceResult) over).getEntity() instanceof FenceFastenerEntity;
 		boolean isHitConnection = over instanceof EntityRayTraceResult && ((EntityRayTraceResult) over).getEntity() == hit;
 		if (isFence || isHitConnection) {
 			PlayerEntity player = Minecraft.getInstance().player;
@@ -242,7 +242,7 @@ public final class ClientEventHandler {
 			double dz = pos.z;
 			setupHighlightGL();
 			if (isFence) {
-				drawFenceFastenerHighlight(player, (EntityFenceFastener) ((EntityRayTraceResult) over).getEntity(), delta, dx, dy, dz);
+				drawFenceFastenerHighlight(player, (FenceFastenerEntity) ((EntityRayTraceResult) over).getEntity(), delta, dx, dy, dz);
 			} else if (hit != null && hit.result != null) {
 				if (hit.result.intersection.getFeatureType() == Connection.CORD_FEATURE) {
 					drawConnectionHighlight(hit.result.connection, delta, dx, dy, dz);
@@ -255,7 +255,7 @@ public final class ClientEventHandler {
 		}
 	}
 
-	private void drawFenceFastenerHighlight(PlayerEntity player, EntityFenceFastener fence, float delta, double dx, double dy, double dz) {
+	private void drawFenceFastenerHighlight(PlayerEntity player, FenceFastenerEntity fence, float delta, double dx, double dy, double dz) {
 		// Check if the server will allow interaction
 		if (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9) {
 			AxisAlignedBB selection = fence.getBoundingBox().offset(-dx, -dy, -dz).grow(0.002);

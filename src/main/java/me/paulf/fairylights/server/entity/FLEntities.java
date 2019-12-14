@@ -12,22 +12,22 @@ public final class FLEntities {
 
 	public static final DeferredRegister<EntityType<?>> REG = new DeferredRegister<>(ForgeRegistries.ENTITIES, FairyLights.ID);
 
-	public static final RegistryObject<EntityType<EntityFenceFastener>> FASTENER = REG.register("fastener", () ->
-		EntityType.Builder.<EntityFenceFastener>create(EntityFenceFastener::new, EntityClassification.MISC)
+	public static final RegistryObject<EntityType<FenceFastenerEntity>> FASTENER = REG.register("fastener", () ->
+		EntityType.Builder.<FenceFastenerEntity>create(FenceFastenerEntity::new, EntityClassification.MISC)
 			.size(1.15F, 2.8F)
 			.setTrackingRange(10)
 			.setUpdateInterval(Integer.MAX_VALUE)
 			.setShouldReceiveVelocityUpdates(false)
-			.setCustomClientFactory((message, world) -> new EntityFenceFastener(world))
+			.setCustomClientFactory((message, world) -> new FenceFastenerEntity(world))
 			.build(FairyLights.ID + ":fastener")
 	);
 
-	public static final RegistryObject<EntityType<EntityLadder>> LADDER = REG.register("ladder", () ->
-		EntityType.Builder.<EntityLadder>create(EntityLadder::new, EntityClassification.MISC)
+	public static final RegistryObject<EntityType<LadderEntity>> LADDER = REG.register("ladder", () ->
+		EntityType.Builder.<LadderEntity>create(LadderEntity::new, EntityClassification.MISC)
 			.size(1.15F, 2.8F)
 			.setTrackingRange(10)
 			.setUpdateInterval(3)
-			.setCustomClientFactory((message, world) -> new EntityLadder(world))
+			.setCustomClientFactory((message, world) -> new LadderEntity(world))
 			.build(FairyLights.ID + ":ladder")
 	);
 }

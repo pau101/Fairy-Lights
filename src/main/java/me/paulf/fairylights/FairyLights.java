@@ -4,10 +4,10 @@ import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
-import me.paulf.fairylights.server.creativetabs.CreativeTabsFairyLights;
+import me.paulf.fairylights.server.creativetabs.FairyLightsItemGroup;
 import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.crafting.Recipes;
+import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CalendarEvent;
@@ -28,7 +28,7 @@ public final class FairyLights {
 
 	public static SimpleChannel network;
 
-	public static ItemGroup fairyLightsTab = new CreativeTabsFairyLights();
+	public static ItemGroup fairyLightsTab = new FairyLightsItemGroup();
 
 	public static CalendarEvent christmas;
 
@@ -44,7 +44,7 @@ public final class FairyLights {
 		FLEntities.REG.register(bus);
 		FLItems.REG.register(bus);
 		FLBlockEntities.REG.register(bus);
-		Recipes.REG.register(bus);
+		FLCraftingRecipes.REG.register(bus);
 		bus.<FMLCommonSetupEvent>addListener(this::init);
 		bus.<ModelRegistryEvent>addListener(this::init);
 	}

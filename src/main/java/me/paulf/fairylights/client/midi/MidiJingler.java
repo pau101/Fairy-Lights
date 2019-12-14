@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.midi;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.Minecraft;
@@ -10,13 +10,13 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 
 public final class MidiJingler implements Receiver {
-	private ConnectionHangingLights connection;
+	private HangingLightsConnection connection;
 
-	public MidiJingler(ConnectionHangingLights connection) {
+	public MidiJingler(HangingLightsConnection connection) {
 		this.connection = connection;
 	}
 
-	public ConnectionHangingLights getConnection() {
+	public HangingLightsConnection getConnection() {
 		return connection;
 	}
 

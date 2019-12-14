@@ -1,11 +1,11 @@
 package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 
-import me.paulf.fairylights.server.config.Configurator;
+import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.Mth;
-import me.paulf.fairylights.server.fastener.connection.type.ConnectionHangingFeature;
+import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -13,7 +13,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public final class Light extends ConnectionHangingFeature.HangingFeature<Light> {
+public final class Light extends HangingFeatureConnection.HangingFeature<Light> {
 	private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
 
 	private static final int NORMAL_LIGHT = -1;
@@ -129,7 +129,7 @@ public final class Light extends ConnectionHangingFeature.HangingFeature<Light> 
 				world.addParticle(particle, x + vx, y + vy, z + vz, particle == ParticleTypes.NOTE ? note / 24D : 0, 0, 0);
 			}
 			if (lastJingledTick != tick) {
-				world.playSound(x, y, z, sound, SoundCategory.BLOCKS, Configurator.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
+				world.playSound(x, y, z, sound, SoundCategory.BLOCKS, FLConfig.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
 				startSwaying(world.rand.nextBoolean());
 				lastJingledTick = tick;
 			}
@@ -148,7 +148,7 @@ public final class Light extends ConnectionHangingFeature.HangingFeature<Light> 
 		swaying = false;
 	}
 
-	public void tick(ConnectionHangingLights lights, boolean twinkle, boolean isOn) {
+	public void tick(HangingLightsConnection lights, boolean twinkle, boolean isOn) {
 		prevRotation = rotation;
 		prevTwinkleTime = twinkleTime;
 		if (isOn) {

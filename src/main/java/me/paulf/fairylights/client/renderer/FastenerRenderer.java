@@ -3,12 +3,12 @@ package me.paulf.fairylights.client.renderer;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.client.model.connection.ModelConnection;
-import me.paulf.fairylights.client.model.connection.ModelConnectionGarland;
-import me.paulf.fairylights.client.model.connection.ModelConnectionHangingLights;
-import me.paulf.fairylights.client.model.connection.ModelConnectionLetterBunting;
-import me.paulf.fairylights.client.model.connection.ModelConnectionPennantBunting;
-import me.paulf.fairylights.client.model.connection.ModelConnectionTinsel;
+import me.paulf.fairylights.client.model.connection.ConnectionModel;
+import me.paulf.fairylights.client.model.connection.GarlandConnectionModel;
+import me.paulf.fairylights.client.model.connection.HangingLightsConnectionModel;
+import me.paulf.fairylights.client.model.connection.LetterBuntingConnectionModel;
+import me.paulf.fairylights.client.model.connection.PennantBuntingConnectionModel;
+import me.paulf.fairylights.client.model.connection.TinselConnectionModel;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
@@ -41,12 +41,12 @@ public final class FastenerRenderer {
 
 	public static final int TEXTURE_HEIGHT = 128;
 
-	private static final ImmutableMap<ConnectionType, ModelConnection> MODELS = new ImmutableMap.Builder<ConnectionType, ModelConnection>()
-		.put(ConnectionType.HANGING_LIGHTS, new ModelConnectionHangingLights())
-		.put(ConnectionType.GARLAND, new ModelConnectionGarland())
-		.put(ConnectionType.TINSEL, new ModelConnectionTinsel())
-		.put(ConnectionType.PENNANT_BUNTING, new ModelConnectionPennantBunting())
-		.put(ConnectionType.LETTER_BUNTING, new ModelConnectionLetterBunting())
+	private static final ImmutableMap<ConnectionType, ConnectionModel> MODELS = new ImmutableMap.Builder<ConnectionType, ConnectionModel>()
+		.put(ConnectionType.HANGING_LIGHTS, new HangingLightsConnectionModel())
+		.put(ConnectionType.GARLAND, new GarlandConnectionModel())
+		.put(ConnectionType.TINSEL, new TinselConnectionModel())
+		.put(ConnectionType.PENNANT_BUNTING, new PennantBuntingConnectionModel())
+		.put(ConnectionType.LETTER_BUNTING, new LetterBuntingConnectionModel())
 		.build();
 
 	public static void render(Fastener<?> fastener, float delta) {
@@ -65,9 +65,9 @@ public final class FastenerRenderer {
 		class TexturedRender {
 			Connection connection;
 
-			ModelConnection renderer;
+			ConnectionModel renderer;
 
-			TexturedRender(Connection connection, ModelConnection renderer) {
+			TexturedRender(Connection connection, ConnectionModel renderer) {
 				this.connection = connection;
 				this.renderer = renderer;
 			}
@@ -75,7 +75,7 @@ public final class FastenerRenderer {
 		List<TexturedRender> texturedRenders = new ArrayList<>();
 		for (Connection connection : connections) {
 			if (connection.isOrigin()) {
-				ModelConnection renderer = MODELS.get(connection.getType());
+				ConnectionModel renderer = MODELS.get(connection.getType());
 				renderer.render(fastener, connection, world, skylight, moonlight, delta);
 				if (renderer.hasTexturedRender()) {
 					texturedRenders.add(new TexturedRender(connection, renderer));

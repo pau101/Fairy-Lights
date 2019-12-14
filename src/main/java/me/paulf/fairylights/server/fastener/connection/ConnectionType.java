@@ -2,13 +2,13 @@ package me.paulf.fairylights.server.fastener.connection;
 
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.garland.ConnectionGarlandTinsel;
-import me.paulf.fairylights.server.fastener.connection.type.garland.ConnectionGarlandVine;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.ConnectionHangingLights;
-import me.paulf.fairylights.server.fastener.connection.type.letter.ConnectionLetterBunting;
-import me.paulf.fairylights.server.fastener.connection.type.pennant.ConnectionPennantBunting;
+import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandTinselConnection;
+import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandVineConnection;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import me.paulf.fairylights.server.fastener.connection.type.letter.LetterBuntingConnection;
+import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.ItemConnection;
+import me.paulf.fairylights.server.item.ConnectionItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -19,106 +19,106 @@ public enum ConnectionType {
 	HANGING_LIGHTS {
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-			return new ConnectionHangingLights(world, fastener, uuid, destination, isOrigin, compound);
+			return new HangingLightsConnection(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid) {
-			return new ConnectionHangingLights(world, fastener, uuid);
+			return new HangingLightsConnection(world, fastener, uuid);
 		}
 
 		@Override
-		public ItemConnection getItem() {
+		public ConnectionItem getItem() {
 			return FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
 		public boolean isConnectionThis(Connection connection) {
-			return connection instanceof ConnectionHangingLights;
+			return connection instanceof HangingLightsConnection;
 		}
 	},
 	GARLAND {
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-			return new ConnectionGarlandVine(world, fastener, uuid, destination, isOrigin, compound);
+			return new GarlandVineConnection(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid) {
-			return new ConnectionGarlandVine(world, fastener, uuid);
+			return new GarlandVineConnection(world, fastener, uuid);
 		}
 
 		@Override
-		public ItemConnection getItem() {
+		public ConnectionItem getItem() {
 			return FLItems.GARLAND.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
 		public boolean isConnectionThis(Connection connection) {
-			return connection instanceof ConnectionGarlandVine;
+			return connection instanceof GarlandVineConnection;
 		}
 	},
 	TINSEL {
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-			return new ConnectionGarlandTinsel(world, fastener, uuid, destination, isOrigin, compound);
+			return new GarlandTinselConnection(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid) {
-			return new ConnectionGarlandTinsel(world, fastener, uuid);
+			return new GarlandTinselConnection(world, fastener, uuid);
 		}
 
 		@Override
-		public ItemConnection getItem() {
+		public ConnectionItem getItem() {
 			return FLItems.TINSEL.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
 		public boolean isConnectionThis(Connection connection) {
-			return connection instanceof ConnectionGarlandTinsel;
+			return connection instanceof GarlandTinselConnection;
 		}
 	},
 	PENNANT_BUNTING {
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-			return new ConnectionPennantBunting(world, fastener, uuid, destination, isOrigin, compound);
+			return new PennantBuntingConnection(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid) {
-			return new ConnectionPennantBunting(world, fastener, uuid);
+			return new PennantBuntingConnection(world, fastener, uuid);
 		}
 
 		@Override
-		public ItemConnection getItem() {
+		public ConnectionItem getItem() {
 			return FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
 		public boolean isConnectionThis(Connection connection) {
-			return connection instanceof ConnectionPennantBunting;
+			return connection instanceof PennantBuntingConnection;
 		}
 	},
 	LETTER_BUNTING {
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-			return new ConnectionLetterBunting(world, fastener, uuid, destination, isOrigin, compound);
+			return new LetterBuntingConnection(world, fastener, uuid, destination, isOrigin, compound);
 		}
 
 		@Override
 		public Connection createConnection(World world, Fastener<?> fastener, UUID uuid) {
-			return new ConnectionLetterBunting(world, fastener, uuid);
+			return new LetterBuntingConnection(world, fastener, uuid);
 		}
 
 		@Override
-		public ItemConnection getItem() {
+		public ConnectionItem getItem() {
 			return FLItems.LETTER_BUNTING.orElseThrow(IllegalStateException::new);
 		}
 
 		@Override
 		public boolean isConnectionThis(Connection connection) {
-			return connection instanceof ConnectionLetterBunting;
+			return connection instanceof LetterBuntingConnection;
 		}
 	};
 
@@ -126,7 +126,7 @@ public enum ConnectionType {
 
 	public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid);
 
-	public abstract ItemConnection getItem();
+	public abstract ConnectionItem getItem();
 
 	public abstract boolean isConnectionThis(Connection connection);
 
