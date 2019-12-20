@@ -1,22 +1,19 @@
 package me.paulf.fairylights.server.jingle;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.io.Closeables;
 import me.paulf.fairylights.FairyLights;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.resources.IResource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.DefaultedRegistry;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -27,7 +24,7 @@ public class JingleLibrary {
 
 	private static final JingleLibrary UNKNOWN = register(new JingleLibrary(UNKNOWN_ID) {
 		@Override
-		public void load() {}
+		public void load(MinecraftServer server) {}
 	});
 
 	private static final int MAX_RANGE = 25;
@@ -84,15 +81,11 @@ public class JingleLibrary {
 		return null;
 	}
 
-	public void load() { 
-		InputStream in = null;
-		try {
-			in = MinecraftServer.class.getResourceAsStream("/assets/" + FairyLights.ID + "/jingles/" + name + ".dat");
-			deserialize(CompressedStreamTools.readCompressed(in));
+	public void load(MinecraftServer server) {
+		try (IResource resource = server.getResourceManager().getResource(new ResourceLocation(FairyLights.ID, "/jingles/" + name + ".dat"))) {
+			deserialize(CompressedStreamTools.readCompressed(resource.getInputStream()));
 		} catch (IOException e) {
-			Throwables.propagate(e);
-		} finally {
-			Closeables.closeQuietly(in);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -122,10 +115,9 @@ public class JingleLibrary {
 		return REGISTRY.getByValue(id);
 	}
 
-	public static void loadAll() {
-		Iterator<JingleLibrary> iter = REGISTRY.iterator();
-		while (iter.hasNext()) {
-			iter.next().load();
+	public static void loadAll(MinecraftServer server) {
+		for (JingleLibrary library : REGISTRY) {
+			library.load(server);
 		}
 	}
 }

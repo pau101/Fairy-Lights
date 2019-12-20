@@ -1,10 +1,10 @@
 package me.paulf.fairylights.util;
 
+import com.google.common.base.Preconditions;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Objects;
-
-import com.google.common.base.Preconditions;
 
 public final class CalendarEvent {
 	private final Month month;
@@ -22,7 +22,7 @@ public final class CalendarEvent {
 		this.dayEnd = dayEnd;
 	}
 
-	public boolean isOcurringNow() {
+	public boolean isOccurringNow() {
 		LocalDate now = LocalDate.now();
 		if (now.getMonth() == month) {
 			int day = now.getDayOfMonth();

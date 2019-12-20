@@ -15,12 +15,15 @@ import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage
 import me.paulf.fairylights.util.CalendarEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -53,8 +56,11 @@ public class ServerProxy {
 		loadJingleLibraries();
 	}
 
-	protected void loadJingleLibraries() {
-		JingleLibrary.loadAll();
+	private void loadJingleLibraries() {
+		MinecraftForge.EVENT_BUS.<FMLServerAboutToStartEvent>addListener(e -> {
+			MinecraftServer server = e.getServer();
+			server.getResourceManager().addReloadListener((IResourceManagerReloadListener) mgr -> JingleLibrary.loadAll(server));
+		});
 	}
 
 	public void initHandlers() {

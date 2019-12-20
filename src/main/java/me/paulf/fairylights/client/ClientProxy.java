@@ -10,7 +10,6 @@ import me.paulf.fairylights.server.entity.FenceFastenerEntity;
 import me.paulf.fairylights.server.entity.LadderEntity;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.LightItem;
-import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.net.clientbound.JingleMessage;
 import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
 import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
@@ -20,7 +19,6 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.ITickableTextureObject;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -29,8 +27,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
-import net.minecraftforge.resource.VanillaResourceType;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -98,7 +94,7 @@ public final class ClientProxy extends ServerProxy {
 					return LightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
 				}
 			}
-			if (FairyLights.christmas.isOcurringNow()) {
+			if (FairyLights.christmas.isOccurringNow()) {
 				return (index + System.currentTimeMillis() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
 			}
 			return 0xFFD584;
@@ -166,15 +162,6 @@ public final class ClientProxy extends ServerProxy {
 			@Override
 			public int getGlTextureId() {
 				return 0;
-			}
-		});
-	}
-
-	@Override
-	protected void loadJingleLibraries() {
-		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener((ISelectiveResourceReloadListener) (resourceManager, resourcePredicate) -> {
-			if (resourcePredicate.test(VanillaResourceType.SOUNDS)) {
-				JingleLibrary.loadAll();
 			}
 		});
 	}

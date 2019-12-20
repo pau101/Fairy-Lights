@@ -187,7 +187,7 @@ public final class ServerEventHandler {
 		if (event.phase == TickEvent.Phase.START) {
 			return;
 		}
-		if (FairyLights.christmas.isOcurringNow() && FLConfig.isJingleEnabled() && rng.nextFloat() < jingleProbability) {
+		if (FairyLights.christmas.isOccurringNow() && FLConfig.isJingleEnabled() && rng.nextFloat() < jingleProbability) {
 			List<TileEntity> tileEntities = event.world.loadedTileEntityList;
 			List<Vec3d> playingSources = new ArrayList<>();
 			Map<Fastener<?>, List<Entry<UUID, Connection>>> feasibleConnections = new HashMap<>();
