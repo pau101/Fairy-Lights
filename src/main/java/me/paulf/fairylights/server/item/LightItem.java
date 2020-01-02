@@ -1,16 +1,17 @@
 package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.util.Utils;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 
-public final class LightItem extends Item {
-	public LightItem(Properties properties) {
-		super(properties);
+public final class LightItem extends BlockItem {
+	public LightItem(Block block, Properties properties) {
+		super(block, properties);
 	}
 
 	@Override

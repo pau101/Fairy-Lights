@@ -29,7 +29,7 @@ public final class PaperLanternModel extends LightModel {
 	}
 
 	@Override
-	public boolean hasRandomRotatation() {
+	public boolean hasRandomRotation() {
 		return true;
 	}
 }

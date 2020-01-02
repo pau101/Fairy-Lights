@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelBox;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class AdvancedRendererModel extends RendererModel {
@@ -53,9 +51,6 @@ public final class AdvancedRendererModel extends RendererModel {
 
 	public boolean isMeteorLightGlow;
 
-	@Nullable
-	public List<AdvancedRendererModel> childModels;
-
 	public float glowExpandAmount = 0.7F;
 
 	public AdvancedRendererModel(Model modelBase) {
@@ -74,13 +69,6 @@ public final class AdvancedRendererModel extends RendererModel {
 		scaleX = scaleY = scaleZ = 1;
 		rotationOrder = RotationOrder.ZYX;
 		secondaryRotationOrder = RotationOrder.ZYX;
-	}
-
-	public void addChild(AdvancedRendererModel modelRenderer) {
-		if (childModels == null) {
-			childModels = new ArrayList<>();
-		}
-		childModels.add(modelRenderer);
 	}
 
 	@Override
@@ -174,8 +162,10 @@ public final class AdvancedRendererModel extends RendererModel {
 
 		if (childModels != null) {
 			for (int i = 0; i < childModels.size(); i++) {
-				AdvancedRendererModel modelRenderer = childModels.get(i);
-				modelRenderer.isGlowing = isGlowing;
+				RendererModel modelRenderer = childModels.get(i);
+				if (modelRenderer instanceof AdvancedRendererModel) {
+					((AdvancedRendererModel) modelRenderer).isGlowing = isGlowing;
+				}
 				modelRenderer.render(scale);
 			}
 		}

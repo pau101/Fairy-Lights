@@ -5,9 +5,14 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import me.paulf.fairylights.client.model.AdvancedRendererModel;
 import me.paulf.fairylights.client.model.RotationOrder;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.util.AABBBuilder;
 import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -32,7 +37,7 @@ public abstract class LightModel extends Model {
 		amutachromicLitParts.setRotationOrder(RotationOrder.YXZ);
 	}
 
-	public boolean hasRandomRotatation() {
+	public boolean hasRandomRotation() {
 		return false;
 	}
 
@@ -88,13 +93,64 @@ public abstract class LightModel extends Model {
 		amutachromicLitParts.scaleZ = z;
 	}
 
-	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float brightness, int index, float delta) {
-		if (hasRandomRotatation()) {
+	public AxisAlignedBB getBounds() {
+		final MatrixStack matrix = new MatrixStack();
+		final AABBBuilder builder = new AABBBuilder();
+		buildBounds(matrix, amutachromicParts, 0.0625F, builder);
+		buildBounds(matrix, colorableParts, 0.0625F, builder);
+		return builder.build();
+	}
+
+	private void buildBounds(final MatrixStack matrix, final RendererModel bone, final float scale, final AABBBuilder builder) {
+		matrix.push();
+		matrix.translate(bone.rotationPointX * scale, bone.rotationPointY * scale, bone.rotationPointZ * scale);
+		if (bone.rotateAngleZ != 0.0F) {
+			matrix.rotate(bone.rotateAngleZ, 0.0F, 0.0F, 1.0F);
+		}
+		if (bone.rotateAngleY != 0.0F) {
+			matrix.rotate(bone.rotateAngleY, 0.0F, 1.0F, 0.0F);
+		}
+		if (bone.rotateAngleX != 0.0F) {
+			matrix.rotate(bone.rotateAngleX, 1.0F, 0.0F, 0.0F);
+		}
+		for (final ModelBox box : bone.cubeList) {
+			final float x1 = box.posX1 * scale;
+			final float y1 = box.posY1 * scale;
+			final float z1 = box.posZ1 * scale;
+			final float x2 = box.posX2 * scale;
+			final float y2 = box.posY2 * scale;
+			final float z2 = box.posZ2 * scale;
+			for (Vec3d v : new Vec3d[] {
+				new Vec3d(x1, y1, z1),
+				new Vec3d(x2, y1, z1),
+				new Vec3d(x1, y1, z2),
+				new Vec3d(x2, y1, z2),
+				new Vec3d(x1, y2, z1),
+				new Vec3d(x2, y2, z1),
+				new Vec3d(x1, y2, z2),
+				new Vec3d(x2, y2, z2)
+			}) {
+				builder.include(matrix.transform(v));
+			}
+		}
+		if (bone.childModels != null) {
+			for (final RendererModel child : bone.childModels) {
+				buildBounds(matrix, child, scale, builder);
+			}
+		}
+		matrix.pop();
+	}
+
+	public void prepare(int index) {
+		if (hasRandomRotation()) {
 			float randomOffset = Mth.mod(Mth.hash(index) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4;
 			colorableParts.secondaryRotateAngleY = randomOffset;
 			amutachromicParts.secondaryRotateAngleY = randomOffset;
 			amutachromicLitParts.secondaryRotateAngleY = randomOffset;
 		}
+	}
+
+	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float brightness, int index, float delta) {
 		float b = Math.max(Math.max(brightness, world.getSunBrightness(1) * 0.95F + 0.05F) * 240, sunlight);
 		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, b, moonlight);
 		GlStateManager.enableLighting();

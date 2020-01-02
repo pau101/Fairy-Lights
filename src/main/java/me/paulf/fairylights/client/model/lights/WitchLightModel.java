@@ -1,6 +1,7 @@
 package me.paulf.fairylights.client.model.lights;
 
 import me.paulf.fairylights.client.model.AdvancedRendererModel;
+import me.paulf.fairylights.util.Mth;
 
 public final class WitchLightModel extends LightModel {
 	public WitchLightModel() {
@@ -14,9 +15,9 @@ public final class WitchLightModel extends LightModel {
 		beltPoke.setRotationPoint(0.2F, 0.5F, -0.5F);
 		beltPoke.addBox(0, 0, 0, 1, 1, 1, 0);
 		AdvancedRendererModel buckle = new AdvancedRendererModel(this, 0, 27);
-		buckle.setRotationPoint(1.9F, -0.6F, 0);
+		buckle.setRotationPoint(0, -0.6F, -2.9F);
 		buckle.addBox(0, 0, -1, 1, 2, 2, 0);
-		buckle.setRotationAngles(0, 0, 0.2617993877991494F);
+		buckle.setRotationAngles(0, -Mth.HALF_PI, 0);
 		AdvancedRendererModel belt = new AdvancedRendererModel(this, 62, 0);
 		belt.setRotationPoint(0, -4.5F, 0);
 		belt.addBox(-2.5F, 0, -2.5F, 5, 1, 5, 0);
@@ -36,7 +37,7 @@ public final class WitchLightModel extends LightModel {
 	}
 
 	@Override
-	public boolean hasRandomRotatation() {
+	public boolean hasRandomRotation() {
 		return true;
 	}
 }

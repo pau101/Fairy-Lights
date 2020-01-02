@@ -3,7 +3,6 @@ package me.paulf.fairylights.client.model.lights;
 import me.paulf.fairylights.client.model.AdvancedRendererModel;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.util.Mth;
-
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -85,22 +84,32 @@ public final class IcicleLightsModel extends LightModel {
 	}
 
 	@Override
-	public boolean hasRandomRotatation() {
+	public boolean hasRandomRotation() {
 		return true;
 	}
 
 	@Override
-	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float brightness, int index, float partialRenderTicks) {
+	public void prepare(final int index) {
+		super.prepare(index);
 		int which = Mth.mod(Mth.hash(index), 4);
 		if (which == 0) {
 			which = index % 3;
 		}
+		set(which);
+	}
+
+	private void set(int which) {
 		wireMiddle.isHidden = which == 0;
 		wireBottom.isHidden = which == 1;
 		wireEnd.isHidden = which == 2;
 		light2.isHidden = which < 1;
 		light3.isHidden = which < 2;
 		light4.isHidden = which < 3;
+	}
+
+	@Override
+	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float brightness, int index, float partialRenderTicks) {
 		super.render(world, light, scale, color, moonlight, sunlight, brightness, index, partialRenderTicks);
+		set(3);
 	}
 }

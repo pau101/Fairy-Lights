@@ -69,6 +69,7 @@ public final class HangingLightsConnectionModel extends ConnectionModel<HangingL
 			model.setAfts(0, -2.2F / 16, 0);
 			model.setRotationAngles(light.getVariant().parallelsCord() ? rotation.y : vert ? 0.3F : 0, rotation.x, rotation.z);
 			model.setScale(1);
+			model.prepare(i);
 			model.render(world, light, 0.0625F, color, moonlight, skylight, brightness, i, delta);
 		}
 		GlStateManager.enableLighting();

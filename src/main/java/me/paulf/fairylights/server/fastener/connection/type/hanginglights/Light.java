@@ -148,6 +148,15 @@ public final class Light extends HangingFeatureConnection.HangingFeature<Light> 
 		swaying = false;
 	}
 
+	public void setOn(boolean on) {
+		twinkleTime = NORMAL_LIGHT;
+		isTwinkling = !on;
+	}
+
+	public boolean isOn() {
+		return twinkleTime == NORMAL_LIGHT && !isTwinkling;
+	}
+
 	public void tick(HangingLightsConnection lights, boolean twinkle, boolean isOn) {
 		prevRotation = rotation;
 		prevTwinkleTime = twinkleTime;

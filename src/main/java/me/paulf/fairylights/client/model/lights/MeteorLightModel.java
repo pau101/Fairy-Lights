@@ -47,13 +47,13 @@ public final class MeteorLightModel extends LightModel {
 	}
 
 	@Override
-	public boolean hasRandomRotatation() {
+	public boolean hasRandomRotation() {
 		return true;
 	}
 
 	@Override
 	public void render(World world, Light light, float scale, Vec3d color, int moonlight, int sunlight, float normalBrightness, int index, float delta) {
-		if (hasRandomRotatation()) {
+		if (hasRandomRotation()) {
 			float randomOffset = Mth.mod(Mth.hash(index) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4;
 			colorableParts.secondaryRotateAngleY = randomOffset;
 			amutachromicParts.secondaryRotateAngleY = randomOffset;

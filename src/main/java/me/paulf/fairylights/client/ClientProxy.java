@@ -2,10 +2,12 @@ package me.paulf.fairylights.client;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.renderer.block.entity.FastenerBlockEntityRenderer;
+import me.paulf.fairylights.client.renderer.block.entity.LightBlockEntityRenderer;
 import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
 import me.paulf.fairylights.client.renderer.entity.LadderRenderer;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
+import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
 import me.paulf.fairylights.server.entity.LadderEntity;
 import me.paulf.fairylights.server.item.FLItems;
@@ -56,6 +58,7 @@ public final class ClientProxy extends ServerProxy {
 	@Override
 	public void initRenders() {
 		ClientRegistry.bindTileEntitySpecialRenderer(FastenerBlockEntity.class, new FastenerBlockEntityRenderer(ServerProxy.buildBlockView()));
+		ClientRegistry.bindTileEntitySpecialRenderer(LightBlockEntity.class, new LightBlockEntityRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(FenceFastenerEntity.class, FenceFastenerRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(LadderEntity.class, LadderRenderer::new);
 	}

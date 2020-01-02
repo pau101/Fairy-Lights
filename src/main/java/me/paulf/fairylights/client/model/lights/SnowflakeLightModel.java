@@ -17,7 +17,7 @@ public final class SnowflakeLightModel extends LightModel {
 	}
 
 	@Override
-	public boolean hasRandomRotatation() {
+	public boolean hasRandomRotation() {
 		return true;
 	}
 }

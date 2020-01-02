@@ -17,7 +17,7 @@ public final class MatrixStack implements Matrix {
 	}
 
 	public void push() {
-		this.stack.addLast(new Matrix4(this.stack.peek()));
+		this.stack.addLast(new Matrix4(this.stack.getLast()));
 	}
 
 	public void pop() {

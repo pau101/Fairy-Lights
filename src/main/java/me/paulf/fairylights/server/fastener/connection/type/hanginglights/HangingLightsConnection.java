@@ -170,7 +170,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 			ColoredLightVariant lightData = pattern.get(index % pattern.size());
 			light.setVariant(lightData.getVariant());
 			light.setColor(LightItem.getColorValue(lightData.getColor()));
-		}
+	}
 		return light;
 	}
 

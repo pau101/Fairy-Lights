@@ -1,5 +1,7 @@
 package me.paulf.fairylights.client.model.lights;
 
+import me.paulf.fairylights.util.Mth;
+
 public final class OilLanternModel extends LightModel {
 	public OilLanternModel() {
 		amutachromicParts.setTextureOffset(10, 6);
@@ -31,7 +33,12 @@ public final class OilLanternModel extends LightModel {
 	}
 
 	@Override
-	public boolean hasRandomRotatation() {
+	public void setRotationAngles(final double x, final double y, final double z) {
+		super.setRotationAngles(x, y - Mth.HALF_PI, z);
+	}
+
+	@Override
+	public boolean hasRandomRotation() {
 		return true;
 	}
 }
