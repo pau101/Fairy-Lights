@@ -34,7 +34,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -160,7 +160,7 @@ public final class ClientProxy extends ServerProxy {
 			new ResourceLocation("textures/font/ascii.png"),
 			Minecraft.getMinecraft().renderEngine, false
 		);
-		int[] colorCode = ReflectionHelper.getPrivateValue(FontRenderer.class, recoloredFont, "field_78285_g", "colorCode");
+		int[] colorCode = ObfuscationReflectionHelper.getPrivateValue(FontRenderer.class, recoloredFont, "field_78285_g");
 		// Brighten black a bit to make it visible on black
 		colorCode[0] = 0x191919;
 		colorCode[16] = 0x040404;
@@ -202,7 +202,7 @@ public final class ClientProxy extends ServerProxy {
 	 */
 	private void setupRenderGlobal() throws Exception {
 		RenderGlobal render = Minecraft.getMinecraft().renderGlobal;
-		Field setTileEntities = ReflectionHelper.findField(RenderGlobal.class, "field_181024_n", "setTileEntities");
+		Field setTileEntities = ObfuscationReflectionHelper.findField(RenderGlobal.class, "field_181024_n");
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		modifiers.set(setTileEntities, setTileEntities.getModifiers() & ~Modifier.FINAL);
