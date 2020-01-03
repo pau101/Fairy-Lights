@@ -1,4 +1,4 @@
-package com.pau101.fairylights.server.integration.valkyrienwarfare;
+package com.pau101.fairylights.server.integration.valkyrienskies;
 
 import com.pau101.fairylights.server.fastener.BlockView;
 import com.pau101.fairylights.server.fastener.CollectFastenersEvent;
@@ -8,14 +8,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import valkyrienwarfare.api.Vector;
-import valkyrienwarfare.math.Quaternion;
-import valkyrienwarfare.physics.TransformType;
-import valkyrienwarfare.physics.management.PhysicsObject;
-import valkyrienwarfare.physics.management.PhysicsWrapperEntity;
-import valkyrienwarfare.util.RealMethods;
+import org.valkyrienskies.mod.common.entity.PhysicsWrapperEntity;
+import org.valkyrienskies.mod.common.math.Quaternion;
+import org.valkyrienskies.mod.common.physics.management.PhysicsObject;
+import org.valkyrienskies.mod.common.physmanagement.chunk.VSChunkClaim;
+import valkyrienwarfare.api.IPhysicsEntity;
+import valkyrienwarfare.api.IPhysicsEntityManager;
+import valkyrienwarfare.api.TransformType;
 
-public class ValkyrienWarfare {
+public class ValkyrienSkies {
 	@SubscribeEvent
 	public static void onCollectFasteners(final CollectFastenersEvent event) {
 		event.getWorld().loadedEntityList.stream()
@@ -23,13 +24,14 @@ public class ValkyrienWarfare {
 			.map(PhysicsWrapperEntity.class::cast)
 			.map(PhysicsWrapperEntity::getPhysicsObject)
 			.forEach(obj -> {
-				int minX = obj.ownedChunks.getMinX();
-				int maxX = obj.ownedChunks.getMaxX();
-				int minZ = obj.ownedChunks.getMinZ();
-				int maxZ = obj.ownedChunks.getMaxZ();
+				VSChunkClaim claim = obj.getOwnedChunks();
+				int minX = claim.minX();
+				int maxX = claim.maxX();
+				int minZ = claim.minZ();
+				int maxZ = claim.maxZ();
 				for (int x = minX; x < maxX; x++) {
 					for (int z = minZ; z < maxZ; z++) {
-						event.accept(obj.shipChunks.getChunkAt(x, z));
+						event.accept(obj.getChunkAt(x, z));
 					}
 				}
 			});
@@ -38,28 +40,26 @@ public class ValkyrienWarfare {
 
 	@SubscribeEvent
 	public static void onCreateBlockView(final CreateBlockViewEvent event) {
-		event.setView(new ValkyrienWarfare.VWView(event.getView()));
+		event.setView(new ValkyrienSkies.VSView(event.getView()));
 	}
 
-	private static class VWView implements BlockView {
+	private static class VSView implements BlockView {
 		private final BlockView parent;
 
-		private VWView(final BlockView parent) {
+		private VSView(final BlockView parent) {
 			this.parent = parent;
 		}
 
 		@Override
 		public boolean isMoving(final World world, final BlockPos source) {
-			return new RealMethods().isBlockPartOfShip(world, source) || this.parent.isMoving(world, source);
+			return IPhysicsEntityManager.INSTANCE.isBlockPosManagedByPhysicsEntity(world, source) || this.parent.isMoving(world, source);
 		}
 
 		@Override
 		public Vec3d getPosition(final World world, final BlockPos source, final Vec3d pos) {
-			final PhysicsWrapperEntity entity = new RealMethods().getShipEntityManagingPos(world, source);
+			final IPhysicsEntity entity = IPhysicsEntityManager.INSTANCE.getPhysicsEntityFromShipSpace(world, source);
 			if (entity != null) {
-				final Vector p = new Vector(pos);
-				entity.getPhysicsObject().coordTransform.fromLocalToGlobal(p);
-				return p.toVec3d();
+				return entity.transformVector(pos, TransformType.SUBSPACE_TO_GLOBAL);
 			}
 			return this.parent.getPosition(world, source, pos);
 		}
@@ -67,9 +67,9 @@ public class ValkyrienWarfare {
 		@Override
 		public void unrotate(final World world, final BlockPos source, final Matrix matrix, final float delta) {
 			this.parent.unrotate(world, source, matrix, delta);
-			final PhysicsWrapperEntity entity = new RealMethods().getShipEntityManagingPos(world, source);
+			final PhysicsObject entity = (PhysicsObject) IPhysicsEntityManager.INSTANCE.getPhysicsEntityFromShipSpace(world, source);
 			if (entity != null) {
-				final Quaternion rot = getRotation(entity.getPhysicsObject(), delta);
+				final Quaternion rot = getRotation(entity, delta);
 				final double[] radians = rot.toRadians();
 				final float pitch = (float) Math.toDegrees(radians[0]);
 				final float yaw = (float) Math.toDegrees(radians[1]);
@@ -81,8 +81,8 @@ public class ValkyrienWarfare {
 		}
 
 		private Quaternion getRotation(final PhysicsObject object, final float delta) {
-			final Quaternion prevRotation = object.coordTransform.getPrevTickTransform().createRotationQuaternion(TransformType.GLOBAL_TO_LOCAL);
-			final Quaternion rotation = object.coordTransform.getCurrentTickTransform().createRotationQuaternion(TransformType.GLOBAL_TO_LOCAL);
+			final Quaternion prevRotation = object.getShipTransformationManager().getPrevTickTransform().createRotationQuaternion(TransformType.GLOBAL_TO_SUBSPACE);
+			final Quaternion rotation = object.getShipTransformationManager().getCurrentTickTransform().createRotationQuaternion(TransformType.GLOBAL_TO_SUBSPACE);
 			return Quaternion.slerpInterpolate(prevRotation, rotation, delta);
 		}
 	}

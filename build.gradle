@@ -17,6 +17,18 @@ repositories {
 	maven {
 		url "https://maven.daporkchop.net/"
 	}
+	maven {
+		url "http://maven.cil.li/"
+	}
+	maven {
+		url "https://repo.spongepowered.org/maven/"
+	}
+	maven {
+		url "http://dogforce-games.com/maven"
+	}
+	maven {
+		url "https://jitpack.io"
+	}
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
@@ -37,7 +49,7 @@ minecraft {
 dependencies {
 	deobfCompile "mezz.jei:jei_1.12.2:4.8.0.103:api"
 	runtime "mezz.jei:jei_1.12.2:4.8.0.103"
-	deobfCompile "valkyrienwarfare:valkyrienwarfare:0.9.5"
+	deobfCompile "valkyrienskies:valkyrienskies:1.12.2-1.0"
 }
 
 processResources {

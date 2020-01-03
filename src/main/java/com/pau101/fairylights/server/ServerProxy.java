@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import valkyrienwarfare.ValkyrienWarfareMod;
+import org.valkyrienskies.mod.common.ValkyrienSkiesMod;
 
 import javax.annotation.Nullable;
 import java.time.Month;
@@ -120,14 +120,14 @@ public class ServerProxy implements IMessageHandler<FLMessage, IMessage> {
 	}
 
 	public void initIntegration() {
-		if (Loader.isModLoaded(ValkyrienWarfareMod.MODID)) {
-			final Class<?> vw;
+		if (Loader.isModLoaded(ValkyrienSkiesMod.MOD_ID)) {
+			final Class<?> vs;
 			try {
-				vw = Class.forName("com.pau101.fairylights.server.integration.valkyrienwarfare.ValkyrienWarfare");
+				vs = Class.forName("com.pau101.fairylights.server.integration.valkyrienskies.ValkyrienSkies");
 			} catch (final ClassNotFoundException e) {
 				throw new AssertionError(e);
 			}
-			MinecraftForge.EVENT_BUS.register(vw);
+			MinecraftForge.EVENT_BUS.register(vs);
 		}
 	}
 }
