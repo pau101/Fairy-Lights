@@ -105,14 +105,43 @@ public class LightBlock extends HorizontalFaceBlock {
     }
 
     @Override
-    public VoxelShape getShape(final BlockState state, final IBlockReader worldIn, final BlockPos pos, final ISelectionContext context) {
+    public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos, final ISelectionContext context) {
+        float w = this.variant.getWidth();
+        float h = this.variant.getHeight();
         switch (state.get(FACE)) {
             default:
-                return shape;
+                return this.shape;
             case WALL:
-                // TODO
+                switch (this.variant.getPlacement()) {
+                    default:
+                        return this.shape;
+                    case ONWARD:
+                    case OUTWARD:
+                        switch (state.get(HORIZONTAL_FACING)) {
+                            case EAST:
+                                return VoxelShapes.create(
+                                    0.0D, 0.5D - w * 0.5D, 0.5D - w * 0.5D,
+                                    h, 0.5D + w * 0.5D, 0.5D + w * 0.5D
+                                );
+                            case WEST:
+                                return VoxelShapes.create(
+                                    1.0D - h, 0.5D - w * 0.5D, 0.5D - w * 0.5D,
+                                    1.0D, 0.5D + w * 0.5D, 0.5D + w * 0.5D
+                                );
+                            case SOUTH:
+                                return VoxelShapes.create(
+                                    0.5D - w * 0.5D, 0.5D - w * 0.5D, 0.0D,
+                                    0.5D + w * 0.5D, 0.5D + w * 0.5D, h
+                                );
+                            case NORTH:
+                                return VoxelShapes.create(
+                                    0.5D - w * 0.5D, 0.5D - w * 0.5D, 1.0D - h,
+                                    0.5D + w * 0.5D, 0.5D + w * 0.5D, 1.0D
+                                );
+                        }
+                }
             case CEILING:
-                return shape.withOffset(0, 1 - shape.getEnd(Direction.Axis.Y), 0);
+                return this.shape.withOffset(0.0D, 1.0D - this.variant.getHeight(), 0.0D);
         }
     }
 
