@@ -3,8 +3,8 @@ package me.paulf.fairylights.server.integration.jei;
 import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
-import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
 import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -24,7 +24,10 @@ import net.minecraftforge.common.util.Size2i;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtension {
 	private final GenericRecipe recipe;
@@ -254,7 +257,11 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
 			if (recipe.matches(crafting, null)) {
 				outputs.add(recipe.getCraftingResult(crafting));
 			} else {
-				throw new IllegalStateException("Bad recipe generation which doesn't give output");
+				throw new IllegalStateException("Recipe generation didn't give output for: " +
+					IntStream.range(0, crafting.getWidth() * crafting.getHeight())
+						.mapToObj(crafting::getStackInSlot)
+						.map(s -> Objects.toString(s.getItem().getRegistryName()))
+						.collect(Collectors.joining(", ")));
 			}
 		}
 		return Collections.singletonList(outputs);
