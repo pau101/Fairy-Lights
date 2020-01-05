@@ -73,7 +73,13 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
         GlStateManager.translated(0.5D, 0.5D, 0.5D);
         GlStateManager.rotatef(180.0F - rotation, 0.0F, 1.0F, 0.0F);
         if (variant.getPlacement() == LightVariant.Placement.UPRIGHT) {
-            GlStateManager.translated(0.0D, h - 0.5D, 0.0D);
+            if (face == AttachFace.CEILING) {
+                GlStateManager.translated(0.0D, 0.25D, 0.0D);
+            } else if (face == AttachFace.WALL) {
+                GlStateManager.translated(0.0D, 0.15D, 0.0D);
+            } else {
+                GlStateManager.translated(0.0D, h - 0.5D, 0.0D);
+            }
         } else {
             if (face == AttachFace.CEILING) {
                 if (variant.getPlacement() == LightVariant.Placement.ONWARD) {

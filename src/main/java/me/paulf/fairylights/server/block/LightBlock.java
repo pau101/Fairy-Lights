@@ -26,6 +26,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -61,6 +62,11 @@ public class LightBlock extends HorizontalFaceBlock {
     @Override
     public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
         return new LightBlockEntity();
+    }
+
+    @Override
+    public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
+        return state.get(FACE) == AttachFace.FLOOR ? func_220055_a(world, pos.down(), Direction.UP) : super.isValidPosition(state, world, pos);
     }
 
     // 'super' but opposite facing for y axis placement
