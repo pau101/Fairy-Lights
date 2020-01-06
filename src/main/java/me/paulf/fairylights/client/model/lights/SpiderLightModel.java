@@ -84,4 +84,9 @@ public final class SpiderLightModel extends LightModel {
     public boolean hasRandomRotation() {
         return true;
     }
+
+    @Override
+    public void setRotationAngles(final double x, final double y, final double z) {
+        super.setRotationAngles(x, y - Mth.HALF_PI, z);
+    }
 }

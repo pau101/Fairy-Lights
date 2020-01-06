@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.util.ResourceLocation;
 
 public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEntity> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/fastener.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/fastener.png");
 
     private final FastenerModel model;
 

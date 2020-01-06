@@ -17,6 +17,7 @@ import me.paulf.fairylights.client.model.lights.SnowflakeLightModel;
 import me.paulf.fairylights.client.model.lights.SpiderLightModel;
 import me.paulf.fairylights.client.model.lights.WitchLightModel;
 import me.paulf.fairylights.client.renderer.FastenerRenderer;
+import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
 import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
@@ -50,8 +51,10 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
         final RendererModel model;
 
         FastenerModel() {
-            this.model = new RendererModel(this, 0, 0);
-            this.model.addBox(-1.0F, 0.0F, 0.0F, 2, 2, 8);
+            this.textureWidth = 32;
+            this.textureHeight = 32;
+            this.model = new RendererModel(this, 0, 12);
+            this.model.addBox(-1.0F, -1.0F, 0.05F, 2, 2, 8, -0.05F);
         }
 
         void render() {
@@ -68,8 +71,6 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
 
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.disableCull();
-        GlStateManager.disableLighting();
 
         GlStateManager.translatef((float) x, (float) y, (float) z);
         final BlockState state = entity.getBlockState();
@@ -92,7 +93,9 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
             if (face == AttachFace.CEILING) {
                 GlStateManager.translated(0.0D, 0.25D, 0.0D);
             } else if (face == AttachFace.WALL) {
-                GlStateManager.translated(0.0D, 0.15D, 0.0D);
+                GlStateManager.translated(0.0D, 0.15D, 0.125D);
+                this.bindTexture(FenceFastenerRenderer.TEXTURE);
+                this.fastener.render();
             } else {
                 GlStateManager.translated(0.0D, h - 0.5D, 0.0D);
             }
@@ -111,8 +114,9 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
             GlStateManager.translated(0.0D, variant.getPlacement() == LightVariant.Placement.OUTWARD ? 0.5D : h - 0.5D, 0.0D);
         }
 
-        this.fastener.render();
         this.bindTexture(FastenerRenderer.TEXTURE);
+        GlStateManager.disableCull();
+        GlStateManager.disableLighting();
         model.render(entity.getWorld(), light, 0.0625F, light.getLight(), moonlight, skylight, light.getBrightness(delta), 0, delta);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
