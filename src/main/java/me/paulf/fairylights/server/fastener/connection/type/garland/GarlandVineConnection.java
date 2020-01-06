@@ -9,21 +9,21 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 public final class GarlandVineConnection extends Connection {
-	public GarlandVineConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-		super(world, fastener, uuid, destination, isOrigin, compound);
-	}
+    public GarlandVineConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
+        super(world, fastener, uuid, destination, isOrigin, compound);
+    }
 
-	public GarlandVineConnection(World world, Fastener<?> fastener, UUID uuid) {
-		super(world, fastener, uuid);
-	}
+    public GarlandVineConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
+        super(world, fastener, uuid);
+    }
 
-	@Override
-	public float getRadius() {
-		return 0.1875F;
-	}
+    @Override
+    public float getRadius() {
+        return 0.1875F;
+    }
 
-	@Override
-	public ConnectionType getType() {
-		return ConnectionType.GARLAND;
-	}
+    @Override
+    public ConnectionType getType() {
+        return ConnectionType.GARLAND;
+    }
 }

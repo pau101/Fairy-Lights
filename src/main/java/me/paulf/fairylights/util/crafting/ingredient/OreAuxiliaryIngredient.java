@@ -11,36 +11,36 @@ import java.util.Collections;
 import java.util.Objects;
 
 public abstract class OreAuxiliaryIngredient<A> implements AuxiliaryIngredient<A> {
-	protected final Tag<Item> tag;
+    protected final Tag<Item> tag;
 
-	protected final boolean isRequired;
+    protected final boolean isRequired;
 
-	protected final int limit;
+    protected final int limit;
 
-	public OreAuxiliaryIngredient(Tag<Item> tag, boolean isRequired, int limit) {
-		Preconditions.checkArgument(limit > 0, "limit must be greater than zero");
-		this.tag = Objects.requireNonNull(tag, "tag");
-		this.isRequired = isRequired;
-		this.limit = limit;
-	}
+    public OreAuxiliaryIngredient(final Tag<Item> tag, final boolean isRequired, final int limit) {
+        Preconditions.checkArgument(limit > 0, "limit must be greater than zero");
+        this.tag = Objects.requireNonNull(tag, "tag");
+        this.isRequired = isRequired;
+        this.limit = limit;
+    }
 
-	@Override
-	public final GenericRecipe.MatchResultAuxiliary matches(ItemStack input, ItemStack output) {
-		return new GenericRecipe.MatchResultAuxiliary(this, input, input.getItem().isIn(tag), Collections.emptyList());
-	}
+    @Override
+    public final GenericRecipe.MatchResultAuxiliary matches(final ItemStack input, final ItemStack output) {
+        return new GenericRecipe.MatchResultAuxiliary(this, input, input.getItem().isIn(this.tag), Collections.emptyList());
+    }
 
-	@Override
-	public ImmutableList<ItemStack> getInputs() {
-		return tag.getAllElements().stream().map(ItemStack::new).collect(ImmutableList.toImmutableList());
-	}
+    @Override
+    public ImmutableList<ItemStack> getInputs() {
+        return this.tag.getAllElements().stream().map(ItemStack::new).collect(ImmutableList.toImmutableList());
+    }
 
-	@Override
-	public boolean isRequired() {
-		return isRequired;
-	}
+    @Override
+    public boolean isRequired() {
+        return this.isRequired;
+    }
 
-	@Override
-	public int getLimit() {
-		return limit;
-	}
+    @Override
+    public int getLimit() {
+        return this.limit;
+    }
 }

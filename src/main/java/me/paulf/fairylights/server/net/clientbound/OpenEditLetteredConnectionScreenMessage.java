@@ -12,31 +12,31 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class OpenEditLetteredConnectionScreenMessage<C extends Connection & Lettered> extends ConnectionMessage<C> {
-	public OpenEditLetteredConnectionScreenMessage() {}
+    public OpenEditLetteredConnectionScreenMessage() {}
 
-	public OpenEditLetteredConnectionScreenMessage(C connection) {
-		super(connection);
-	}
+    public OpenEditLetteredConnectionScreenMessage(final C connection) {
+        super(connection);
+    }
 
 
-	public static <C extends Connection & Lettered> OpenEditLetteredConnectionScreenMessage<C> deserialize(PacketBuffer buf) {
-		OpenEditLetteredConnectionScreenMessage<C> message = new OpenEditLetteredConnectionScreenMessage<>();
-		ConnectionMessage.deserialize(message, buf);
-		return message;
-	}
+    public static <C extends Connection & Lettered> OpenEditLetteredConnectionScreenMessage<C> deserialize(final PacketBuffer buf) {
+        final OpenEditLetteredConnectionScreenMessage<C> message = new OpenEditLetteredConnectionScreenMessage<>();
+        ConnectionMessage.deserialize(message, buf);
+        return message;
+    }
 
-	public static final class Handler implements BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> {
-		@Override
-		public void accept(final OpenEditLetteredConnectionScreenMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
-			accept((OpenEditLetteredConnectionScreenMessage<?>) message);
-			contextSupplier.get().setPacketHandled(true);
-		}
+    public static final class Handler implements BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> {
+        @Override
+        public void accept(final OpenEditLetteredConnectionScreenMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
+            this.accept((OpenEditLetteredConnectionScreenMessage<?>) message);
+            contextSupplier.get().setPacketHandled(true);
+        }
 
-		private <C extends Connection & Lettered> void accept(final OpenEditLetteredConnectionScreenMessage<C> message) {
-			C connection = ConnectionMessage.getConnection(message, c -> c instanceof Lettered, Minecraft.getInstance().world);
-			if (connection != null) {
-				Minecraft.getInstance().displayGuiScreen(new EditLetteredConnectionScreen<>(connection));
-			}
-		}
-	}
+        private <C extends Connection & Lettered> void accept(final OpenEditLetteredConnectionScreenMessage<C> message) {
+            final C connection = ConnectionMessage.getConnection(message, c -> c instanceof Lettered, Minecraft.getInstance().world);
+            if (connection != null) {
+                Minecraft.getInstance().displayGuiScreen(new EditLetteredConnectionScreen<>(connection));
+            }
+        }
+    }
 }

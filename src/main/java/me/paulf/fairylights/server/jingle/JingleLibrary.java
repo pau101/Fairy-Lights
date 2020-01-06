@@ -18,106 +18,106 @@ import java.util.Map;
 import java.util.Random;
 
 public class JingleLibrary {
-	private static final String UNKNOWN_ID = "";
+    private static final String UNKNOWN_ID = "";
 
-	private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(UNKNOWN_ID);
+    private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(UNKNOWN_ID);
 
-	private static final JingleLibrary UNKNOWN = register(new JingleLibrary(UNKNOWN_ID) {
-		@Override
-		public void load(MinecraftServer server) {}
-	});
+    private static final JingleLibrary UNKNOWN = register(new JingleLibrary(UNKNOWN_ID) {
+        @Override
+        public void load(final MinecraftServer server) {}
+    });
 
-	private static final int MAX_RANGE = 25;
+    private static final int MAX_RANGE = 25;
 
-	private static int nextFeatureId;
+    private static int nextFeatureId;
 
-	private final String name;
+    private final String name;
 
-	private final Map<String, Jingle> jingles = new HashMap<>();
+    private final Map<String, Jingle> jingles = new HashMap<>();
 
-	private final Multimap<Integer, Jingle> jinglesWithinRange = ArrayListMultimap.create();
+    private final Multimap<Integer, Jingle> jinglesWithinRange = ArrayListMultimap.create();
 
-	private final Map<Integer, Integer> rangeWeights = new HashMap<>();
+    private final Map<Integer, Integer> rangeWeights = new HashMap<>();
 
-	private JingleLibrary(String name) {
-		this.name = name;
-	}
+    private JingleLibrary(final String name) {
+        this.name = name;
+    }
 
-	public int getId() {
-		return REGISTRY.getId(this);
-	}
+    public int getId() {
+        return REGISTRY.getId(this);
+    }
 
-	public boolean contains(String id) {
-		return jingles.containsKey(id);
-	}
+    public boolean contains(final String id) {
+        return this.jingles.containsKey(id);
+    }
 
-	@Nullable
-	public Jingle get(String id) {
-		return jingles.get(id);
-	}
+    @Nullable
+    public Jingle get(final String id) {
+        return this.jingles.get(id);
+    }
 
-	private void put(String id, Jingle jingle) {
-		jingles.put(id, jingle);
-		for (int range = jingle.getRange(); range <= MAX_RANGE; range++) {
-			jinglesWithinRange.put(range, jingle);
-			rangeWeights.merge(range, jingle.getRange(), Math::addExact);
-		}
-	}
+    private void put(final String id, final Jingle jingle) {
+        this.jingles.put(id, jingle);
+        for (int range = jingle.getRange(); range <= MAX_RANGE; range++) {
+            this.jinglesWithinRange.put(range, jingle);
+            this.rangeWeights.merge(range, jingle.getRange(), Math::addExact);
+        }
+    }
 
-	@Nullable
-	public synchronized Jingle getRandom(Random rng, int range) {
-		int fitRange = Math.min(range, MAX_RANGE);
-		Collection<Jingle> jingles = jinglesWithinRange.get(fitRange);
-		if (jingles.isEmpty()) {
-			return null;
-		}
-		float choice = rng.nextFloat() * rangeWeights.get(fitRange);
-		for (Jingle jingle : jingles) {
-			choice -= jingle.getRange();
-			if (choice <= 0) {
-				return jingle;
-			}
-		}
-		return null;
-	}
+    @Nullable
+    public synchronized Jingle getRandom(final Random rng, final int range) {
+        final int fitRange = Math.min(range, MAX_RANGE);
+        final Collection<Jingle> jingles = this.jinglesWithinRange.get(fitRange);
+        if (jingles.isEmpty()) {
+            return null;
+        }
+        float choice = rng.nextFloat() * this.rangeWeights.get(fitRange);
+        for (final Jingle jingle : jingles) {
+            choice -= jingle.getRange();
+            if (choice <= 0) {
+                return jingle;
+            }
+        }
+        return null;
+    }
 
-	public void load(MinecraftServer server) {
-		try (IResource resource = server.getResourceManager().getResource(new ResourceLocation(FairyLights.ID, "/jingles/" + name + ".dat"))) {
-			deserialize(CompressedStreamTools.readCompressed(resource.getInputStream()));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public void load(final MinecraftServer server) {
+        try (final IResource resource = server.getResourceManager().getResource(new ResourceLocation(FairyLights.ID, "/jingles/" + this.name + ".dat"))) {
+            this.deserialize(CompressedStreamTools.readCompressed(resource.getInputStream()));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private synchronized void deserialize(CompoundNBT library) {
-		jingles.clear();
-		jinglesWithinRange.clear();
-		rangeWeights.clear();
-		for (String id : library.keySet()) {
-			CompoundNBT jingleCompound = library.getCompound(id);
-			Jingle jingle = Jingle.from(jingleCompound);
-			if (jingle.isValid() && !contains(jingle.getId())) {
-				put(jingle.getId(), jingle);
-			}
-		}
-	}
+    private synchronized void deserialize(final CompoundNBT library) {
+        this.jingles.clear();
+        this.jinglesWithinRange.clear();
+        this.rangeWeights.clear();
+        for (final String id : library.keySet()) {
+            final CompoundNBT jingleCompound = library.getCompound(id);
+            final Jingle jingle = Jingle.from(jingleCompound);
+            if (jingle.isValid() && !this.contains(jingle.getId())) {
+                this.put(jingle.getId(), jingle);
+            }
+        }
+    }
 
-	public static JingleLibrary create(String name) {
-		return register(new JingleLibrary(name));
-	}
+    public static JingleLibrary create(final String name) {
+        return register(new JingleLibrary(name));
+    }
 
-	private static JingleLibrary register(JingleLibrary library) {
-		REGISTRY.register(nextFeatureId++, new ResourceLocation(library.name), library);
-		return library;
-	}
+    private static JingleLibrary register(final JingleLibrary library) {
+        REGISTRY.register(nextFeatureId++, new ResourceLocation(library.name), library);
+        return library;
+    }
 
-	public static JingleLibrary fromId(int id) {
-		return REGISTRY.getByValue(id);
-	}
+    public static JingleLibrary fromId(final int id) {
+        return REGISTRY.getByValue(id);
+    }
 
-	public static void loadAll(MinecraftServer server) {
-		for (JingleLibrary library : REGISTRY) {
-			library.load(server);
-		}
-	}
+    public static void loadAll(final MinecraftServer server) {
+        for (final JingleLibrary library : REGISTRY) {
+            library.load(server);
+        }
+    }
 }

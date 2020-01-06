@@ -11,46 +11,46 @@ import net.minecraft.entity.player.PlayerEntity;
 import java.util.function.Function;
 
 public interface Lettered {
-	int MAX_TEXT_LENGTH = 64;
-	
-	Function<Character, Character> IDENTITY_CHARACTER_TRANSFORMER = c -> c;
+    int MAX_TEXT_LENGTH = 64;
 
-	default StylingPresence getSupportedStyling() {
-		return StylingPresence.ALL;
-	}
+    Function<Character, Character> IDENTITY_CHARACTER_TRANSFORMER = c -> c;
 
-	default boolean isSupportedCharacter(char chr) {
-		return Character.isValidCodePoint(chr) && !Character.isISOControl(chr);
-	}
+    default StylingPresence getSupportedStyling() {
+        return StylingPresence.ALL;
+    }
 
-	default boolean isSuppportedText(StyledString text) {
-		for (int i = 0; i < text.length(); i++) {
-			if (!isSupportedCharacter(text.charAt(i))) {
-				return false;
-			}
-		}
-		return true;
-	}
+    default boolean isSupportedCharacter(final char chr) {
+        return Character.isValidCodePoint(chr) && !Character.isISOControl(chr);
+    }
 
-	default int toSupportedCharacter(int chr) {
-		return chr;
-	}
+    default boolean isSuppportedText(final StyledString text) {
+        for (int i = 0; i < text.length(); i++) {
+            if (!this.isSupportedCharacter(text.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	void setText(StyledString text);
+    default int toSupportedCharacter(final int chr) {
+        return chr;
+    }
 
-	StyledString getText();
+    void setText(StyledString text);
 
-	default Function<Character, Character> getCharInputTransformer() {
-		return IDENTITY_CHARACTER_TRANSFORMER;
-	}
+    StyledString getText();
 
-	Screen createTextGUI();
+    default Function<Character, Character> getCharInputTransformer() {
+        return IDENTITY_CHARACTER_TRANSFORMER;
+    }
 
-	default boolean openTextGui(PlayerEntity player, PlayerAction action, Intersection intersection) {
-		if (action == PlayerAction.INTERACT && player.isSneaking()) {
-			Minecraft.getInstance().displayGuiScreen(createTextGUI());
-			return false;
-		}
-		return true;
-	}
+    Screen createTextGUI();
+
+    default boolean openTextGui(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
+        if (action == PlayerAction.INTERACT && player.isSneaking()) {
+            Minecraft.getInstance().displayGuiScreen(this.createTextGUI());
+            return false;
+        }
+        return true;
+    }
 }

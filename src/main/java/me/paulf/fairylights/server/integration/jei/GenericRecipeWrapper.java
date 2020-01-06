@@ -30,298 +30,300 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtension {
-	private final GenericRecipe recipe;
+    private final GenericRecipe recipe;
 
-	private final ImmutableList<ImmutableList<ItemStack>> allInputs;
+    private final ImmutableList<ImmutableList<ItemStack>> allInputs;
 
-	// Only minimal stacks, ingredients that support multiple will only have first taken unless dictatesOutputType
-	private final ImmutableList<ImmutableList<ItemStack>> minimalInputStacks;
+    // Only minimal stacks, ingredients that support multiple will only have first taken unless dictatesOutputType
+    private final ImmutableList<ImmutableList<ItemStack>> minimalInputStacks;
 
-	private final ImmutableList<ItemStack> outputs;
+    private final ImmutableList<ItemStack> outputs;
 
-	private final Ingredient<?, ?>[] ingredientMatrix;
+    private final Ingredient<?, ?>[] ingredientMatrix;
 
-	private final int subtypeIndex;
+    private final int subtypeIndex;
 
-	public GenericRecipeWrapper(GenericRecipe recipe) {
-		this.recipe = recipe;
-		ImmutableList.Builder<ImmutableList<ItemStack>> allInputs = ImmutableList.builder();
-		ImmutableList.Builder<ImmutableList<ItemStack>> minimalInputStacks = ImmutableList.builder();
-		RegularIngredient[] ingredients = recipe.getGenericIngredients();
-		AuxiliaryIngredient<?>[] aux = recipe.getAuxiliaryIngredients();
-		ingredientMatrix = new Ingredient<?, ?>[9];
-		int subtypeIndex = -1;
-		for (int i = 0, auxIdx = 0; i < 9; i++) {
-			int x = i % 3, y = i / 3;
+    public GenericRecipeWrapper(final GenericRecipe recipe) {
+        this.recipe = recipe;
+        final ImmutableList.Builder<ImmutableList<ItemStack>> allInputs = ImmutableList.builder();
+        final ImmutableList.Builder<ImmutableList<ItemStack>> minimalInputStacks = ImmutableList.builder();
+        final RegularIngredient[] ingredients = recipe.getGenericIngredients();
+        final AuxiliaryIngredient<?>[] aux = recipe.getAuxiliaryIngredients();
+		this.ingredientMatrix = new Ingredient<?, ?>[9];
+        int subtypeIndex = -1;
+        for (int i = 0, auxIdx = 0; i < 9; i++) {
+            final int x = i % 3;
+			final int y = i / 3;
 			boolean isEmpty = true;
-			if (x < recipe.getWidth() && y < recipe.getHeight()) {
-				RegularIngredient ingredient = ingredients[x + y * recipe.getWidth()];
-				ImmutableList<ItemStack> ingInputs = ingredient.getInputs();
-				if (ingInputs.size() > 0) {
-					if (ingredient.dictatesOutputType()) {
-						minimalInputStacks.add(ingInputs);
-						subtypeIndex = i;
-					} else {
-						minimalInputStacks.add(ImmutableList.of(ingInputs.get(0)));
-					}
-					ingredientMatrix[i] = ingredient;
-					allInputs.add(ingInputs);
-					isEmpty = false;
-				}
-			}
-			if (isEmpty) {
-				AuxiliaryIngredient<?> ingredient = null;
-				ImmutableList<ItemStack> stacks = null;
-				boolean dictator = false;
-				for (; auxIdx < aux.length;) {
-					ingredient = aux[auxIdx++];
-					ImmutableList<ItemStack> a = ingredient.getInputs(); 
-					if (a.size() > 0) {
-						stacks = a;
-						if (ingredient.dictatesOutputType()) {
-							subtypeIndex = i;
-							dictator = true;
-						}
-						break;
-					}
-				}
-				if (stacks == null) {
-					stacks = ImmutableList.of();
-					ingredient = null;
-				}
-				minimalInputStacks.add(stacks.isEmpty() || dictator ? stacks : ImmutableList.of(stacks.get(0)));
-				ingredientMatrix[i] = ingredient;
-				allInputs.add(stacks);
-			}
-		}
-		this.allInputs = allInputs.build();
-		this.minimalInputStacks = minimalInputStacks.build();
-		this.subtypeIndex = subtypeIndex; 
-		ImmutableList.Builder<ItemStack> outputs = ImmutableList.builder();
-		forOutputMatches((v, output) -> outputs.add(output));
-		this.outputs = outputs.build();
-	}
+            if (x < recipe.getWidth() && y < recipe.getHeight()) {
+                final RegularIngredient ingredient = ingredients[x + y * recipe.getWidth()];
+                final ImmutableList<ItemStack> ingInputs = ingredient.getInputs();
+                if (ingInputs.size() > 0) {
+                    if (ingredient.dictatesOutputType()) {
+                        minimalInputStacks.add(ingInputs);
+                        subtypeIndex = i;
+                    } else {
+                        minimalInputStacks.add(ImmutableList.of(ingInputs.get(0)));
+                    }
+					this.ingredientMatrix[i] = ingredient;
+                    allInputs.add(ingInputs);
+                    isEmpty = false;
+                }
+            }
+            if (isEmpty) {
+                AuxiliaryIngredient<?> ingredient = null;
+                ImmutableList<ItemStack> stacks = null;
+                boolean dictator = false;
+                for (; auxIdx < aux.length; ) {
+                    ingredient = aux[auxIdx++];
+                    final ImmutableList<ItemStack> a = ingredient.getInputs();
+                    if (a.size() > 0) {
+                        stacks = a;
+                        if (ingredient.dictatesOutputType()) {
+                            subtypeIndex = i;
+                            dictator = true;
+                        }
+                        break;
+                    }
+                }
+                if (stacks == null) {
+                    stacks = ImmutableList.of();
+                    ingredient = null;
+                }
+                minimalInputStacks.add(stacks.isEmpty() || dictator ? stacks : ImmutableList.of(stacks.get(0)));
+				this.ingredientMatrix[i] = ingredient;
+                allInputs.add(stacks);
+            }
+        }
+        this.allInputs = allInputs.build();
+        this.minimalInputStacks = minimalInputStacks.build();
+        this.subtypeIndex = subtypeIndex;
+        final ImmutableList.Builder<ItemStack> outputs = ImmutableList.builder();
+		this.forOutputMatches((v, output) -> outputs.add(output));
+        this.outputs = outputs.build();
+    }
 
-	private void forOutputMatches(BiConsumer<ItemStack, ItemStack> outputConsumer) {
-		CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
-			@Override
-			public boolean canInteractWith(PlayerEntity player) {
-				return false;
-			}
+    private void forOutputMatches(final BiConsumer<ItemStack, ItemStack> outputConsumer) {
+        final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
+            @Override
+            public boolean canInteractWith(final PlayerEntity player) {
+                return false;
+            }
 
-			@Override
-			public void onCraftMatrixChanged(IInventory inventory) {}
-		}, getSize().width, getSize().height);
-		if (subtypeIndex == -1) {
-			for (int i = 0; i < minimalInputStacks.size(); i++) {
-				List<ItemStack> stacks = minimalInputStacks.get(i);
-				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
-			}
-			if (recipe.matches(crafting, null)) {
-				outputConsumer.accept(ItemStack.EMPTY, recipe.getCraftingResult(crafting));
-			}
-		} else {
-			List<ItemStack> dictators = minimalInputStacks.get(subtypeIndex);
-			for (ItemStack subtype : dictators) {
-				crafting.clear();
-				for (int i = 0; i < minimalInputStacks.size(); i++) {
-					if (i == subtypeIndex) {
-						crafting.setInventorySlotContents(i, subtype);
-					} else {
-						List<ItemStack> stacks = minimalInputStacks.get(i);
-						crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
-					}
-				}
-				if (recipe.matches(crafting, null)) {
-					outputConsumer.accept(subtype, recipe.getCraftingResult(crafting));
-				}
-			}
-		}
-	}
+            @Override
+            public void onCraftMatrixChanged(final IInventory inventory) {}
+        }, this.getSize().width, this.getSize().height);
+        if (this.subtypeIndex == -1) {
+            for (int i = 0; i < this.minimalInputStacks.size(); i++) {
+                final List<ItemStack> stacks = this.minimalInputStacks.get(i);
+                crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+            }
+            if (this.recipe.matches(crafting, null)) {
+                outputConsumer.accept(ItemStack.EMPTY, this.recipe.getCraftingResult(crafting));
+            }
+        } else {
+            final List<ItemStack> dictators = this.minimalInputStacks.get(this.subtypeIndex);
+            for (final ItemStack subtype : dictators) {
+                crafting.clear();
+                for (int i = 0; i < this.minimalInputStacks.size(); i++) {
+                    if (i == this.subtypeIndex) {
+                        crafting.setInventorySlotContents(i, subtype);
+                    } else {
+                        final List<ItemStack> stacks = this.minimalInputStacks.get(i);
+                        crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+                    }
+                }
+                if (this.recipe.matches(crafting, null)) {
+                    outputConsumer.accept(subtype, this.recipe.getCraftingResult(crafting));
+                }
+            }
+        }
+    }
 
-	@Override
-	public Size2i getSize() {
-		return new Size2i(3, 3);
-	}
+    @Override
+    public Size2i getSize() {
+        return new Size2i(3, 3);
+    }
 
-	public Input getInputsForOutput(ItemStack output) {
-		RegularIngredient[] ingredients = recipe.getGenericIngredients();
-		List<List<ItemStack>> inputs = new ArrayList<>(9);
-		Ingredient<?, ?>[] ingredientMat = new Ingredient<?, ?>[9];
-		AuxiliaryIngredient<?>[] aux = recipe.getAuxiliaryIngredients();
-		for (int i = 0, auxIngIdx = 0, auxIdx = 0; i < 9; i++) {
-			int x = i % 3, y = i / 3;
-			ImmutableList<ImmutableList<ItemStack>> ingInputs;
-			Ingredient<?, ?> ingredient = null;
-			if (x < recipe.getWidth() && y < recipe.getHeight()) {
-				ingredient = ingredients[x + y * recipe.getWidth()];
-				ingInputs = ingredient.getInput(output);
-			} else {
-				ingInputs = null;
-			}
-			if (ingInputs == null || ingInputs.isEmpty()) {
-				boolean isEmpty = true;
-				if (auxIngIdx < aux.length) {
-					ImmutableList<ImmutableList<ItemStack>> auxInputs = null;
-					AuxiliaryIngredient<?> ingredientAux = null;
-					for (; auxIngIdx < aux.length; auxIngIdx++) {
-						ingredientAux = aux[auxIngIdx];
-						auxInputs = ingredientAux.getInput(output);
-						if (auxInputs.size() > 0) {
-							break;
-						}
-					}
-					if (auxInputs != null && auxInputs.size() > 0) {
-						inputs.add(auxInputs.get(auxIdx++));
-						ingredientMat[i] = ingredientAux;
-						if (auxIdx == auxInputs.size()) {
-							auxIdx = 0;
-							auxIngIdx++;
-						}
-						isEmpty = false;
-					}
-				}
-				if (isEmpty) {
-					inputs.add(Collections.emptyList());
-				}
-			} else {
-				inputs.add(ingInputs.get(0));
-				ingredientMat[i] = ingredient;
-			}
-		}
-		return new Input(inputs, ingredientMat);
-	}
+    public Input getInputsForOutput(final ItemStack output) {
+        final RegularIngredient[] ingredients = this.recipe.getGenericIngredients();
+        final List<List<ItemStack>> inputs = new ArrayList<>(9);
+        final Ingredient<?, ?>[] ingredientMat = new Ingredient<?, ?>[9];
+        final AuxiliaryIngredient<?>[] aux = this.recipe.getAuxiliaryIngredients();
+        for (int i = 0, auxIngIdx = 0, auxIdx = 0; i < 9; i++) {
+            final int x = i % 3;
+			final int y = i / 3;
+			final ImmutableList<ImmutableList<ItemStack>> ingInputs;
+            Ingredient<?, ?> ingredient = null;
+            if (x < this.recipe.getWidth() && y < this.recipe.getHeight()) {
+                ingredient = ingredients[x + y * this.recipe.getWidth()];
+                ingInputs = ingredient.getInput(output);
+            } else {
+                ingInputs = null;
+            }
+            if (ingInputs == null || ingInputs.isEmpty()) {
+                boolean isEmpty = true;
+                if (auxIngIdx < aux.length) {
+                    ImmutableList<ImmutableList<ItemStack>> auxInputs = null;
+                    AuxiliaryIngredient<?> ingredientAux = null;
+                    for (; auxIngIdx < aux.length; auxIngIdx++) {
+                        ingredientAux = aux[auxIngIdx];
+                        auxInputs = ingredientAux.getInput(output);
+                        if (auxInputs.size() > 0) {
+                            break;
+                        }
+                    }
+                    if (auxInputs != null && auxInputs.size() > 0) {
+                        inputs.add(auxInputs.get(auxIdx++));
+                        ingredientMat[i] = ingredientAux;
+                        if (auxIdx == auxInputs.size()) {
+                            auxIdx = 0;
+                            auxIngIdx++;
+                        }
+                        isEmpty = false;
+                    }
+                }
+                if (isEmpty) {
+                    inputs.add(Collections.emptyList());
+                }
+            } else {
+                inputs.add(ingInputs.get(0));
+                ingredientMat[i] = ingredient;
+            }
+        }
+        return new Input(inputs, ingredientMat);
+    }
 
-	private Input getInputsForIngredient(ItemStack ingredient) {
-		CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
-			@Override
-			public boolean canInteractWith(PlayerEntity player) {
-				return false;
-			}
+    private Input getInputsForIngredient(final ItemStack ingredient) {
+        final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
+            @Override
+            public boolean canInteractWith(final PlayerEntity player) {
+                return false;
+            }
 
-			@Override
-			public void onCraftMatrixChanged(IInventory inventory) {}
-		}, getSize().width, getSize().height);
-		 for (int i = 0; i < allInputs.size(); i++) {
-			 List<ItemStack> options = allInputs.get(i);
-			 ItemStack matched = null;
-			 for (ItemStack o : options) {
-				 if (ingredient.getItem() == o.getItem()) {
-					 matched = ingredient.copy();
-					 matched.setCount(1);
-					 break;
-				 }
-			}
-			if (matched == null) {
-				continue;
-			}
-			crafting.clear();
-			for (int n = 0; n < minimalInputStacks.size(); n++) {
-				List<ItemStack> stacks = minimalInputStacks.get(n);
-				crafting.setInventorySlotContents(n, i == n ? matched : stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
-			}
-			if (recipe.matches(crafting, null)) {
-				List<List<ItemStack>> inputs = new ArrayList<>(allInputs.size());
-				for (int n = 0; n < allInputs.size(); n++) {
-					List<ItemStack> stacks = allInputs.get(n);
-					inputs.add(i == n ? Collections.singletonList(matched) : stacks.isEmpty() ? Collections.singletonList(ItemStack.EMPTY) : stacks);
-				};
-				return new Input(inputs, ingredientMatrix);
-			}
-		}
-		 return null;
-	}
+            @Override
+            public void onCraftMatrixChanged(final IInventory inventory) {}
+        }, this.getSize().width, this.getSize().height);
+        for (int i = 0; i < this.allInputs.size(); i++) {
+            final List<ItemStack> options = this.allInputs.get(i);
+            ItemStack matched = null;
+            for (final ItemStack o : options) {
+                if (ingredient.getItem() == o.getItem()) {
+                    matched = ingredient.copy();
+                    matched.setCount(1);
+                    break;
+                }
+            }
+            if (matched == null) {
+                continue;
+            }
+            crafting.clear();
+            for (int n = 0; n < this.minimalInputStacks.size(); n++) {
+                final List<ItemStack> stacks = this.minimalInputStacks.get(n);
+                crafting.setInventorySlotContents(n, i == n ? matched : stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+            }
+            if (this.recipe.matches(crafting, null)) {
+                final List<List<ItemStack>> inputs = new ArrayList<>(this.allInputs.size());
+                for (int n = 0; n < this.allInputs.size(); n++) {
+                    final List<ItemStack> stacks = this.allInputs.get(n);
+                    inputs.add(i == n ? Collections.singletonList(matched) : stacks.isEmpty() ? Collections.singletonList(ItemStack.EMPTY) : stacks);
+                }
+				return new Input(inputs, this.ingredientMatrix);
+            }
+        }
+        return null;
+    }
 
-	public List<List<ItemStack>> getOutput(List<List<ItemStack>> inputs) {
-		CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
-			@Override
-			public boolean canInteractWith(PlayerEntity player) {
-				return false;
-			}
+    public List<List<ItemStack>> getOutput(final List<List<ItemStack>> inputs) {
+        final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
+            @Override
+            public boolean canInteractWith(final PlayerEntity player) {
+                return false;
+            }
 
-			@Override
-			public void onCraftMatrixChanged(IInventory inventory) {}
-		}, getSize().width, getSize().height);
-		int size = 1;
-		for (List<ItemStack> stack : inputs) {
-			if (stack.size() > 0) {
-				size = Mth.lcm(stack.size(), size);	
-			}
-		}
-		List<ItemStack> outputs = new ArrayList<>(size);
-		for (int n = 0; n < size; n++) {
-			for (int i = 0; i < inputs.size(); i++) {
-				List<ItemStack> stacks = inputs.get(i);
-				crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(n % stacks.size()));
-			}
-			if (recipe.matches(crafting, null)) {
-				outputs.add(recipe.getCraftingResult(crafting));
-			} else {
-				throw new IllegalStateException("Recipe generation didn't give output for: " +
-					IntStream.range(0, crafting.getWidth() * crafting.getHeight())
-						.mapToObj(crafting::getStackInSlot)
-						.map(s -> Objects.toString(s.getItem().getRegistryName()))
-						.collect(Collectors.joining(", ")));
-			}
-		}
-		return Collections.singletonList(outputs);
-	}
+            @Override
+            public void onCraftMatrixChanged(final IInventory inventory) {}
+        }, this.getSize().width, this.getSize().height);
+        int size = 1;
+        for (final List<ItemStack> stack : inputs) {
+            if (stack.size() > 0) {
+                size = Mth.lcm(stack.size(), size);
+            }
+        }
+        final List<ItemStack> outputs = new ArrayList<>(size);
+        for (int n = 0; n < size; n++) {
+            for (int i = 0; i < inputs.size(); i++) {
+                final List<ItemStack> stacks = inputs.get(i);
+                crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(n % stacks.size()));
+            }
+            if (this.recipe.matches(crafting, null)) {
+                outputs.add(this.recipe.getCraftingResult(crafting));
+            } else {
+                throw new IllegalStateException("Recipe generation didn't give output for: " +
+                    IntStream.range(0, crafting.getWidth() * crafting.getHeight())
+                        .mapToObj(crafting::getStackInSlot)
+                        .map(s -> Objects.toString(s.getItem().getRegistryName()))
+                        .collect(Collectors.joining(", ")));
+            }
+        }
+        return Collections.singletonList(outputs);
+    }
 
-	@Override
-	public void setIngredients(IIngredients ingredients) {
-		ingredients.setInputLists(VanillaTypes.ITEM, (List<List<ItemStack>>) (List<?>) allInputs);
-		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
-	}
+    @Override
+    public void setIngredients(final IIngredients ingredients) {
+        ingredients.setInputLists(VanillaTypes.ITEM, (List<List<ItemStack>>) (List<?>) this.allInputs);
+        ingredients.setOutputs(VanillaTypes.ITEM, this.outputs);
+    }
 
-	@Override
-	public void setRecipe(IRecipeLayout layout, IIngredients ingredients) {
-		IFocus<?> focus = layout.getFocus();
-		IGuiItemStackGroup group = layout.getItemStacks();
-		if (focus != null && focus.getValue() instanceof ItemStack) {
-			ItemStack stack = (ItemStack) focus.getValue();
-			Input input;
-			if (focus.getMode() == Mode.OUTPUT) {
-				input = getInputsForOutput(stack);	
-			} else {
-				input = getInputsForIngredient(stack);
-			}
-			if (input != null) {
-				ingredients.setInputLists(VanillaTypes.ITEM, input.inputs);
-				ingredients.setOutputLists(VanillaTypes.ITEM, getOutput(input.inputs));
-				group.addTooltipCallback(new Tooltips(input.ingredients));
-			} else {
-				// Some Ingredient is picky with requirements, should allow a GenericRecipe to have a "smart input provider"
-			}
-		}
-		group.set(ingredients);
-	}
+    @Override
+    public void setRecipe(final IRecipeLayout layout, final IIngredients ingredients) {
+        final IFocus<?> focus = layout.getFocus();
+        final IGuiItemStackGroup group = layout.getItemStacks();
+        if (focus != null && focus.getValue() instanceof ItemStack) {
+            final ItemStack stack = (ItemStack) focus.getValue();
+            final Input input;
+            if (focus.getMode() == Mode.OUTPUT) {
+                input = this.getInputsForOutput(stack);
+            } else {
+                input = this.getInputsForIngredient(stack);
+            }
+            if (input != null) {
+                ingredients.setInputLists(VanillaTypes.ITEM, input.inputs);
+                ingredients.setOutputLists(VanillaTypes.ITEM, this.getOutput(input.inputs));
+                group.addTooltipCallback(new Tooltips(input.ingredients));
+            } else {
+                // Some Ingredient is picky with requirements, should allow a GenericRecipe to have a "smart input provider"
+            }
+        }
+        group.set(ingredients);
+    }
 
-	private final class Input {
-		List<List<ItemStack>> inputs;
+    private final class Input {
+        List<List<ItemStack>> inputs;
 
-		Ingredient<?, ?>[] ingredients;
+        Ingredient<?, ?>[] ingredients;
 
-		private Input(List<List<ItemStack>> inputs, Ingredient<?, ?>[] ingredients) {
-			this.inputs = inputs;
-			this.ingredients = ingredients;
-		}
-	}
+        private Input(final List<List<ItemStack>> inputs, final Ingredient<?, ?>[] ingredients) {
+            this.inputs = inputs;
+            this.ingredients = ingredients;
+        }
+    }
 
-	private final class Tooltips implements ITooltipCallback<ItemStack> {
-		Ingredient<?, ?>[] ingredients;
+    private final class Tooltips implements ITooltipCallback<ItemStack> {
+        Ingredient<?, ?>[] ingredients;
 
-		public Tooltips(Ingredient<?, ?>[] ingredients) {
-			this.ingredients = ingredients;
-		}
+        public Tooltips(final Ingredient<?, ?>[] ingredients) {
+            this.ingredients = ingredients;
+        }
 
-		@Override
-		public void onTooltip(int slot, boolean input, ItemStack ingredient, List<String> tooltip) {
-			if (input) {
-				Ingredient<?, ?> ing = ingredients[slot - 1];
-				if (ing != null) {
-					ing.addTooltip(tooltip);
-				}
-			}
-		}
-	}
+        @Override
+        public void onTooltip(final int slot, final boolean input, final ItemStack ingredient, final List<String> tooltip) {
+            if (input) {
+                final Ingredient<?, ?> ing = this.ingredients[slot - 1];
+                if (ing != null) {
+                    ing.addTooltip(tooltip);
+                }
+            }
+        }
+    }
 }

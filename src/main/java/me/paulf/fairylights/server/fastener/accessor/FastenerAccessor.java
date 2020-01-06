@@ -7,17 +7,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface FastenerAccessor {
-	Fastener<?> get(World world);
+    Fastener<?> get(World world);
 
-	boolean isLoaded(World world);
+    boolean isLoaded(World world);
 
-	boolean exists(World world);
+    boolean exists(World world);
 
-	default void update(World world, BlockPos pos) {}
+    default void update(final World world, final BlockPos pos) {}
 
-	FastenerType getType();
+    FastenerType getType();
 
-	CompoundNBT serialize();
+    CompoundNBT serialize();
 
-	void deserialize(CompoundNBT compound);
+    void deserialize(CompoundNBT compound);
 }

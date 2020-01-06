@@ -34,210 +34,210 @@ import java.util.Collections;
 import java.util.List;
 
 public final class LadderEntity extends LivingEntity implements IEntityAdditionalSpawnData {
-	private static final byte PUNCH_ID = 32;
+    private static final byte PUNCH_ID = 32;
 
-	private long lastPunchTime;
+    private long lastPunchTime;
 
-	public LadderEntity(EntityType<? extends LadderEntity> type, World world) {
-		super(type, world);
-	}
+    public LadderEntity(final EntityType<? extends LadderEntity> type, final World world) {
+        super(type, world);
+    }
 
-	public LadderEntity(World world) {
-		this(FLEntities.LADDER.orElseThrow(IllegalStateException::new), world);
-	}
+    public LadderEntity(final World world) {
+        this(FLEntities.LADDER.orElseThrow(IllegalStateException::new), world);
+    }
 
-	@Override
-	public boolean canBePushed() {
-		return false;
-	}
+    @Override
+    public boolean canBePushed() {
+        return false;
+    }
 
-	@Override
-	public ItemStack getPickedResult(RayTraceResult target) {
-		return new ItemStack(FLItems.LADDER.orElseThrow(IllegalStateException::new));
-	}
+    @Override
+    public ItemStack getPickedResult(final RayTraceResult target) {
+        return new ItemStack(FLItems.LADDER.orElseThrow(IllegalStateException::new));
+    }
 
-	@Override
-	public Iterable<ItemStack> getArmorInventoryList() {
-		return Collections.emptyList();
-	}
+    @Override
+    public Iterable<ItemStack> getArmorInventoryList() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public ItemStack getItemStackFromSlot(EquipmentSlotType slot) {
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack getItemStackFromSlot(final EquipmentSlotType slot) {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public void setItemStackToSlot(EquipmentSlotType slot, ItemStack stack) {}
+    @Override
+    public void setItemStackToSlot(final EquipmentSlotType slot, final ItemStack stack) {}
 
-	@Override
-	public HandSide getPrimaryHand() {
-		return HandSide.RIGHT;
-	}
+    @Override
+    public HandSide getPrimaryHand() {
+        return HandSide.RIGHT;
+    }
 
-	@Override
-	protected SoundEvent getFallSound(int distance) {
-		return FLSounds.LADDER_FALL.orElseThrow(IllegalStateException::new);
-	}
+    @Override
+    protected SoundEvent getFallSound(final int distance) {
+        return FLSounds.LADDER_FALL.orElseThrow(IllegalStateException::new);
+    }
 
-	@Override
-	protected SoundEvent getHurtSound(DamageSource damage) {
-		return FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new);
-	}
+    @Override
+    protected SoundEvent getHurtSound(final DamageSource damage) {
+        return FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new);
+    }
 
-	@Override
-	protected SoundEvent getDeathSound() {
-		return FLSounds.LADDER_BREAK.orElseThrow(IllegalStateException::new);
-	}
+    @Override
+    protected SoundEvent getDeathSound() {
+        return FLSounds.LADDER_BREAK.orElseThrow(IllegalStateException::new);
+    }
 
-	@Override
-	public boolean attackable() {
-		return false;
-	}
+    @Override
+    public boolean attackable() {
+        return false;
+    }
 
-	@Override
-	public boolean canBeHitWithPotion() {
-		return false;
-	}
+    @Override
+    public boolean canBeHitWithPotion() {
+        return false;
+    }
 
-	public List<AxisAlignedBB> getCollisionSurfaces() {
-		MatrixStack mat = new MatrixStack();
-		mat.rotate(-rotationYaw * Mth.DEG_TO_RAD + Mth.PI, 0, 1, 0);
-		List<AxisAlignedBB> bounds = new ArrayList<>();
-		final float[][] steps = {
-			// steps
-			{ 7.3F, -12 }, { 16.3F, -9.7F }, { 25.4F, -7.3F }, { 34.3F, -4.9F },
-			// third rod so back is partially solid
-			{ 25.9F, 7.3F } };
-		final float bs = 3.67F;
-		final float bhm = bs / 16 / 3;
-		final float bvm = 1 / 16F;
-		for (float[] step : steps) {
-			for (int b = -1; b <= 1; b++) {
-				Vec3d p = mat.transform(new Vec3d(b * bs, step[0], step[1])).scale(1 / 16F);
-				bounds.add(new AxisAlignedBB(posX + p.x - bhm, posY + p.y - bvm, posZ + p.z - bhm, posX + p.x + bhm, posY + p.y + bvm, posZ + p.z + bhm));
-			}
-		}
-		final float tym = 43.5F / 16;
-		final float thm = 4F / 16;
-		bounds.add(new AxisAlignedBB(posX - thm, posY + tym - bvm, posZ - thm, posX + thm, posY + tym + bvm, posZ + thm));
-		return bounds;
-	}
+    public List<AxisAlignedBB> getCollisionSurfaces() {
+        final MatrixStack mat = new MatrixStack();
+        mat.rotate(-this.rotationYaw * Mth.DEG_TO_RAD + Mth.PI, 0, 1, 0);
+        final List<AxisAlignedBB> bounds = new ArrayList<>();
+        final float[][] steps = {
+            // steps
+            {7.3F, -12}, {16.3F, -9.7F}, {25.4F, -7.3F}, {34.3F, -4.9F},
+            // third rod so back is partially solid
+            {25.9F, 7.3F}};
+        final float bs = 3.67F;
+        final float bhm = bs / 16 / 3;
+        final float bvm = 1 / 16F;
+        for (final float[] step : steps) {
+            for (int b = -1; b <= 1; b++) {
+                final Vec3d p = mat.transform(new Vec3d(b * bs, step[0], step[1])).scale(1 / 16F);
+                bounds.add(new AxisAlignedBB(this.posX + p.x - bhm, this.posY + p.y - bvm, this.posZ + p.z - bhm, this.posX + p.x + bhm, this.posY + p.y + bvm, this.posZ + p.z + bhm));
+            }
+        }
+        final float tym = 43.5F / 16;
+        final float thm = 4F / 16;
+        bounds.add(new AxisAlignedBB(this.posX - thm, this.posY + tym - bvm, this.posZ - thm, this.posX + thm, this.posY + tym + bvm, this.posZ + thm));
+        return bounds;
+    }
 
-	@Override
-	public void onStruckByLightning(LightningBoltEntity bolt) {}
+    @Override
+    public void onStruckByLightning(final LightningBoltEntity bolt) {}
 
-	@Override
-	public void addVelocity(double x, double y, double z) {}
+    @Override
+    public void addVelocity(final double x, final double y, final double z) {}
 
-	@Override
-	public void applyEntityCollision(Entity entity) {}
+    @Override
+    public void applyEntityCollision(final Entity entity) {}
 
-	@Override
-	protected void collideWithNearbyEntities() {}
+    @Override
+    protected void collideWithNearbyEntities() {}
 
-	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if (world.isRemote || removed || isInvulnerableTo(source)) {
-			return false;
-		}
-		if (DamageSource.OUT_OF_WORLD == source) {
-			remove();
-		} else if (source.isExplosion()) {
-			playBreakSound();
-			remove();
-		} else if (DamageSource.IN_FIRE == source) {
-			if (isBurning()) {
-				damage(0.15F);
-			} else {
-				setFire(5);
-			}
-		} else if (DamageSource.ON_FIRE == source && getHealth() > 0.5F) {
-			damage(4);
-		} else if (isPlayerDamage(source)) {
-			if (source.isCreativePlayer()) {
-				playBreakSound();
-				playParticles();
-				remove();
-			} else {
-				long time = world.getGameTime();
-				if (time - lastPunchTime > 5) {
-					world.setEntityState(this, PUNCH_ID);
-					lastPunchTime = time;
-				} else {
-					dropIt();
-					playParticles();
-					remove();
-				}
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean attackEntityFrom(final DamageSource source, final float amount) {
+        if (this.world.isRemote || this.removed || this.isInvulnerableTo(source)) {
+            return false;
+        }
+        if (DamageSource.OUT_OF_WORLD == source) {
+            this.remove();
+        } else if (source.isExplosion()) {
+            this.playBreakSound();
+            this.remove();
+        } else if (DamageSource.IN_FIRE == source) {
+            if (this.isBurning()) {
+                this.damage(0.15F);
+            } else {
+                this.setFire(5);
+            }
+        } else if (DamageSource.ON_FIRE == source && this.getHealth() > 0.5F) {
+            this.damage(4);
+        } else if (this.isPlayerDamage(source)) {
+            if (source.isCreativePlayer()) {
+                this.playBreakSound();
+                this.playParticles();
+                this.remove();
+            } else {
+                final long time = this.world.getGameTime();
+                if (time - this.lastPunchTime > 5) {
+                    this.world.setEntityState(this, PUNCH_ID);
+                    this.lastPunchTime = time;
+                } else {
+                    this.dropIt();
+                    this.playParticles();
+                    this.remove();
+                }
+            }
+        }
+        return false;
+    }
 
-	private boolean isPlayerDamage(DamageSource source) {
-		if ("player".equals(source.getDamageType())) {
-			Entity e = source.getTrueSource();
-			return !(e instanceof PlayerEntity) || ((PlayerEntity) e).abilities.allowEdit;
-		}
-		return false;
-	}
+    private boolean isPlayerDamage(final DamageSource source) {
+        if ("player".equals(source.getDamageType())) {
+            final Entity e = source.getTrueSource();
+            return !(e instanceof PlayerEntity) || ((PlayerEntity) e).abilities.allowEdit;
+        }
+        return false;
+    }
 
-	private void dropIt() {
-		Block.spawnAsEntity(world, new BlockPos(this), new ItemStack(FLItems.LADDER.orElseThrow(IllegalStateException::new)));
-	}
+    private void dropIt() {
+        Block.spawnAsEntity(this.world, new BlockPos(this), new ItemStack(FLItems.LADDER.orElseThrow(IllegalStateException::new)));
+    }
 
-	private void playBreakSound() {
-		world.playSound(null, posX, posY, posZ, getDeathSound(), getSoundCategory(), 1, 1);
-	}
+    private void playBreakSound() {
+        this.world.playSound(null, this.posX, this.posY, this.posZ, this.getDeathSound(), this.getSoundCategory(), 1, 1);
+    }
 
-	private void playParticles() {
-		if (world instanceof ServerWorld) {
-			((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.OAK_PLANKS.getDefaultState()), posX, posY + getHeight() / 1.5, posZ, 18, getWidth() / 4, getHeight() / 4, getWidth() / 4, 0.05);
-		}
-	}
+    private void playParticles() {
+        if (this.world instanceof ServerWorld) {
+            ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.OAK_PLANKS.getDefaultState()), this.posX, this.posY + this.getHeight() / 1.5, this.posZ, 18, this.getWidth() / 4, this.getHeight() / 4, this.getWidth() / 4, 0.05);
+        }
+    }
 
-	private void damage(float amount) {
-		float newHealth = getHealth() - amount;
-		if (newHealth <= 0.5F) {
-			dropIt();
-			remove();
-		} else {
-			setHealth(newHealth);
-		}
-	}
+    private void damage(final float amount) {
+        final float newHealth = this.getHealth() - amount;
+        if (newHealth <= 0.5F) {
+            this.dropIt();
+            this.remove();
+        } else {
+            this.setHealth(newHealth);
+        }
+    }
 
-	@Override
-	public void handleStatusUpdate(byte id) {
-		if (id == PUNCH_ID) {
-			if (world.isRemote) {
-				world.playSound(posX, posY, posZ, FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new), getSoundCategory(), 0.3F, 1, false);
-				lastPunchTime = world.getGameTime();
-			}
-		} else {
-			super.handleStatusUpdate(id);
-		}
-	}
+    @Override
+    public void handleStatusUpdate(final byte id) {
+        if (id == PUNCH_ID) {
+            if (this.world.isRemote) {
+                this.world.playSound(this.posX, this.posY, this.posZ, FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new), this.getSoundCategory(), 0.3F, 1, false);
+                this.lastPunchTime = this.world.getGameTime();
+            }
+        } else {
+            super.handleStatusUpdate(id);
+        }
+    }
 
-	@Override
-	public void onKillCommand() {
-		remove();
-	}
+    @Override
+    public void onKillCommand() {
+        this.remove();
+    }
 
-	@Override
-	public void tick() {
-		super.tick();
-		renderYawOffset = rotationYawHead = rotationYaw;
-	}
+    @Override
+    public void tick() {
+        super.tick();
+        this.renderYawOffset = this.rotationYawHead = this.rotationYaw;
+    }
 
-	@Override
-	public void writeSpawnData(PacketBuffer buf) {}
+    @Override
+    public void writeSpawnData(final PacketBuffer buf) {}
 
-	@Override
-	public void readSpawnData(PacketBuffer buf) {
-		prevRenderYawOffset = prevRotationYaw = renderYawOffset = rotationYawHead = rotationYaw;
-	}
+    @Override
+    public void readSpawnData(final PacketBuffer buf) {
+        this.prevRenderYawOffset = this.prevRotationYaw = this.renderYawOffset = this.rotationYawHead = this.rotationYaw;
+    }
 
-	@Override
-	public IPacket<?> createSpawnPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
 }

@@ -40,352 +40,348 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class Connection implements NBTSerializable {
-	public static final int MAX_LENGTH = 32;
+    public static final int MAX_LENGTH = 32;
 
-	public static final double PULL_RANGE = 5;
+    public static final double PULL_RANGE = 5;
 
-	public static final FeatureType CORD_FEATURE = FeatureType.create("cord");
+    public static final FeatureType CORD_FEATURE = FeatureType.create("cord");
 
-	private static final CubicBezier SLACK_CURVE = new CubicBezier(0.495F, 0.505F, 0.495F, 0.505F);
+    private static final CubicBezier SLACK_CURVE = new CubicBezier(0.495F, 0.505F, 0.495F, 0.505F);
 
-	private static final float MAX_SLACK = 3;
+    private static final float MAX_SLACK = 3;
 
-	protected final Fastener<?> fastener;
+    protected final Fastener<?> fastener;
 
-	private final UUID uuid;
+    private final UUID uuid;
 
-	private FastenerAccessor destination;
+    private FastenerAccessor destination;
 
-	protected World world;
+    protected World world;
 
-	private boolean isOrigin;
+    private boolean isOrigin;
 
-	@Nullable
-	private Catenary catenary;
+    @Nullable
+    private Catenary catenary;
 
-	@Nullable
-	private Catenary prevCatenary;
+    @Nullable
+    private Catenary prevCatenary;
 
-	protected float slack = 1;
+    protected float slack = 1;
 
-	private final ConnectionCollision collision = new ConnectionCollision();
+    private final ConnectionCollision collision = new ConnectionCollision();
 
-	private boolean updateCatenary;
+    private boolean updateCatenary;
 
-	private boolean catenaryUpdateState;
+    private boolean catenaryUpdateState;
 
-	protected boolean dataUpdateState;
+    protected boolean dataUpdateState;
 
-	public boolean forceRemove;
+    public boolean forceRemove;
 
-	private int prevStretchStage;
+    private int prevStretchStage;
 
-	private boolean removed;
+    private boolean removed;
 
-	@Nullable
-	private List<Runnable> removeListeners;
+    @Nullable
+    private List<Runnable> removeListeners;
 
-	public Connection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-		this(world, fastener, uuid);
-		this.destination = destination.createAccessor();
-		this.isOrigin = isOrigin;
-		deserializeLogic(compound);
-	}
+    public Connection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
+        this(world, fastener, uuid);
+        this.destination = destination.createAccessor();
+        this.isOrigin = isOrigin;
+        this.deserializeLogic(compound);
+    }
 
-	public Connection(World world, Fastener<?> fastener, UUID uuid) {
-		this.world = world;
-		this.fastener = fastener;
-		this.uuid = uuid;
-		computeCatenary();
-	}
+    public Connection(final World world, final Fastener<?> fastener, final UUID uuid) {
+        this.world = world;
+        this.fastener = fastener;
+        this.uuid = uuid;
+        this.computeCatenary();
+    }
 
-	@Nullable
-	public final Catenary getCatenary() {
-		return catenary;
-	}
+    @Nullable
+    public final Catenary getCatenary() {
+        return this.catenary;
+    }
 
-	@Nullable
-	public final Catenary getPrevCatenary() {
-		return prevCatenary == null ? catenary : prevCatenary;
-	}
+    @Nullable
+    public final Catenary getPrevCatenary() {
+        return this.prevCatenary == null ? this.catenary : this.prevCatenary;
+    }
 
-	public void setWorld(World world) {
-		this.world = world;
-	}
+    public void setWorld(final World world) {
+        this.world = world;
+    }
 
-	public final World getWorld() {
-		return world;
-	}
+    public final World getWorld() {
+        return this.world;
+    }
 
-	public final boolean isOrigin() {
-		return isOrigin;
-	}
-
-	public final ConnectionCollision getCollision() {
-		return collision;
-	}
-
-	public final Fastener<?> getFastener() {
-		return fastener;
-	}
-
-	public final UUID getUUID() {
-		return uuid;
-	}
-
-	public final void setDestination(Fastener<?> destination) {
-		this.destination = destination.createAccessor();
-		computeCatenary();
-	}
-
-	public final FastenerAccessor getDestination() {
-		return destination;
-	}
-
-	public boolean isDestination(FastenerAccessor location) {
-		return destination.equals(location);
-	}
-
-	public boolean shouldDrop() {
-		return fastener.shouldDropConnection() && destination.isLoaded(world) && destination.get(world).shouldDropConnection();
-	}
-
-	public boolean shouldDisconnect() {
-		return !destination.exists(world) || forceRemove;
-	}
-
-	public ItemStack getItemStack() {
-		ItemStack stack = new ItemStack(getType().getItem());
-		CompoundNBT tagCompound = serializeLogic();
-		if (!tagCompound.isEmpty()) {
-			stack.setTag(tagCompound);
-		}
-		return stack;
-	}
-
-	public float getRadius() {
-		return 0.0625F;
-	}
-
-	public final boolean isDynamic() {
-		if (destination.isLoaded(world)) {
-			return fastener.isMoving() || destination.get(world).isMoving();
-		}
-		return false;
-	}
-
-	public final boolean isModifiable(PlayerEntity player) {
-		return world.isBlockModifiable(player, fastener.getPos());
-	}
-
-	public final void addRemoveListener(Runnable listener) {
-		if (removeListeners == null) {
-			removeListeners = new ArrayList<>();
-		}
-		removeListeners.add(listener);
-	}
-
-	public final void remove() {
-		if (!removed) {
-			removed = true;
-			onRemove();
-			if (removeListeners != null) {
-				removeListeners.forEach(Runnable::run);
-			}
-		}
-	}
-
-	public void computeCatenary() {
-		updateCatenary = dataUpdateState = true;
-	}
-
-	public void processClientAction(PlayerEntity player, PlayerAction action, Intersection intersection) {
-		FairyLights.network.sendToServer(new InteractionConnectionMessage(this, action, intersection));
-	}
-
-	public void disconnect(PlayerEntity player, Vec3d hit) {
-		if (!destination.isLoaded(world)) {
-			return;
-		}
-		fastener.removeConnection(this);
-		destination.get(world).removeConnection(uuid);
-		if (shouldDrop()) {
-			ItemStack stack = getItemStack();
-			ItemEntity item = new ItemEntity(world, hit.x, hit.y, hit.z, stack);
-			float scale = 0.05F;
-			item.setMotion(
-				world.rand.nextGaussian() * scale,
-				world.rand.nextGaussian() * scale + 0.2F,
-				world.rand.nextGaussian() * scale
-			);
-			world.addEntity(item);
-		}
-		world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_DISCONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
-	}
-
-	public boolean interact(PlayerEntity player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, Hand hand) {
-		Item item = heldStack.getItem();
-		if (item instanceof ConnectionItem) {
-			if (destination.isLoaded(world)) {
-				replace(player, hit, heldStack);
-				return true;
-			}
-		} else if (heldStack.getItem().isIn(Tags.Items.STRING)) {
-			if (slacken(hit, heldStack, 0.2F)) {
-				return true;
-			}
-		} else if (heldStack.getItem() == Items.STICK) {
-			if (slacken(hit, heldStack, -0.2F)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void replace(PlayerEntity player, Vec3d hit, ItemStack heldStack) {
-		Fastener<?> dest = destination.get(world);
-		fastener.removeConnectionImmediately(this);
-		dest.removeConnectionImmediately(uuid);
-		if (shouldDrop()) {
-			player.inventory.addItemStackToInventory(getItemStack());
-		}
-		CompoundNBT data = MoreObjects.firstNonNull(heldStack.getTag(), new CompoundNBT());
-		ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
-		fastener.connectWith(world, dest, type, data).onConnect(player.world, player, heldStack);
-		heldStack.shrink(1);
-		world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
-	}
-
-	private boolean slacken(Vec3d hit, ItemStack heldStack, float amount) {
-		if (slack <= 0 && amount < 0 || slack >= MAX_SLACK && amount > 0) {
-			return false;
-		}
-		slack = MathHelper.clamp(slack + amount, 0, MAX_SLACK);
-		if (slack < 1e-2F) {
-			slack = 0;
-		}
-		dataUpdateState = true;
-		world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_STRETCH.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - slack) * 0.4F);
-		return true;
-	}
-
-	public void onConnect(World world, PlayerEntity user, ItemStack heldStack) {}
-
-	protected void onRemove() {}
-
-	protected void updatePrev() {}
-
-	protected void onUpdateEarly() {}
-
-	protected void onUpdateLate() {}
-
-	protected void onCalculateCatenary() {}
-
-	public abstract ConnectionType getType();
-
-	public final void update(Vec3d from) {
-		prevCatenary = catenary;
-		updatePrev();
-		destination.update(world, fastener.getPos());
-		if (destination.isLoaded(world)) {
-			onUpdateEarly();
-			Fastener dest = destination.get(world);
-			Vec3d point = dest.getConnectionPoint();
-			updateCatenary(from, dest, point);
-			double dist = point.distanceTo(from);
-			double pull = dist - MAX_LENGTH + PULL_RANGE;
-			if (pull > 0) {
-				int stage = (int) (pull + 0.1F);
-				if (stage > prevStretchStage) {
-					world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_STRETCH.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
-				}
-				prevStretchStage = stage;
-			}
-			if (dist > MAX_LENGTH + PULL_RANGE) {
-				world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 0.75F, 0.8F + world.rand.nextFloat() * 0.3F);
-				forceRemove = true;
-			} else if (dest.isMoving()) {
-				dest.resistSnap(from);
-			}
-			onUpdateLate();
-		}
-	}
-
-	public void updateCatenary(Vec3d from) {
-		if (world.isBlockLoaded(fastener.getPos())) {
-			destination.update(world, fastener.getPos());
-			if (destination.isLoaded(world)) {
-				Fastener dest = destination.get(world);
-				Vec3d point = dest.getConnectionPoint();
-				updateCatenary(from, dest, point);
-				updateCatenary = false;
-			}
-		}
-	}
-
-	private void updateCatenary(Vec3d from, Fastener<?> dest, Vec3d point) {
-		if (updateCatenary || isDynamic()) {
-			Vec3d vec = point.subtract(from);
-			if (vec.length() > 1e-6) {
-				catenary = Catenary.from(vec, SLACK_CURVE, slack);
-				onCalculateCatenary();
-				collision.update(this, from);
-			}
-			catenaryUpdateState = true;
-			updateCatenary = false;
-		}
-	}
-
-	public final boolean pollCateneryUpdate() {
-		boolean state = catenaryUpdateState;
-		catenaryUpdateState = false;
-		return state;
-	}
-
-	public final boolean pollDataUpdate() {
-		boolean state = dataUpdateState;
-		dataUpdateState = false;
-		return state;
-	}
-
-	public void addCollision(List<Collidable> collision, Vec3d origin) {
-		Segment[] segments = catenary.getSegments();
-		if (segments.length < 2) {
-			return;
-		}
-		float radius = getRadius();
-		collision.add(FeatureCollisionTree.build(CORD_FEATURE, segments, s -> {
-			Vec3d start = s.getStart();
-			Vec3d end = s.getEnd();
-			return new AxisAlignedBB(
-				origin.x + start.x / 16, origin.y + start.y / 16, origin.z + start.z / 16,
-				origin.x + end.x / 16, origin.y + end.y / 16, origin.z + end.z / 16
-			).grow(radius);
-		}, 1, segments.length - 2));
-	}
-
-	@Override
-	public CompoundNBT serialize() {
-		CompoundNBT compound = new CompoundNBT();
-		compound.putBoolean("isOrigin", isOrigin);
-		compound.put("destination", FastenerType.serialize(destination));
-		compound.put("logic", serializeLogic());
-		compound.putFloat("slack", slack);
-		return compound;
-	}
-
-	@Override
-	public void deserialize(CompoundNBT compound) {
-		isOrigin = compound.getBoolean("isOrigin");
-		destination = FastenerType.deserialize(compound.getCompound("destination"));
-		deserializeLogic(compound.getCompound("logic"));
-		slack = compound.contains("slack", NBT.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;
-		updateCatenary = true;
-	}
-
-	public CompoundNBT serializeLogic() {
-		return new CompoundNBT();
-	}
-
-	public void deserializeLogic(CompoundNBT compound) {}
+    public final boolean isOrigin() {
+        return this.isOrigin;
+    }
+
+    public final ConnectionCollision getCollision() {
+        return this.collision;
+    }
+
+    public final Fastener<?> getFastener() {
+        return this.fastener;
+    }
+
+    public final UUID getUUID() {
+        return this.uuid;
+    }
+
+    public final void setDestination(final Fastener<?> destination) {
+        this.destination = destination.createAccessor();
+        this.computeCatenary();
+    }
+
+    public final FastenerAccessor getDestination() {
+        return this.destination;
+    }
+
+    public boolean isDestination(final FastenerAccessor location) {
+        return this.destination.equals(location);
+    }
+
+    public boolean shouldDrop() {
+        return this.fastener.shouldDropConnection() && this.destination.isLoaded(this.world) && this.destination.get(this.world).shouldDropConnection();
+    }
+
+    public boolean shouldDisconnect() {
+        return !this.destination.exists(this.world) || this.forceRemove;
+    }
+
+    public ItemStack getItemStack() {
+        final ItemStack stack = new ItemStack(this.getType().getItem());
+        final CompoundNBT tagCompound = this.serializeLogic();
+        if (!tagCompound.isEmpty()) {
+            stack.setTag(tagCompound);
+        }
+        return stack;
+    }
+
+    public float getRadius() {
+        return 0.0625F;
+    }
+
+    public final boolean isDynamic() {
+        if (this.destination.isLoaded(this.world)) {
+            return this.fastener.isMoving() || this.destination.get(this.world).isMoving();
+        }
+        return false;
+    }
+
+    public final boolean isModifiable(final PlayerEntity player) {
+        return this.world.isBlockModifiable(player, this.fastener.getPos());
+    }
+
+    public final void addRemoveListener(final Runnable listener) {
+        if (this.removeListeners == null) {
+            this.removeListeners = new ArrayList<>();
+        }
+        this.removeListeners.add(listener);
+    }
+
+    public final void remove() {
+        if (!this.removed) {
+            this.removed = true;
+            this.onRemove();
+            if (this.removeListeners != null) {
+                this.removeListeners.forEach(Runnable::run);
+            }
+        }
+    }
+
+    public void computeCatenary() {
+        this.updateCatenary = this.dataUpdateState = true;
+    }
+
+    public void processClientAction(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
+        FairyLights.network.sendToServer(new InteractionConnectionMessage(this, action, intersection));
+    }
+
+    public void disconnect(final PlayerEntity player, final Vec3d hit) {
+        if (!this.destination.isLoaded(this.world)) {
+            return;
+        }
+        this.fastener.removeConnection(this);
+        this.destination.get(this.world).removeConnection(this.uuid);
+        if (this.shouldDrop()) {
+            final ItemStack stack = this.getItemStack();
+            final ItemEntity item = new ItemEntity(this.world, hit.x, hit.y, hit.z, stack);
+            final float scale = 0.05F;
+            item.setMotion(
+                this.world.rand.nextGaussian() * scale,
+                this.world.rand.nextGaussian() * scale + 0.2F,
+                this.world.rand.nextGaussian() * scale
+            );
+            this.world.addEntity(item);
+        }
+        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_DISCONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+    }
+
+    public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
+        final Item item = heldStack.getItem();
+        if (item instanceof ConnectionItem) {
+            if (this.destination.isLoaded(this.world)) {
+                this.replace(player, hit, heldStack);
+                return true;
+            }
+        } else if (heldStack.getItem().isIn(Tags.Items.STRING)) {
+            return this.slacken(hit, heldStack, 0.2F);
+        } else if (heldStack.getItem() == Items.STICK) {
+            return this.slacken(hit, heldStack, -0.2F);
+        }
+        return false;
+    }
+
+    private void replace(final PlayerEntity player, final Vec3d hit, final ItemStack heldStack) {
+        final Fastener<?> dest = this.destination.get(this.world);
+        this.fastener.removeConnectionImmediately(this);
+        dest.removeConnectionImmediately(this.uuid);
+        if (this.shouldDrop()) {
+            player.inventory.addItemStackToInventory(this.getItemStack());
+        }
+        final CompoundNBT data = MoreObjects.firstNonNull(heldStack.getTag(), new CompoundNBT());
+        final ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
+        this.fastener.connectWith(this.world, dest, type, data).onConnect(player.world, player, heldStack);
+        heldStack.shrink(1);
+        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+    }
+
+    private boolean slacken(final Vec3d hit, final ItemStack heldStack, final float amount) {
+        if (this.slack <= 0 && amount < 0 || this.slack >= MAX_SLACK && amount > 0) {
+            return false;
+        }
+        this.slack = MathHelper.clamp(this.slack + amount, 0, MAX_SLACK);
+        if (this.slack < 1e-2F) {
+            this.slack = 0;
+        }
+        this.dataUpdateState = true;
+        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_STRETCH.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - this.slack) * 0.4F);
+        return true;
+    }
+
+    public void onConnect(final World world, final PlayerEntity user, final ItemStack heldStack) {}
+
+    protected void onRemove() {}
+
+    protected void updatePrev() {}
+
+    protected void onUpdateEarly() {}
+
+    protected void onUpdateLate() {}
+
+    protected void onCalculateCatenary() {}
+
+    public abstract ConnectionType getType();
+
+    public final void update(final Vec3d from) {
+        this.prevCatenary = this.catenary;
+        this.updatePrev();
+        this.destination.update(this.world, this.fastener.getPos());
+        if (this.destination.isLoaded(this.world)) {
+            this.onUpdateEarly();
+            final Fastener dest = this.destination.get(this.world);
+            final Vec3d point = dest.getConnectionPoint();
+            this.updateCatenary(from, dest, point);
+            final double dist = point.distanceTo(from);
+            final double pull = dist - MAX_LENGTH + PULL_RANGE;
+            if (pull > 0) {
+                final int stage = (int) (pull + 0.1F);
+                if (stage > this.prevStretchStage) {
+                    this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_STRETCH.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
+                }
+                this.prevStretchStage = stage;
+            }
+            if (dist > MAX_LENGTH + PULL_RANGE) {
+                this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 0.75F, 0.8F + this.world.rand.nextFloat() * 0.3F);
+                this.forceRemove = true;
+            } else if (dest.isMoving()) {
+                dest.resistSnap(from);
+            }
+            this.onUpdateLate();
+        }
+    }
+
+    public void updateCatenary(final Vec3d from) {
+        if (this.world.isBlockLoaded(this.fastener.getPos())) {
+            this.destination.update(this.world, this.fastener.getPos());
+            if (this.destination.isLoaded(this.world)) {
+                final Fastener dest = this.destination.get(this.world);
+                final Vec3d point = dest.getConnectionPoint();
+                this.updateCatenary(from, dest, point);
+                this.updateCatenary = false;
+            }
+        }
+    }
+
+    private void updateCatenary(final Vec3d from, final Fastener<?> dest, final Vec3d point) {
+        if (this.updateCatenary || this.isDynamic()) {
+            final Vec3d vec = point.subtract(from);
+            if (vec.length() > 1e-6) {
+                this.catenary = Catenary.from(vec, SLACK_CURVE, this.slack);
+                this.onCalculateCatenary();
+                this.collision.update(this, from);
+            }
+            this.catenaryUpdateState = true;
+            this.updateCatenary = false;
+        }
+    }
+
+    public final boolean pollCateneryUpdate() {
+        final boolean state = this.catenaryUpdateState;
+        this.catenaryUpdateState = false;
+        return state;
+    }
+
+    public final boolean pollDataUpdate() {
+        final boolean state = this.dataUpdateState;
+        this.dataUpdateState = false;
+        return state;
+    }
+
+    public void addCollision(final List<Collidable> collision, final Vec3d origin) {
+        final Segment[] segments = this.catenary.getSegments();
+        if (segments.length < 2) {
+            return;
+        }
+        final float radius = this.getRadius();
+        collision.add(FeatureCollisionTree.build(CORD_FEATURE, segments, s -> {
+            final Vec3d start = s.getStart();
+            final Vec3d end = s.getEnd();
+            return new AxisAlignedBB(
+                origin.x + start.x / 16, origin.y + start.y / 16, origin.z + start.z / 16,
+                origin.x + end.x / 16, origin.y + end.y / 16, origin.z + end.z / 16
+            ).grow(radius);
+        }, 1, segments.length - 2));
+    }
+
+    @Override
+    public CompoundNBT serialize() {
+        final CompoundNBT compound = new CompoundNBT();
+        compound.putBoolean("isOrigin", this.isOrigin);
+        compound.put("destination", FastenerType.serialize(this.destination));
+        compound.put("logic", this.serializeLogic());
+        compound.putFloat("slack", this.slack);
+        return compound;
+    }
+
+    @Override
+    public void deserialize(final CompoundNBT compound) {
+        this.isOrigin = compound.getBoolean("isOrigin");
+        this.destination = FastenerType.deserialize(compound.getCompound("destination"));
+        this.deserializeLogic(compound.getCompound("logic"));
+        this.slack = compound.contains("slack", NBT.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;
+        this.updateCatenary = true;
+    }
+
+    public CompoundNBT serializeLogic() {
+        return new CompoundNBT();
+    }
+
+    public void deserializeLogic(final CompoundNBT compound) {}
 }

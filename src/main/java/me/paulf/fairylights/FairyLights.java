@@ -22,44 +22,44 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod(FairyLights.ID)
 public final class FairyLights {
-	public static final String ID = "fairylights";
+    public static final String ID = "fairylights";
 
-	public static ServerProxy proxy;
+    public static ServerProxy proxy;
 
-	public static SimpleChannel network;
+    public static SimpleChannel network;
 
-	public static ItemGroup fairyLightsTab = new FairyLightsItemGroup();
+    public static ItemGroup fairyLightsTab = new FairyLightsItemGroup();
 
-	public static CalendarEvent christmas;
+    public static CalendarEvent christmas;
 
-	public static JingleLibrary christmasJingles;
+    public static JingleLibrary christmasJingles;
 
-	public static JingleLibrary randomJingles;
+    public static JingleLibrary randomJingles;
 
-	public FairyLights() {
-		proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		FLSounds.REG.register(bus);
-		FLBlocks.REG.register(bus);
-		FLEntities.REG.register(bus);
-		FLItems.REG.register(bus);
-		FLBlockEntities.REG.register(bus);
-		FLCraftingRecipes.REG.register(bus);
-		bus.<FMLCommonSetupEvent>addListener(this::init);
-		bus.<ModelRegistryEvent>addListener(this::init);
-	}
+    public FairyLights() {
+        proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
+        final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        FLSounds.REG.register(bus);
+        FLBlocks.REG.register(bus);
+        FLEntities.REG.register(bus);
+        FLItems.REG.register(bus);
+        FLBlockEntities.REG.register(bus);
+        FLCraftingRecipes.REG.register(bus);
+        bus.<FMLCommonSetupEvent>addListener(this::init);
+        bus.<ModelRegistryEvent>addListener(this::init);
+    }
 
-	public void init(FMLCommonSetupEvent event) {
-		proxy.initConfig();
-		proxy.initIntegration();
-		proxy.initGUI();
-		proxy.initRenders();
-		proxy.initNetwork();
-		proxy.initEggs();
-		proxy.initHandlers();
-	}
+    public void init(final FMLCommonSetupEvent event) {
+        proxy.initConfig();
+        proxy.initIntegration();
+        proxy.initGUI();
+        proxy.initRenders();
+        proxy.initNetwork();
+        proxy.initEggs();
+        proxy.initHandlers();
+    }
 
-	public void init(ModelRegistryEvent event) {
-		proxy.initRendersLate();
-	}
+    public void init(final ModelRegistryEvent event) {
+        proxy.initRendersLate();
+    }
 }

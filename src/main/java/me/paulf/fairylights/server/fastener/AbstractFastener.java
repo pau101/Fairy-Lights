@@ -33,260 +33,260 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 public abstract class AbstractFastener<F extends FastenerAccessor> implements Fastener<F> {
-	protected Map<UUID, Connection> connections = new HashMap<>();
+    protected Map<UUID, Connection> connections = new HashMap<>();
 
-	protected AxisAlignedBB bounds = TileEntity.INFINITE_EXTENT_AABB;
+    protected AxisAlignedBB bounds = TileEntity.INFINITE_EXTENT_AABB;
 
-	@Nullable
-	private World world;
+    @Nullable
+    private World world;
 
-	private boolean isDirty;
+    private boolean isDirty;
 
-	@Override
-	public Map<UUID, Connection> getConnections() {
-		return connections;
-	}
+    @Override
+    public Map<UUID, Connection> getConnections() {
+        return this.connections;
+    }
 
-	@Override
-	public AxisAlignedBB getBounds() {
-		return bounds;
-	}
+    @Override
+    public AxisAlignedBB getBounds() {
+        return this.bounds;
+    }
 
-	@Override
-	public abstract BlockPos getPos();
+    @Override
+    public abstract BlockPos getPos();
 
-	@Override
-	public void setWorld(World world) {
-		this.world = world;
-		connections.values().forEach(c -> c.setWorld(world));
-	}
+    @Override
+    public void setWorld(final World world) {
+        this.world = world;
+        this.connections.values().forEach(c -> c.setWorld(world));
+    }
 
-	@Nullable
-	@Override
-	public World getWorld() {
-		return world;
-	}
+    @Nullable
+    @Override
+    public World getWorld() {
+        return this.world;
+    }
 
-	@Override
-	public boolean update() {
-		Iterator<Connection> connectionIterator = connections.values().iterator();
-		Vec3d fromOffset = getConnectionPoint();
-		boolean catenaryChange = false, dataChange = isDirty;
-		isDirty = false;
-		while (connectionIterator.hasNext()) {
-			Connection connection = connectionIterator.next();
-			connection.update(fromOffset);
-			catenaryChange |= connection.pollCateneryUpdate();
-			dataChange |= connection.pollDataUpdate();
-			if (connection.shouldDisconnect()) {
-				catenaryChange = dataChange = true;
-				connection.remove();
-				connectionIterator.remove();
-			}
-		}
-		if (catenaryChange) {
-			calculateBoundingBox();
-		}
-		return dataChange;
-	}
+    @Override
+    public boolean update() {
+        final Iterator<Connection> connectionIterator = this.connections.values().iterator();
+        final Vec3d fromOffset = this.getConnectionPoint();
+        boolean catenaryChange = false, dataChange = this.isDirty;
+        this.isDirty = false;
+        while (connectionIterator.hasNext()) {
+            final Connection connection = connectionIterator.next();
+            connection.update(fromOffset);
+            catenaryChange |= connection.pollCateneryUpdate();
+            dataChange |= connection.pollDataUpdate();
+            if (connection.shouldDisconnect()) {
+                catenaryChange = dataChange = true;
+                connection.remove();
+                connectionIterator.remove();
+            }
+        }
+        if (catenaryChange) {
+            this.calculateBoundingBox();
+        }
+        return dataChange;
+    }
 
-	@Override
-	public void setDirty() {
-		isDirty = true;
-	}
+    @Override
+    public void setDirty() {
+        this.isDirty = true;
+    }
 
-	protected void calculateBoundingBox() {
-		AABBBuilder builder = new AABBBuilder();
-		for (Connection connection : connections.values()) {
-			Catenary catenary = connection.getCatenary();
-			if (catenary == null) {
-				continue;
-			}
-			Segment[] segments = catenary.getSegments();
-			for (int i = 0; i < segments.length; i++) {
-				Segment segment = segments[i];
-				builder.include(segment.getStart().scale(0.0625));
-			}
-			builder.include(segments[segments.length - 1].getEnd().scale(0.0625));
-		}
-		bounds = builder.add(getConnectionPoint()).build();
-	}
+    protected void calculateBoundingBox() {
+        final AABBBuilder builder = new AABBBuilder();
+        for (final Connection connection : this.connections.values()) {
+            final Catenary catenary = connection.getCatenary();
+            if (catenary == null) {
+                continue;
+            }
+            final Segment[] segments = catenary.getSegments();
+            for (int i = 0; i < segments.length; i++) {
+                final Segment segment = segments[i];
+                builder.include(segment.getStart().scale(0.0625));
+            }
+            builder.include(segments[segments.length - 1].getEnd().scale(0.0625));
+        }
+        this.bounds = builder.add(this.getConnectionPoint()).build();
+    }
 
-	@Override
-	public boolean shouldDropConnection() {
-		return true;
-	}
+    @Override
+    public boolean shouldDropConnection() {
+        return true;
+    }
 
-	@Override
-	public void dropItems(World world, BlockPos pos) {
-		float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
-		float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
-		float offsetZ = world.rand.nextFloat() * 0.8F + 0.1F;
-		for (Connection connection : connections.values()) {
-			if (connection.shouldDrop()) {
-				ItemStack stack = connection.getItemStack();
-				ItemEntity entityItem = new ItemEntity(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
-				float scale = 0.05F;
-				entityItem.setMotion(
-					world.rand.nextGaussian() * scale,
-					world.rand.nextGaussian() * scale + 0.2F,
-					world.rand.nextGaussian() * scale
-				);
-				world.addEntity(entityItem);
-			}
-		}
-	}
+    @Override
+    public void dropItems(final World world, final BlockPos pos) {
+        final float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
+        final float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
+        final float offsetZ = world.rand.nextFloat() * 0.8F + 0.1F;
+        for (final Connection connection : this.connections.values()) {
+            if (connection.shouldDrop()) {
+                final ItemStack stack = connection.getItemStack();
+                final ItemEntity entityItem = new ItemEntity(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
+                final float scale = 0.05F;
+                entityItem.setMotion(
+                    world.rand.nextGaussian() * scale,
+                    world.rand.nextGaussian() * scale + 0.2F,
+                    world.rand.nextGaussian() * scale
+                );
+                world.addEntity(entityItem);
+            }
+        }
+    }
 
-	@Override
-	public void remove() {
-		connections.values().forEach(Connection::remove);
-	}
+    @Override
+    public void remove() {
+        this.connections.values().forEach(Connection::remove);
+    }
 
-	@Override
-	public boolean hasNoConnections() {
-		return connections.isEmpty();
-	}
+    @Override
+    public boolean hasNoConnections() {
+        return this.connections.isEmpty();
+    }
 
-	@Override
-	public boolean hasConnectionWith(Fastener<?> fastener) {
-		return getConnectionTo(fastener.createAccessor()) != null;
-	}
+    @Override
+    public boolean hasConnectionWith(final Fastener<?> fastener) {
+        return this.getConnectionTo(fastener.createAccessor()) != null;
+    }
 
-	@Nullable
-	@Override
-	public Connection getConnectionTo(FastenerAccessor destination) {
-		for (Connection connection : connections.values()) {
-			if (connection.isDestination(destination)) {
-				return connection;
-			}
-		}
-		return null;
-	}
+    @Nullable
+    @Override
+    public Connection getConnectionTo(final FastenerAccessor destination) {
+        for (final Connection connection : this.connections.values()) {
+            if (connection.isDestination(destination)) {
+                return connection;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public boolean removeConnection(UUID uuid) {
-		return removeConnection(connections.get(uuid));
-	}
+    @Override
+    public boolean removeConnection(final UUID uuid) {
+        return this.removeConnection(this.connections.get(uuid));
+    }
 
-	@Override
-	public boolean removeConnection(Connection connection) {
-		if (connection != null) {
-			connection.forceRemove = true;
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean removeConnection(final Connection connection) {
+        if (connection != null) {
+            connection.forceRemove = true;
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public boolean removeConnectionImmediately(UUID uuid) {
-		Connection connection = connections.remove(uuid);
-		if (connection == null) {
-			return false;
-		}
-		connection.remove();
-		calculateBoundingBox();
-		setDirty();
-		return true;
-	}
+    @Override
+    public boolean removeConnectionImmediately(final UUID uuid) {
+        final Connection connection = this.connections.remove(uuid);
+        if (connection == null) {
+            return false;
+        }
+        connection.remove();
+        this.calculateBoundingBox();
+        this.setDirty();
+        return true;
+    }
 
-	@Override
-	public boolean removeConnectionImmediately(Connection connection) {
-		return removeConnectionImmediately(connection.getUUID());
-	}
+    @Override
+    public boolean removeConnectionImmediately(final Connection connection) {
+        return this.removeConnectionImmediately(connection.getUUID());
+    }
 
-	@Override
-	public Connection reconnect(Fastener<?> oldDestination, Fastener<?> newDestination) {
-		for (Entry<UUID, Connection> entry : connections.entrySet()) {
-			Connection connection = entry.getValue();
-			if (!connection.getDestination().isLoaded(world)) {
-				continue;
-			}
-			if (connection.getDestination().get(world).equals(oldDestination)) {
-				if (connection.getFastener().equals(newDestination) || newDestination.hasConnectionWith(connection.getFastener())) {
-					return null;
-				}
-				UUID uuid = entry.getKey();
-				oldDestination.removeConnectionImmediately(uuid);
-				connection.setDestination(newDestination);
-				Connection other = newDestination.createConnection(world, uuid, this, connection.getType(), !connection.isOrigin(), connection.serializeLogic());
-				newDestination.getConnections().put(uuid, other);
-				return connection;
-			}
-		}
-		return null;
-	}
+    @Override
+    public Connection reconnect(final Fastener<?> oldDestination, final Fastener<?> newDestination) {
+        for (final Entry<UUID, Connection> entry : this.connections.entrySet()) {
+            final Connection connection = entry.getValue();
+            if (!connection.getDestination().isLoaded(this.world)) {
+                continue;
+            }
+            if (connection.getDestination().get(this.world).equals(oldDestination)) {
+                if (connection.getFastener().equals(newDestination) || newDestination.hasConnectionWith(connection.getFastener())) {
+                    return null;
+                }
+                final UUID uuid = entry.getKey();
+                oldDestination.removeConnectionImmediately(uuid);
+                connection.setDestination(newDestination);
+                final Connection other = newDestination.createConnection(this.world, uuid, this, connection.getType(), !connection.isOrigin(), connection.serializeLogic());
+                newDestination.getConnections().put(uuid, other);
+                return connection;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public Connection connectWith(World world, Fastener<?> destination, ConnectionType type, CompoundNBT compound) {
-		UUID uuid = MathHelper.getRandomUUID();
-		connections.put(uuid, createConnection(world, uuid, destination, type, true, compound));
-		Connection c = destination.createConnection(world, uuid, this, type, false, compound);
-		destination.getConnections().put(uuid, c);
-		return c;
-	}
+    @Override
+    public Connection connectWith(final World world, final Fastener<?> destination, final ConnectionType type, final CompoundNBT compound) {
+        final UUID uuid = MathHelper.getRandomUUID();
+        this.connections.put(uuid, this.createConnection(world, uuid, destination, type, true, compound));
+        final Connection c = destination.createConnection(world, uuid, this, type, false, compound);
+        destination.getConnections().put(uuid, c);
+        return c;
+    }
 
-	@Override
-	public Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, CompoundNBT compound) {
-		return type.createConnection(world, this, uuid, destination, isOrigin, compound);
-	}
+    @Override
+    public Connection createConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType type, final boolean isOrigin, final CompoundNBT compound) {
+        return type.createConnection(world, this, uuid, destination, isOrigin, compound);
+    }
 
-	@Override
-	public CompoundNBT serializeNBT() {
-		CompoundNBT compound = new CompoundNBT();
-		ListNBT listConnections = new ListNBT();
-		for (Entry<UUID, Connection> connectionEntry : connections.entrySet()) {
-			UUID uuid = connectionEntry.getKey();
-			Connection connection = connectionEntry.getValue();
-			CompoundNBT connectionCompound = new CompoundNBT();
-			connectionCompound.put("connection", connection.serialize());
-			connectionCompound.putByte("type", (byte) connection.getType().ordinal());
-			connectionCompound.put("uuid", NBTUtil.writeUniqueId(uuid));
-			listConnections.add(connectionCompound);
-		}
-		compound.put("connections", listConnections);
-		return compound;
-	}
+    @Override
+    public CompoundNBT serializeNBT() {
+        final CompoundNBT compound = new CompoundNBT();
+        final ListNBT listConnections = new ListNBT();
+        for (final Entry<UUID, Connection> connectionEntry : this.connections.entrySet()) {
+            final UUID uuid = connectionEntry.getKey();
+            final Connection connection = connectionEntry.getValue();
+            final CompoundNBT connectionCompound = new CompoundNBT();
+            connectionCompound.put("connection", connection.serialize());
+            connectionCompound.putByte("type", (byte) connection.getType().ordinal());
+            connectionCompound.put("uuid", NBTUtil.writeUniqueId(uuid));
+            listConnections.add(connectionCompound);
+        }
+        compound.put("connections", listConnections);
+        return compound;
+    }
 
-	@Override
-	public void deserializeNBT(CompoundNBT compound) {
-		if (!compound.contains("connections", NBT.TAG_LIST)) {
-			return;
-		}
-		ListNBT listConnections = compound.getList("connections", NBT.TAG_COMPOUND);
-		List<UUID> nbtUUIDs = new ArrayList<>();
-		for (int i = 0; i < listConnections.size(); i++) {
-			CompoundNBT connectionCompound = listConnections.getCompound(i);
-			UUID uuid;
-			if (connectionCompound.contains("uuid", NBT.TAG_COMPOUND)) {
-				uuid = NBTUtil.readUniqueId(connectionCompound.getCompound("uuid"));
-			} else {
-				uuid = MathHelper.getRandomUUID();
-			}
-			nbtUUIDs.add(uuid);
-			Connection connection;
-			if (connections.containsKey(uuid)) {
-				connection = connections.get(uuid);
-			} else {
-				ConnectionType type = ConnectionType.from(connectionCompound.getByte("type"));
-				connection = type.createConnection(world, this, uuid);
-				connections.put(uuid, connection);
-			}
-			connection.deserialize(connectionCompound.getCompound("connection"));
-		}
-		Iterator<Entry<UUID, Connection>> connectionsIter = connections.entrySet().iterator();
-		while (connectionsIter.hasNext()) {
-			Entry<UUID, Connection> connection = connectionsIter.next();
-			if (!nbtUUIDs.contains(connection.getKey())) {
-				connectionsIter.remove();
-				connection.getValue().remove();
-			}
-		}
-	}
+    @Override
+    public void deserializeNBT(final CompoundNBT compound) {
+        if (!compound.contains("connections", NBT.TAG_LIST)) {
+            return;
+        }
+        final ListNBT listConnections = compound.getList("connections", NBT.TAG_COMPOUND);
+        final List<UUID> nbtUUIDs = new ArrayList<>();
+        for (int i = 0; i < listConnections.size(); i++) {
+            final CompoundNBT connectionCompound = listConnections.getCompound(i);
+            final UUID uuid;
+            if (connectionCompound.contains("uuid", NBT.TAG_COMPOUND)) {
+                uuid = NBTUtil.readUniqueId(connectionCompound.getCompound("uuid"));
+            } else {
+                uuid = MathHelper.getRandomUUID();
+            }
+            nbtUUIDs.add(uuid);
+            final Connection connection;
+            if (this.connections.containsKey(uuid)) {
+                connection = this.connections.get(uuid);
+            } else {
+                final ConnectionType type = ConnectionType.from(connectionCompound.getByte("type"));
+                connection = type.createConnection(this.world, this, uuid);
+                this.connections.put(uuid, connection);
+            }
+            connection.deserialize(connectionCompound.getCompound("connection"));
+        }
+        final Iterator<Entry<UUID, Connection>> connectionsIter = this.connections.entrySet().iterator();
+        while (connectionsIter.hasNext()) {
+            final Entry<UUID, Connection> connection = connectionsIter.next();
+            if (!nbtUUIDs.contains(connection.getKey())) {
+                connectionsIter.remove();
+                connection.getValue().remove();
+            }
+        }
+    }
 
-	private final LazyOptional<Fastener<?>> lazyOptional = LazyOptional.of(() -> this);
+    private final LazyOptional<Fastener<?>> lazyOptional = LazyOptional.of(() -> this);
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-		return capability == CapabilityHandler.FASTENER_CAP ? lazyOptional.cast() : LazyOptional.empty();
-	}
+    @Override
+    public <T> LazyOptional<T> getCapability(final Capability<T> capability, final Direction facing) {
+        return capability == CapabilityHandler.FASTENER_CAP ? this.lazyOptional.cast() : LazyOptional.empty();
+    }
 }

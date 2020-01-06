@@ -46,7 +46,7 @@ public class LightBlock extends HorizontalFaceBlock {
     }
 
     public LightVariant getVariant() {
-        return variant;
+        return this.variant;
     }
 
     @Override
@@ -112,8 +112,8 @@ public class LightBlock extends HorizontalFaceBlock {
 
     @Override
     public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos, final ISelectionContext context) {
-        float w = this.variant.getWidth();
-        float h = this.variant.getHeight();
+        final float w = this.variant.getWidth();
+        final float h = this.variant.getHeight();
         switch (state.get(FACE)) {
             default:
                 return this.shape;
@@ -160,7 +160,7 @@ public class LightBlock extends HorizontalFaceBlock {
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderType(final BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 

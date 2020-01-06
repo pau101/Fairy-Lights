@@ -18,280 +18,280 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class JinglePlayer {
-	private static final Set<String> WITH_LOVE = Sets.newHashSet("my_anthem", "im_fine_thank_you");
+    private static final Set<String> WITH_LOVE = Sets.newHashSet("my_anthem", "im_fine_thank_you");
 
-	private State<?> state = new NotPlayingState();
+    private State<?> state = new NotPlayingState();
 
-	@Nullable
-	public Jingle getJingle() {
-		return state.getJingle();
-	}
+    @Nullable
+    public Jingle getJingle() {
+        return this.state.getJingle();
+    }
 
-	public boolean isPlaying() {
-		return state.isPlaying();
-	}
+    public boolean isPlaying() {
+        return this.state.isPlaying();
+    }
 
-	public float getProgress() {
-		return state.getProgress();
-	}
+    public float getProgress() {
+        return this.state.getProgress();
+    }
 
-	public void play(JingleLibrary library, Jingle jingle, int lightOffset) {
-		state = new PlayingState(library, jingle, lightOffset);
-	}
+    public void play(final JingleLibrary library, final Jingle jingle, final int lightOffset) {
+        this.state = new PlayingState(library, jingle, lightOffset);
+    }
 
-	public void tick(World world, Vec3d origin, Light[] lights, boolean isClient) {
-		state = state.tick(world, origin, lights, isClient);
-	}
+    public void tick(final World world, final Vec3d origin, final Light[] lights, final boolean isClient) {
+        this.state = this.state.tick(world, origin, lights, isClient);
+    }
 
-	public CompoundNBT serialize() {
-		return StateType.serialize(state);
-	}
+    public CompoundNBT serialize() {
+        return StateType.serialize(this.state);
+    }
 
-	public void deserialize(CompoundNBT compound) {
-		state = StateType.deserialize(compound);
-	}
+    public void deserialize(final CompoundNBT compound) {
+        this.state = StateType.deserialize(compound);
+    }
 
-	private enum StateType {
-		NOT_PLAYING(NotPlayingState.FACTORY),
-		PLAYING(PlayingState.FACTORY);
+    private enum StateType {
+        NOT_PLAYING(NotPlayingState.FACTORY),
+        PLAYING(PlayingState.FACTORY);
 
-		private final static Map<String, StateType> MAP = Stream.of(values())
-				.collect(Collectors.toMap(StateType::getId, Function.identity()));
+        private static final Map<String, StateType> MAP = Stream.of(values())
+            .collect(Collectors.toMap(StateType::getId, Function.identity()));
 
-		private final StateFactory<?> factory;
+        private final StateFactory<?> factory;
 
-		StateType(StateFactory<?> factory) {
-			this.factory = factory;
-		}
+        StateType(final StateFactory<?> factory) {
+            this.factory = factory;
+        }
 
-		private String getId() {
-			return factory.getId();
-		}
+        private String getId() {
+            return this.factory.getId();
+        }
 
-		private StateFactory<?> getFactory() {
-			return factory;
-		}
+        private StateFactory<?> getFactory() {
+            return this.factory;
+        }
 
-		public static <S extends State<S>> CompoundNBT serialize(State<S> state) {
-			StateFactory<S> factory = state.getFactory();
-			CompoundNBT compound = new CompoundNBT();
-			compound.putString("state", factory.getId());
-			compound.put("data", factory.serialize(state.resolve()));
-			return compound;
-		}
+        public static <S extends State<S>> CompoundNBT serialize(final State<S> state) {
+            final StateFactory<S> factory = state.getFactory();
+            final CompoundNBT compound = new CompoundNBT();
+            compound.putString("state", factory.getId());
+            compound.put("data", factory.serialize(state.resolve()));
+            return compound;
+        }
 
-		public static State<?> deserialize(CompoundNBT compound) {
-			return MAP.getOrDefault(compound.getString("state"), NOT_PLAYING)
-					.getFactory()
-					.deserialize(compound.getCompound("data"));
-		}
-	}
+        public static State<?> deserialize(final CompoundNBT compound) {
+            return MAP.getOrDefault(compound.getString("state"), NOT_PLAYING)
+                .getFactory()
+                .deserialize(compound.getCompound("data"));
+        }
+    }
 
-	private static abstract class StateFactory<S extends State<S>> {
-		public abstract String getId();
+    private abstract static class StateFactory<S extends State<S>> {
+        public abstract String getId();
 
-		public abstract CompoundNBT serialize(S state);
+        public abstract CompoundNBT serialize(S state);
 
-		public abstract State<?> deserialize(CompoundNBT compound);
-	}
+        public abstract State<?> deserialize(CompoundNBT compound);
+    }
 
-	private static abstract class State<S extends State<S>> {
-		public abstract Jingle getJingle();
+    private abstract static class State<S extends State<S>> {
+        public abstract Jingle getJingle();
 
-		public abstract boolean isPlaying();
+        public abstract boolean isPlaying();
 
-		public abstract float getProgress();
+        public abstract float getProgress();
 
-		public abstract State<?> tick(World world, Vec3d origin, Light[] lights, boolean isClient);
+        public abstract State<?> tick(World world, Vec3d origin, Light[] lights, boolean isClient);
 
-		public abstract StateFactory<S> getFactory();
+        public abstract StateFactory<S> getFactory();
 
-		public abstract S resolve();
-	}
+        public abstract S resolve();
+    }
 
-	private static final class NotPlayingState extends State<NotPlayingState> {
-		public static final StateFactory<NotPlayingState> FACTORY = newFactory();
+    private static final class NotPlayingState extends State<NotPlayingState> {
+        public static final StateFactory<NotPlayingState> FACTORY = newFactory();
 
-		@Override
-		public Jingle getJingle() {
-			return null;
-		}
+        @Override
+        public Jingle getJingle() {
+            return null;
+        }
 
-		@Override
-		public boolean isPlaying() {
-			return false;
-		}
+        @Override
+        public boolean isPlaying() {
+            return false;
+        }
 
-		@Override
-		public float getProgress() {
-			return 0;
-		}
+        @Override
+        public float getProgress() {
+            return 0;
+        }
 
-		@Override
-		public State<?> tick(World world, Vec3d origin, Light[] lights, boolean isClient) {
-			return this;
-		}
+        @Override
+        public State<?> tick(final World world, final Vec3d origin, final Light[] lights, final boolean isClient) {
+            return this;
+        }
 
-		@Override
-		public StateFactory<NotPlayingState> getFactory() {
-			return FACTORY;
-		}
+        @Override
+        public StateFactory<NotPlayingState> getFactory() {
+            return FACTORY;
+        }
 
-		@Override
-		public NotPlayingState resolve() {
-			return this;
-		}
+        @Override
+        public NotPlayingState resolve() {
+            return this;
+        }
 
-		private static StateFactory<NotPlayingState> newFactory() {
-			return new StateFactory<NotPlayingState>() {
-				@Override
-				public String getId() {
-					return "not_playing";
-				}
+        private static StateFactory<NotPlayingState> newFactory() {
+            return new StateFactory<NotPlayingState>() {
+                @Override
+                public String getId() {
+                    return "not_playing";
+                }
 
-				@Override
-				public CompoundNBT serialize(NotPlayingState state) {
-					return new CompoundNBT();
-				}
+                @Override
+                public CompoundNBT serialize(final NotPlayingState state) {
+                    return new CompoundNBT();
+                }
 
-				@Override
-				public NotPlayingState deserialize(CompoundNBT compound) {
-					return new NotPlayingState();
-				}
-			};
-		}
-	}
+                @Override
+                public NotPlayingState deserialize(final CompoundNBT compound) {
+                    return new NotPlayingState();
+                }
+            };
+        }
+    }
 
-	private static final class PlayingState extends State<PlayingState> {
-		public static final StateFactory<PlayingState> FACTORY = newFactory();
+    private static final class PlayingState extends State<PlayingState> {
+        public static final StateFactory<PlayingState> FACTORY = newFactory();
 
-		private final JingleLibrary library;
+        private final JingleLibrary library;
 
-		private final Jingle jingle;
+        private final Jingle jingle;
 
-		private final int lightOffset;
+        private final int lightOffset;
 
-		private final List<Jingle.PlayTick> playTicks;
+        private final List<Jingle.PlayTick> playTicks;
 
-		private final int length;
+        private final int length;
 
-		private final BasicParticleType[] noteParticle;
+        private final BasicParticleType[] noteParticle;
 
-		private int index;
+        private int index;
 
-		private int rest;
+        private int rest;
 
-		private int time;
+        private int time;
 
-		private PlayingState(JingleLibrary library, Jingle jingle, int lightOffset) {
-			this(library, jingle, lightOffset, jingle.getPlayTicks(), jingle.getLength(), getParticles(jingle));
-		}
+        private PlayingState(final JingleLibrary library, final Jingle jingle, final int lightOffset) {
+            this(library, jingle, lightOffset, jingle.getPlayTicks(), jingle.getLength(), getParticles(jingle));
+        }
 
-		private PlayingState(JingleLibrary library, Jingle jingle, int lightOffset, List<Jingle.PlayTick> playTicks, int length, BasicParticleType[] noteParticle) {
-			this.library = library;
-			this.jingle = jingle;
-			this.lightOffset = lightOffset;
-			this.playTicks = playTicks;
-			this.length = length;
-			this.noteParticle = noteParticle;
-		}
+        private PlayingState(final JingleLibrary library, final Jingle jingle, final int lightOffset, final List<Jingle.PlayTick> playTicks, final int length, final BasicParticleType[] noteParticle) {
+            this.library = library;
+            this.jingle = jingle;
+            this.lightOffset = lightOffset;
+            this.playTicks = playTicks;
+            this.length = length;
+            this.noteParticle = noteParticle;
+        }
 
-		@Override
-		public Jingle getJingle() {
-			return jingle;
-		}
+        @Override
+        public Jingle getJingle() {
+            return this.jingle;
+        }
 
-		@Override
-		public boolean isPlaying() {
-			return true;
-		}
+        @Override
+        public boolean isPlaying() {
+            return true;
+        }
 
-		@Override
-		public float getProgress() {
-			return time / (float) length;
-		}
+        @Override
+        public float getProgress() {
+            return this.time / (float) this.length;
+        }
 
-		@Override
-		public State<?> tick(World world, Vec3d origin, Light[] lights, boolean isClient) {
-			time++;
-			if (rest <= 0) {
-				if (index >= playTicks.size()) {
-					return new NotPlayingState();
-				}
-				Jingle.PlayTick playTick = playTicks.get(index++);
-				rest = playTick.getLength() - 1;
-				if (isClient) {
-					play(world, origin, lights, playTick);
-				}
-			} else {
-				rest--;
-			}
-			return this;
-		}
+        @Override
+        public State<?> tick(final World world, final Vec3d origin, final Light[] lights, final boolean isClient) {
+            this.time++;
+            if (this.rest <= 0) {
+                if (this.index >= this.playTicks.size()) {
+                    return new NotPlayingState();
+                }
+                final Jingle.PlayTick playTick = this.playTicks.get(this.index++);
+                this.rest = playTick.getLength() - 1;
+                if (isClient) {
+                    this.play(world, origin, lights, playTick);
+                }
+            } else {
+                this.rest--;
+            }
+            return this;
+        }
 
-		private void play(World world, Vec3d origin, Light[] lights, Jingle.PlayTick playTick) {
-			for (int note : playTick.getNotes()) {
-				int idx = note - jingle.getLowestNote() + lightOffset;
-				if (idx >= 0 && idx < lights.length) {
-					lights[idx].jingle(world, origin, note, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), noteParticle);
-				}
-			}
-		}
+        private void play(final World world, final Vec3d origin, final Light[] lights, final Jingle.PlayTick playTick) {
+            for (final int note : playTick.getNotes()) {
+                final int idx = note - this.jingle.getLowestNote() + this.lightOffset;
+                if (idx >= 0 && idx < lights.length) {
+                    lights[idx].jingle(world, origin, note, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), this.noteParticle);
+                }
+            }
+        }
 
-		@Override
-		public StateFactory<PlayingState> getFactory() {
-			return FACTORY;
-		}
+        @Override
+        public StateFactory<PlayingState> getFactory() {
+            return FACTORY;
+        }
 
-		@Override
-		public PlayingState resolve() {
-			return this;
-		}
+        @Override
+        public PlayingState resolve() {
+            return this;
+        }
 
-		private static StateFactory<PlayingState> newFactory() {
-			return new StateFactory<PlayingState>() {
-				@Override
-				public String getId() {
-					return "playing";
-				}
+        private static StateFactory<PlayingState> newFactory() {
+            return new StateFactory<PlayingState>() {
+                @Override
+                public String getId() {
+                    return "playing";
+                }
 
-				@Override
-				public CompoundNBT serialize(PlayingState state) {
-					CompoundNBT compound = new CompoundNBT();
-					compound.putInt("library", state.library.getId());
-					compound.putString("jingle", state.jingle.getId());
-					compound.putInt("lightOffset", state.lightOffset);
-					compound.putInt("index", state.index);
-					compound.putInt("rest", state.rest);
-					compound.putInt("time", state.time);
-					return compound;
-				}
+                @Override
+                public CompoundNBT serialize(final PlayingState state) {
+                    final CompoundNBT compound = new CompoundNBT();
+                    compound.putInt("library", state.library.getId());
+                    compound.putString("jingle", state.jingle.getId());
+                    compound.putInt("lightOffset", state.lightOffset);
+                    compound.putInt("index", state.index);
+                    compound.putInt("rest", state.rest);
+                    compound.putInt("time", state.time);
+                    return compound;
+                }
 
-				@Override
-				public State<?> deserialize(CompoundNBT compound) {
-					JingleLibrary library = JingleLibrary.fromId(compound.getInt("library"));
-					Jingle jingle = library.get(compound.getString("jingle"));
-					if (jingle == null) {
-						return new NotPlayingState();
-					}
-					int lightOffset = compound.getInt("lightOffset");
-					PlayingState state = new PlayingState(library, jingle, lightOffset);
-					state.index = compound.getInt("index");
-					state.rest = compound.getInt("rest");
-					state.time = compound.getInt("time");
-					return state;
-				}
-			};
-		}
+                @Override
+                public State<?> deserialize(final CompoundNBT compound) {
+                    final JingleLibrary library = JingleLibrary.fromId(compound.getInt("library"));
+                    final Jingle jingle = library.get(compound.getString("jingle"));
+                    if (jingle == null) {
+                        return new NotPlayingState();
+                    }
+                    final int lightOffset = compound.getInt("lightOffset");
+                    final PlayingState state = new PlayingState(library, jingle, lightOffset);
+                    state.index = compound.getInt("index");
+                    state.rest = compound.getInt("rest");
+                    state.time = compound.getInt("time");
+                    return state;
+                }
+            };
+        }
 
-		private static BasicParticleType[] getParticles(Jingle jingle) {
-			if ("playing_with_fire".equals(jingle.getId())) {
-				return new BasicParticleType[] { ParticleTypes.NOTE, ParticleTypes.LAVA };
-			}
-			if (WITH_LOVE.contains(jingle.getId())) {
-				return new BasicParticleType[] { ParticleTypes.NOTE, ParticleTypes.HEART };
-			}
-			return new BasicParticleType[] { ParticleTypes.NOTE };
-		}
-	}
+        private static BasicParticleType[] getParticles(final Jingle jingle) {
+            if ("playing_with_fire".equals(jingle.getId())) {
+                return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.LAVA};
+            }
+            if (WITH_LOVE.contains(jingle.getId())) {
+                return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.HEART};
+            }
+            return new BasicParticleType[]{ParticleTypes.NOTE};
+        }
+    }
 }

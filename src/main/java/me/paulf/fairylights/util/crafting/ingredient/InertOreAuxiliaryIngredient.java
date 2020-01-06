@@ -7,21 +7,21 @@ import net.minecraft.tags.Tag;
 import javax.annotation.Nullable;
 
 public class InertOreAuxiliaryIngredient extends OreAuxiliaryIngredient<Void> {
-	public InertOreAuxiliaryIngredient(Tag<Item> tag, boolean isRequired, int limit) {
-		super(tag, isRequired, limit);
-	}
+    public InertOreAuxiliaryIngredient(final Tag<Item> tag, final boolean isRequired, final int limit) {
+        super(tag, isRequired, limit);
+    }
 
-	@Nullable
-	@Override
-	public final Void accumulator() {
-		return null;
-	}
+    @Nullable
+    @Override
+    public final Void accumulator() {
+        return null;
+    }
 
-	@Override
-	public final void consume(Void v, ItemStack ingredient) {}
+    @Override
+    public final void consume(final Void v, final ItemStack ingredient) {}
 
-	@Override
-	public final boolean finish(Void v, ItemStack output) {
-		return false;
-	}
+    @Override
+    public final boolean finish(final Void v, final ItemStack output) {
+        return false;
+    }
 }

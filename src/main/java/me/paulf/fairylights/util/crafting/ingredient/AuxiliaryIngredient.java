@@ -10,33 +10,33 @@ import java.util.Collection;
 import java.util.List;
 
 public interface AuxiliaryIngredient<A> extends Ingredient<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> {
-	boolean isRequired();
+    boolean isRequired();
 
-	int getLimit();
+    int getLimit();
 
-	@Nullable
-	A accumulator();
+    @Nullable
+    A accumulator();
 
-	void consume(A accumulator, ItemStack ingredient);
+    void consume(A accumulator, ItemStack ingredient);
 
-	boolean finish(A accumulator, ItemStack output);
+    boolean finish(A accumulator, ItemStack output);
 
-	default boolean process(Multimap<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> map, ItemStack output) {
-		Collection<GenericRecipe.MatchResultAuxiliary> results = map.get(this);
-		if (results.isEmpty() && isRequired()) {
-			return true;
-		}
-		A ax = accumulator();
-		for (GenericRecipe.MatchResultAuxiliary result : results) {
-			consume(ax, result.getInput());
-		}
-		return finish(ax, output);
-	}
+    default boolean process(final Multimap<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> map, final ItemStack output) {
+        final Collection<GenericRecipe.MatchResultAuxiliary> results = map.get(this);
+        if (results.isEmpty() && this.isRequired()) {
+            return true;
+        }
+        final A ax = this.accumulator();
+        for (final GenericRecipe.MatchResultAuxiliary result : results) {
+            this.consume(ax, result.getInput());
+        }
+        return this.finish(ax, output);
+    }
 
-	@Override
-	public default void addTooltip(List<String> tooltip) {
-		if (!isRequired()) {
-			tooltip.add(Utils.formatRecipeTooltip("recipe.ingredient.auxiliary.optional"));
-		}
-	}
+    @Override
+    default void addTooltip(final List<String> tooltip) {
+        if (!this.isRequired()) {
+            tooltip.add(Utils.formatRecipeTooltip("recipe.ingredient.auxiliary.optional"));
+        }
+    }
 }

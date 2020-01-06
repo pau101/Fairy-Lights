@@ -10,19 +10,19 @@ import java.util.Collections;
 import java.util.Objects;
 
 public class OreRegularIngredient implements RegularIngredient {
-	private final Tag<Item> tag;
+    private final Tag<Item> tag;
 
-	public OreRegularIngredient(Tag<Item> tag) {
-		this.tag = Objects.requireNonNull(tag, "tag");
-	}
+    public OreRegularIngredient(final Tag<Item> tag) {
+        this.tag = Objects.requireNonNull(tag, "tag");
+    }
 
-	@Override
-	public GenericRecipe.MatchResultRegular matches(final ItemStack input, final ItemStack output) {
-		return new GenericRecipe.MatchResultRegular(this, input, input.getItem().isIn(tag), Collections.emptyList());
-	}
+    @Override
+    public GenericRecipe.MatchResultRegular matches(final ItemStack input, final ItemStack output) {
+        return new GenericRecipe.MatchResultRegular(this, input, input.getItem().isIn(this.tag), Collections.emptyList());
+    }
 
-	@Override
-	public ImmutableList<ItemStack> getInputs() {
-		return tag.getAllElements().stream().map(ItemStack::new).collect(ImmutableList.toImmutableList());
-	}
+    @Override
+    public ImmutableList<ItemStack> getInputs() {
+        return this.tag.getAllElements().stream().map(ItemStack::new).collect(ImmutableList.toImmutableList());
+    }
 }

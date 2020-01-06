@@ -22,12 +22,14 @@ import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.item.LightVariant;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.state.properties.AttachFace;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntity> {
-    private LightModel[] lightModels = new LightModel[] {
+    private final LightModel[] lightModels = new LightModel[]{
         new FairyLightModel(),
         new PaperLanternModel(),
         new OrbLanternModel(),
@@ -44,6 +46,21 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
         new MeteorLightModel()
     };
 
+    static class FastenerModel extends Model {
+        final RendererModel model;
+
+        FastenerModel() {
+            this.model = new RendererModel(this, 0, 0);
+            this.model.addBox(-1.0F, 0.0F, 0.0F, 2, 2, 8);
+        }
+
+        void render() {
+            this.model.render(0.0625F);
+        }
+    }
+
+    FastenerModel fastener = new FastenerModel();
+
     @Override
     public void render(final LightBlockEntity entity, final double x, final double y, final double z, final float delta, final int destroyStage) {
         GlStateManager.pushMatrix();
@@ -54,21 +71,20 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
         GlStateManager.disableCull();
         GlStateManager.disableLighting();
 
-        this.bindTexture(FastenerRenderer.TEXTURE);
         GlStateManager.translatef((float) x, (float) y, (float) z);
         final BlockState state = entity.getBlockState();
         final AttachFace face = state.get(LightBlock.FACE);
         final float rotation = state.get(LightBlock.HORIZONTAL_FACING).getHorizontalAngle();
         final LightVariant variant = ((LightBlock) state.getBlock()).getVariant();
         final Light light = entity.getLight();
-        LightModel model = lightModels[variant.ordinal()];
+        final LightModel model = this.lightModels[variant.ordinal()];
         model.setOffsets(0, 0, 0);
         model.setRotationAngles(0, 0, 0);
         final AxisAlignedBB box = model.getBounds();
         final double h = -box.minY;
-        int blockBrightness = entity.getWorld().getCombinedLight(entity.getPos(), 0);
-        int skylight = blockBrightness % 0x10000;
-        int moonlight = blockBrightness / 0x10000;
+        final int blockBrightness = entity.getWorld().getCombinedLight(entity.getPos(), 0);
+        final int skylight = blockBrightness % 0x10000;
+        final int moonlight = blockBrightness / 0x10000;
 
         GlStateManager.translated(0.5D, 0.5D, 0.5D);
         GlStateManager.rotatef(180.0F - rotation, 0.0F, 1.0F, 0.0F);
@@ -95,6 +111,8 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
             GlStateManager.translated(0.0D, variant.getPlacement() == LightVariant.Placement.OUTWARD ? 0.5D : h - 0.5D, 0.0D);
         }
 
+        this.fastener.render();
+        this.bindTexture(FastenerRenderer.TEXTURE);
         model.render(entity.getWorld(), light, 0.0625F, light.getLight(), moonlight, skylight, light.getBrightness(delta), 0, delta);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 

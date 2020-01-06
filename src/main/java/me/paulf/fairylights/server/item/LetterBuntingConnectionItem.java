@@ -16,36 +16,36 @@ import net.minecraftforge.common.util.Constants.NBT;
 import java.util.List;
 
 public class LetterBuntingConnectionItem extends ConnectionItem {
-	public LetterBuntingConnectionItem(Item.Properties properties) {
-		super(properties);
-	}
+    public LetterBuntingConnectionItem(final Item.Properties properties) {
+        super(properties);
+    }
 
-	@Override
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		if (!stack.hasTag()) {
-			return;
-		}
-		CompoundNBT compound = stack.getTag();
-		if (compound.contains("text", NBT.TAG_COMPOUND)) {
-			CompoundNBT text = compound.getCompound("text");
-			String val = text.getString("value");
-			if (val.length() > 0) {
-				tooltip.add(new TranslationTextComponent("format.text", val));
-			}
-		}
-	}
+    @Override
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+        if (!stack.hasTag()) {
+            return;
+        }
+        final CompoundNBT compound = stack.getTag();
+        if (compound.contains("text", NBT.TAG_COMPOUND)) {
+            final CompoundNBT text = compound.getCompound("text");
+            final String val = text.getString("value");
+            if (val.length() > 0) {
+                tooltip.add(new TranslationTextComponent("format.text", val));
+            }
+        }
+    }
 
-	@Override
-	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> items) {
-		if (isInGroup(tab)) {
-			ItemStack bunting = new ItemStack(this, 1);
-			bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
-			items.add(bunting);
-		}
-	}
+    @Override
+    public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> items) {
+        if (this.isInGroup(tab)) {
+            final ItemStack bunting = new ItemStack(this, 1);
+            bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
+            items.add(bunting);
+        }
+    }
 
-	@Override
-	public ConnectionType getConnectionType() {
-		return ConnectionType.LETTER_BUNTING;
-	}
+    @Override
+    public ConnectionType getConnectionType() {
+        return ConnectionType.LETTER_BUNTING;
+    }
 }

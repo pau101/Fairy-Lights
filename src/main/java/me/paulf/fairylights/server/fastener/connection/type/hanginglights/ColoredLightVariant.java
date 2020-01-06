@@ -6,46 +6,46 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 
 public final class ColoredLightVariant implements NBTSerializable {
-	private LightVariant variant;
+    private LightVariant variant;
 
-	private DyeColor color;
+    private DyeColor color;
 
-	private ColoredLightVariant() {}
+    private ColoredLightVariant() {}
 
-	public ColoredLightVariant(LightVariant variant, DyeColor color) {
-		this.variant = variant;
-		this.color = color;
-	}
+    public ColoredLightVariant(final LightVariant variant, final DyeColor color) {
+        this.variant = variant;
+        this.color = color;
+    }
 
-	public LightVariant getVariant() {
-		return variant;
-	}
+    public LightVariant getVariant() {
+        return this.variant;
+    }
 
-	public DyeColor getColor() {
-		return color;
-	}
+    public DyeColor getColor() {
+        return this.color;
+    }
 
-	public ColoredLightVariant withColor(DyeColor color) {
-		return new ColoredLightVariant(variant, color);
-	}
+    public ColoredLightVariant withColor(final DyeColor color) {
+        return new ColoredLightVariant(this.variant, color);
+    }
 
-	@Override
-	public CompoundNBT serialize() {
-		CompoundNBT compound = new CompoundNBT();
-		compound.putInt("light", variant.ordinal());
-		compound.putByte("color", (byte) color.getId());
-		return compound;
-	}
+    @Override
+    public CompoundNBT serialize() {
+        final CompoundNBT compound = new CompoundNBT();
+        compound.putInt("light", this.variant.ordinal());
+        compound.putByte("color", (byte) this.color.getId());
+        return compound;
+    }
 
-	@Override
-	public void deserialize(CompoundNBT compound) {
-		variant = LightVariant.getLightVariant(compound.getInt("light"));
-		color = DyeColor.byId(compound.getByte("color"));
-	}
+    @Override
+    public void deserialize(final CompoundNBT compound) {
+        this.variant = LightVariant.getLightVariant(compound.getInt("light"));
+        this.color = DyeColor.byId(compound.getByte("color"));
+    }
 
-	public static ColoredLightVariant from(CompoundNBT compound) {
-		ColoredLightVariant light = new ColoredLightVariant();
-		light.deserialize(compound);
-		return light;
-	}
+    public static ColoredLightVariant from(final CompoundNBT compound) {
+        final ColoredLightVariant light = new ColoredLightVariant();
+        light.deserialize(compound);
+        return light;
+    }
 }

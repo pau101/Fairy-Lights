@@ -10,41 +10,41 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.math.Vec3d;
 
 public final class FastenerBlockEntityRenderer extends TileEntityRenderer<FastenerBlockEntity> {
-	private final BlockView view;
+    private final BlockView view;
 
-	public FastenerBlockEntityRenderer(final BlockView view) {
-		this.view = view;
-	}
+    public FastenerBlockEntityRenderer(final BlockView view) {
+        this.view = view;
+    }
 
-	@Override
-	public boolean isGlobalRenderer(FastenerBlockEntity fastener) {
-		return true;
-	}
+    @Override
+    public boolean isGlobalRenderer(final FastenerBlockEntity fastener) {
+        return true;
+    }
 
-	@Override
-	public void render(FastenerBlockEntity fastener, double x, double y, double z, float delta, int destroyStage) {
-		fastener.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> {
-			bindTexture(FastenerRenderer.TEXTURE);
-			GlStateManager.pushMatrix();
-			final Vec3d offset = fastener.getOffset();
-			GlStateManager.translated(x + offset.x, y + offset.y, z + offset.z);
-			this.view.unrotate(this.getWorld(), f.getPos(), FastenerBlockEntityRenderer.GlMatrix.INSTANCE, delta);
-			FastenerRenderer.render(f, delta);
-			GlStateManager.popMatrix();
-		});
-	}
+    @Override
+    public void render(final FastenerBlockEntity fastener, final double x, final double y, final double z, final float delta, final int destroyStage) {
+        fastener.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> {
+            this.bindTexture(FastenerRenderer.TEXTURE);
+            GlStateManager.pushMatrix();
+            final Vec3d offset = fastener.getOffset();
+            GlStateManager.translated(x + offset.x, y + offset.y, z + offset.z);
+            this.view.unrotate(this.getWorld(), f.getPos(), FastenerBlockEntityRenderer.GlMatrix.INSTANCE, delta);
+            FastenerRenderer.render(f, delta);
+            GlStateManager.popMatrix();
+        });
+    }
 
-	static class GlMatrix implements Matrix {
-		static final FastenerBlockEntityRenderer.GlMatrix INSTANCE = new FastenerBlockEntityRenderer.GlMatrix();
+    static class GlMatrix implements Matrix {
+        static final FastenerBlockEntityRenderer.GlMatrix INSTANCE = new FastenerBlockEntityRenderer.GlMatrix();
 
-		@Override
-		public void translate(final float x, final float y, final float z) {
-			GlStateManager.translatef(x, y, z);
-		}
+        @Override
+        public void translate(final float x, final float y, final float z) {
+            GlStateManager.translatef(x, y, z);
+        }
 
-		@Override
-		public void rotate(final float angle, final float x, final float y, final float z) {
-			GlStateManager.rotatef(angle, x, y, z);
-		}
-	}
+        @Override
+        public void rotate(final float angle, final float x, final float y, final float z) {
+            GlStateManager.rotatef(angle, x, y, z);
+        }
+    }
 }

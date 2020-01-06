@@ -38,235 +38,235 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 
 public final class FenceFastenerEntity extends HangingEntity implements IEntityAdditionalSpawnData {
-	private int surfaceCheckTime;
+    private int surfaceCheckTime;
 
-	public FenceFastenerEntity(EntityType<? extends FenceFastenerEntity> type, World world) {
-		super(type, world);
-	}
+    public FenceFastenerEntity(final EntityType<? extends FenceFastenerEntity> type, final World world) {
+        super(type, world);
+    }
 
-	public FenceFastenerEntity(World world) {
-		this(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), world);
-	}
+    public FenceFastenerEntity(final World world) {
+        this(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), world);
+    }
 
-	public FenceFastenerEntity(World world, BlockPos pos) {
-		this(world);
-		setPosition(pos.getX(), pos.getY(), pos.getZ());
-	}
+    public FenceFastenerEntity(final World world, final BlockPos pos) {
+        this(world);
+        this.setPosition(pos.getX(), pos.getY(), pos.getZ());
+    }
 
-	@Override
-	public int getWidthPixels() {
-		return 9;
-	}
+    @Override
+    public int getWidthPixels() {
+        return 9;
+    }
 
-	@Override
-	public int getHeightPixels() {
-		return 9;
-	}
+    @Override
+    public int getHeightPixels() {
+        return 9;
+    }
 
-	@Override
-	public float getEyeHeight(Pose pose, EntitySize size) {
-		/*
-		 * Because this entity is inside of a block when
-		 * EntityLivingBase#canEntityBeSeen performs its
-		 * raytracing it will always return false during
-		 * NetHandlerPlayServer#processUseEntity, making
-		 * the player reach distance be limited at three
-		 * blocks as opposed to the standard six blocks.
-		 * EntityLivingBase#canEntityBeSeen will add the
-		 * value given by getEyeHeight to the y position
-		 * of the entity to calculate the end point from
-		 * which to raytrace to. Returning one lets most
-		 * interactions with a player succeed, typically
-		 * for breaking the connection or creating a new
-		 * connection. I hope you enjoy my line lengths.
-		 */
-		return 1;
-	}
+    @Override
+    public float getEyeHeight(final Pose pose, final EntitySize size) {
+        /*
+         * Because this entity is inside of a block when
+         * EntityLivingBase#canEntityBeSeen performs its
+         * raytracing it will always return false during
+         * NetHandlerPlayServer#processUseEntity, making
+         * the player reach distance be limited at three
+         * blocks as opposed to the standard six blocks.
+         * EntityLivingBase#canEntityBeSeen will add the
+         * value given by getEyeHeight to the y position
+         * of the entity to calculate the end point from
+         * which to raytrace to. Returning one lets most
+         * interactions with a player succeed, typically
+         * for breaking the connection or creating a new
+         * connection. I hope you enjoy my line lengths.
+         */
+        return 1;
+    }
 
-	@Override
-	public float getBrightness() {
-		BlockPos pos = new BlockPos(this);
-		if (world.isBlockLoaded(pos)) {
-			return world.getBrightness(pos);
-		}
-		return 0;
-	}
+    @Override
+    public float getBrightness() {
+        final BlockPos pos = new BlockPos(this);
+        if (this.world.isBlockLoaded(pos)) {
+            return this.world.getBrightness(pos);
+        }
+        return 0;
+    }
 
-	@Override
-	public int getBrightnessForRender() {
-		BlockPos pos = new BlockPos(this);
-		if (world.isBlockLoaded(pos)) {
-			return world.getCombinedLight(pos, 0);
-		}
-		return 0;
-	}
+    @Override
+    public int getBrightnessForRender() {
+        final BlockPos pos = new BlockPos(this);
+        if (this.world.isBlockLoaded(pos)) {
+            return this.world.getCombinedLight(pos, 0);
+        }
+        return 0;
+    }
 
-	@Override
-	public boolean isInRangeToRenderDist(double distance) {
-		return distance < 4096;
-	}
+    @Override
+    public boolean isInRangeToRenderDist(final double distance) {
+        return distance < 4096;
+    }
 
-	@Override
-	public boolean isImmuneToExplosions() {
-		return true;
-	}
+    @Override
+    public boolean isImmuneToExplosions() {
+        return true;
+    }
 
-	@Override
-	public boolean onValidSurface() {
-		return ConnectionItem.isFence(world.getBlockState(hangingPosition));
-	}
+    @Override
+    public boolean onValidSurface() {
+        return ConnectionItem.isFence(this.world.getBlockState(this.hangingPosition));
+    }
 
-	@Override
-	public void remove() {
-		getFastener().ifPresent(Fastener::remove);
-		super.remove();
-	}
+    @Override
+    public void remove() {
+        this.getFastener().ifPresent(Fastener::remove);
+        super.remove();
+    }
 
-	@Override
-	public void onBroken(@Nullable Entity breaker) {
-		getFastener().ifPresent(fastener -> fastener.dropItems(world, hangingPosition));
-		if (breaker != null) {
-			world.playEvent(2001, hangingPosition, Block.getStateId(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState()));
-		}
-	}
+    @Override
+    public void onBroken(@Nullable final Entity breaker) {
+        this.getFastener().ifPresent(fastener -> fastener.dropItems(this.world, this.hangingPosition));
+        if (breaker != null) {
+            this.world.playEvent(2001, this.hangingPosition, Block.getStateId(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState()));
+        }
+    }
 
-	@Override
-	public void playPlaceSound() {
-		SoundType sound = FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getSoundType(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState(), world, getHangingPosition(), null);
-		playSound(sound.getPlaceSound(), (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8F);
-	}
+    @Override
+    public void playPlaceSound() {
+        final SoundType sound = FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getSoundType(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState(), this.world, this.getHangingPosition(), null);
+        this.playSound(sound.getPlaceSound(), (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8F);
+    }
 
-	@Override
-	public SoundCategory getSoundCategory() {
-		return SoundCategory.BLOCKS;
-	}
+    @Override
+    public SoundCategory getSoundCategory() {
+        return SoundCategory.BLOCKS;
+    }
 
-	@Override
-	public void setPosition(double x, double y, double z) {
-		super.setPosition(MathHelper.floor(x) + 0.5, MathHelper.floor(y) + 0.5, MathHelper.floor(z) + 0.5);
-	}
+    @Override
+    public void setPosition(final double x, final double y, final double z) {
+        super.setPosition(MathHelper.floor(x) + 0.5, MathHelper.floor(y) + 0.5, MathHelper.floor(z) + 0.5);
+    }
 
-	@Override
-	public void updateFacingWithBoundingBox(Direction facing) {}
+    @Override
+    public void updateFacingWithBoundingBox(final Direction facing) {}
 
-	@Override
-	protected void updateBoundingBox() {
-		posX = hangingPosition.getX() + 0.5;
-		posY = hangingPosition.getY() + 0.5;
-		posZ = hangingPosition.getZ() + 0.5;
-		final float w = 3 / 16F;
-		final float h = 3 / 16F;
-		setBoundingBox(new AxisAlignedBB(posX - w, posY - h, posZ - w, posX + w, posY + h, posZ + w));
-	}
+    @Override
+    protected void updateBoundingBox() {
+        this.posX = this.hangingPosition.getX() + 0.5;
+        this.posY = this.hangingPosition.getY() + 0.5;
+        this.posZ = this.hangingPosition.getZ() + 0.5;
+        final float w = 3 / 16F;
+        final float h = 3 / 16F;
+        this.setBoundingBox(new AxisAlignedBB(this.posX - w, this.posY - h, this.posZ - w, this.posX + w, this.posY + h, this.posZ + w));
+    }
 
-	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return getFastener().map(fastener -> fastener.getBounds().grow(1)).orElseGet(super::getRenderBoundingBox);
-	}
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return this.getFastener().map(fastener -> fastener.getBounds().grow(1)).orElseGet(super::getRenderBoundingBox);
+    }
 
-	@Override
-	public void tick() {
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
-		getFastener().ifPresent(fastener -> {
-			if (!world.isRemote && (fastener.hasNoConnections() || checkSurface())) {
-				onBroken(null);
-				remove();
-			} else if (fastener.update() && !world.isRemote) {
-				UpdateEntityFastenerMessage msg = new UpdateEntityFastenerMessage(this, fastener.serializeNBT());
-				ServerProxy.sendToPlayersWatchingEntity(msg, world, this);
-			}
-		});
-	}
+    @Override
+    public void tick() {
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        this.getFastener().ifPresent(fastener -> {
+            if (!this.world.isRemote && (fastener.hasNoConnections() || this.checkSurface())) {
+                this.onBroken(null);
+                this.remove();
+            } else if (fastener.update() && !this.world.isRemote) {
+                final UpdateEntityFastenerMessage msg = new UpdateEntityFastenerMessage(this, fastener.serializeNBT());
+                ServerProxy.sendToPlayersWatchingEntity(msg, this.world, this);
+            }
+        });
+    }
 
-	private boolean checkSurface() {
-		if (surfaceCheckTime++ == 100) {
-			surfaceCheckTime = 0;
-			return !onValidSurface();
-		}
-		return false;
-	}
+    private boolean checkSurface() {
+        if (this.surfaceCheckTime++ == 100) {
+            this.surfaceCheckTime = 0;
+            return !this.onValidSurface();
+        }
+        return false;
+    }
 
-	@Override
-	public boolean processInitialInteract(PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (stack.getItem() instanceof ConnectionItem) {
-			if (world.isRemote) {
-				player.swingArm(hand);
-			} else {
-				getFastener().ifPresent(fastener -> ((ConnectionItem) stack.getItem()).connect(stack, player, world, fastener));
-			}
-			return true;
-		}
-		return super.processInitialInteract(player, hand);
-	}
+    @Override
+    public boolean processInitialInteract(final PlayerEntity player, final Hand hand) {
+        final ItemStack stack = player.getHeldItem(hand);
+        if (stack.getItem() instanceof ConnectionItem) {
+            if (this.world.isRemote) {
+                player.swingArm(hand);
+            } else {
+                this.getFastener().ifPresent(fastener -> ((ConnectionItem) stack.getItem()).connect(stack, player, this.world, fastener));
+            }
+            return true;
+        }
+        return super.processInitialInteract(player, hand);
+    }
 
-	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		compound.put("pos", NBTUtil.writeBlockPos(hangingPosition));
-	}
+    @Override
+    public void writeAdditional(final CompoundNBT compound) {
+        compound.put("pos", NBTUtil.writeBlockPos(this.hangingPosition));
+    }
 
-	@Override
-	public void readAdditional(CompoundNBT compound) {
-		hangingPosition = NBTUtil.readBlockPos(compound.getCompound("pos"));
-	}
+    @Override
+    public void readAdditional(final CompoundNBT compound) {
+        this.hangingPosition = NBTUtil.readBlockPos(compound.getCompound("pos"));
+    }
 
-	@Override
-	public void writeSpawnData(PacketBuffer buf) {
-		getFastener().ifPresent(fastener -> {
-			try {
-				CompressedStreamTools.write(fastener.serializeNBT(), new ByteBufOutputStream(buf));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
+    @Override
+    public void writeSpawnData(final PacketBuffer buf) {
+        this.getFastener().ifPresent(fastener -> {
+            try {
+                CompressedStreamTools.write(fastener.serializeNBT(), new ByteBufOutputStream(buf));
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
-	@Override
-	public void readSpawnData(PacketBuffer buf) {
-		getFastener().ifPresent(fastener -> {
-			try {
-				fastener.deserializeNBT(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(0x200000)));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
+    @Override
+    public void readSpawnData(final PacketBuffer buf) {
+        this.getFastener().ifPresent(fastener -> {
+            try {
+                fastener.deserializeNBT(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(0x200000)));
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
-	@Override
-	public IPacket<?> createSpawnPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
 
-	private LazyOptional<Fastener<?>> getFastener() {
-		return getCapability(CapabilityHandler.FASTENER_CAP);
-	}
+    private LazyOptional<Fastener<?>> getFastener() {
+        return this.getCapability(CapabilityHandler.FASTENER_CAP);
+    }
 
-	public static FenceFastenerEntity create(World world, BlockPos fence) {
-		FenceFastenerEntity fastener = new FenceFastenerEntity(world, fence);
-		fastener.forceSpawn = true;
-		world.addEntity(fastener);
-		fastener.playPlaceSound();
-		return fastener;
-	}
+    public static FenceFastenerEntity create(final World world, final BlockPos fence) {
+        final FenceFastenerEntity fastener = new FenceFastenerEntity(world, fence);
+        fastener.forceSpawn = true;
+        world.addEntity(fastener);
+        fastener.playPlaceSound();
+        return fastener;
+    }
 
-	@Nullable
-	public static FenceFastenerEntity find(World world, BlockPos pos) {
-		HangingEntity entity = findHanging(world, pos);
-		if (entity instanceof FenceFastenerEntity) {
-			return (FenceFastenerEntity) entity;
-		}
-		return null;
-	}
+    @Nullable
+    public static FenceFastenerEntity find(final World world, final BlockPos pos) {
+        final HangingEntity entity = findHanging(world, pos);
+        if (entity instanceof FenceFastenerEntity) {
+            return (FenceFastenerEntity) entity;
+        }
+        return null;
+    }
 
-	@Nullable
-	public static HangingEntity findHanging(World world, BlockPos pos) {
-		for (HangingEntity e : world.getEntitiesWithinAABB(HangingEntity.class, new AxisAlignedBB(pos).grow(2))) {
-			if (e.getHangingPosition().equals(pos)) {
-				return e;
-			}
-		}
-		return null;
-	}
+    @Nullable
+    public static HangingEntity findHanging(final World world, final BlockPos pos) {
+        for (final HangingEntity e : world.getEntitiesWithinAABB(HangingEntity.class, new AxisAlignedBB(pos).grow(2))) {
+            if (e.getHangingPosition().equals(pos)) {
+                return e;
+            }
+        }
+        return null;
+    }
 }

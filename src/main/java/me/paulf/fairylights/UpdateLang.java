@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class UpdateLang {
-    public static void main(String[] args) throws Exception {
-        ImmutableMap<String, String> map = ImmutableMap.<String, String>builder()
+    public static void main(final String[] args) throws Exception {
+        final ImmutableMap<String, String> map = ImmutableMap.<String, String>builder()
             .put("item.fairylights.fairy_light", "block.fairylights.fairy_light")
             .put("item.fairylights.paper_lantern", "block.fairylights.paper_lantern")
             .put("item.fairylights.orb_lantern", "block.fairylights.orb_lantern")
@@ -28,27 +28,27 @@ public class UpdateLang {
             .put("item.fairylights.icicle_lights", "block.fairylights.icicle_lights")
             .put("item.fairylights.meteor_light", "block.fairylights.meteor_light")
             .build();
-        Pattern pattern = Pattern.compile(map.keySet().stream()
+        final Pattern pattern = Pattern.compile(map.keySet().stream()
             .map(Pattern::quote)
             .collect(Collectors.joining("|")));
         Files.list(Paths.get("C:\\Users\\paulf\\Production\\Software\\Games\\Minecraft\\1.14\\Fairy-Lights\\src\\main\\resources\\assets\\fairylights\\lang"))
             .filter(p -> p.toString().endsWith(".json"))
             .forEach(p -> {
-                StringBuffer buf = new StringBuffer();
-                byte[] bytes;
+                final StringBuffer buf = new StringBuffer();
+                final byte[] bytes;
                 try {
                     bytes = Files.readAllBytes(p);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
-                Matcher matcher = pattern.matcher(new String(bytes));
+                final Matcher matcher = pattern.matcher(new String(bytes));
                 while (matcher.find()) {
                     matcher.appendReplacement(buf, map.get(matcher.group()));
                 }
                 matcher.appendTail(buf);
                 try {
                     Files.write(p, buf.toString().getBytes(StandardCharsets.UTF_8));
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
             });

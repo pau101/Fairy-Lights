@@ -6,34 +6,34 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 public final class Intersection {
-	private final Vec3d result;
+    private final Vec3d result;
 
-	private final AxisAlignedBB hitBox;
+    private final AxisAlignedBB hitBox;
 
-	private final FeatureType featureType;
+    private final FeatureType featureType;
 
-	private final Feature feature;
+    private final Feature feature;
 
-	public Intersection(Vec3d result, AxisAlignedBB hitBox, FeatureType featureType, Feature feature) {
-		this.result = result;
-		this.hitBox = hitBox;
-		this.featureType = featureType;
-		this.feature = feature;
-	}
+    public Intersection(final Vec3d result, final AxisAlignedBB hitBox, final FeatureType featureType, final Feature feature) {
+        this.result = result;
+        this.hitBox = hitBox;
+        this.featureType = featureType;
+        this.feature = feature;
+    }
 
-	public Vec3d getResult() {
-		return result;
-	}
+    public Vec3d getResult() {
+        return this.result;
+    }
 
-	public AxisAlignedBB getHitBox() {
-		return hitBox;
-	}
+    public AxisAlignedBB getHitBox() {
+        return this.hitBox;
+    }
 
-	public FeatureType getFeatureType() {
-		return featureType;
-	}
+    public FeatureType getFeatureType() {
+        return this.featureType;
+    }
 
-	public Feature getFeature() {
-		return feature;
-	}
+    public Feature getFeature() {
+        return this.feature;
+    }
 }

@@ -5,16 +5,16 @@ import me.paulf.fairylights.server.fastener.EntityFastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 
 public final class FenceFastenerAccessor extends EntityFastenerAccessor<FenceFastenerEntity> {
-	public FenceFastenerAccessor() {
-		super(FenceFastenerEntity.class);
-	}
+    public FenceFastenerAccessor() {
+        super(FenceFastenerEntity.class);
+    }
 
-	public FenceFastenerAccessor(EntityFastener<FenceFastenerEntity> fastener) {
-		super(FenceFastenerEntity.class, fastener);
-	}
+    public FenceFastenerAccessor(final EntityFastener<FenceFastenerEntity> fastener) {
+        super(FenceFastenerEntity.class, fastener);
+    }
 
-	@Override
-	public FastenerType getType() {
-		return FastenerType.FENCE;
-	}
+    @Override
+    public FastenerType getType() {
+        return FastenerType.FENCE;
+    }
 }

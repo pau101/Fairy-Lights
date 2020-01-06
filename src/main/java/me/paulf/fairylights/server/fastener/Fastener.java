@@ -16,63 +16,63 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<CompoundNBT> {
-	@Override
-	CompoundNBT serializeNBT();
+    @Override
+    CompoundNBT serializeNBT();
 
-	Map<UUID, Connection> getConnections();
+    Map<UUID, Connection> getConnections();
 
-	default Connection getFirstConnection() {
-		return getConnections().values().stream().findFirst().orElse(null);
-	}
+    default Connection getFirstConnection() {
+        return this.getConnections().values().stream().findFirst().orElse(null);
+    }
 
-	AxisAlignedBB getBounds();
+    AxisAlignedBB getBounds();
 
-	Vec3d getConnectionPoint();
+    Vec3d getConnectionPoint();
 
-	BlockPos getPos();
+    BlockPos getPos();
 
-	Direction getFacing();
+    Direction getFacing();
 
-	void setWorld(World world);
+    void setWorld(World world);
 
-	@Nullable
-	World getWorld();
+    @Nullable
+    World getWorld();
 
-	F createAccessor();
+    F createAccessor();
 
-	boolean isMoving();
+    boolean isMoving();
 
-	default void resistSnap(Vec3d from) {}
+    default void resistSnap(final Vec3d from) {}
 
-	boolean update();
+    boolean update();
 
-	void setDirty();
+    void setDirty();
 
-	boolean shouldDropConnection();
+    boolean shouldDropConnection();
 
-	void dropItems(World world, BlockPos pos);
+    void dropItems(World world, BlockPos pos);
 
-	void remove();
+    void remove();
 
-	boolean hasNoConnections();
+    boolean hasNoConnections();
 
-	boolean hasConnectionWith(Fastener<?> fastener);
+    boolean hasConnectionWith(Fastener<?> fastener);
 
-	@Nullable
-	Connection getConnectionTo(FastenerAccessor destination);
+    @Nullable
+    Connection getConnectionTo(FastenerAccessor destination);
 
-	boolean removeConnection(UUID uuid);
+    boolean removeConnection(UUID uuid);
 
-	boolean removeConnection(Connection connection);
+    boolean removeConnection(Connection connection);
 
-	boolean removeConnectionImmediately(UUID uuid);
+    boolean removeConnectionImmediately(UUID uuid);
 
-	boolean removeConnectionImmediately(Connection connection);
+    boolean removeConnectionImmediately(Connection connection);
 
-	@Nullable
-	Connection reconnect(Fastener<?> oldDestination, Fastener<?> newDestination);
+    @Nullable
+    Connection reconnect(Fastener<?> oldDestination, Fastener<?> newDestination);
 
-	Connection connectWith(World world, Fastener<?> destination, ConnectionType type, CompoundNBT compound);
+    Connection connectWith(World world, Fastener<?> destination, ConnectionType type, CompoundNBT compound);
 
-	Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, CompoundNBT compound);
+    Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, CompoundNBT compound);
 }

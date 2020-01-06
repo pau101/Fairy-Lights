@@ -35,250 +35,250 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public final class FastenerBlock extends DirectionalBlock {
-	public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
+    public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
 
-	private static final VoxelShape NORTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 12.0D, 10.0D, 10.0D, 16.0D);
+    private static final VoxelShape NORTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 12.0D, 10.0D, 10.0D, 16.0D);
 
-	private static final VoxelShape SOUTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 4.0D);
+    private static final VoxelShape SOUTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 4.0D);
 
-	private static final VoxelShape WEST_AABB = Block.makeCuboidShape(12.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D);
+    private static final VoxelShape WEST_AABB = Block.makeCuboidShape(12.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D);
 
-	private static final VoxelShape EAST_AABB = Block.makeCuboidShape(0.0D, 6.0D, 6.0D, 4.0D, 10.0D, 10.0D);
+    private static final VoxelShape EAST_AABB = Block.makeCuboidShape(0.0D, 6.0D, 6.0D, 4.0D, 10.0D, 10.0D);
 
-	private static final VoxelShape DOWN_AABB = Block.makeCuboidShape(6.0D, 12.0D, 6.0D, 10.0D, 16.0D, 10.0D);
+    private static final VoxelShape DOWN_AABB = Block.makeCuboidShape(6.0D, 12.0D, 6.0D, 10.0D, 16.0D, 10.0D);
 
-	private static final VoxelShape UP_AABB = Block.makeCuboidShape(6.0D, 0.0D, 6.0D, 10.0D, 4.0D, 10.0D);
+    private static final VoxelShape UP_AABB = Block.makeCuboidShape(6.0D, 0.0D, 6.0D, 10.0D, 4.0D, 10.0D);
 
-	public FastenerBlock(Block.Properties properties) {
-		super(properties);
-		setDefaultState(stateContainer.getBaseState()
-			.with(FACING, Direction.NORTH)
-			.with(TRIGGERED, false)
-		);
-	}
+    public FastenerBlock(final Block.Properties properties) {
+        super(properties);
+        this.setDefaultState(this.stateContainer.getBaseState()
+            .with(FACING, Direction.NORTH)
+            .with(TRIGGERED, false)
+        );
+    }
 
-	@Override
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT;
-	}
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
 
-	@Override
-	protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(FACING, TRIGGERED);
-	}
+    @Override
+    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING, TRIGGERED);
+    }
 
-	@Override
-	public BlockState rotate(final BlockState state, final Rotation rot) {
-		return state.with(FACING, rot.rotate(state.get(FACING)));
-	}
+    @Override
+    public BlockState rotate(final BlockState state, final Rotation rot) {
+        return state.with(FACING, rot.rotate(state.get(FACING)));
+    }
 
-	@Override
-	public BlockState mirror(final BlockState state, final Mirror mirrorIn) {
-		return state.with(FACING, mirrorIn.mirror(state.get(FACING)));
-	}
+    @Override
+    public BlockState mirror(final BlockState state, final Mirror mirrorIn) {
+        return state.with(FACING, mirrorIn.mirror(state.get(FACING)));
+    }
 
-	@Override
-	public VoxelShape getShape(final BlockState state, final IBlockReader worldIn, final BlockPos pos, final ISelectionContext context) {
-		switch (state.get(FACING)) {
-			case NORTH:
-				return NORTH_AABB;
-			case SOUTH:
-				return SOUTH_AABB;
-			case WEST:
-				return WEST_AABB;
-			case EAST:
-				return EAST_AABB;
-			case DOWN:
-				return DOWN_AABB;
-			case UP:
-			default:
-				return UP_AABB;
-		}
-	}
+    @Override
+    public VoxelShape getShape(final BlockState state, final IBlockReader worldIn, final BlockPos pos, final ISelectionContext context) {
+        switch (state.get(FACING)) {
+            case NORTH:
+                return NORTH_AABB;
+            case SOUTH:
+                return SOUTH_AABB;
+            case WEST:
+                return WEST_AABB;
+            case EAST:
+                return EAST_AABB;
+            case DOWN:
+                return DOWN_AABB;
+            case UP:
+            default:
+                return UP_AABB;
+        }
+    }
 
-	@Override
-	public boolean hasTileEntity(final BlockState state) {
-		return true;
-	}
+    @Override
+    public boolean hasTileEntity(final BlockState state) {
+        return true;
+    }
 
-	@Override
-	public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
-		return new FastenerBlockEntity();
-	}
+    @Override
+    public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
+        return new FastenerBlockEntity();
+    }
 
-	@Override
-	public void onReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			TileEntity entity = world.getTileEntity(pos);
-			if (entity instanceof FastenerBlockEntity) {
-				entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.dropItems(world, pos));
-			}
-			super.onReplaced(state, world, pos, newState, isMoving);
-		}
-	}
+    @Override
+    public void onReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
+            final TileEntity entity = world.getTileEntity(pos);
+            if (entity instanceof FastenerBlockEntity) {
+                entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.dropItems(world, pos));
+            }
+            super.onReplaced(state, world, pos, newState, isMoving);
+        }
+    }
 
-	@Override
-	public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
-		final Direction facing = state.get(FACING);
-		final BlockPos attachedPos = pos.offset(facing.getOpposite());
-		return world.getBlockState(attachedPos).func_224755_d(world, attachedPos, facing);
-	}
+    @Override
+    public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
+        final Direction facing = state.get(FACING);
+        final BlockPos attachedPos = pos.offset(facing.getOpposite());
+        return world.getBlockState(attachedPos).func_224755_d(world, attachedPos, facing);
+    }
 
-	@Nullable
-	@Override
-	public BlockState getStateForPlacement(final BlockItemUseContext context) {
-		BlockState result = this.getDefaultState();
-		final IWorldReader world = context.getWorld();
-		final BlockPos pos = context.getPos();
-		for (final Direction dir : context.getNearestLookingDirections()) {
-			result = result.with(FACING, dir.getOpposite());
-			if (result.isValidPosition(world, pos)) {
-				return result;
-			}
-		}
-		return null;
-	}
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(final BlockItemUseContext context) {
+        BlockState result = this.getDefaultState();
+        final IWorldReader world = context.getWorld();
+        final BlockPos pos = context.getPos();
+        for (final Direction dir : context.getNearestLookingDirections()) {
+            result = result.with(FACING, dir.getOpposite());
+            if (result.isValidPosition(world, pos)) {
+                return result;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public BlockState updatePostPlacement(final BlockState state, final Direction facing, final BlockState facingState, final IWorld world, final BlockPos currentPos, final BlockPos facingPos) {
-		if (facing.getOpposite() == state.get(FACING) && !state.isValidPosition(world, currentPos)) {
-			return Blocks.AIR.getDefaultState();
-		}
-		return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
-	}
+    @Override
+    public BlockState updatePostPlacement(final BlockState state, final Direction facing, final BlockState facingState, final IWorld world, final BlockPos currentPos, final BlockPos facingPos) {
+        if (facing.getOpposite() == state.get(FACING) && !state.isValidPosition(world, currentPos)) {
+            return Blocks.AIR.getDefaultState();
+        }
+        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+    }
 
-	@Override
-	public void onBlockAdded(final BlockState state, final World world, final BlockPos pos, final BlockState oldState, final boolean isMoving) {
-		if (oldState.getBlock() != state.getBlock()) {
-			if (world.isBlockPowered(pos.offset(state.get(FACING).getOpposite()))) {
-				world.setBlockState(pos, state.with(TRIGGERED, true), 3);
-			}
-		}
-	}
+    @Override
+    public void onBlockAdded(final BlockState state, final World world, final BlockPos pos, final BlockState oldState, final boolean isMoving) {
+        if (oldState.getBlock() != state.getBlock()) {
+            if (world.isBlockPowered(pos.offset(state.get(FACING).getOpposite()))) {
+                world.setBlockState(pos, state.with(TRIGGERED, true), 3);
+            }
+        }
+    }
 
-	@Override
-	public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block blockIn, final BlockPos fromPos, final boolean isMoving) {
-		if (state.isValidPosition(world, pos)) {
-			boolean receivingPower = world.isBlockPowered(pos);
-			boolean isPowered = state.get(TRIGGERED);
-			if (receivingPower && !isPowered) {
-				world.getPendingBlockTicks().scheduleTick(pos, this, tickRate(world));
-				world.setBlockState(pos, state.with(TRIGGERED, true), 4);
-			} else if (!receivingPower && isPowered) {
-				world.setBlockState(pos, state.with(TRIGGERED, false), 4);
-			}
-		} else {
-			TileEntity entity = world.getTileEntity(pos);
-			spawnDrops(state, world, pos, entity);
-			world.removeBlock(pos, false);
-		}
-	}
+    @Override
+    public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block blockIn, final BlockPos fromPos, final boolean isMoving) {
+        if (state.isValidPosition(world, pos)) {
+            final boolean receivingPower = world.isBlockPowered(pos);
+            final boolean isPowered = state.get(TRIGGERED);
+            if (receivingPower && !isPowered) {
+                world.getPendingBlockTicks().scheduleTick(pos, this, this.tickRate(world));
+                world.setBlockState(pos, state.with(TRIGGERED, true), 4);
+            } else if (!receivingPower && isPowered) {
+                world.setBlockState(pos, state.with(TRIGGERED, false), 4);
+            }
+        } else {
+            final TileEntity entity = world.getTileEntity(pos);
+            spawnDrops(state, world, pos, entity);
+            world.removeBlock(pos, false);
+        }
+    }
 
-	@Override
-	public boolean hasComparatorInputOverride(BlockState state) {
-		return true;
-	}
+    @Override
+    public boolean hasComparatorInputOverride(final BlockState state) {
+        return true;
+    }
 
-	@Override
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
-		TileEntity entity = world.getTileEntity(pos);
-		if (!(entity instanceof FastenerBlockEntity)) {
-			return super.getComparatorInputOverride(state, world, pos);
-		}
-		return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
-			.filter(e -> {
-				Connection connection = e.getValue();
-				return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
-			})
-			.flatMap(e -> {
-				Connection connection = e.getValue();
-				if (connection.isOrigin()) {
-					return Stream.of(connection);
-				}
-				BlockPos to = connection.getDestination().get(world).getPos();
-				TileEntity toEntity = world.getTileEntity(to);
-				if (!(toEntity instanceof FastenerBlockEntity)) {
-					return Stream.empty();
-				}
-				return toEntity.getCapability(CapabilityHandler.FASTENER_CAP)
-					.map(toFastener -> Stream.of(toFastener.getConnections().get(e.getKey())))
-					.orElse(Stream.empty());
-			})
-			.mapToInt(c -> (int) Math.ceil(((HangingLightsConnection) c).getJingleProgress() * 15))
-			.max().orElse(0);
-	}
+    @Override
+    public int getComparatorInputOverride(final BlockState state, final World world, final BlockPos pos) {
+        final TileEntity entity = world.getTileEntity(pos);
+        if (!(entity instanceof FastenerBlockEntity)) {
+            return super.getComparatorInputOverride(state, world, pos);
+        }
+        return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
+            .filter(e -> {
+                Connection connection = e.getValue();
+                return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
+            })
+            .flatMap(e -> {
+                Connection connection = e.getValue();
+                if (connection.isOrigin()) {
+                    return Stream.of(connection);
+                }
+                BlockPos to = connection.getDestination().get(world).getPos();
+                TileEntity toEntity = world.getTileEntity(to);
+                if (!(toEntity instanceof FastenerBlockEntity)) {
+                    return Stream.empty();
+                }
+                return toEntity.getCapability(CapabilityHandler.FASTENER_CAP)
+                    .map(toFastener -> Stream.of(toFastener.getConnections().get(e.getKey())))
+                    .orElse(Stream.empty());
+            })
+            .mapToInt(c -> (int) Math.ceil(((HangingLightsConnection) c).getJingleProgress() * 15))
+            .max().orElse(0);
+    }
 
-	@Override
-	public int tickRate(IWorldReader world) {
-		return 2;
-	}
+    @Override
+    public int tickRate(final IWorldReader world) {
+        return 2;
+    }
 
-	@Override
-	public void tick(final BlockState state, final World world, final BlockPos pos, final Random random) {
-		if (!world.isRemote) {
-			jingle(world, pos);
-		}
-	}
+    @Override
+    public void tick(final BlockState state, final World world, final BlockPos pos, final Random random) {
+        if (!world.isRemote) {
+            this.jingle(world, pos);
+        }
+    }
 
-	private boolean jingle(World world, BlockPos pos) {
-		TileEntity entity = world.getTileEntity(pos);
-		if (!(entity instanceof FastenerBlockEntity)) {
-			return false;
-		}
-		return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
-			.filter(e -> {
-				Connection connection = e.getValue();
-				return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
-			})
-			.flatMap(e -> {
-				Connection connection = e.getValue();
-				BlockPos to = connection.getDestination().get(world).getPos();
-				if (!connection.isDestination(new BlockFastenerAccessor(to))) {
-					return Stream.empty();
-				}
-				if (!world.getBlockState(to).get(TRIGGERED)) {
-					return Stream.empty();
-				}
-				if (connection.isOrigin()) {
-					return Stream.of(connection);
-				}
-				TileEntity toEntity = world.getTileEntity(to);
-				if (!(toEntity instanceof FastenerBlockEntity)) {
-					return Stream.empty();
-				}
-				return toEntity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> Stream.of(f.getConnections().get(e.getKey()))).orElse(Stream.empty());
-			})
-			.anyMatch(connection -> {
-				HangingLightsConnection logic = (HangingLightsConnection) connection;
-				return logic.canCurrentlyPlayAJingle() && ServerEventHandler.tryJingle(world, connection, logic, FairyLights.randomJingles);
-			});
-	}
+    private boolean jingle(final World world, final BlockPos pos) {
+        final TileEntity entity = world.getTileEntity(pos);
+        if (!(entity instanceof FastenerBlockEntity)) {
+            return false;
+        }
+        return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
+            .filter(e -> {
+                Connection connection = e.getValue();
+                return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
+            })
+            .flatMap(e -> {
+                Connection connection = e.getValue();
+                BlockPos to = connection.getDestination().get(world).getPos();
+                if (!connection.isDestination(new BlockFastenerAccessor(to))) {
+                    return Stream.empty();
+                }
+                if (!world.getBlockState(to).get(TRIGGERED)) {
+                    return Stream.empty();
+                }
+                if (connection.isOrigin()) {
+                    return Stream.of(connection);
+                }
+                TileEntity toEntity = world.getTileEntity(to);
+                if (!(toEntity instanceof FastenerBlockEntity)) {
+                    return Stream.empty();
+                }
+                return toEntity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> Stream.of(f.getConnections().get(e.getKey()))).orElse(Stream.empty());
+            })
+            .anyMatch(connection -> {
+                final HangingLightsConnection logic = (HangingLightsConnection) connection;
+                return logic.canCurrentlyPlayAJingle() && ServerEventHandler.tryJingle(world, connection, logic, FairyLights.randomJingles);
+            });
+    }
 
-	public Vec3d getOffset(Direction facing, float offset) {
-		return getFastenerOffset(facing, offset);
-	}
+    public Vec3d getOffset(final Direction facing, final float offset) {
+        return getFastenerOffset(facing, offset);
+    }
 
-	public static Vec3d getFastenerOffset(Direction facing, float offset) {
-		double x = offset, y = offset, z = offset;
-		switch (facing) {
-			case DOWN:
-				y += 0.75F;
-			case UP:
-				x += 0.375F;
-				z += 0.375F;
-				break;
-			case WEST:
-				x += 0.75F;
-			case EAST:
-				z += 0.375F;
-				y += 0.375F;
-				break;
-			case NORTH:
-				z += 0.75F;
-			case SOUTH:
-				x += 0.375F;
-				y += 0.375F;
-		}
-		return new Vec3d(x, y, z);
-	}
+    public static Vec3d getFastenerOffset(final Direction facing, final float offset) {
+        double x = offset, y = offset, z = offset;
+        switch (facing) {
+            case DOWN:
+                y += 0.75F;
+            case UP:
+                x += 0.375F;
+                z += 0.375F;
+                break;
+            case WEST:
+                x += 0.75F;
+            case EAST:
+                z += 0.375F;
+                y += 0.375F;
+                break;
+            case NORTH:
+                z += 0.75F;
+            case SOUTH:
+                x += 0.375F;
+                y += 0.375F;
+        }
+        return new Vec3d(x, y, z);
+    }
 }

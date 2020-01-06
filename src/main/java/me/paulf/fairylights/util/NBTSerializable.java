@@ -3,7 +3,7 @@ package me.paulf.fairylights.util;
 import net.minecraft.nbt.CompoundNBT;
 
 public interface NBTSerializable {
-	CompoundNBT serialize();
+    CompoundNBT serialize();
 
-	void deserialize(CompoundNBT compound);
+    void deserialize(CompoundNBT compound);
 }

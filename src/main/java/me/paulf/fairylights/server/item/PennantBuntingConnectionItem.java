@@ -18,49 +18,49 @@ import net.minecraftforge.common.util.Constants.NBT;
 import java.util.List;
 
 public class PennantBuntingConnectionItem extends ConnectionItem {
-	public PennantBuntingConnectionItem(Item.Properties properties) {
-		super(properties);
-	}
+    public PennantBuntingConnectionItem(final Item.Properties properties) {
+        super(properties);
+    }
 
-	@Override
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		if (!stack.hasTag()) {
-			return;
-		}
-		CompoundNBT compound = stack.getTag();
-		if (compound.contains("text", NBT.TAG_COMPOUND)) {
-			CompoundNBT text = compound.getCompound("text");
-			String val = text.getString("value");
-			if (val.length() > 0) {
-				tooltip.add(new TranslationTextComponent("format.text", val));
-			}
-		}
-		if (compound.contains("pattern", NBT.TAG_LIST)) {
-			ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);
-			int tagCount = tagList.size();
-			if (tagCount > 0) {
-				tooltip.add(new TranslationTextComponent("item.pennantBunting.colors"));
-			}
-			for (int i = 0; i < tagCount; i++) {
-				CompoundNBT lightCompound = tagList.getCompound(i);
-				tooltip.add(new TranslationTextComponent("format.pattern.entry", new TranslationTextComponent("color." + DyeColor.byId(lightCompound.getByte("color")) + ".name")));
-			}
-		}
-	}
+    @Override
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+        if (!stack.hasTag()) {
+            return;
+        }
+        final CompoundNBT compound = stack.getTag();
+        if (compound.contains("text", NBT.TAG_COMPOUND)) {
+            final CompoundNBT text = compound.getCompound("text");
+            final String val = text.getString("value");
+            if (val.length() > 0) {
+                tooltip.add(new TranslationTextComponent("format.text", val));
+            }
+        }
+        if (compound.contains("pattern", NBT.TAG_LIST)) {
+            final ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);
+            final int tagCount = tagList.size();
+            if (tagCount > 0) {
+                tooltip.add(new TranslationTextComponent("item.pennantBunting.colors"));
+            }
+            for (int i = 0; i < tagCount; i++) {
+                final CompoundNBT lightCompound = tagList.getCompound(i);
+                tooltip.add(new TranslationTextComponent("format.pattern.entry", new TranslationTextComponent("color." + DyeColor.byId(lightCompound.getByte("color")) + ".name")));
+            }
+        }
+    }
 
-	@Override
-	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> subItems) {
-		if (isInGroup(tab)) {
-			for (DyeColor color : DyeColor.values()) {
-				ItemStack stack = new ItemStack(this);
-				stack.getOrCreateTag().putByte("color", (byte) color.getId());
-				subItems.add(FLCraftingRecipes.makePennant(stack, color));
-			}
-		}
-	}
+    @Override
+    public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
+        if (this.isInGroup(tab)) {
+            for (final DyeColor color : DyeColor.values()) {
+                final ItemStack stack = new ItemStack(this);
+                stack.getOrCreateTag().putByte("color", (byte) color.getId());
+                subItems.add(FLCraftingRecipes.makePennant(stack, color));
+            }
+        }
+    }
 
-	@Override
-	public ConnectionType getConnectionType() {
-		return ConnectionType.PENNANT_BUNTING;
-	}
+    @Override
+    public ConnectionType getConnectionType() {
+        return ConnectionType.PENNANT_BUNTING;
+    }
 }

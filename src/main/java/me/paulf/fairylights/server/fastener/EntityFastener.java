@@ -8,30 +8,30 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class EntityFastener<E extends Entity> extends AbstractFastener<EntityFastenerAccessor<E>> {
-	protected final E entity;
+    protected final E entity;
 
-	public EntityFastener(E entity) {
-		this.entity = entity;
-		bounds = new AxisAlignedBB(entity.getPosition());
-		setWorld(entity.world);
-	}
+    public EntityFastener(final E entity) {
+        this.entity = entity;
+        this.bounds = new AxisAlignedBB(entity.getPosition());
+        this.setWorld(entity.world);
+    }
 
-	@Override
-	public Direction getFacing() {
-		return Direction.UP;
-	}
+    @Override
+    public Direction getFacing() {
+        return Direction.UP;
+    }
 
-	public E getEntity() {
-		return entity;
-	}
+    public E getEntity() {
+        return this.entity;
+    }
 
-	@Override
-	public BlockPos getPos() {
-		return new BlockPos(entity);
-	}
+    @Override
+    public BlockPos getPos() {
+        return new BlockPos(this.entity);
+    }
 
-	@Override
-	public Vec3d getConnectionPoint() {
-		return new Vec3d(entity.posX, entity.posY, entity.posZ);
-	}
+    @Override
+    public Vec3d getConnectionPoint() {
+        return new Vec3d(this.entity.posX, this.entity.posY, this.entity.posZ);
+    }
 }

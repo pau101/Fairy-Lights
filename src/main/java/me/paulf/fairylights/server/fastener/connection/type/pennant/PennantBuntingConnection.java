@@ -31,118 +31,118 @@ import java.util.List;
 import java.util.UUID;
 
 public final class PennantBuntingConnection extends HangingFeatureConnection<Pennant> implements Lettered {
-	private List<DyeColor> pattern;
+    private List<DyeColor> pattern;
 
-	private StyledString text;
+    private StyledString text;
 
-	public PennantBuntingConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-		super(world, fastener, uuid, destination, isOrigin, compound);
-	}
+    public PennantBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
+        super(world, fastener, uuid, destination, isOrigin, compound);
+    }
 
-	public PennantBuntingConnection(World world, Fastener<?> fastener, UUID uuid) {
-		super(world, fastener, uuid);
-		pattern = new ArrayList<>();
-		text = new StyledString();
-	}
+    public PennantBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
+        super(world, fastener, uuid);
+        this.pattern = new ArrayList<>();
+        this.text = new StyledString();
+    }
 
-	@Override
-	public float getRadius() {
-		return 0.045F;
-	}
+    @Override
+    public float getRadius() {
+        return 0.045F;
+    }
 
-	@Override
-	public ConnectionType getType() {
-		return ConnectionType.PENNANT_BUNTING;
-	}
+    @Override
+    public ConnectionType getType() {
+        return ConnectionType.PENNANT_BUNTING;
+    }
 
-	@Override
-	public void processClientAction(PlayerEntity player, PlayerAction action, Intersection intersection) {
-		if (openTextGui(player, action, intersection)) {
-			super.processClientAction(player, action, intersection);
-		}
-	}
+    @Override
+    public void processClientAction(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
+        if (this.openTextGui(player, action, intersection)) {
+            super.processClientAction(player, action, intersection);
+        }
+    }
 
-	@Override
-	public boolean interact(PlayerEntity player, Vec3d hit, FeatureType featureType, int feature, ItemStack heldStack, Hand hand) {
-		if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
-			int index = feature % pattern.size();
-			DyeColor patternColor = pattern.get(index);
-			DyeColor color = DyeColor.getColor(heldStack);
-			if (patternColor != color) {
-				pattern.set(index, color);
-				dataUpdateState = true;
-				heldStack.shrink(1);
-				world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
-				return true;
-			}
-		}
-		return super.interact(player, hit, featureType, feature, heldStack, hand);
-	}
+    @Override
+    public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
+        if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
+            final int index = feature % this.pattern.size();
+            final DyeColor patternColor = this.pattern.get(index);
+            final DyeColor color = DyeColor.getColor(heldStack);
+            if (patternColor != color) {
+                this.pattern.set(index, color);
+                this.dataUpdateState = true;
+                heldStack.shrink(1);
+                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+                return true;
+            }
+        }
+        return super.interact(player, hit, featureType, feature, heldStack, hand);
+    }
 
-	@Override
-	protected Pennant[] createFeatures(int length) {
-		return new Pennant[length];
-	}
+    @Override
+    protected Pennant[] createFeatures(final int length) {
+        return new Pennant[length];
+    }
 
-	@Override
-	protected Pennant createFeature(int index, Vec3d point, Vec3d rotation) {
-		Pennant pennant = new Pennant(index, point, rotation);
-		if (pattern.size() > 0) {
-			pennant.setColor(LightItem.getColorValue(pattern.get(index % pattern.size())));
-		}
-		return pennant;
-	}
+    @Override
+    protected Pennant createFeature(final int index, final Vec3d point, final Vec3d rotation) {
+        final Pennant pennant = new Pennant(index, point, rotation);
+        if (this.pattern.size() > 0) {
+            pennant.setColor(LightItem.getColorValue(this.pattern.get(index % this.pattern.size())));
+        }
+        return pennant;
+    }
 
-	@Override
-	protected float getFeatureSpacing() {
-		return 11;
-	}
+    @Override
+    protected float getFeatureSpacing() {
+        return 11;
+    }
 
-	@Override
-	public boolean isSuppportedText(StyledString text) {
-		return text.length() <= features.length && Lettered.super.isSuppportedText(text);
-	}
+    @Override
+    public boolean isSuppportedText(final StyledString text) {
+        return text.length() <= this.features.length && Lettered.super.isSuppportedText(text);
+    }
 
-	@Override
-	public void setText(StyledString text) {
-		this.text = text;
-		dataUpdateState = true;
-	}
+    @Override
+    public void setText(final StyledString text) {
+        this.text = text;
+        this.dataUpdateState = true;
+    }
 
-	@Override
-	public StyledString getText() {
-		return text;
-	}
+    @Override
+    public StyledString getText() {
+        return this.text;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public Screen createTextGUI() {
-		return new EditLetteredConnectionScreen<>(this);
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public Screen createTextGUI() {
+        return new EditLetteredConnectionScreen<>(this);
+    }
 
-	@Override
-	public CompoundNBT serializeLogic() {
-		CompoundNBT compound = super.serializeLogic();
-		ListNBT patternList = new ListNBT();
-		for (DyeColor color : pattern) {
-			CompoundNBT colorCompound = new CompoundNBT();
-			colorCompound.putByte("color", (byte) color.getId());
-			patternList.add(colorCompound);
-		}
-		compound.put("pattern", patternList);
-		compound.put("text", StyledString.serialize(text));
-		return compound;
-	}
+    @Override
+    public CompoundNBT serializeLogic() {
+        final CompoundNBT compound = super.serializeLogic();
+        final ListNBT patternList = new ListNBT();
+        for (final DyeColor color : this.pattern) {
+            final CompoundNBT colorCompound = new CompoundNBT();
+            colorCompound.putByte("color", (byte) color.getId());
+            patternList.add(colorCompound);
+        }
+        compound.put("pattern", patternList);
+        compound.put("text", StyledString.serialize(this.text));
+        return compound;
+    }
 
-	@Override
-	public void deserializeLogic(CompoundNBT compound) {
-		super.deserializeLogic(compound);
-		pattern = new ArrayList<>();
-		ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
-		for (int i = 0; i < patternList.size(); i++) {
-			CompoundNBT colorCompound = patternList.getCompound(i);
-			pattern.add(DyeColor.byId(colorCompound.getByte("color")));
-		}
-		text = StyledString.deserialize(compound.getCompound("text"));
-	}
+    @Override
+    public void deserializeLogic(final CompoundNBT compound) {
+        super.deserializeLogic(compound);
+        this.pattern = new ArrayList<>();
+        final ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
+        for (int i = 0; i < patternList.size(); i++) {
+            final CompoundNBT colorCompound = patternList.getCompound(i);
+            this.pattern.add(DyeColor.byId(colorCompound.getByte("color")));
+        }
+        this.text = StyledString.deserialize(compound.getCompound("text"));
+    }
 }

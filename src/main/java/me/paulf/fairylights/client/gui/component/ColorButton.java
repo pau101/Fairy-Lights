@@ -8,54 +8,54 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.TextFormatting;
 
 public final class ColorButton extends Button {
-	private static final int TEX_U = 0;
+    private static final int TEX_U = 0;
 
-	private static final int TEX_V = 0;
+    private static final int TEX_V = 0;
 
-	private TextFormatting displayColor;
+    private TextFormatting displayColor;
 
-	private float displayColorR;
+    private float displayColorR;
 
-	private float displayColorG;
+    private float displayColorG;
 
-	private float displayColorB;
+    private float displayColorB;
 
-	public ColorButton(int x, int y, String msg, Button.IPressable onPress) {
-		super(x, y, 20, 20, msg, onPress);
-	}
+    public ColorButton(final int x, final int y, final String msg, final Button.IPressable onPress) {
+        super(x, y, 20, 20, msg, onPress);
+    }
 
-	public void setDisplayColor(TextFormatting color) {
-		displayColor = color;
-		int rgb = StyledString.getColor(color);
-		displayColorR = (rgb >> 16 & 0xFF) / 255F;
-		displayColorG = (rgb >> 8 & 0xFF) / 255F;
-		displayColorB = (rgb & 0xFF) / 255F;
-	}
+    public void setDisplayColor(final TextFormatting color) {
+        this.displayColor = color;
+        final int rgb = StyledString.getColor(color);
+        this.displayColorR = (rgb >> 16 & 0xFF) / 255F;
+        this.displayColorG = (rgb >> 8 & 0xFF) / 255F;
+        this.displayColorB = (rgb & 0xFF) / 255F;
+    }
 
-	public TextFormatting getDisplayColor() {
-		return displayColor;
-	}
+    public TextFormatting getDisplayColor() {
+        return this.displayColor;
+    }
 
-	public void removeDisplayColor() {
-		displayColor = null;
-	}
+    public void removeDisplayColor() {
+        this.displayColor = null;
+    }
 
-	public boolean hasDisplayColor() {
-		return displayColor != null;
-	}
+    public boolean hasDisplayColor() {
+        return this.displayColor != null;
+    }
 
-	@Override
-	public void renderButton(int mouseX, int mouseY, float delta) {
-		if (visible) {
-			Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
-			GlStateManager.color3f(1, 1, 1);
-			blit(x, y, TEX_U, isHovered ? TEX_V + height : TEX_V, width, height);
-			if (displayColor != null) {
-				blit(x, y, TEX_U + width, TEX_V, width, height);
-				GlStateManager.color3f(displayColorR, displayColorG, displayColorB);
-				blit(x, y, TEX_U + width, TEX_V + height, width, height);
-				GlStateManager.color3f(1, 1, 1);
-			}
-		}
-	}
+    @Override
+    public void renderButton(final int mouseX, final int mouseY, final float delta) {
+        if (this.visible) {
+            Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
+            GlStateManager.color3f(1, 1, 1);
+            this.blit(this.x, this.y, TEX_U, this.isHovered ? TEX_V + this.height : TEX_V, this.width, this.height);
+            if (this.displayColor != null) {
+                this.blit(this.x, this.y, TEX_U + this.width, TEX_V, this.width, this.height);
+                GlStateManager.color3f(this.displayColorR, this.displayColorG, this.displayColorB);
+                this.blit(this.x, this.y, TEX_U + this.width, TEX_V + this.height, this.width, this.height);
+                GlStateManager.color3f(1, 1, 1);
+            }
+        }
+    }
 }

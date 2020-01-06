@@ -9,27 +9,27 @@ import java.util.Collections;
 import java.util.List;
 
 public final class ConnectionCollision implements Collidable {
-	private List<Collidable> collision = Collections.emptyList();
+    private List<Collidable> collision = Collections.emptyList();
 
-	public void update(Connection connection, Vec3d origin) {
-		connection.addCollision(collision = new ArrayList<>(), origin);
-	}
+    public void update(final Connection connection, final Vec3d origin) {
+        connection.addCollision(this.collision = new ArrayList<>(), origin);
+    }
 
-	@Nullable
-	@Override
-	public Intersection intersect(Vec3d origin, Vec3d end) {
-		Intersection result = null;
-		double distance = Double.MAX_VALUE;
-		for (Collidable collidable : collision) {
-			Intersection r = collidable.intersect(origin, end);
-			if (r != null) {
-				double d = r.getResult().distanceTo(origin);
-				if (d < distance) {
-					result = r;
-					distance = d;
-				}
-			}
-		}
-		return result;
-	}
+    @Nullable
+    @Override
+    public Intersection intersect(final Vec3d origin, final Vec3d end) {
+        Intersection result = null;
+        double distance = Double.MAX_VALUE;
+        for (final Collidable collidable : this.collision) {
+            final Intersection r = collidable.intersect(origin, end);
+            if (r != null) {
+                final double d = r.getResult().distanceTo(origin);
+                if (d < distance) {
+                    result = r;
+                    distance = d;
+                }
+            }
+        }
+        return result;
+    }
 }

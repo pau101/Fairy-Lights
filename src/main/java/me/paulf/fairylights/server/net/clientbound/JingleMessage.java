@@ -14,47 +14,47 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public final class JingleMessage extends ConnectionMessage<Connection> {
-	private int lightOffset;
+    private int lightOffset;
 
-	private JingleLibrary library;
+    private JingleLibrary library;
 
-	@Nullable
-	public Jingle jingle;
+    @Nullable
+    public Jingle jingle;
 
-	public JingleMessage() {}
+    public JingleMessage() {}
 
-	public JingleMessage(Connection connection, int lightOffset, JingleLibrary library, Jingle jingle) {
-		super(connection);
-		this.lightOffset = lightOffset;
-		this.library = library;
-		this.jingle = jingle;
-	}
+    public JingleMessage(final Connection connection, final int lightOffset, final JingleLibrary library, final Jingle jingle) {
+        super(connection);
+        this.lightOffset = lightOffset;
+        this.library = library;
+        this.jingle = jingle;
+    }
 
-	public static void serialize(JingleMessage message, PacketBuffer buf) {
-		ConnectionMessage.serialize(message, buf);
-		buf.writeVarInt(message.lightOffset);
-		buf.writeByte(message.library.getId());
-		buf.writeString(message.jingle.getId());
-	}
+    public static void serialize(final JingleMessage message, final PacketBuffer buf) {
+        ConnectionMessage.serialize(message, buf);
+        buf.writeVarInt(message.lightOffset);
+        buf.writeByte(message.library.getId());
+        buf.writeString(message.jingle.getId());
+    }
 
-	public static JingleMessage deserialize(PacketBuffer buf) {
-		JingleMessage message = new JingleMessage();
-		ConnectionMessage.deserialize(message, buf);
-		message.lightOffset = buf.readVarInt();
-		message.library = JingleLibrary.fromId(buf.readUnsignedByte());
-		message.jingle = message.library.get(buf.readString());
-		return message;
-	}
+    public static JingleMessage deserialize(final PacketBuffer buf) {
+        final JingleMessage message = new JingleMessage();
+        ConnectionMessage.deserialize(message, buf);
+        message.lightOffset = buf.readVarInt();
+        message.library = JingleLibrary.fromId(buf.readUnsignedByte());
+        message.jingle = message.library.get(buf.readString());
+        return message;
+    }
 
-	public static class Handler implements BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> {
-		@Override
-		public void accept(JingleMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
-			NetworkEvent.Context context = contextSupplier.get();
-			Connection connection = ConnectionMessage.getConnection(message, c -> true, Minecraft.getInstance().world);
-			if (message.jingle != null && connection instanceof HangingLightsConnection) {
-				((HangingLightsConnection) connection).play(message.library, message.jingle, message.lightOffset);
-			}
-			context.setPacketHandled(true);
-		}
-	}
+    public static class Handler implements BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> {
+        @Override
+        public void accept(final JingleMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
+            final NetworkEvent.Context context = contextSupplier.get();
+            final Connection connection = ConnectionMessage.getConnection(message, c -> true, Minecraft.getInstance().world);
+            if (message.jingle != null && connection instanceof HangingLightsConnection) {
+                ((HangingLightsConnection) connection).play(message.library, message.jingle, message.lightOffset);
+            }
+            context.setPacketHandled(true);
+        }
+    }
 }

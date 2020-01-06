@@ -28,93 +28,96 @@ import static net.minecraft.util.text.TextFormatting.WHITE;
 import static net.minecraft.util.text.TextFormatting.YELLOW;
 
 public class PaletteButton extends Button {
-	private static final int TEX_U = 0;
+    private static final int TEX_U = 0;
 
-	private static final int TEX_V = 40;
+    private static final int TEX_V = 40;
 
-	private static final int SELECT_U = 28;
+    private static final int SELECT_U = 28;
 
-	private static final int SELECT_V = 40;
+    private static final int SELECT_V = 40;
 
-	private static final int COLOR_U = 34;
+    private static final int COLOR_U = 34;
 
-	private static final int COLOR_V = 40;
+    private static final int COLOR_V = 40;
 
-	private static final int COLOR_WIDTH = 6;
+    private static final int COLOR_WIDTH = 6;
 
-	private static final int COLOR_HEIGHT = 6;
+    private static final int COLOR_HEIGHT = 6;
 
-	private static final TextFormatting[] IDX_COLOR = { WHITE, GRAY, DARK_GRAY, BLACK, RED, DARK_RED, YELLOW, GOLD, LIGHT_PURPLE, DARK_PURPLE, GREEN, DARK_GREEN, BLUE, DARK_BLUE, AQUA, DARK_AQUA };
+    private static final TextFormatting[] IDX_COLOR = {WHITE, GRAY, DARK_GRAY, BLACK, RED, DARK_RED, YELLOW, GOLD, LIGHT_PURPLE, DARK_PURPLE, GREEN, DARK_GREEN, BLUE, DARK_BLUE, AQUA, DARK_AQUA};
 
-	private static final int[] COLOR_IDX = Mth.invertMap(IDX_COLOR, TextFormatting::ordinal);
+    private static final int[] COLOR_IDX = Mth.invertMap(IDX_COLOR, TextFormatting::ordinal);
 
-	private final ColorButton colorBtn;
+    private final ColorButton colorBtn;
 
-	public PaletteButton(int x, int y, ColorButton colorBtn, String msg, Button.IPressable pressable) {
-		super(x, y, 28, 28, msg, pressable);
-		this.colorBtn = colorBtn;
-	}
+    public PaletteButton(final int x, final int y, final ColorButton colorBtn, final String msg, final Button.IPressable pressable) {
+        super(x, y, 28, 28, msg, pressable);
+        this.colorBtn = colorBtn;
+    }
 
-	@Override
-	public void onPress() {
-		colorBtn.setDisplayColor(IDX_COLOR[(ArrayUtils.indexOf(IDX_COLOR, colorBtn.getDisplayColor()) + 1) % IDX_COLOR.length]);
-		super.onPress();
-	}
+    @Override
+    public void onPress() {
+        this.colorBtn.setDisplayColor(IDX_COLOR[(ArrayUtils.indexOf(IDX_COLOR, this.colorBtn.getDisplayColor()) + 1) % IDX_COLOR.length]);
+        super.onPress();
+    }
 
-	@Override
-	public void onClick(double mouseX, double mouseY) {
-		int idx = getMouseOverIndex(mouseX, mouseY);
-		if (idx > -1) {
-			colorBtn.setDisplayColor(IDX_COLOR[idx]);
-			super.onPress();
-		}
-	}
+    @Override
+    public void onClick(final double mouseX, final double mouseY) {
+        final int idx = this.getMouseOverIndex(mouseX, mouseY);
+        if (idx > -1) {
+            this.colorBtn.setDisplayColor(IDX_COLOR[idx]);
+            super.onPress();
+        }
+    }
 
-	@Override
-	public void renderButton(int mouseX, int mouseY, float delta) {
-		if (visible) {
-			Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
-			GlStateManager.color3f(1, 1, 1);
-			blit(x, y, TEX_U, TEX_V, width, height);
-			if (colorBtn.hasDisplayColor()) {
-				int idx = COLOR_IDX[colorBtn.getDisplayColor().ordinal()];
-				int selectX = x + 2 + (idx % 4) * 6;
-				int selectY = y + 2 + (idx / 4) * 6;
-				blit(selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
-			}
-			for (int i = 0; i < IDX_COLOR.length; i++) {
-				TextFormatting color = IDX_COLOR[i];
-				int rgb = StyledString.getColor(color);
-				float r = (rgb >> 16 & 0xFF) / 255F;
-				float g = (rgb >> 8 & 0xFF) / 255F;
-				float b = (rgb & 0xFF) / 255F;
-				GlStateManager.color3f(r, g, b);
-				blit(x + 2 + (i % 4) * 6, y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
-			}
-			int selectIndex = getMouseOverIndex(mouseX, mouseY);
-			if (selectIndex > -1) {
-				GlStateManager.enableBlend();
-				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-				GlStateManager.color4f(1, 1, 1, 0.5F);
-				int hoverSelectX = x + 2 + selectIndex % 4 * 6;
-				int hoverSelectY = y + 2 + selectIndex / 4 * 6;
-				blit(hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
-				GlStateManager.disableBlend();
-			}
-			GlStateManager.color3f(1, 1, 1);
-		}
-	}
+    @Override
+    public void renderButton(final int mouseX, final int mouseY, final float delta) {
+        if (this.visible) {
+            Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
+            GlStateManager.color3f(1, 1, 1);
+            this.blit(this.x, this.y, TEX_U, TEX_V, this.width, this.height);
+            if (this.colorBtn.hasDisplayColor()) {
+                final int idx = COLOR_IDX[this.colorBtn.getDisplayColor().ordinal()];
+                final int selectX = this.x + 2 + (idx % 4) * 6;
+                final int selectY = this.y + 2 + (idx / 4) * 6;
+                this.blit(selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+            }
+            for (int i = 0; i < IDX_COLOR.length; i++) {
+                final TextFormatting color = IDX_COLOR[i];
+                final int rgb = StyledString.getColor(color);
+                final float r = (rgb >> 16 & 0xFF) / 255F;
+                final float g = (rgb >> 8 & 0xFF) / 255F;
+                final float b = (rgb & 0xFF) / 255F;
+                GlStateManager.color3f(r, g, b);
+                this.blit(this.x + 2 + (i % 4) * 6, this.y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
+            }
+            final int selectIndex = this.getMouseOverIndex(mouseX, mouseY);
+            if (selectIndex > -1) {
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                GlStateManager.color4f(1, 1, 1, 0.5F);
+                final int hoverSelectX = this.x + 2 + selectIndex % 4 * 6;
+                final int hoverSelectY = this.y + 2 + selectIndex / 4 * 6;
+                this.blit(hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+                GlStateManager.disableBlend();
+            }
+            GlStateManager.color3f(1, 1, 1);
+        }
+    }
 
-	private int getMouseOverIndex(double mouseX, double mouseY) {
-		int relX = MathHelper.floor(mouseX - x - 3), relY = MathHelper.floor(mouseY - y - 3);
-		if (relX < 0 || relY < 0 || relX > 22 || relY > 22) {
-			return -1;
-		}
-		int bucketX = relX % 6, bucketY = relY % 6;
-		if (bucketX > 3 || bucketY > 3) {
-			return -1;
-		}
-		int x = relX / 6, y = relY / 6;
-		return x + y * 4;
-	}
+    private int getMouseOverIndex(final double mouseX, final double mouseY) {
+        final int relX = MathHelper.floor(mouseX - this.x - 3);
+        final int relY = MathHelper.floor(mouseY - this.y - 3);
+        if (relX < 0 || relY < 0 || relX > 22 || relY > 22) {
+            return -1;
+        }
+        final int bucketX = relX % 6;
+        final int bucketY = relY % 6;
+        if (bucketX > 3 || bucketY > 3) {
+            return -1;
+        }
+        final int x = relX / 6;
+        final int y = relY / 6;
+        return x + y * 4;
+    }
 }

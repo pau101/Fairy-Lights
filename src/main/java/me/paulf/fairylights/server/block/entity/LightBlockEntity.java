@@ -26,11 +26,11 @@ public class LightBlockEntity extends TileEntity {
     }
 
     public Light getLight() {
-        return light;
+        return this.light;
     }
 
     public DyeColor getColor() {
-        return color;
+        return this.color;
     }
 
     public void setColor(final DyeColor color) {
@@ -62,7 +62,7 @@ public class LightBlockEntity extends TileEntity {
     @Override
     public CompoundNBT write(final CompoundNBT compound) {
         super.write(compound);
-        compound.putByte("color", (byte) color.getId());
+        compound.putByte("color", (byte) this.color.getId());
         compound.putBoolean("on", this.light.isOn());
         return compound;
     }

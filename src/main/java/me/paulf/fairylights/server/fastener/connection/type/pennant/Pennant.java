@@ -4,32 +4,32 @@ import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnec
 import net.minecraft.util.math.Vec3d;
 
 public class Pennant extends HangingFeatureConnection.HangingFeature<Pennant> {
-	private int color;
+    private int color;
 
-	public Pennant(int index, Vec3d point, Vec3d rotation) {
-		super(index, point, rotation);
-	}
+    public Pennant(final int index, final Vec3d point, final Vec3d rotation) {
+        super(index, point, rotation);
+    }
 
-	public void setColor(int color) {
-		this.color = color;
-	}
+    public void setColor(final int color) {
+        this.color = color;
+    }
 
-	public int getColor() {
-		return color;
-	}
+    public int getColor() {
+        return this.color;
+    }
 
-	@Override
-	public double getWidth() {
-		return 0.4F;
-	}
+    @Override
+    public double getWidth() {
+        return 0.4F;
+    }
 
-	@Override
-	public double getHeight() {
-		return 0.65F;
-	}
+    @Override
+    public double getHeight() {
+        return 0.65F;
+    }
 
-	@Override
-	public boolean parallelsCord() {
-		return true;
-	}
+    @Override
+    public boolean parallelsCord() {
+        return true;
+    }
 }

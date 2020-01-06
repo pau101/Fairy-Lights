@@ -11,41 +11,41 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 public final class GarlandTinselConnection extends Connection {
-	private DyeColor color;
+    private DyeColor color;
 
-	public GarlandTinselConnection(World world, Fastener<?> fastener, UUID uuid, Fastener<?> destination, boolean isOrigin, CompoundNBT compound) {
-		super(world, fastener, uuid, destination, isOrigin, compound);
-	}
+    public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
+        super(world, fastener, uuid, destination, isOrigin, compound);
+    }
 
-	public GarlandTinselConnection(World world, Fastener<?> fastener, UUID uuid) {
-		super(world, fastener, uuid);
-		color = DyeColor.LIGHT_GRAY;
-	}
+    public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
+        super(world, fastener, uuid);
+        this.color = DyeColor.LIGHT_GRAY;
+    }
 
-	public int getColor() {
-		return LightItem.getColorValue(color);
-	}
+    public int getColor() {
+        return LightItem.getColorValue(this.color);
+    }
 
-	@Override
-	public float getRadius() {
-		return 0.125F;
-	}
+    @Override
+    public float getRadius() {
+        return 0.125F;
+    }
 
-	@Override
-	public ConnectionType getType() {
-		return ConnectionType.TINSEL;
-	}
+    @Override
+    public ConnectionType getType() {
+        return ConnectionType.TINSEL;
+    }
 
-	@Override
-	public CompoundNBT serializeLogic() {
-		CompoundNBT compound = super.serializeLogic();
-		compound.putByte("color", (byte) color.getId());
-		return compound;
-	}
+    @Override
+    public CompoundNBT serializeLogic() {
+        final CompoundNBT compound = super.serializeLogic();
+        compound.putByte("color", (byte) this.color.getId());
+        return compound;
+    }
 
-	@Override
-	public void deserializeLogic(CompoundNBT compound) {
-		super.deserializeLogic(compound);
-		color = DyeColor.byId(compound.getByte("color"));
-	}
+    @Override
+    public void deserializeLogic(final CompoundNBT compound) {
+        super.deserializeLogic(compound);
+        this.color = DyeColor.byId(compound.getByte("color"));
+    }
 }
