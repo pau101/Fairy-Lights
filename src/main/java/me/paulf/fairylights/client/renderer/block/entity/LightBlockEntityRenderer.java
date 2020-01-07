@@ -92,6 +92,11 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
         if (variant.getPlacement() == LightVariant.Placement.UPRIGHT) {
             if (face == AttachFace.CEILING) {
                 GlStateManager.translated(0.0D, 0.25D, 0.0D);
+                GlStateManager.pushMatrix();
+                GlStateManager.rotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+                this.bindTexture(FenceFastenerRenderer.TEXTURE);
+                this.fastener.render();
+                GlStateManager.popMatrix();
             } else if (face == AttachFace.WALL) {
                 GlStateManager.translated(0.0D, 0.15D, 0.125D);
                 this.bindTexture(FenceFastenerRenderer.TEXTURE);

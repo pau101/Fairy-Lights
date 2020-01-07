@@ -114,36 +114,35 @@ public class LightBlock extends HorizontalFaceBlock {
     public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos, final ISelectionContext context) {
         final float w = this.variant.getWidth();
         final float h = this.variant.getHeight();
+        final double minw = 0.5D - w * 0.5D; 
+        final double maxw = 0.5D + w * 0.5D; 
         switch (state.get(FACE)) {
             default:
                 return this.shape;
             case WALL:
                 switch (this.variant.getPlacement()) {
                     default:
-                        return this.shape;
+                        switch (state.get(HORIZONTAL_FACING)) {
+                            case EAST:
+                                return VoxelShapes.create(minw - 0.125D, 0.775D - h, minw, maxw - 0.125D, 0.775D, maxw);
+                            case WEST:
+                                return VoxelShapes.create(minw + 0.125D, 0.775D - h, minw, maxw + 0.125D, 0.775D, maxw);
+                            case SOUTH:
+                                return VoxelShapes.create(minw, 0.775D - h, minw - 0.125D, maxw, 0.775D, maxw - 0.125D);
+                            case NORTH:
+                                return VoxelShapes.create(minw, 0.775D - h, minw + 0.125D, maxw, 0.775D, maxw + 0.125D);
+                        }
                     case ONWARD:
                     case OUTWARD:
                         switch (state.get(HORIZONTAL_FACING)) {
                             case EAST:
-                                return VoxelShapes.create(
-                                    0.0D, 0.5D - w * 0.5D, 0.5D - w * 0.5D,
-                                    h, 0.5D + w * 0.5D, 0.5D + w * 0.5D
-                                );
+                                return VoxelShapes.create(0.0D, minw, minw, h, maxw, maxw);
                             case WEST:
-                                return VoxelShapes.create(
-                                    1.0D - h, 0.5D - w * 0.5D, 0.5D - w * 0.5D,
-                                    1.0D, 0.5D + w * 0.5D, 0.5D + w * 0.5D
-                                );
+                                return VoxelShapes.create(1.0D - h, minw, minw, 1.0D, maxw, maxw);
                             case SOUTH:
-                                return VoxelShapes.create(
-                                    0.5D - w * 0.5D, 0.5D - w * 0.5D, 0.0D,
-                                    0.5D + w * 0.5D, 0.5D + w * 0.5D, h
-                                );
+                                return VoxelShapes.create(minw, minw, 0.0D, maxw, maxw, h);
                             case NORTH:
-                                return VoxelShapes.create(
-                                    0.5D - w * 0.5D, 0.5D - w * 0.5D, 1.0D - h,
-                                    0.5D + w * 0.5D, 0.5D + w * 0.5D, 1.0D
-                                );
+                                return VoxelShapes.create(minw, minw, 1.0D - h, maxw, maxw, 1.0D);
                         }
                 }
             case CEILING:
