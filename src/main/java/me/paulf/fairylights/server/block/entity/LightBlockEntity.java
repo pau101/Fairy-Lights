@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.block.entity;
 import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.item.LightItem;
+import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -10,6 +11,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -47,6 +50,16 @@ public class LightBlockEntity extends TileEntity {
     public void interact(final World world, final BlockPos pos, final BlockState state, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
         this.setOn(!this.light.isOn());
         world.setBlockState(pos, state.with(LightBlock.LIT, this.light.isOn()));
+        final SoundEvent lightSnd;
+        final float pitch;
+        if (this.light.isOn()) {
+            lightSnd = FLSounds.FEATURE_LIGHT_TURNON.orElseThrow(IllegalStateException::new);
+            pitch = 0.6F;
+        } else {
+            lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.orElseThrow(IllegalStateException::new);
+            pitch = 0.5F;
+        }
+        this.world.playSound(null, pos, lightSnd, SoundCategory.BLOCKS, 1.0F, pitch);
     }
 
     @Override
