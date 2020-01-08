@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.function.Supplier;
 
@@ -63,7 +62,6 @@ public final class FLItems {
     }
 
     private static Supplier<LightItem> createLight(final RegistryObject<LightBlock> block) {
-        LogManager.getLogger().info("waldo {}", block);
         return () -> new LightItem(block.orElseThrow(IllegalStateException::new), defaultProperties().maxStackSize(16));
     }
 }
