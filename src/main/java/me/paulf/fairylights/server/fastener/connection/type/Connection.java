@@ -25,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -225,7 +226,7 @@ public abstract class Connection implements NBTSerializable {
 
     public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
         final Item item = heldStack.getItem();
-        if (item instanceof ConnectionItem) {
+        if (item instanceof ConnectionItem && !this.matches(heldStack)) {
             if (this.destination.isLoaded(this.world)) {
                 this.replace(player, hit, heldStack);
                 return true;
@@ -236,6 +237,16 @@ public abstract class Connection implements NBTSerializable {
             return this.slacken(hit, heldStack, -0.2F);
         }
         return false;
+    }
+
+    public boolean matches(final ItemStack stack) {
+        if (!(stack.getItem() instanceof ConnectionItem)) {
+            return false;
+        }
+        if (!((ConnectionItem) stack.getItem()).getConnectionType().isInstance(this)) {
+            return false;
+        }
+        return !stack.hasTag() || NBTUtil.areNBTEquals(this.serializeLogic(), stack.getTag(), true);
     }
 
     private void replace(final PlayerEntity player, final Vec3d hit, final ItemStack heldStack) {

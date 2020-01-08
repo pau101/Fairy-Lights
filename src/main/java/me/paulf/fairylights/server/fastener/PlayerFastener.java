@@ -2,12 +2,10 @@ package me.paulf.fairylights.server.fastener;
 
 import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.item.ConnectionItem;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -71,14 +69,9 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
         return super.update();
     }
 
-    public boolean matchesStack(final ItemStack stack) {
-        if (!(stack.getItem() instanceof ConnectionItem)) {
-            return false;
-        }
-        if (!((ConnectionItem) stack.getItem()).getConnectionType().isConnectionThis(this.getFirstConnection())) {
-            return false;
-        }
-        return !stack.hasTag() || NBTUtil.areNBTEquals(this.getFirstConnection().serializeLogic(), stack.getTag(), true);
+    private boolean matchesStack(final ItemStack stack) {
+        final Connection connection = this.getFirstConnection();
+        return connection != null && connection.matches(stack);
     }
 
     @Override

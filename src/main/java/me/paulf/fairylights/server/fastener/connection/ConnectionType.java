@@ -33,7 +33,7 @@ public enum ConnectionType {
         }
 
         @Override
-        public boolean isConnectionThis(final Connection connection) {
+        public boolean isInstance(final Connection connection) {
             return connection instanceof HangingLightsConnection;
         }
     },
@@ -54,7 +54,7 @@ public enum ConnectionType {
         }
 
         @Override
-        public boolean isConnectionThis(final Connection connection) {
+        public boolean isInstance(final Connection connection) {
             return connection instanceof GarlandVineConnection;
         }
     },
@@ -75,7 +75,7 @@ public enum ConnectionType {
         }
 
         @Override
-        public boolean isConnectionThis(final Connection connection) {
+        public boolean isInstance(final Connection connection) {
             return connection instanceof GarlandTinselConnection;
         }
     },
@@ -96,7 +96,7 @@ public enum ConnectionType {
         }
 
         @Override
-        public boolean isConnectionThis(final Connection connection) {
+        public boolean isInstance(final Connection connection) {
             return connection instanceof PennantBuntingConnection;
         }
     },
@@ -117,7 +117,7 @@ public enum ConnectionType {
         }
 
         @Override
-        public boolean isConnectionThis(final Connection connection) {
+        public boolean isInstance(final Connection connection) {
             return connection instanceof LetterBuntingConnection;
         }
     };
@@ -128,7 +128,7 @@ public enum ConnectionType {
 
     public abstract ConnectionItem getItem();
 
-    public abstract boolean isConnectionThis(Connection connection);
+    public abstract boolean isInstance(Connection connection);
 
     public static ConnectionType from(final int ordinal) {
         final ConnectionType[] values = values();
