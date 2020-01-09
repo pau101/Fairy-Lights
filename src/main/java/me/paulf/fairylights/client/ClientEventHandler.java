@@ -84,8 +84,9 @@ public final class ClientEventHandler {
 
     @SubscribeEvent
     public void onClientTick(final TickEvent.ClientTickEvent event) {
-        final World world = Minecraft.getInstance().world;
-        if (event.phase != TickEvent.Phase.START && world != null) {
+        final Minecraft mc = Minecraft.getInstance();
+        final World world = mc.world;
+        if (event.phase != TickEvent.Phase.START && world != null && !mc.isGamePaused()) {
 			this.getBlockEntities(world).stream()
                 .filter(FastenerBlockEntity.class::isInstance)
                 .map(FastenerBlockEntity.class::cast)
