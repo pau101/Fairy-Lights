@@ -24,7 +24,7 @@ public final class LightItem extends BlockItem {
         if (this.isInGroup(group)) {
             for (final DyeColor dye : DyeColor.values()) {
                 final ItemStack stack = new ItemStack(this);
-                stack.getOrCreateTag().putByte("color", (byte) dye.getId());
+                LightItem.setLightColor(stack, dye);
                 items.add(stack);
             }
         }
@@ -32,6 +32,10 @@ public final class LightItem extends BlockItem {
 
     public static DyeColor getLightColor(final ItemStack stack) {
         return stack.hasTag() ? DyeColor.byId(stack.getTag().getByte("color")) : DyeColor.YELLOW;
+    }
+
+    public static void setLightColor(final ItemStack stack, final DyeColor color) {
+        stack.getOrCreateTag().putByte("color", (byte) color.getId());
     }
 
     public static int getColorValue(final DyeColor color) {

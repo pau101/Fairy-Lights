@@ -155,7 +155,7 @@ public class LightBlock extends HorizontalFaceBlock {
     public ItemStack getItem(final IBlockReader world, final BlockPos pos, final BlockState state) {
         final TileEntity entity = world.getTileEntity(pos);
         final ItemStack stack = new ItemStack(this.variant.getItem());
-        stack.getOrCreateTag().putByte("color", (byte) (entity instanceof LightBlockEntity ? ((LightBlockEntity) entity).getColor() : DyeColor.YELLOW).getId());
+        LightItem.setLightColor(stack, entity instanceof LightBlockEntity ? ((LightBlockEntity) entity).getColor() : DyeColor.YELLOW);
         return stack;
     }
 

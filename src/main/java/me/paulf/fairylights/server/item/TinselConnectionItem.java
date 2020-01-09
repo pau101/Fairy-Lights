@@ -29,7 +29,7 @@ public final class TinselConnectionItem extends ConnectionItem {
         if (this.isInGroup(tab)) {
             for (final DyeColor color : DyeColor.values()) {
                 final ItemStack tinsel = new ItemStack(this);
-                tinsel.getOrCreateTag().putByte("color", (byte) color.getId());
+                LightItem.setLightColor(tinsel, color);
                 items.add(tinsel);
             }
         }

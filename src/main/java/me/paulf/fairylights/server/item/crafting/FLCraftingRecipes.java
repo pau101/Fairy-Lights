@@ -79,7 +79,7 @@ public final class FLCraftingRecipes {
 
         @Override
         public void matched(final ItemStack ingredient, final ItemStack output) {
-            output.getTag().putByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
+            LightItem.setLightColor(output, OreDictUtils.getDyeMetadata(ingredient));
         }
     };
 
@@ -277,7 +277,7 @@ public final class FLCraftingRecipes {
                     if (compound == null) {
                         return ImmutableList.of();
                     }
-                    return ImmutableList.of(OreDictUtils.getDyes(DyeColor.byId(compound.getByte("color"))));
+                    return ImmutableList.of(OreDictUtils.getDyes(LightItem.getLightColor(output)));
                 }
 
                 @Override
@@ -287,7 +287,7 @@ public final class FLCraftingRecipes {
 
                 @Override
                 public void matched(final ItemStack ingredient, final ItemStack output) {
-                    output.getTag().putByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
+                    LightItem.setLightColor(output, OreDictUtils.getDyeMetadata(ingredient));
                 }
             })
             .build();
@@ -379,7 +379,7 @@ public final class FLCraftingRecipes {
 
                 @Override
                 public void matched(final ItemStack ingredient, final ItemStack output) {
-                    output.getOrCreateTag().putByte("color", (byte) OreDictUtils.getDyeMetadata(ingredient));
+                    LightItem.setLightColor(output, OreDictUtils.getDyeMetadata(ingredient));
                 }
             })
             .build();
@@ -404,7 +404,7 @@ public final class FLCraftingRecipes {
             for (int i = 0; i < pattern.size(); i++) {
                 final CompoundNBT light = pattern.getCompound(i);
                 final ItemStack stack = new ItemStack(LightVariant.getLightVariant(light.getInt("light")).getItem());
-                stack.getOrCreateTag().putByte("color", light.getByte("color"));
+                LightItem.setLightColor(stack, DyeColor.byId(light.getByte("color")));
                 lights.add(ImmutableList.of(stack));
             }
             return lights.build();
@@ -465,7 +465,7 @@ public final class FLCraftingRecipes {
             for (int i = 0; i < pattern.size(); i++) {
                 final CompoundNBT pennant = pattern.getCompound(i);
                 final ItemStack stack = new ItemStack(FLItems.PENNANT.orElseThrow(IllegalStateException::new));
-                stack.getOrCreateTag().putByte("color", pennant.getByte("color"));
+                LightItem.setLightColor(stack, DyeColor.byId(pennant.getByte("color")));
                 pennants.add(ImmutableList.of(stack));
             }
             return pennants.build();

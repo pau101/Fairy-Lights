@@ -23,7 +23,7 @@ public class PennantItem extends Item {
         if (this.isInGroup(tab)) {
             for (final DyeColor dye : DyeColor.values()) {
                 final ItemStack stack = new ItemStack(this);
-                stack.getOrCreateTag().putByte("color", (byte) dye.getId());
+                LightItem.setLightColor(stack, dye);
                 subItems.add(stack);
             }
         }
