@@ -20,24 +20,26 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+import java.time.Month;
+
 @Mod(FairyLights.ID)
 public final class FairyLights {
     public static final String ID = "fairylights";
 
-    public static ServerProxy proxy;
+    public ServerProxy proxy;
 
     public static SimpleChannel network;
 
     public static ItemGroup fairyLightsTab = new FairyLightsItemGroup();
 
-    public static CalendarEvent christmas;
+    public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 
     public static JingleLibrary christmasJingles;
 
     public static JingleLibrary randomJingles;
 
     public FairyLights() {
-        proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
+        this.proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         FLSounds.REG.register(bus);
         FLBlocks.REG.register(bus);
@@ -50,16 +52,15 @@ public final class FairyLights {
     }
 
     public void init(final FMLCommonSetupEvent event) {
-        proxy.initConfig();
-        proxy.initIntegration();
-        proxy.initGUI();
-        proxy.initRenders();
-        proxy.initNetwork();
-        proxy.initEggs();
-        proxy.initHandlers();
+        this.proxy.initConfig();
+        this.proxy.initIntegration();
+        this.proxy.initRenders();
+        this.proxy.initNetwork();
+        this.proxy.initEggs();
+        this.proxy.initHandlers();
     }
 
     public void init(final ModelRegistryEvent event) {
-        proxy.initRendersLate();
+        this.proxy.initRendersLate();
     }
 }

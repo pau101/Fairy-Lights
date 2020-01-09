@@ -97,7 +97,7 @@ public final class ClientProxy extends ServerProxy {
                     return LightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
                 }
             }
-            if (FairyLights.christmas.isOccurringNow()) {
+            if (FairyLights.CHRISTMAS.isOccurringNow()) {
                 return (index + System.currentTimeMillis() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
             }
             return 0xFFD584;

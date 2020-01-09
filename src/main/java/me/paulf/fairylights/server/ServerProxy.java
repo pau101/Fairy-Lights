@@ -12,7 +12,6 @@ import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScr
 import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
 import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
-import me.paulf.fairylights.util.CalendarEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.IResourceManagerReloadListener;
@@ -28,7 +27,6 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.time.Month;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -40,9 +38,6 @@ public class ServerProxy {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
     }
 
-    public void initGUI() {
-    }
-
     /*
      * |\   /|    __     __     __     __
      *  \|_|/    /  \   /  \   /  \   /  \
@@ -50,7 +45,6 @@ public class ServerProxy {
      * =\_Y_/=   \__/   \__/   \__/   \__/
      */
     public void initEggs() {
-        FairyLights.christmas = new CalendarEvent(Month.DECEMBER, 24, 26);
         FairyLights.christmasJingles = JingleLibrary.create("christmas");
         FairyLights.randomJingles = JingleLibrary.create("random");
         this.loadJingleLibraries();
