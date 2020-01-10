@@ -22,6 +22,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -33,6 +34,8 @@ import javax.annotation.Nullable;
 
 public class LightBlock extends HorizontalFaceBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    private static final VoxelShape MIN_FLOOR_ANCHOR_SHAPE = Block.makeCuboidShape(7.0D, 0.0D, 7.0D, 9.0D, 16.0D, 9.0D);
 
     private final VoxelShape floorShape, eastWallShape, westWallShape, northWallShape, southWallShape, ceilingShape;
 
@@ -84,7 +87,14 @@ public class LightBlock extends HorizontalFaceBlock {
 
     @Override
     public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
-        return state.get(FACE) == AttachFace.FLOOR ? func_220055_a(world, pos.down(), Direction.UP) : super.isValidPosition(state, world, pos);
+        final Direction facing = HorizontalFaceBlock.getFacing(state);
+        final BlockPos anchorPos = pos.offset(facing.getOpposite());
+        final BlockState anchorState = world.getBlockState(anchorPos);
+        final VoxelShape shape = anchorState.getCollisionShape(world, anchorPos);
+        if (state.get(FACE) == AttachFace.FLOOR) {
+            return !VoxelShapes.compare(shape.project(facing.getOpposite()), MIN_FLOOR_ANCHOR_SHAPE, IBooleanFunction.ONLY_SECOND);
+        }
+        return Block.doesSideFillSquare(shape, facing);
     }
 
     // 'super' but opposite facing for y axis placement
