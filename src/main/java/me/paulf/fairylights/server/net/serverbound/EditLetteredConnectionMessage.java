@@ -37,12 +37,12 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
         @Override
         public void accept(final EditLetteredConnectionMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            this.accept((EditLetteredConnectionMessage<?>) message, context);
+            final ServerPlayerEntity player = context.getSender();
+            context.enqueueWork(() -> this.accept((EditLetteredConnectionMessage<?>) message, player));
             context.setPacketHandled(true);
         }
 
-        private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final NetworkEvent.Context context) {
-            final ServerPlayerEntity player = context.getSender();
+        private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayerEntity player) {
             if (player != null) {
                 final C connection = ConnectionMessage.getConnection(message, c -> c instanceof Lettered, player.world);
                 if (connection != null && connection.isModifiable(player) && connection.isSuppportedText(message.text)) {

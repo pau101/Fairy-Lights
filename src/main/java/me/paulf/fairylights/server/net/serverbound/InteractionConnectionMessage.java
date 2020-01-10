@@ -7,6 +7,7 @@ import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.net.ConnectionMessage;
 import me.paulf.fairylights.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
@@ -64,12 +65,12 @@ public final class InteractionConnectionMessage extends ConnectionMessage<Connec
         @Override
         public void accept(final InteractionConnectionMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            this.handle(message, context);
+            final ServerPlayerEntity player = context.getSender();
+            context.enqueueWork(() -> this.handle(message, player));
             context.setPacketHandled(true);
         }
 
-        private void handle(final InteractionConnectionMessage message, final NetworkEvent.Context context) {
-            final PlayerEntity player = context.getSender();
+        private void handle(final InteractionConnectionMessage message, final PlayerEntity player) {
             if (player == null) {
                 return;
             }

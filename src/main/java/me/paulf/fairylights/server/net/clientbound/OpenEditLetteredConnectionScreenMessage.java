@@ -28,8 +28,9 @@ public class OpenEditLetteredConnectionScreenMessage<C extends Connection & Lett
     public static final class Handler implements BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> {
         @Override
         public void accept(final OpenEditLetteredConnectionScreenMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            this.accept((OpenEditLetteredConnectionScreenMessage<?>) message);
-            contextSupplier.get().setPacketHandled(true);
+            final NetworkEvent.Context context = contextSupplier.get();
+            context.enqueueWork(() -> this.accept((OpenEditLetteredConnectionScreenMessage<?>) message));
+            context.setPacketHandled(true);
         }
 
         private <C extends Connection & Lettered> void accept(final OpenEditLetteredConnectionScreenMessage<C> message) {

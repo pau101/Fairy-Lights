@@ -38,13 +38,15 @@ public final class UpdateEntityFastenerMessage {
         @Override
         public void accept(final UpdateEntityFastenerMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final Minecraft mc = Minecraft.getInstance();
-            if (mc.world != null) {
-                final Entity entity = mc.world.getEntityByID(message.entityId);
-                if (entity != null) {
-                    entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.deserializeNBT(message.compound));
+            context.enqueueWork(() -> {
+                final Minecraft mc = Minecraft.getInstance();
+                if (mc.world != null) {
+                    final Entity entity = mc.world.getEntityByID(message.entityId);
+                    if (entity != null) {
+                        entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.deserializeNBT(message.compound));
+                    }
                 }
-            }
+            });
             context.setPacketHandled(true);
         }
     }

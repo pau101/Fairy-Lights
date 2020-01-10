@@ -50,10 +50,12 @@ public final class JingleMessage extends ConnectionMessage<Connection> {
         @Override
         public void accept(final JingleMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final Connection connection = ConnectionMessage.getConnection(message, c -> true, Minecraft.getInstance().world);
-            if (message.jingle != null && connection instanceof HangingLightsConnection) {
-                ((HangingLightsConnection) connection).play(message.library, message.jingle, message.lightOffset);
-            }
+            context.enqueueWork(() -> {
+                final Connection connection = ConnectionMessage.getConnection(message, c -> true, Minecraft.getInstance().world);
+                if (message.jingle != null && connection instanceof HangingLightsConnection) {
+                    ((HangingLightsConnection) connection).play(message.library, message.jingle, message.lightOffset);
+                }
+            });
             context.setPacketHandled(true);
         }
     }
