@@ -2,6 +2,7 @@ package me.paulf.fairylights.client.gui.component;
 
 import com.google.common.base.MoreObjects;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.styledstring.Style;
 import me.paulf.fairylights.util.styledstring.StyledString;
@@ -861,17 +862,19 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         if (drawCaret) {
             final int rgb = StyledString.getColor(this.currentStyle.getColor());
             if (this.currentStyle.isItalic()) {
+                final float r = (rgb >> 16 & 0xFF) / 255F;
+                final float g = (rgb >> 8 & 0xFF) / 255F;
+                final float b = (rgb & 0xFF) / 255F;
                 final Tessellator tes = Tessellator.getInstance();
                 final BufferBuilder buf = tes.getBuffer();
-                buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-                buf.pos(caretX + 2, offsetY - 2, 0).endVertex();
-                buf.pos(caretX + 1, offsetY - 2, 0).endVertex();
-                buf.pos(caretX - 1, offsetY + 1 + this.font.FONT_HEIGHT, 0).endVertex();
-                buf.pos(caretX, offsetY + 1 + this.font.FONT_HEIGHT, 0).endVertex();
-                GlStateManager.disableTexture();
-                GlStateManager.color3f((rgb >> 16 & 0xFF) / 255F, (rgb >> 8 & 0xFF) / 255F, (rgb & 0xFF) / 255F);
+                buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+                buf.vertex(caretX + 2, offsetY - 2, 0).color(r, g, b, 1.0F).endVertex();
+                buf.vertex(caretX + 1, offsetY - 2, 0).color(r, g, b, 1.0F).endVertex();
+                buf.vertex(caretX - 1, offsetY + 1 + this.font.FONT_HEIGHT, 0).color(r, g, b, 1.0F).endVertex();
+                buf.vertex(caretX, offsetY + 1 + this.font.FONT_HEIGHT, 0).color(r, g, b, 1.0F).endVertex();
+                RenderSystem.disableTexture();
                 tes.draw();
-                GlStateManager.enableTexture();
+                RenderSystem.enableTexture();
             } else {
                 fill(caretX, offsetY - 2, caretX + 1, offsetY + 1 + this.font.FONT_HEIGHT, 0xFF000000 | rgb);
             }
@@ -899,10 +902,10 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                     fill(offsetX + x, offsetY - 2, offsetX + x + 1, offsetY + 1 + this.font.FONT_HEIGHT, 0xFF000000 | rgb);
                 }
             }
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             this.font.drawStringWithShadow(this.getSelectedText().toString(), mouseX + 5, mouseY + 5, textColor | 0xBF000000);
-            GlStateManager.disableBlend();
+            RenderSystem.disableBlend();
         }
     }
 
@@ -925,27 +928,26 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         }
         final Tessellator tes = Tessellator.getInstance();
         final BufferBuilder buf = tes.getBuffer();
-        GlStateManager.color3f(1, 1, 1);
-        GlStateManager.disableTexture();
+        RenderSystem.disableTexture();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        buf.pos(startX, endY, 0).endVertex();
-        buf.pos(endX, endY, 0).endVertex();
-        buf.pos(endX, endY + 1, 0).endVertex();
-        buf.pos(startX, endY + 1, 0).endVertex();
-        buf.pos(startX, startY - 1, 0).endVertex();
-        buf.pos(endX, startY - 1, 0).endVertex();
-        buf.pos(endX, startY, 0).endVertex();
-        buf.pos(startX, startY, 0).endVertex();
-        buf.pos(startX, endY, 0).endVertex();
-        buf.pos(startX - 1, endY, 0).endVertex();
-        buf.pos(startX - 1, startY, 0).endVertex();
-        buf.pos(startX, startY, 0).endVertex();
-        buf.pos(endX + 1, endY, 0).endVertex();
-        buf.pos(endX, endY, 0).endVertex();
-        buf.pos(endX, startY, 0).endVertex();
-        buf.pos(endX + 1, startY, 0).endVertex();
+        buf.vertex(startX, endY, 0).endVertex();
+        buf.vertex(endX, endY, 0).endVertex();
+        buf.vertex(endX, endY + 1, 0).endVertex();
+        buf.vertex(startX, endY + 1, 0).endVertex();
+        buf.vertex(startX, startY - 1, 0).endVertex();
+        buf.vertex(endX, startY - 1, 0).endVertex();
+        buf.vertex(endX, startY, 0).endVertex();
+        buf.vertex(startX, startY, 0).endVertex();
+        buf.vertex(startX, endY, 0).endVertex();
+        buf.vertex(startX - 1, endY, 0).endVertex();
+        buf.vertex(startX - 1, startY, 0).endVertex();
+        buf.vertex(startX, startY, 0).endVertex();
+        buf.vertex(endX + 1, endY, 0).endVertex();
+        buf.vertex(endX, endY, 0).endVertex();
+        buf.vertex(endX, startY, 0).endVertex();
+        buf.vertex(endX + 1, startY, 0).endVertex();
         tes.draw();
-        GlStateManager.enableTexture();
+        RenderSystem.enableTexture();
     }
 
     public StyledString getClipboardString() {

@@ -18,8 +18,14 @@ group = "me.paulf.fairylights"
 archivesBaseName = "fairylights"
 sourceCompatibility = JavaVersion.VERSION_1_8
 
+repositories {
+    maven {
+        url "https://maven.tterrag.com/"
+    }
+}
+
 minecraft {
-	mappings channel: "snapshot", version: "20191108-1.14.3"
+    mappings channel: "snapshot", version: "20200113-mixed-1.15.1"
 	runs {
 		client {
 			workingDirectory project.file("run")
@@ -45,7 +51,7 @@ minecraft {
 }
 
 jar {
-	classifier "1.14.4"
+	classifier "1.15.1"
 }
 
 repositories {
@@ -60,9 +66,9 @@ repositories {
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:1.14.4-28.1.111"
-	compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.25:api")
-	runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.25")
+    minecraft "net.minecraftforge:forge:1.15.1-30.0.35"
+	compileOnly fg.deobf("mezz.jei:jei-1.15.1:6.0.0.1:api")
+	runtimeOnly fg.deobf("mezz.jei:jei-1.15.1:6.0.0.1")
 }
 
 processResources {

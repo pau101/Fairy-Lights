@@ -1,6 +1,7 @@
 package me.paulf.fairylights.client.gui.component;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.styledstring.StyledString;
@@ -74,7 +75,7 @@ public class PaletteButton extends Button {
     public void renderButton(final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
-            GlStateManager.color3f(1, 1, 1);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.blit(this.x, this.y, TEX_U, TEX_V, this.width, this.height);
             if (this.colorBtn.hasDisplayColor()) {
                 final int idx = COLOR_IDX[this.colorBtn.getDisplayColor().ordinal()];
@@ -88,20 +89,20 @@ public class PaletteButton extends Button {
                 final float r = (rgb >> 16 & 0xFF) / 255F;
                 final float g = (rgb >> 8 & 0xFF) / 255F;
                 final float b = (rgb & 0xFF) / 255F;
-                GlStateManager.color3f(r, g, b);
+                RenderSystem.color4f(r, g, b, 1.0F);
                 this.blit(this.x + 2 + (i % 4) * 6, this.y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             final int selectIndex = this.getMouseOverIndex(mouseX, mouseY);
             if (selectIndex > -1) {
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                GlStateManager.color4f(1, 1, 1, 0.5F);
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                RenderSystem.color4f(1, 1, 1, 0.5F);
                 final int hoverSelectX = this.x + 2 + selectIndex % 4 * 6;
                 final int hoverSelectY = this.y + 2 + selectIndex / 4 * 6;
                 this.blit(hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
-                GlStateManager.disableBlend();
+                RenderSystem.disableBlend();
             }
-            GlStateManager.color3f(1, 1, 1);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 

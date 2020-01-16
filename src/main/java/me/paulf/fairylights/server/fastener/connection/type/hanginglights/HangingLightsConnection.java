@@ -218,7 +218,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     private static final Method SET_LIGHT = ObfuscationReflectionHelper.findMethod(LightEngine.class, "func_215623_a", BlockPos.class, int.class);
 
     private void setLight(final BlockPos pos) {
-        if (this.world.isAirBlock(pos) && this.world.getLightFor(LightType.BLOCK, pos) < MAX_LIGHT) {
+        if (this.world.isAirBlock(pos) && this.world.getLightLevel(LightType.BLOCK, pos) < MAX_LIGHT) {
             final IWorldLightListener light = this.world.getChunkProvider().getLightManager().getLightEngine(LightType.BLOCK);
             if (light instanceof LightEngine) {
                 final LightEngine engine = (LightEngine) light;

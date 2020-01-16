@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.LightType;
 
 public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEntity> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/fastener.png");
@@ -19,6 +21,11 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
     public FenceFastenerRenderer(final EntityRendererManager mgr) {
         super(mgr);
         this.model = new FastenerModel();
+    }
+
+    @Override
+    protected int getBlockLight(final FenceFastenerEntity entity, final float delta) {
+        return entity.world.getLightLevel(LightType.BLOCK, new BlockPos(entity));
     }
 
     @Override

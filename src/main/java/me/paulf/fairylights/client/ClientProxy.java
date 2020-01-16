@@ -6,8 +6,11 @@ import me.paulf.fairylights.client.renderer.block.entity.LightBlockEntityRendere
 import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
 import me.paulf.fairylights.client.renderer.entity.LadderRenderer;
 import me.paulf.fairylights.server.ServerProxy;
+import me.paulf.fairylights.server.block.FLBlocks;
+import me.paulf.fairylights.server.block.entity.FLBlockEntities;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
+import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
 import me.paulf.fairylights.server.entity.LadderEntity;
 import me.paulf.fairylights.server.item.FLItems;
@@ -17,8 +20,12 @@ import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScr
 import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.client.renderer.texture.ITickableTextureObject;
+import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.resources.IResourceManager;
@@ -30,6 +37,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -57,10 +65,10 @@ public final class ClientProxy extends ServerProxy {
 
     @Override
     public void initRenders() {
-        ClientRegistry.bindTileEntitySpecialRenderer(FastenerBlockEntity.class, new FastenerBlockEntityRenderer(ServerProxy.buildBlockView()));
-        ClientRegistry.bindTileEntitySpecialRenderer(LightBlockEntity.class, new LightBlockEntityRenderer());
-        RenderingRegistry.registerEntityRenderingHandler(FenceFastenerEntity.class, FenceFastenerRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(LadderEntity.class, LadderRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.orElseThrow(IllegalStateException::new), dispatcher -> new FastenerBlockEntityRenderer(ServerProxy.buildBlockView()));
+        ClientRegistry.bindTileEntityRenderer(LightBlockEntity.class, new LightBlockEntityRenderer());
+        RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), FenceFastenerRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.orElseThrow(IllegalStateException::new), LadderRenderer::new);
     }
 
     @Override
@@ -147,25 +155,31 @@ public final class ClientProxy extends ServerProxy {
             return 0xFFFFFFFF;
         }, FLItems.LETTER_BUNTING.orElseThrow(IllegalStateException::new));
         // Early runTick hook after getMouseOver
-        Minecraft.getInstance().getTextureManager().loadTickableTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new ITickableTextureObject() {
+        class HackyHook extends Texture implements ITickable {
             @Override
             public void tick() {
                 ClientEventHandler.updateHitConnection();
             }
 
             @Override
-            public void setBlurMipmap(final boolean blur, final boolean mipmap) {}
-
-            @Override
-            public void restoreLastBlurMipmap() {}
-
-            @Override
-            public void loadTexture(final IResourceManager manager) {}
-
-            @Override
-            public int getGlTextureId() {
-                return 0;
+            public void loadTexture(final IResourceManager manager) {
             }
-        });
+        }
+        Minecraft.getInstance().getTextureManager().registerTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new HackyHook());
+        RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        /*RenderTypeLookup.setRenderLayer(FLBlocks.FAIRY_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.PAPER_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.ORB_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.FLOWER_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.ORNATE_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.OIL_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.JACK_O_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.SKULL_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.GHOST_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.SPIDER_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.WITCH_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.SNOWFLAKE_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.ICICLE_LIGHTS.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.METEOR_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());*/
     }
 }

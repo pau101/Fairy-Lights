@@ -114,12 +114,12 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
         for (final float[] step : steps) {
             for (int b = -1; b <= 1; b++) {
                 final Vec3d p = mat.transform(new Vec3d(b * bs, step[0], step[1])).scale(1 / 16F);
-                bounds.add(new AxisAlignedBB(this.posX + p.x - bhm, this.posY + p.y - bvm, this.posZ + p.z - bhm, this.posX + p.x + bhm, this.posY + p.y + bvm, this.posZ + p.z + bhm));
+                bounds.add(new AxisAlignedBB(this.getX() + p.x - bhm, this.getY() + p.y - bvm, this.getZ() + p.z - bhm, this.getX() + p.x + bhm, this.getY() + p.y + bvm, this.getZ() + p.z + bhm));
             }
         }
         final float tym = 43.5F / 16;
         final float thm = 4F / 16;
-        bounds.add(new AxisAlignedBB(this.posX - thm, this.posY + tym - bvm, this.posZ - thm, this.posX + thm, this.posY + tym + bvm, this.posZ + thm));
+        bounds.add(new AxisAlignedBB(this.getX() - thm, this.getY() + tym - bvm, this.getZ() - thm, this.getX() + thm, this.getY() + tym + bvm, this.getZ() + thm));
         return bounds;
     }
 
@@ -186,12 +186,12 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
     }
 
     private void playBreakSound() {
-        this.world.playSound(null, this.posX, this.posY, this.posZ, this.getDeathSound(), this.getSoundCategory(), 1, 1);
+        this.world.playSound(null, this.getX(), this.getY(), this.getZ(), this.getDeathSound(), this.getSoundCategory(), 1, 1);
     }
 
     private void playParticles() {
         if (this.world instanceof ServerWorld) {
-            ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.OAK_PLANKS.getDefaultState()), this.posX, this.posY + this.getHeight() / 1.5, this.posZ, 18, this.getWidth() / 4, this.getHeight() / 4, this.getWidth() / 4, 0.05);
+            ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.OAK_PLANKS.getDefaultState()), this.getX(), this.getY() + this.getHeight() / 1.5, this.getZ(), 18, this.getWidth() / 4, this.getHeight() / 4, this.getWidth() / 4, 0.05);
         }
     }
 
@@ -209,7 +209,7 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
     public void handleStatusUpdate(final byte id) {
         if (id == PUNCH_ID) {
             if (this.world.isRemote) {
-                this.world.playSound(this.posX, this.posY, this.posZ, FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new), this.getSoundCategory(), 0.3F, 1, false);
+                this.world.playSound(this.getX(), this.getY(), this.getZ(), FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new), this.getSoundCategory(), 0.3F, 1, false);
                 this.lastPunchTime = this.world.getGameTime();
             }
         } else {

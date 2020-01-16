@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.gui.component;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
@@ -44,7 +44,7 @@ public class ToggleButton extends Button {
     public void renderButton(final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
-            GlStateManager.color3f(1, 1, 1);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             final int t;
             if (this.isHovered) {
                 if (this.pressed) {

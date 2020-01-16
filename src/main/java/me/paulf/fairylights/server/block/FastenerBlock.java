@@ -17,7 +17,6 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -29,6 +28,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -55,11 +55,6 @@ public final class FastenerBlock extends DirectionalBlock {
             .with(FACING, Direction.NORTH)
             .with(TRIGGERED, false)
         );
-    }
-
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
@@ -121,7 +116,7 @@ public final class FastenerBlock extends DirectionalBlock {
     public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
         final Direction facing = state.get(FACING);
         final BlockPos attachedPos = pos.offset(facing.getOpposite());
-        return world.getBlockState(attachedPos).func_224755_d(world, attachedPos, facing);
+        return world.getBlockState(attachedPos).isSideSolidFullSquare(world, attachedPos, facing);
     }
 
     @Nullable
@@ -214,10 +209,8 @@ public final class FastenerBlock extends DirectionalBlock {
     }
 
     @Override
-    public void tick(final BlockState state, final World world, final BlockPos pos, final Random random) {
-        if (!world.isRemote) {
-            this.jingle(world, pos);
-        }
+    public void scheduledTick(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
+        this.jingle(world, pos);
     }
 
     private boolean jingle(final World world, final BlockPos pos) {

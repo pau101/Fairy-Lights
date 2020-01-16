@@ -43,7 +43,7 @@ public class LadderItem extends Item {
             z = context.getHitVec().z;
         }
         final double y = location.getY() + 0.001;
-        if (!world.areCollisionShapesEmpty(FLEntities.LADDER.orElseThrow(IllegalStateException::new).func_220328_a(x, y, z))) {
+        if (!world.doesNotCollide(FLEntities.LADDER.orElseThrow(IllegalStateException::new).func_220328_a(x, y, z))) {
             return ActionResultType.FAIL;
         }
         if (!world.isRemote) {
@@ -52,7 +52,7 @@ public class LadderItem extends Item {
             ladder.setPosition(x, y, z);
             EntityType.applyItemNBT(world, player, ladder, heldStack.getTag());
             world.addEntity(ladder);
-            world.playSound(null, ladder.posX, ladder.posY, ladder.posZ, FLSounds.LADDER_PLACE.orElseThrow(IllegalStateException::new), ladder.getSoundCategory(), 0.75F, 0.8F);
+            world.playSound(null, ladder.getX(), ladder.getY(), ladder.getZ(), FLSounds.LADDER_PLACE.orElseThrow(IllegalStateException::new), ladder.getSoundCategory(), 0.75F, 0.8F);
         }
         heldStack.shrink(1);
         return ActionResultType.SUCCESS;

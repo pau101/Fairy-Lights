@@ -32,6 +32,6 @@ public abstract class EntityFastener<E extends Entity> extends AbstractFastener<
 
     @Override
     public Vec3d getConnectionPoint() {
-        return new Vec3d(this.entity.posX, this.entity.posY, this.entity.posZ);
+        return this.entity.getPositionVec();
     }
 }

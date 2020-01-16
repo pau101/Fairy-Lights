@@ -1,6 +1,7 @@
 package me.paulf.fairylights.client.gui.component;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
@@ -48,13 +49,13 @@ public final class ColorButton extends Button {
     public void renderButton(final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
-            GlStateManager.color3f(1, 1, 1);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.blit(this.x, this.y, TEX_U, this.isHovered ? TEX_V + this.height : TEX_V, this.width, this.height);
             if (this.displayColor != null) {
                 this.blit(this.x, this.y, TEX_U + this.width, TEX_V, this.width, this.height);
-                GlStateManager.color3f(this.displayColorR, this.displayColorG, this.displayColorB);
+                RenderSystem.color4f(this.displayColorR, this.displayColorG, this.displayColorB, 1.0F);
                 this.blit(this.x, this.y, TEX_U + this.width, TEX_V + this.height, this.width, this.height);
-                GlStateManager.color3f(1, 1, 1);
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }
     }

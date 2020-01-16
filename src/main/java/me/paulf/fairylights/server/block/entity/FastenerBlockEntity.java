@@ -12,6 +12,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
@@ -54,8 +55,8 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
     }
 
     @Override
-    public void setWorld(final World world) {
-        super.setWorld(world);
+    public void setWorld(final World world, final BlockPos pos) {
+        super.setWorld(world, pos);
         this.getFastener().ifPresent(fastener -> fastener.setWorld(world));
     }
 

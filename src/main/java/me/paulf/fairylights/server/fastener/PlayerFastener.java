@@ -78,9 +78,9 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     public void resistSnap(final Vec3d from) {
         final double dist = this.getConnectionPoint().distanceTo(from);
         if (dist > Connection.MAX_LENGTH) {
-            final double dx = this.entity.posX - from.x;
-            final double dy = this.entity.posY - from.y;
-            final double dz = this.entity.posZ - from.z;
+            final double dx = this.entity.getX() - from.x;
+            final double dy = this.entity.getY() - from.y;
+            final double dz = this.entity.getZ() - from.z;
             final double vectorX = dx / dist;
             final double vectorY = dy / dist;
             final double vectorZ = dz / dist;
