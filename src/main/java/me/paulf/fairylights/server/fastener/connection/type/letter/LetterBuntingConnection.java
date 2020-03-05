@@ -7,7 +7,6 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.Segment;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.Lettered;
@@ -124,17 +123,16 @@ public final class LetterBuntingConnection extends Connection implements Lettere
             this.prevLetters = this.letters;
             final boolean hasPrevLetters = this.prevLetters != null;
             final List<Letter> letters = new ArrayList<>(this.text.length());
-            final Segment[] segments = catenary.getSegments();
-            double distance = 0;
-            for (int i = 0; i < segments.length; i++) {
-                final Segment seg = segments[i];
-                final double length = seg.getLength();
+            final Catenary.SegmentIterator it = catenary.iterator();
+            float distance = 0;
+            while (it.next()) {
+                final float length = it.getLength();
                 for (int n = pointIdx; n < textLen; n++) {
                     final float pointOffset = pointOffsets[n];
                     if (pointOffset < distance + length) {
-                        final double t = (pointOffset - distance) / length;
-                        final Vec3d point = seg.pointAt(t);
-                        final Letter letter = new Letter(pointIdx, point, seg.getRotation(), SYMBOLS, this.text.charAt(pointIdx), this.text.styleAt(pointIdx));
+                        final float t = (pointOffset - distance) / length;
+                        final Vec3d point = new Vec3d(it.getX(t), it.getY(t), it.getZ(t));
+                        final Letter letter = new Letter(pointIdx, point, it.getYaw(), it.getPitch(), SYMBOLS, this.text.charAt(pointIdx), this.text.styleAt(pointIdx));
                         if (hasPrevLetters && pointIdx < this.prevLetters.length) {
                             letter.inherit(this.prevLetters[pointIdx]);
                         }
@@ -149,7 +147,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
                 }
                 distance += length;
             }
-            this.letters = letters.toArray(new Letter[letters.size()]);
+            this.letters = letters.toArray(new Letter[0]);
         }
     }
 

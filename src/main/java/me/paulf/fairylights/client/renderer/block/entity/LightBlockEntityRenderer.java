@@ -1,78 +1,43 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import me.paulf.fairylights.client.model.lights.FairyLightModel;
-import me.paulf.fairylights.client.model.lights.FlowerLightModel;
-import me.paulf.fairylights.client.model.lights.GhostLightModel;
-import me.paulf.fairylights.client.model.lights.IcicleLightsModel;
-import me.paulf.fairylights.client.model.lights.JackOLanternLightModel;
-import me.paulf.fairylights.client.model.lights.LightModel;
-import me.paulf.fairylights.client.model.lights.MeteorLightModel;
-import me.paulf.fairylights.client.model.lights.OilLanternModel;
-import me.paulf.fairylights.client.model.lights.OrbLanternModel;
-import me.paulf.fairylights.client.model.lights.OrnateLanternModel;
-import me.paulf.fairylights.client.model.lights.PaperLanternModel;
-import me.paulf.fairylights.client.model.lights.SkullLightModel;
-import me.paulf.fairylights.client.model.lights.SnowflakeLightModel;
-import me.paulf.fairylights.client.model.lights.SpiderLightModel;
-import me.paulf.fairylights.client.model.lights.WitchLightModel;
-import me.paulf.fairylights.client.renderer.FastenerRenderer;
-import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
-import me.paulf.fairylights.server.block.LightBlock;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.item.LightVariant;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.state.properties.AttachFace;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
 public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntity> {
-    private final LightModel[] lightModels = new LightModel[]{
-        new FairyLightModel(),
-        new PaperLanternModel(),
-        new OrbLanternModel(),
-        new FlowerLightModel(),
-        new OrnateLanternModel(),
-        new OilLanternModel(),
-        new JackOLanternLightModel(),
-        new SkullLightModel(),
-        new GhostLightModel(),
-        new SpiderLightModel(),
-        new WitchLightModel(),
-        new SnowflakeLightModel(),
-        new IcicleLightsModel(),
-        new MeteorLightModel()
-    };
+    public LightBlockEntityRenderer(final TileEntityRendererDispatcher dispatcher) {
+        super(dispatcher);
+    }
 
     static class FastenerModel extends Model {
-        final RendererModel model;
+        final ModelRenderer model;
 
         FastenerModel() {
+            super(RenderType::getEntityCutoutNoCull);
             this.textureWidth = 32;
             this.textureHeight = 32;
-            this.model = new RendererModel(this, 0, 12);
-            this.model.addBox(-1.0F, -1.0F, 0.05F, 2, 2, 8, -0.05F);
+            this.model = new ModelRenderer(this, 0, 12);
+            this.model.addCuboid(-1.0F, -1.0F, 0.05F, 2, 2, 8, -0.05F);
         }
 
-        void render() {
-            this.model.render(0.0625F);
+        @Override
+        public void render(final MatrixStack p_225598_1_, final IVertexBuilder p_225598_2_, final int p_225598_3_, final int p_225598_4_, final float p_225598_5_, final float p_225598_6_, final float p_225598_7_, final float p_225598_8_) {
+            this.model.render(p_225598_1_, p_225598_2_, p_225598_3_, p_225598_4_, p_225598_5_, p_225598_6_, p_225598_7_, p_225598_8_);
         }
     }
 
     FastenerModel fastener = new FastenerModel();
 
     @Override
-    public void render(final LightBlockEntity entity, final double x, final double y, final double z, final float delta, final int destroyStage) {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableRescaleNormal();
+    public void render(final LightBlockEntity entity, final float p_225616_2_, final MatrixStack stack, final IRenderTypeBuffer p_225616_4_, final int p_225616_5_, final int p_225616_6_) {
+        /*stack.push();
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-        GlStateManager.translatef((float) x, (float) y, (float) z);
         final BlockState state = entity.getBlockState();
         final AttachFace face = state.get(LightBlock.FACE);
         final float rotation = state.get(LightBlock.HORIZONTAL_FACING).getHorizontalAngle();
@@ -87,8 +52,8 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
         final int skylight = blockBrightness % 0x10000;
         final int moonlight = blockBrightness / 0x10000;
 
-        GlStateManager.translated(0.5D, 0.5D, 0.5D);
-        GlStateManager.rotatef(180.0F - rotation, 0.0F, 1.0F, 0.0F);
+        stack.translate(0.5D, 0.5D, 0.5D);
+        stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F - rotation));
         if (variant.getPlacement() == LightVariant.Placement.UPRIGHT) {
             if (face == AttachFace.CEILING) {
                 GlStateManager.translated(0.0D, 0.25D, 0.0D);
@@ -120,15 +85,10 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
         }
 
         this.bindTexture(FastenerRenderer.TEXTURE);
-        GlStateManager.disableCull();
-        GlStateManager.disableLighting();
+
+
         model.render(entity.getWorld(), light, 0.0625F, light.getLight(), moonlight, skylight, light.getBrightness(delta), 0, delta);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        GlStateManager.enableLighting();
-        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
-
-        GlStateManager.popMatrix();
+        stack.pop();*/
     }
 }

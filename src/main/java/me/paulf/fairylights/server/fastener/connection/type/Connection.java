@@ -9,7 +9,6 @@ import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.FeatureType;
 import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.Segment;
 import me.paulf.fairylights.server.fastener.connection.collision.Collidable;
 import me.paulf.fairylights.server.fastener.connection.collision.ConnectionCollision;
 import me.paulf.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
@@ -39,6 +38,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 public abstract class Connection implements NBTSerializable {
     public static final int MAX_LENGTH = 32;
@@ -296,7 +296,7 @@ public abstract class Connection implements NBTSerializable {
         this.destination.update(this.world, this.fastener.getPos());
         if (this.destination.isLoaded(this.world)) {
             this.onUpdateEarly();
-            final Fastener dest = this.destination.get(this.world);
+            final Fastener<?> dest = this.destination.get(this.world);
             final Vec3d point = dest.getConnectionPoint();
             this.updateCatenary(from, dest, point);
             final double dist = point.distanceTo(from);
@@ -322,7 +322,7 @@ public abstract class Connection implements NBTSerializable {
         if (this.world.isBlockLoaded(this.fastener.getPos())) {
             this.destination.update(this.world, this.fastener.getPos());
             if (this.destination.isLoaded(this.world)) {
-                final Fastener dest = this.destination.get(this.world);
+                final Fastener<?> dest = this.destination.get(this.world);
                 final Vec3d point = dest.getConnectionPoint();
                 this.updateCatenary(from, dest, point);
                 this.updateCatenary = false;
@@ -356,19 +356,27 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public void addCollision(final List<Collidable> collision, final Vec3d origin) {
-        final Segment[] segments = this.catenary.getSegments();
-        if (segments.length < 2) {
+        final int count = this.catenary.getCount();
+        if (count < 2) {
             return;
         }
-        final float radius = this.getRadius();
-        collision.add(FeatureCollisionTree.build(CORD_FEATURE, segments, s -> {
-            final Vec3d start = s.getStart();
-            final Vec3d end = s.getEnd();
-            return new AxisAlignedBB(
-                origin.x + start.x / 16, origin.y + start.y / 16, origin.z + start.z / 16,
-                origin.x + end.x / 16, origin.y + end.y / 16, origin.z + end.z / 16
-            ).grow(radius);
-        }, 1, segments.length - 2));
+        final float r = this.getRadius();
+        final Catenary.SegmentIterator it = this.catenary.iterator();
+        final AxisAlignedBB[] bounds = new AxisAlignedBB[count];
+        int index = 0;
+        while (it.next()) {
+            final float x0 = it.getX(0.0F);
+            final float y0 = it.getY(0.0F);
+            final float z0 = it.getZ(0.0F);
+            final float x1 = it.getX(1.0F);
+            final float y1 = it.getY(1.0F);
+            final float z1 = it.getZ(1.0F);
+            bounds[index++] = new AxisAlignedBB(
+                origin.x + x0 - r, origin.y + y0 - r, origin.z + z0 - r,
+                origin.x + x1 + r, origin.y + y1 + r, origin.z + z1 + r
+            );
+        }
+        collision.add(FeatureCollisionTree.build(CORD_FEATURE, bounds, Function.identity(), i -> () -> 0, 1, count - 2));
     }
 
     @Override

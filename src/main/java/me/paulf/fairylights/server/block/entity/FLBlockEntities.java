@@ -12,9 +12,9 @@ public final class FLBlockEntities {
 
     public static final DeferredRegister<TileEntityType<?>> REG = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, FairyLights.ID);
 
-    public static final RegistryObject<TileEntityType<?>> FASTENER = REG.register("fastener", () -> TileEntityType.Builder.create(FastenerBlockEntity::new, FLBlocks.FASTENER.orElseThrow(IllegalStateException::new)).build(null));
+    public static final RegistryObject<TileEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> TileEntityType.Builder.create(FastenerBlockEntity::new, FLBlocks.FASTENER.orElseThrow(IllegalStateException::new)).build(null));
 
-    public static final RegistryObject<TileEntityType<?>> LIGHT = REG.register("light", () -> TileEntityType.Builder.create(LightBlockEntity::new,
+    public static final RegistryObject<TileEntityType<LightBlockEntity>> LIGHT = REG.register("light", () -> TileEntityType.Builder.create(LightBlockEntity::new,
         FLBlocks.FAIRY_LIGHT.orElseThrow(IllegalStateException::new),
         FLBlocks.PAPER_LANTERN.orElseThrow(IllegalStateException::new),
         FLBlocks.ORB_LANTERN.orElseThrow(IllegalStateException::new),

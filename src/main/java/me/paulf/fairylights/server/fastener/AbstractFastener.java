@@ -4,7 +4,6 @@ import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.server.fastener.connection.Segment;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.util.AABBBuilder;
 import net.minecraft.entity.item.ItemEntity;
@@ -102,12 +101,11 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             if (catenary == null) {
                 continue;
             }
-            final Segment[] segments = catenary.getSegments();
-            for (int i = 0; i < segments.length; i++) {
-                final Segment segment = segments[i];
-                builder.include(segment.getStart().scale(0.0625));
+            final Catenary.SegmentIterator it = catenary.iterator();
+            while (it.next()) {
+                builder.include(it.getPos());
             }
-            builder.include(segments[segments.length - 1].getEnd().scale(0.0625));
+            builder.include(catenary.getEnd());
         }
         this.bounds = builder.add(this.getConnectionPoint()).build();
     }

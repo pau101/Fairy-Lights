@@ -25,7 +25,7 @@ public class LightBlockEntity extends TileEntity {
 
     public LightBlockEntity() {
         super(FLBlockEntities.LIGHT.orElseThrow(IllegalStateException::new));
-        this.light = new Light(0, Vec3d.ZERO, Vec3d.ZERO, true);
+        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, true);
     }
 
     public Light getLight() {

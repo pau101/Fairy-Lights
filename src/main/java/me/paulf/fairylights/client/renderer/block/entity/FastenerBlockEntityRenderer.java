@@ -1,20 +1,25 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import me.paulf.fairylights.client.renderer.FastenerRenderer;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.BlockView;
 import me.paulf.fairylights.util.matrix.Matrix;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.math.Vec3d;
 
 public final class FastenerBlockEntityRenderer extends TileEntityRenderer<FastenerBlockEntity> {
     private final BlockView view;
 
-    public FastenerBlockEntityRenderer(final BlockView view) {
+    public FastenerBlockEntityRenderer(final TileEntityRendererDispatcher dispatcher, final BlockView view) {
+        super(dispatcher);
         this.view = view;
     }
+
+    private FastenerRenderer renderer = new FastenerRenderer();
 
     @Override
     public boolean isGlobalRenderer(final FastenerBlockEntity fastener) {
@@ -22,15 +27,15 @@ public final class FastenerBlockEntityRenderer extends TileEntityRenderer<Fasten
     }
 
     @Override
-    public void render(final FastenerBlockEntity fastener, final double x, final double y, final double z, final float delta, final int destroyStage) {
+    public void render(final FastenerBlockEntity fastener, final float delta, final MatrixStack matrix, final IRenderTypeBuffer bufferSource, final int packedLight, final int packedOverlay) {
         fastener.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> {
-            this.bindTexture(FastenerRenderer.TEXTURE);
-            GlStateManager.pushMatrix();
+            //this.bindTexture(FastenerRenderer.TEXTURE);
+            matrix.push();
             final Vec3d offset = fastener.getOffset();
-            GlStateManager.translated(x + offset.x, y + offset.y, z + offset.z);
-            this.view.unrotate(this.getWorld(), f.getPos(), FastenerBlockEntityRenderer.GlMatrix.INSTANCE, delta);
-            FastenerRenderer.render(f, delta);
-            GlStateManager.popMatrix();
+            matrix.translate(offset.x, offset.y, offset.z);
+            //this.view.unrotate(this.getWorld(), f.getPos(), FastenerBlockEntityRenderer.GlMatrix.INSTANCE, delta);
+            this.renderer.render(f, delta, matrix, bufferSource, packedLight, packedOverlay);
+            matrix.pop();
         });
     }
 

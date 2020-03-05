@@ -85,8 +85,8 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     }
 
     @Override
-    protected Pennant createFeature(final int index, final Vec3d point, final Vec3d rotation) {
-        final Pennant pennant = new Pennant(index, point, rotation);
+    protected Pennant createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
+        final Pennant pennant = new Pennant(index, point, yaw, pitch);
         if (this.pattern.size() > 0) {
             pennant.setColor(LightItem.getColorValue(this.pattern.get(index % this.pattern.size())));
         }

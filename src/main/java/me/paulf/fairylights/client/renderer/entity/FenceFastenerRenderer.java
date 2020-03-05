@@ -1,26 +1,24 @@
 package me.paulf.fairylights.client.renderer.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.client.renderer.FastenerRenderer;
-import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.LightType;
 
 public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEntity> {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/fastener.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/mjolnir.png");
 
-    private final FastenerModel model;
+    //private final FastenerModel model;
 
     public FenceFastenerRenderer(final EntityRendererManager mgr) {
         super(mgr);
-        this.model = new FastenerModel();
+        //this.model = new FastenerModel();
     }
 
     @Override
@@ -29,6 +27,11 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
     }
 
     @Override
+    public void render(final FenceFastenerEntity p_225623_1_, final float p_225623_2_, final float p_225623_3_, final MatrixStack p_225623_4_, final IRenderTypeBuffer p_225623_5_, final int p_225623_6_) {
+        super.render(p_225623_1_, p_225623_2_, p_225623_3_, p_225623_4_, p_225623_5_, p_225623_6_);
+    }
+
+    /*@Override
     public void doRender(final FenceFastenerEntity fastener, final double x, final double y, final double z, final float yaw, final float delta) {
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
@@ -49,14 +52,14 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
         }
         GlStateManager.popMatrix();
         super.doRender(fastener, x, y, z, yaw, delta);
-    }
+    }*/
 
     @Override
-    protected ResourceLocation getEntityTexture(final FenceFastenerEntity entity) {
-        return FastenerRenderer.TEXTURE;
+    public ResourceLocation getEntityTexture(final FenceFastenerEntity p_110775_1_) {
+        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 
-    static class FastenerModel extends Model {
+    /*static class FastenerModel extends Model {
         RendererModel root;
 
         FastenerModel() {
@@ -69,5 +72,5 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
         void render(final float scale) {
             this.root.render(scale);
         }
-    }
+    }*/
 }

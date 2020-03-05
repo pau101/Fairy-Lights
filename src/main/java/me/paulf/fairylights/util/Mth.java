@@ -105,15 +105,6 @@ public final class Mth {
         return new Vec3d(x, y, z);
     }
 
-    public static Vec3d lerpAngles(final Vec3d a, final Vec3d b, final double t) {
-        Objects.requireNonNull(a, "a vector");
-        Objects.requireNonNull(b, "b vector");
-        final double x = lerpAngle(a.x, b.x, t);
-        final double y = lerpAngle(a.y, b.y, t);
-        final double z = lerpAngle(a.z, b.z, t);
-        return new Vec3d(x, y, z);
-    }
-
     public static double lerpAngle(final double a, final double b, final double t) {
         return a + t * angleDifference(a, b);
     }

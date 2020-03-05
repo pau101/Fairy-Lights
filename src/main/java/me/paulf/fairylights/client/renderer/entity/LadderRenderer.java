@@ -1,15 +1,13 @@
 package me.paulf.fairylights.client.renderer.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.model.LadderModel;
 import me.paulf.fairylights.server.entity.LadderEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 
 public class LadderRenderer extends LivingRenderer<LadderEntity, LadderModel> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/ladder.png");
@@ -19,9 +17,9 @@ public class LadderRenderer extends LivingRenderer<LadderEntity, LadderModel> {
     }
 
     @Override
-    public void doRender(final LadderEntity ladder, final double x, final double y, final double z, final float yaw, final float delta) {
-        super.doRender(ladder, x, y, z, yaw, delta);
-        if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox() && !ladder.isInvisible() && !Minecraft.getInstance().isReducedDebug()) {
+    public void render(final LadderEntity p_225623_1_, final float p_225623_2_, final float p_225623_3_, final MatrixStack p_225623_4_, final IRenderTypeBuffer p_225623_5_, final int p_225623_6_) {
+        super.render(p_225623_1_, p_225623_2_, p_225623_3_, p_225623_4_, p_225623_5_, p_225623_6_);
+        /*if (Minecraft.getInstance().getRenderManager().isDebugBoundingBox() && !ladder.isInvisible() && !Minecraft.getInstance().isReducedDebug()) {
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
             GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -35,11 +33,11 @@ public class LadderRenderer extends LivingRenderer<LadderEntity, LadderModel> {
             GlStateManager.enableTexture();
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
-        }
+        }*/
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(final LadderEntity ladder) {
+    public ResourceLocation getEntityTexture(final LadderEntity ladder) {
         return TEXTURE;
     }
 

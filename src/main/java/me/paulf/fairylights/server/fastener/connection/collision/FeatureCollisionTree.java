@@ -9,15 +9,16 @@ import net.minecraft.util.math.Vec3d;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 
 public final class FeatureCollisionTree implements Collidable {
     private final FeatureType type;
 
     private final AxisAlignedBB[] tree;
 
-    private final Feature[] nodeToFeature;
+    private final IntFunction<Feature> nodeToFeature;
 
-    private FeatureCollisionTree(final FeatureType type, final AxisAlignedBB[] tree, final Feature[] nodeToFeature) {
+    private FeatureCollisionTree(final FeatureType type, final AxisAlignedBB[] tree, final IntFunction<Feature> nodeToFeature) {
         this.type = type;
         this.tree = tree;
         this.nodeToFeature = nodeToFeature;
@@ -44,7 +45,7 @@ public final class FeatureCollisionTree implements Collidable {
         // Check if leaf
         final int nL = node * 2 + 1;
         if (nL >= this.tree.length || this.tree[nL] == null) {
-            return new Intersection(result, this.tree[node], this.type, this.nodeToFeature[node]);
+            return new Intersection(result, this.tree[node], this.type, this.nodeToFeature.apply(node));
         }
         // Intersect left
         final Intersection intersection = this.intersect(origin, end, nL);
@@ -55,29 +56,26 @@ public final class FeatureCollisionTree implements Collidable {
         return this.intersect(origin, end, node * 2 + 2);
     }
 
-    public static <T extends Feature> FeatureCollisionTree build(final FeatureType type, final T[] features, final Function<T, AxisAlignedBB> mapper) {
-        return build(type, features, mapper, 0, features.length - 1);
+    public static <T> FeatureCollisionTree build(final FeatureType type, final T[] features, final Function<T, AxisAlignedBB> mapper, final IntFunction<Feature> nodeToFeature) {
+        return build(type, features, mapper, nodeToFeature, 0, features.length - 1);
     }
 
-    public static <T extends Feature> FeatureCollisionTree build(final FeatureType type, final T[] features, final Function<T, AxisAlignedBB> mapper, final int start, final int end) {
+    public static <T> FeatureCollisionTree build(final FeatureType type, final T[] features, final Function<T, AxisAlignedBB> mapper, final IntFunction<Feature> nodeToFeature, final int start, final int end) {
         final AxisAlignedBB[] tree = new AxisAlignedBB[end == 0 ? 1 : (1 << (Mth.log2(end - start) + 2)) - 1];
-        final Feature[] treeFeatures = new Feature[tree.length];
-        tree[0] = build(features, mapper, tree, treeFeatures, start, end, 0);
-        return new FeatureCollisionTree(type, tree, treeFeatures);
+        tree[0] = build(features, mapper, tree, start, end, 0);
+        return new FeatureCollisionTree(type, tree, nodeToFeature);
     }
 
-    private static <T extends Feature> AxisAlignedBB build(final T[] features, final Function<T, AxisAlignedBB> mapper, final AxisAlignedBB[] tree, final Feature[] treeFeatures, final int min, final int max, final int node) {
+    private static <T> AxisAlignedBB build(final T[] features, final Function<T, AxisAlignedBB> mapper, final AxisAlignedBB[] tree, final int min, final int max, final int node) {
         if (min > max) {
             throw new IllegalStateException(String.format("min > max, len: %d, tree: %s, min: %d, max: %d, node: %d", features.length, Arrays.toString(tree), min, max, node));
         }
         if (min == max) {
-            final T obj = features[min];
-            treeFeatures[node] = obj;
-            return mapper.apply(obj);
+            return mapper.apply(features[min]);
         }
         final int mid = min + (max - min) / 2;
         final int nL = node * 2 + 1;
         final int nR = node * 2 + 2;
-        return (tree[nL] = build(features, mapper, tree, treeFeatures, min, mid, nL)).union(tree[nR] = build(features, mapper, tree, treeFeatures, mid + 1, max, nR));
+        return (tree[nL] = build(features, mapper, tree, min, mid, nL)).union(tree[nR] = build(features, mapper, tree, mid + 1, max, nR));
     }
 }

@@ -23,43 +23,41 @@ public final class CatenaryUtils {
 
     private static final float MIN_HORIZ = 1e-3F;
 
-    public static float[][] catenary(final float x1, final float y1, final float x2, final float y2, final float length, final int pointCount) {
-        return catenary(x1, y1, x2, y2, length, pointCount, 1);
+    public static void catenary(final float x1, final float y1, final float x2, final float y2, final float length, final int pointCount, final float[] x, final float[] y) {
+        catenary(x1, y1, x2, y2, length, pointCount, x, y, 1);
     }
 
-    private static float[][] catenary(float x1, float y1, float x2, float y2, final float length, final int pointCount, float sag) {
+    private static void catenary(float x1, float y1, float x2, float y2, final float length, final int pointCount, final float[] x, final float[] y, float sag) {
         if (x1 > x2) {
             float temp = x1;
             x1 = x2;
-            x2 = x1;
+            x2 = temp;
             temp = y1;
             y1 = y2;
             y2 = temp;
         }
-        final float[] x;
-        final float[] y;
         final float d = x2 - x1;
         final float h = y2 - y1;
         if (MathHelper.abs(d) < MIN_HORIZ) {
-            x = new float[pointCount];
             for (int i = 0, len = x.length; i < len; i++) {
                 x[i] = (x1 + x2) / 2;
             }
             if (length < MathHelper.abs(h)) {
-                y = linspace(y1, y2, pointCount);
+                linspace(y1, y2, pointCount, y, 0);
             } else {
                 sag = (length - MathHelper.abs(h)) / 2;
                 final int nSag = MathHelper.ceil(pointCount * sag / length);
                 final float yMax = Math.max(y1, y2);
                 final float yMin = Math.min(y1, y2);
-                y = concat(linspace(yMax, yMin - sag, pointCount - nSag), linspace(yMin - sag, yMin, nSag));
+                linspace(yMax, yMin - sag, pointCount - nSag, y, 0);
+                linspace(yMin - sag, yMin, nSag, y, pointCount - nSag);
             }
-            return new float[][]{x, y};
+            return;
         }
-        x = linspace(x1, x2, pointCount);
+        linspace(x1, x2, pointCount, x, 0);
         if (length <= MathHelper.sqrt(d * d + h * h)) {
-            y = linspace(y1, y2, pointCount);
-            return new float[][]{x, y};
+            linspace(y1, y2, pointCount, y, 0);
+            return;
         }
         for (int iter = 0; iter < MAX_ITER; iter++) {
             final float val = g(sag, d, length, h);
@@ -83,20 +81,9 @@ public final class CatenaryUtils {
         final float xLeft = 0.5F * ((float) Math.log((length + h) / (length - h)) / sag - d);
         final float xMin = x1 - xLeft;
         final float bias = y1 - (float) Math.cosh(xLeft * sag) / sag;
-        y = new float[x.length];
-        for (int i = 0; i < x.length; i++) {
+        for (int i = 0; i < pointCount; i++) {
             y[i] = (float) Math.cosh((x[i] - xMin) * sag) / sag + bias;
         }
-        return new float[][]{x, y};
-    }
-
-    private static float[] concat(final float[] a, final float[] b) {
-        final int aLength = a.length;
-        final int bLength = b.length;
-        final float[] concat = new float[aLength + bLength];
-        System.arraycopy(a, 0, concat, 0, aLength);
-        System.arraycopy(b, 0, concat, aLength, bLength);
-        return concat;
     }
 
     private static float dg(final float s, final float d) {
@@ -107,12 +94,10 @@ public final class CatenaryUtils {
         return 2 * (float) Math.sinh(s * d / 2) / s - MathHelper.sqrt(length * length - h * h);
     }
 
-    private static float[] linspace(final float base, final float limit, final int n) {
-        final float[] elements = new float[n];
+    private static void linspace(final float base, final float limit, final int n, final float[] elements, final int offset) {
         final float scalar = n > 1 ? (limit - base) / (n - 1) : 0;
         for (int i = 0; i < n; i++) {
-            elements[i] = base + scalar * i;
+            elements[offset + i] = base + scalar * i;
         }
-        return elements;
     }
 }

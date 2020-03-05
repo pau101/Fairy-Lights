@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 
 import me.paulf.fairylights.server.config.FLConfig;
-import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
+import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CubicBezier;
@@ -13,7 +13,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public final class Light extends HangingFeatureConnection.HangingFeature<Light> {
+public final class Light extends HangingFeature<Light> {
     private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
 
     private static final int NORMAL_LIGHT = -1;
@@ -44,8 +44,8 @@ public final class Light extends HangingFeatureConnection.HangingFeature<Light> 
 
     private int lastJingledTick = -1;
 
-    public Light(final int index, final Vec3d point, final Vec3d rotation, final boolean isOn) {
-        super(index, point, rotation);
+    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final boolean isOn) {
+        super(index, point, yaw, pitch, 0.0F);
         this.isTwinkling = !isOn;
     }
 
@@ -79,10 +79,6 @@ public final class Light extends HangingFeatureConnection.HangingFeature<Light> 
 
     public void setColor(final int colorValue) {
         this.color = new Vec3d((colorValue >> 16 & 0xFF) / 255F, (colorValue >> 8 & 0xFF) / 255F, (colorValue & 0xFF) / 255F);
-    }
-
-    public void setRotation(final Vec3d rotation) {
-        this.rotation = rotation;
     }
 
     public void setTwinkleTime(final int twinkleTime) {
@@ -144,7 +140,7 @@ public final class Light extends HangingFeatureConnection.HangingFeature<Light> 
 
     public void stopSwaying() {
         this.sway = 0;
-        this.rotation = new Vec3d(this.rotation.x, this.rotation.y, 0);
+        this.roll = 0.0F;
         this.swaying = false;
     }
 
@@ -158,7 +154,9 @@ public final class Light extends HangingFeatureConnection.HangingFeature<Light> 
     }
 
     public void tick(final HangingLightsConnection lights, final boolean twinkle, final boolean isOn) {
-        this.prevRotation = this.rotation;
+        this.prevYaw = this.yaw;
+        this.prevPitch = this.pitch;
+        this.prevRoll = this.roll;
         this.prevTwinkleTime = this.twinkleTime;
         if (isOn) {
             if (this.isTwinkling || this.variant.alwaysDoTwinkleLogic()) {
@@ -183,7 +181,7 @@ public final class Light extends HangingFeatureConnection.HangingFeature<Light> 
             if (this.sway >= SWAY_CYCLE) {
                 this.stopSwaying();
             } else {
-                this.rotation = new Vec3d(this.rotation.x, this.rotation.y, (float) (Math.sin((this.swayDirection ? 1 : -1) * 2 * Math.PI / SWAY_RATE * this.sway) * Math.pow(180 / Math.PI * 2, -this.sway / (float) SWAY_CYCLE)));
+                this.roll = (float) (Math.sin((this.swayDirection ? 1 : -1) * 2 * Math.PI / SWAY_RATE * this.sway) * Math.pow(180 / Math.PI * 2, -this.sway / (float) SWAY_CYCLE));
                 this.sway++;
             }
         }

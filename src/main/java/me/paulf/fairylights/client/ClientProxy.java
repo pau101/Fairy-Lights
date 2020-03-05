@@ -8,11 +8,7 @@ import me.paulf.fairylights.client.renderer.entity.LadderRenderer;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
-import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
-import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.entity.FLEntities;
-import me.paulf.fairylights.server.entity.FenceFastenerEntity;
-import me.paulf.fairylights.server.entity.LadderEntity;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.net.clientbound.JingleMessage;
@@ -24,7 +20,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.ITickable;
-import net.minecraft.client.renderer.texture.ITickableTextureObject;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.ListNBT;
@@ -37,7 +32,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -65,8 +59,8 @@ public final class ClientProxy extends ServerProxy {
 
     @Override
     public void initRenders() {
-        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.orElseThrow(IllegalStateException::new), dispatcher -> new FastenerBlockEntityRenderer(ServerProxy.buildBlockView()));
-        ClientRegistry.bindTileEntityRenderer(LightBlockEntity.class, new LightBlockEntityRenderer());
+        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.orElseThrow(IllegalStateException::new), dispatcher -> new FastenerBlockEntityRenderer(dispatcher, ServerProxy.buildBlockView()));
+        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.orElseThrow(IllegalStateException::new), LightBlockEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), FenceFastenerRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.orElseThrow(IllegalStateException::new), LadderRenderer::new);
     }

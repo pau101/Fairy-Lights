@@ -1,8 +1,9 @@
 package me.paulf.fairylights.client;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
@@ -11,7 +12,6 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.Segment;
 import me.paulf.fairylights.server.fastener.connection.collision.ConnectionCollision;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
@@ -20,11 +20,9 @@ import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,14 +40,13 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -231,7 +228,7 @@ public final class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void drawBlockHighlight(final DrawBlockHighlightEvent event) {
+    public void drawBlockHighlight(final DrawHighlightEvent event) {
         final RayTraceResult over = event.getTarget();
         final boolean isFence = over instanceof EntityRayTraceResult && ((EntityRayTraceResult) over).getEntity() instanceof FenceFastenerEntity;
         final boolean isHitConnection = over instanceof EntityRayTraceResult && ((EntityRayTraceResult) over).getEntity() == hit;
@@ -250,7 +247,9 @@ public final class ClientEventHandler {
 					this.drawConnectionHighlight(hit.result.connection, delta, dx, dy, dz);
                 } else {
                     final AxisAlignedBB aabb = hit.result.intersection.getHitBox().offset(-dx, -dy, -dz).grow(0.002);
-                    WorldRenderer.drawSelectionBoundingBox(aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
+                    final IRenderTypeBuffer.Impl buf = Minecraft.getInstance().getBufferBuilders().getEntityVertexConsumers();
+                    WorldRenderer.drawBox(new MatrixStack(), buf.getBuffer(RenderType.getLines()), aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
+                    //buf.draw();
                 }
             }
 			this.restoreHighlightGL();
@@ -261,14 +260,14 @@ public final class ClientEventHandler {
         // Check if the server will allow interaction
         if (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9) {
             final AxisAlignedBB selection = fence.getBoundingBox().offset(-dx, -dy, -dz).grow(0.002);
-            WorldRenderer.drawSelectionBoundingBox(selection, 0, 0, 0, HIGHLIGHT_ALPHA);
+            //WorldRenderer.drawSelectionBoundingBox(selection, 0, 0, 0, HIGHLIGHT_ALPHA); TODO
         }
     }
 
     private void drawConnectionHighlight(final Connection connection, final float delta, final double dx, final double dy, final double dz) {
         final Catenary catenary = connection.getCatenary();
         if (catenary != null) {
-            final Vec3d vec = catenary.getVector();
+            /*final Vec3d vec = catenary.getVector(); TODO
             final boolean update = this.useVBO != GLX.useVbo();
             if (update) {
 				this.useVBO = GLX.useVbo();
@@ -293,52 +292,52 @@ public final class ClientEventHandler {
             } else {
                 GlStateManager.callList(this.connHighlightId);
             }
-            GlStateManager.popMatrix();
+            GlStateManager.popMatrix();*/
         }
     }
 
     private void setupHighlightGL() {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.lineWidth(2);
-        GlStateManager.disableTexture();
-        GlStateManager.depthMask(false);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.lineWidth(2);
+        RenderSystem.disableTexture();
+        RenderSystem.depthMask(false);
     }
 
     private void restoreHighlightGL() {
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture();
-        GlStateManager.depthMask(true);
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
+        RenderSystem.depthMask(true);
     }
 
     private void generateHighlight(final Connection connection) {
-        if (this.connHighlightVBO != null) {
+        /*if (this.connHighlightVBO != null) { TODO
 			this.connHighlightVBO.deleteGlBuffers();
         }
         if (this.connHighlightId >= 0) {
             GLAllocation.deleteDisplayLists(this.connHighlightId);
-			this.connHighlightId = 0;
+            this.connHighlightId = 0;
         }
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder buf = tessellator.getBuffer();
         if (GLX.useVbo()) {
-			this.connHighlightVBO = new net.minecraft.client.renderer.vertex.VertexBuffer(DefaultVertexFormats.POSITION_COLOR);
-			this.renderHighlight(connection, buf);
+            this.connHighlightVBO = new net.minecraft.client.renderer.vertex.VertexBuffer(DefaultVertexFormats.POSITION_COLOR);
+            this.renderHighlight(connection, buf);
             buf.finishDrawing();
             buf.reset();
-			this.connHighlightVBO.bufferData(buf.getByteBuffer());
+            this.connHighlightVBO.bufferData(buf.getByteBuffer());
         } else {
-			this.connHighlightId = GLAllocation.generateDisplayLists(1);
+            this.connHighlightId = GLAllocation.generateDisplayLists(1);
             GlStateManager.pushMatrix();
             GlStateManager.newList(this.connHighlightId, GL11.GL_COMPILE);
-			this.renderHighlight(connection, buf);
+            this.renderHighlight(connection, buf);
             tessellator.draw();
             GlStateManager.endList();
             GlStateManager.popMatrix();
-        }
+        }*/
     }
 
-    private void renderHighlight(final Connection connection, final BufferBuilder buf) {
+    /*private void renderHighlight(final Connection connection, final BufferBuilder buf) {
         buf.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
         final Segment[] segments = connection.getCatenary().getSegments();
         final float cordRadius = connection.getRadius();
@@ -390,7 +389,7 @@ public final class ClientEventHandler {
 		this.renderVertex(buf, 2, true, startPoint, dir, dir, cordRadius, HIGHLIGHT_ALPHA);
 		this.renderVertex(buf, 0, false, startPoint, dir, dir, cordRadius, 0);
 		this.renderVertex(buf, 0, true, startPoint, dir, dir, cordRadius, HIGHLIGHT_ALPHA);
-    }
+    }*/
 
     private void renderVertex(final BufferBuilder buf, final int edge, final boolean forward, Vec3d pos, Vec3d dir, Vec3d toDir, final float cordRadius, final float alpha) {
         if (forward) {
@@ -415,7 +414,7 @@ public final class ClientEventHandler {
             up = Mth.negate(up);
         }
         pos = pos.scale(0.0625F).add(up.scale(cordRadius + 0.01F).add(side.scale(cordRadius + 0.01F)));
-        buf.pos(pos.x, pos.y, pos.z).color(0, 0, 0, alpha).endVertex();
+        buf.vertex(pos.x, pos.y, pos.z).color(0, 0, 0, alpha).endVertex();
     }
 
     private static class HitConnection extends Entity {

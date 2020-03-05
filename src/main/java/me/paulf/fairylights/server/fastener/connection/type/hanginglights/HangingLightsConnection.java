@@ -158,9 +158,9 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    protected Light createFeature(final int index, final Vec3d point, final Vec3d rotation) {
+    protected Light createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
         final boolean on = !this.isDynamic() && this.isOn;
-        final Light light = new Light(index, point, rotation, on);
+        final Light light = new Light(index, point, yaw, pitch, on);
         if (on && this.isOrigin()) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
