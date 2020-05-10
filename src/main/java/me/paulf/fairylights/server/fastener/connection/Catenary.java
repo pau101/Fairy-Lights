@@ -39,6 +39,18 @@ public final class Catenary {
         return this.count;
     }
 
+    public float getX() {
+        return this.x[this.count - 1] * this.dx;
+    }
+
+    public float getY() {
+        return this.y[this.count - 1];
+    }
+
+    public float getZ() {
+        return this.x[this.count - 1] * this.dz;
+    }
+
     public Vec3d getEnd() {
         return new Vec3d(this.x[this.count - 1] * this.dx, this.y[this.count - 1], this.x[this.count - 1] * this.dz);
     }
@@ -50,6 +62,10 @@ public final class Catenary {
     public SegmentIterator iterator(final boolean inclusive) {
         return new SegmentIterator() {
             private int index = -1;
+
+            public boolean hasNext() {
+                return this.index + 1 + (inclusive ? 0 : 1) < Catenary.this.count;
+            }
 
             @Override
             public boolean next() {
@@ -138,6 +154,8 @@ public final class Catenary {
     }
 
     public interface SegmentIterator {
+        boolean hasNext();
+
         boolean next();
 
         float getX(final float t);

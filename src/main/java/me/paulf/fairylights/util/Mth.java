@@ -105,12 +105,12 @@ public final class Mth {
         return new Vec3d(x, y, z);
     }
 
-    public static double lerpAngle(final double a, final double b, final double t) {
+    public static float lerpAngle(final float a, final float b, final float t) {
         return a + t * angleDifference(a, b);
     }
 
-    public static double angleDifference(final double a, final double b) {
-        return mod(b - a + Math.PI, Mth.TAU) - Math.PI;
+    public static float angleDifference(final float a, final float b) {
+        return mod(b - a + Mth.PI, Mth.TAU) - Mth.PI;
     }
 
     public static int floorInterval(final int x, final int n) {
