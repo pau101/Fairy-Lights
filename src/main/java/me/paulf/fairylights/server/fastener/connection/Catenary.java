@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.fastener.connection;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.util.CatenaryUtils;
 import me.paulf.fairylights.util.CubicBezier;
+import me.paulf.fairylights.util.Mth;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -57,6 +58,23 @@ public final class Catenary {
 
     public SegmentIterator iterator() {
         return this.iterator(false);
+    }
+
+    public Catenary lerp(final Catenary other, final float delta) {
+        if (this.count > other.count) {
+            return other.lerp(this, 1.0F - delta);
+        }
+        final float[] nx = new float[this.count];
+        final float[] ny = new float[this.count];
+        for (int i = 0; i < this.count; i++) {
+            final boolean end = this.count != other.count && i == this.count - 1;
+            nx[i] = MathHelper.lerp(delta, this.x[i], other.x[end ? other.count - 1 : i]);
+            ny[i] = MathHelper.lerp(delta, this.y[i], other.y[end ? other.count - 1 : i]);
+        }
+        final float angle = Mth.lerpAngle(this.yaw, other.yaw, delta);
+        final float vx = MathHelper.cos(angle);
+        final float vz = MathHelper.sin(angle);
+        return new Catenary(this.count, angle, vx, vz, nx, ny, MathHelper.lerp(delta, this.length, other.length));
     }
 
     public SegmentIterator iterator(final boolean inclusive) {
@@ -150,9 +168,17 @@ public final class Catenary {
                 final float dy = Catenary.this.y[this.index + 1] - Catenary.this.y[this.index];
                 return MathHelper.sqrt(dx * dx + dy * dy);
             }
+
+            @Override
+            public void getEndPitch(final Catenary prevCat, final float dt) {
+                this.checkIndex(1.0F);
+                if (inclusive) {
+                    throw new IllegalStateException();
+                }
+
+            }
         };
     }
-
     public interface SegmentIterator {
         boolean hasNext();
 
@@ -171,6 +197,8 @@ public final class Catenary {
         float getPitch();
 
         float getLength();
+
+        void getEndPitch(Catenary prevCat, float dt);
     }
 
     public float getLength() {
