@@ -114,7 +114,7 @@ public enum LightVariant {
         .withIngredient('G', Tags.Items.GLASS_PANES_WHITE),
         Placement.UPRIGHT
     ),
-    ICICLE("icicle_lights", () -> FLItems.ICICLE_LIGHTS, false, 10, 7, 20, b -> b
+    ICICLE("icicle_lights", () -> FLItems.ICICLE_LIGHTS, false, 0.625F, 7, 20, b -> b
         .withShape(" I ", "GDG", " B ")
         .withIngredient('I', Tags.Items.INGOTS_IRON)
         .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
@@ -122,7 +122,7 @@ public enum LightVariant {
         .withAnyIngredient('B', Items.WATER_BUCKET, Blocks.ICE, Blocks.PACKED_ICE),
         Placement.UPRIGHT
     ),
-    METEOR("meteor_light", () -> FLItems.METEOR_LIGHT, false, 24, 3, 28.5F, b -> b
+    METEOR("meteor_light", () -> FLItems.METEOR_LIGHT, false, 1.5F, 3, 28.5F, b -> b
         .withShape(" I ", "GDG", "IPI")
         .withIngredient('I', Tags.Items.INGOTS_IRON)
         .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
@@ -155,7 +155,7 @@ public enum LightVariant {
     private final Placement placement;
 
     LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float width, final float height, final UnaryOperator<GenericRecipeBuilder> recipe, final Placement orientable) {
-        this(name, item, parallelsCord, 16, width, height, recipe, orientable);
+        this(name, item, parallelsCord, 1.0F, width, height, recipe, orientable);
     }
 
     LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float spacing, final float width, final float height, final UnaryOperator<GenericRecipeBuilder> recipe, final Placement orientable) {

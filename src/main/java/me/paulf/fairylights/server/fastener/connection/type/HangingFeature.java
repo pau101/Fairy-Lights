@@ -52,7 +52,7 @@ public abstract class HangingFeature<F extends HangingFeature<F>> implements Fea
     }
 
     public final float getRoll(final float t) {
-        return (float) Mth.lerpAngle(this.prevRoll, this.roll, t);
+        return Mth.lerpAngle(this.prevRoll, this.roll, t);
     }
 
     public final Vec3d getAbsolutePoint(final Fastener<?> fastener) {
@@ -60,12 +60,9 @@ public abstract class HangingFeature<F extends HangingFeature<F>> implements Fea
     }
 
     public void inherit(final F feature) {
-        this.prevYaw = feature.prevYaw;
-        this.prevPitch = feature.prevPitch;
-        this.prevRoll = feature.prevRoll;
-        this.yaw = feature.yaw;
-        this.pitch = feature.pitch;
-        this.roll = feature.roll;
+        this.prevYaw = feature.yaw;
+        this.prevPitch = feature.pitch;
+        this.prevRoll = feature.roll;
     }
 
     public abstract double getWidth();

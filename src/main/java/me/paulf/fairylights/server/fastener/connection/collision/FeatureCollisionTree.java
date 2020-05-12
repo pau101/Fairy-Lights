@@ -45,7 +45,11 @@ public final class FeatureCollisionTree implements Collidable {
         // Check if leaf
         final int nL = node * 2 + 1;
         if (nL >= this.tree.length || this.tree[nL] == null) {
-            return new Intersection(result, this.tree[node], this.type, this.nodeToFeature.apply(node));
+            final Feature f = this.nodeToFeature.apply(node);
+            if (f == null) {
+                return null;
+            }
+            return new Intersection(result, this.tree[node], this.type, f);
         }
         // Intersect left
         final Intersection intersection = this.intersect(origin, end, nL);

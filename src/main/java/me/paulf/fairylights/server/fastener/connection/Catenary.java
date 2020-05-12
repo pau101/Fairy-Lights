@@ -61,6 +61,9 @@ public final class Catenary {
     }
 
     public Catenary lerp(final Catenary other, final float delta) {
+        if (this == other) {
+            return this;
+        }
         if (this.count > other.count) {
             return other.lerp(this, 1.0F - delta);
         }
