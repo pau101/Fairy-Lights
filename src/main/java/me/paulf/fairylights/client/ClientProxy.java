@@ -19,6 +19,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.item.DyeColor;
@@ -26,16 +28,26 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public final class ClientProxy extends ServerProxy {
+    public ClientProxy() {
+        FMLJavaModLoadingContext.get().getModEventBus().<TextureStitchEvent.Pre>addListener(e -> {
+            if (SOLID_TEXTURE.getAtlasId().equals(e.getMap().getId())) {
+                e.addSprite(SOLID_TEXTURE.getTextureId());
+            }
+        });
+    }
+
     @Override
     protected BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> createJingleHandler() {
         return new JingleMessage.Handler();
@@ -50,6 +62,12 @@ public final class ClientProxy extends ServerProxy {
     protected BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
         return new OpenEditLetteredConnectionScreenMessage.Handler();
     }
+
+    @SuppressWarnings("deprecation")
+    public static final Material SOLID_TEXTURE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(FairyLights.ID, "entity/connections"));
+
+    @SuppressWarnings("deprecation")
+    public static final Material TRANSLUCENT_TEXTURE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(FairyLights.ID, "entity/connections"));
 
     @Override
     public void initHandlers() {

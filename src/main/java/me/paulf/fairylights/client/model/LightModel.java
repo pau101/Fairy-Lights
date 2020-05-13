@@ -3,9 +3,11 @@ package me.paulf.fairylights.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class LightModel extends Model {
@@ -31,13 +33,10 @@ public abstract class LightModel extends Model {
         this.litTint = new ModelRenderer(this);
         this.litTintGlow = new ModelRenderer(this);
         this.unlit = new ModelRenderer(this);
+        this.build(new BulbBuilder(this.litTint, this.litTintGlow));
     }
 
-    protected void addLight(final int u, final int v, final float x, final float y, final float z, final float width, final float height, final float depth) {
-        this.litTint.setTextureOffset(u, v);
-        this.litTint.addCuboid(x, y, z, width, height, depth);
-        this.litTintGlow.setTextureOffset(u, v);
-        this.litTintGlow.addCuboid(x, y, z, width, height, depth, 0.7F);
+    protected void build(final BulbBuilder bulb) {
     }
 
     public void animate(final Light light, final float delta) {
@@ -57,6 +56,69 @@ public abstract class LightModel extends Model {
         final float lg = g * (float) this.color.y;
         final float lb = b * (float) this.color.z;
         this.litTint.render(matrix, builder, emissiveLight, overlay, lr, lg, lb, a);
+    }
+
+    public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+        final int emissiveLight = Math.max((int) (this.brightness * 15.0F * 16.0F), light & 255) | light & (255 << 16);
+        final float lr = r * (float) this.color.x;
+        final float lg = g * (float) this.color.y;
+        final float lb = b * (float) this.color.z;
         this.litTintGlow.render(matrix, builder, emissiveLight, overlay, lr, lg, lb, this.brightness * 0.15F + 0.1F);
+    }
+
+    // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
+    protected static float[] toEuler(final Quaternion q) {
+        final float r11 = 2.0F * (q.getX() * q.getY() + q.getW() * q.getZ());
+        final float r12 = q.getW() * q.getW() + q.getX() * q.getX() - q.getY() * q.getY() - q.getZ() * q.getZ();
+        final float r21 = -2.0F * (q.getX() * q.getZ() - q.getW() * q.getY());
+        final float r31 = 2.0F * (q.getY() * q.getZ() + q.getW() * q.getX());
+        final float r32 = q.getW() * q.getW() - q.getX() * q.getX() - q.getY() * q.getY() + q.getZ() * q.getZ();
+        return new float[] {
+            (float) MathHelper.atan2(r31, r32),
+            (float) Math.asin(r21),
+            (float) MathHelper.atan2(r11, r12)
+        };
+    }
+
+    class BulbBuilder {
+        ModelRenderer base;
+        ModelRenderer glow;
+
+        public BulbBuilder(final ModelRenderer base, final ModelRenderer glow) {
+            this.base = base;
+            this.glow = glow;
+        }
+
+        public void setUV(final int u, final int v) {
+            this.base.setTextureOffset(u, v);
+            this.glow.setTextureOffset(u, v);
+        }
+
+        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth) {
+            this.base.addCuboid(x, y, z, width, height, depth);
+            this.glow.addCuboid(x, y, z, width, height, depth, 0.7F);
+        }
+
+        BulbBuilder createChild(final int u, final int v) {
+            final ModelRenderer base = new ModelRenderer(LightModel.this, u, v);
+            final ModelRenderer glow = new ModelRenderer(LightModel.this, u, v);
+            this.base.addChild(base);
+            this.glow.addChild(glow);
+            return new BulbBuilder(base, glow);
+        }
+
+        public void setPosition(final float x, final float y, final float z) {
+            this.base.setRotationPoint(x, y, z);
+            this.glow.setRotationPoint(x, y, z);
+        }
+
+        public void setAngles(final float x, final float y, final float z) {
+            this.base.rotateAngleX = x;
+            this.base.rotateAngleY = y;
+            this.base.rotateAngleZ = z;
+            this.glow.rotateAngleX = x;
+            this.glow.rotateAngleY = y;
+            this.glow.rotateAngleZ = z;
+        }
     }
 }

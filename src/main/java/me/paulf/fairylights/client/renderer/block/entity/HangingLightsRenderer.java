@@ -2,7 +2,9 @@ package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.client.model.FairyLightModel;
+import me.paulf.fairylights.client.ClientProxy;
+import me.paulf.fairylights.client.model.FlowerLightModel;
+import me.paulf.fairylights.client.model.LightModel;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
@@ -17,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConnection> {
     private final WireModel model = new WireModel();
 
-    private final FairyLightModel light = new FairyLightModel();
+    private final LightModel light = new FlowerLightModel();
 
     @Override
     public void render(final HangingLightsConnection conn, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
@@ -25,7 +27,8 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
         final Light[] currLights = conn.getFeatures();
         final Light[] prevLights = conn.getPrevFeatures();
         if (currLights != null && prevLights != null) {
-            final IVertexBuilder buf = source.getBuffer(this.light.getLayer(FastenerRenderer.TEXTURE));
+            final IVertexBuilder bufSolid = ClientProxy.SOLID_TEXTURE.getVertexConsumer(source, this.model::getLayer);
+            final IVertexBuilder bufTranslucent = ClientProxy.TRANSLUCENT_TEXTURE.getVertexConsumer(source, this.light::getLayer);
             final int count = Math.min(currLights.length, prevLights.length);
             for (int i = 0; i < count; i++) {
                 final Light prevLight = prevLights[i];
@@ -38,7 +41,8 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
                 matrix.multiply(Vector3f.POSITIVE_Z.getRadialQuaternion(currLight.getPitch(delta)));
                 matrix.multiply(Vector3f.POSITIVE_X.getRadialQuaternion(currLight.getRoll(delta)));
                 matrix.translate(0.0D, -0.125D, 0.0D);
-                this.light.render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+                this.light.render(matrix, bufSolid, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+                this.light.renderTranslucent(matrix, bufTranslucent, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
                 matrix.pop();
             }
         }
@@ -47,7 +51,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
     @Override
     protected void render(final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         final Catenary.SegmentIterator it = catenary.iterator();
-        final IVertexBuilder buf = source.getBuffer(this.model.getLayer(FastenerRenderer.TEXTURE));
+        final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getVertexConsumer(source, this.model::getLayer);
         while (it.next()) {
             this.model.root.rotationPointX = it.getX(0.0F) * 16.0F;
             this.model.root.rotationPointY = it.getY(0.0F) * 16.0F;
@@ -65,7 +69,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
         float length;
 
         public WireModel() {
-            super(RenderType::getEntityCutout);
+            super(RenderType::getEntitySolid);
             this.textureWidth = 128;
             this.textureHeight = 128;
             this.root = new ModelRenderer(this, 0, 0) {
