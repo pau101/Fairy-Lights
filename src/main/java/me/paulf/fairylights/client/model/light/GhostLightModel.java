@@ -14,11 +14,7 @@ public class GhostLightModel extends LightModel {
         littleFace.rotateAngleX = Mth.PI;
         littleFace.rotateAngleY = Mth.PI;
         this.lit.addChild(littleFace);
-    }
-
-    @Override
-    protected void build(final BulbBuilder bulb) {
-        super.build(bulb);
+        final BulbBuilder bulb = this.createBulb();
         final BulbBuilder bodyTop = bulb.createChild(52, 48);
         bodyTop.setPosition(0.0F, 2.0F, 0.0F);
         bodyTop.addCuboid(-1.5F, 0.0F, -1.5F, 3.0F, 1.0F, 3.0F);

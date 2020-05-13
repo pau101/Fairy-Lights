@@ -33,10 +33,10 @@ public abstract class LightModel extends Model {
         this.litTint = new ModelRenderer(this);
         this.litTintGlow = new ModelRenderer(this);
         this.unlit = new ModelRenderer(this);
-        this.build(new BulbBuilder(this.litTint, this.litTintGlow));
     }
 
-    protected void build(final BulbBuilder bulb) {
+    protected BulbBuilder createBulb() {
+        return new BulbBuilder(this.litTint, this.litTintGlow);
     }
 
     public void animate(final Light light, final float delta) {
