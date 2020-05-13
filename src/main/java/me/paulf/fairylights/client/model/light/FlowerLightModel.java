@@ -1,4 +1,4 @@
-package me.paulf.fairylights.client.model;
+package me.paulf.fairylights.client.model.light;
 
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.Quaternion;

@@ -40,14 +40,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public final class ClientProxy extends ServerProxy {
-    public ClientProxy() {
-        FMLJavaModLoadingContext.get().getModEventBus().<TextureStitchEvent.Pre>addListener(e -> {
-            if (SOLID_TEXTURE.getAtlasId().equals(e.getMap().getId())) {
-                e.addSprite(SOLID_TEXTURE.getTextureId());
-            }
-        });
-    }
-
     @Override
     protected BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> createJingleHandler() {
         return new JingleMessage.Handler();
@@ -81,6 +73,11 @@ public final class ClientProxy extends ServerProxy {
         ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.orElseThrow(IllegalStateException::new), LightBlockEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), FenceFastenerRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.orElseThrow(IllegalStateException::new), LadderRenderer::new);
+        FMLJavaModLoadingContext.get().getModEventBus().<TextureStitchEvent.Pre>addListener(e -> {
+            if (SOLID_TEXTURE.getAtlasId().equals(e.getMap().getId())) {
+                e.addSprite(SOLID_TEXTURE.getTextureId());
+            }
+        });
     }
 
     @Override

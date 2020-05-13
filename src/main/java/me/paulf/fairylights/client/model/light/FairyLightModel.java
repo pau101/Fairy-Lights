@@ -1,4 +1,4 @@
-package me.paulf.fairylights.client.model;
+package me.paulf.fairylights.client.model.light;
 
 public class FairyLightModel extends LightModel {
     @Override

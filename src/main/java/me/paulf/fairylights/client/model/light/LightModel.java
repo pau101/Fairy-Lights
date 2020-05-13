@@ -1,4 +1,4 @@
-package me.paulf.fairylights.client.model;
+package me.paulf.fairylights.client.model.light;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
