@@ -40,9 +40,6 @@ public abstract class LightModel extends Model {
     }
 
     public void animate(final Light light, final float delta) {
-        final float yaw = light.getYaw(delta);
-        final float pitch = light.getPitch(delta);
-        final float roll = light.getRoll(delta);
         this.brightness = light.getBrightness(delta);
         this.color = light.getLight();
     }
@@ -95,8 +92,12 @@ public abstract class LightModel extends Model {
         }
 
         void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth) {
-            this.base.addCuboid(x, y, z, width, height, depth);
-            this.glow.addCuboid(x, y, z, width, height, depth, 0.7F);
+            this.addCuboid(x, y, z, width, height, depth, 0.0F);
+        }
+
+        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth, float expand) {
+            this.base.addCuboid(x, y, z, width, height, depth, expand);
+            this.glow.addCuboid(x, y, z, width, height, depth, expand + 0.7F);
         }
 
         BulbBuilder createChild(final int u, final int v) {
