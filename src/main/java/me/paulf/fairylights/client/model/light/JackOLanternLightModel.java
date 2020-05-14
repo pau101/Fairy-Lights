@@ -42,6 +42,6 @@ public class JackOLanternLightModel extends LightModel {
         face.addCuboid(-3, -3, 0, 6, 6, 0, 0);
         face.rotateAngleX = Mth.PI;
         face.rotateAngleY = Mth.PI;
-        this.unlit.addChild(face);
+        this.lit.addChild(face);
     }
 }
