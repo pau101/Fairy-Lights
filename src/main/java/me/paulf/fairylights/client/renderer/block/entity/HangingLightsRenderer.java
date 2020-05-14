@@ -3,8 +3,8 @@ package me.paulf.fairylights.client.renderer.block.entity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
-import me.paulf.fairylights.client.model.light.IcicleLightsModel;
 import me.paulf.fairylights.client.model.light.LightModel;
+import me.paulf.fairylights.client.model.light.OilLanternModel;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConnection> {
     private final WireModel model = new WireModel();
 
-    private final LightModel light = new IcicleLightsModel(4);
+    private final LightModel light = new OilLanternModel();
 
     @Override
     public void render(final HangingLightsConnection conn, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
