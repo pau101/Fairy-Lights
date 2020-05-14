@@ -95,9 +95,13 @@ public abstract class LightModel extends Model {
             this.addCuboid(x, y, z, width, height, depth, 0.0F);
         }
 
-        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth, float expand) {
+        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth, final float expand) {
+            this.addCuboid(x, y, z, width, height, depth, 0.0F, 0.7F);
+        }
+
+        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth, final float expand, final float glow) {
             this.base.addCuboid(x, y, z, width, height, depth, expand);
-            this.glow.addCuboid(x, y, z, width, height, depth, expand + 0.7F);
+            this.glow.addCuboid(x, y, z, width, height, depth, expand + glow);
         }
 
         BulbBuilder createChild(final int u, final int v) {
