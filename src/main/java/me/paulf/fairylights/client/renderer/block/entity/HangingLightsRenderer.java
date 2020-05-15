@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.client.model.light.LightModel;
-import me.paulf.fairylights.client.model.light.SnowflakeLightModel;
+import me.paulf.fairylights.client.model.light.MeteorLightModel;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConnection> {
     private final WireModel model = new WireModel();
 
-    private final LightModel light = new SnowflakeLightModel();
+    private final LightModel light = new MeteorLightModel();
 
     @Override
     public void render(final HangingLightsConnection conn, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
@@ -39,7 +39,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);
                 matrix.multiply(Vector3f.POSITIVE_Y.getRadialQuaternion(-currLight.getYaw(delta)));
-                if (!currLight.getVariant().parallelsCord()) {
+                if (currLight.getVariant().parallelsCord()) {
                     matrix.multiply(Vector3f.POSITIVE_Z.getRadialQuaternion(currLight.getPitch(delta)));
                 }
                 matrix.multiply(Vector3f.POSITIVE_X.getRadialQuaternion(currLight.getRoll(delta)));

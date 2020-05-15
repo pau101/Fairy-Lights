@@ -19,11 +19,9 @@ public abstract class LightModel extends Model {
 
     protected final ModelRenderer unlit;
 
-    private int light;
-
     private Vec3d color;
 
-    private float brightness;
+    protected float brightness;
 
     public LightModel() {
         super(RenderType::getEntityTranslucent);
@@ -47,7 +45,7 @@ public abstract class LightModel extends Model {
     @Override
     public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         this.unlit.render(matrix, builder, light, overlay, r, g, b, a);
-        final int emissiveLight = Math.max((int) (this.brightness * 15.0F * 16.0F), light & 255) | light & (255 << 16);
+        final int emissiveLight = (int) (this.brightness * 15.0F * 16.0F) | light & (255 << 16);
         this.lit.render(matrix, builder, emissiveLight, overlay, r, g, b, a);
         final float lr = r * (float) this.color.x;
         final float lg = g * (float) this.color.y;
@@ -56,7 +54,7 @@ public abstract class LightModel extends Model {
     }
 
     public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-        final int emissiveLight = Math.max((int) (this.brightness * 15.0F * 16.0F), light & 255) | light & (255 << 16);
+        final int emissiveLight = (int) (this.brightness * 15.0F * 16.0F) | light & (255 << 16);
         final float lr = r * (float) this.color.x;
         final float lg = g * (float) this.color.y;
         final float lb = b * (float) this.color.z;
@@ -105,8 +103,12 @@ public abstract class LightModel extends Model {
         }
 
         BulbBuilder createChild(final int u, final int v) {
-            final ModelRenderer base = new ModelRenderer(LightModel.this, u, v);
-            final ModelRenderer glow = new ModelRenderer(LightModel.this, u, v);
+            return this.createChild(u, v, ModelRenderer::new);
+        }
+
+        BulbBuilder createChild(final int u, final int v, final ModelRendererFactory factory) {
+            final ModelRenderer base = factory.create(LightModel.this, u, v);
+            final ModelRenderer glow = factory.create(LightModel.this, u, v);
             this.base.addChild(base);
             this.glow.addChild(glow);
             return new BulbBuilder(base, glow);
@@ -125,5 +127,14 @@ public abstract class LightModel extends Model {
             this.glow.rotateAngleY = y;
             this.glow.rotateAngleZ = z;
         }
+
+        public void setVisible(final boolean value) {
+            this.base.showModel = value;
+            this.glow.showModel = value;
+        }
+    }
+
+    interface ModelRendererFactory {
+        ModelRenderer create(final Model model, final int u, final int v);
     }
 }
