@@ -55,8 +55,8 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
     }
 
     @Override
-    public void setWorld(final World world, final BlockPos pos) {
-        super.setWorld(world, pos);
+    public void setWorldAndPos(final World world, final BlockPos pos) {
+        super.setWorldAndPos(world, pos);
         this.getFastener().ifPresent(fastener -> fastener.setWorld(world));
     }
 

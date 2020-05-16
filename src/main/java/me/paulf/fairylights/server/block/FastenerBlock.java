@@ -116,7 +116,7 @@ public final class FastenerBlock extends DirectionalBlock {
     public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
         final Direction facing = state.get(FACING);
         final BlockPos attachedPos = pos.offset(facing.getOpposite());
-        return world.getBlockState(attachedPos).isSideSolidFullSquare(world, attachedPos, facing);
+        return world.getBlockState(attachedPos).isSolidSide(world, attachedPos, facing);
     }
 
     @Nullable
@@ -209,7 +209,7 @@ public final class FastenerBlock extends DirectionalBlock {
     }
 
     @Override
-    public void scheduledTick(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
+    public void tick(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
         this.jingle(world, pos);
     }
 

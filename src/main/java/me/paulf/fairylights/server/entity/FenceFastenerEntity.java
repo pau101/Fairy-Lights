@@ -145,7 +145,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
         final double posX = this.hangingPosition.getX() + 0.5;
         final double posY = this.hangingPosition.getY() + 0.5;
         final double posZ = this.hangingPosition.getZ() + 0.5;
-        this.setPos(posX, posY, posZ);
+        this.setRawPosition(posX, posY, posZ);
         final float w = 3 / 16F;
         final float h = 3 / 16F;
         this.setBoundingBox(new AxisAlignedBB(posX - w, posY - h, posZ - w, posX + w, posY + h, posZ + w));

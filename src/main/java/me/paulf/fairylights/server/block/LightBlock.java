@@ -129,13 +129,13 @@ public class LightBlock extends HorizontalFaceBlock {
     }
 
     @Override
-    public ActionResultType onUse(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
         final TileEntity entity = world.getTileEntity(pos);
         if (entity instanceof LightBlockEntity) {
             ((LightBlockEntity) entity).interact(world, pos, state, player, hand, hit);
             return ActionResultType.SUCCESS;
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onBlockActivated(state, world, pos, player, hand, hit);
     }
 
     @Override

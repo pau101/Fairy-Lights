@@ -98,8 +98,8 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     @Override
     public void tick() {
         final Minecraft mc = Minecraft.getInstance();
-        final int x = (int) (mc.mouseHelper.getMouseX() * mc.getWindow().getScaledWidth() / mc.getWindow().getWidth());
-        final int y = (int) (mc.mouseHelper.getMouseY() * mc.getWindow().getScaledHeight() / mc.getWindow().getHeight());
+        final int x = (int) (mc.mouseHelper.getMouseX() * mc.getMainWindow().getScaledWidth() / mc.getMainWindow().getWidth());
+        final int y = (int) (mc.mouseHelper.getMouseY() * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getHeight());
         this.textField.update(x, y);
     }
 

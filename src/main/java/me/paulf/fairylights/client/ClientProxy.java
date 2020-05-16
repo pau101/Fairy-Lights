@@ -74,8 +74,8 @@ public final class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), FenceFastenerRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.orElseThrow(IllegalStateException::new), LadderRenderer::new);
         FMLJavaModLoadingContext.get().getModEventBus().<TextureStitchEvent.Pre>addListener(e -> {
-            if (SOLID_TEXTURE.getAtlasId().equals(e.getMap().getId())) {
-                e.addSprite(SOLID_TEXTURE.getTextureId());
+            if (SOLID_TEXTURE.getAtlasLocation().equals(e.getMap().getTextureLocation())) {
+                e.addSprite(SOLID_TEXTURE.getTextureLocation());
             }
         });
     }
@@ -174,7 +174,7 @@ public final class ClientProxy extends ServerProxy {
             public void loadTexture(final IResourceManager manager) {
             }
         }
-        Minecraft.getInstance().getTextureManager().registerTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new HackyHook());
+        Minecraft.getInstance().getTextureManager().loadTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new HackyHook());
         RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
         /*RenderTypeLookup.setRenderLayer(FLBlocks.FAIRY_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(FLBlocks.PAPER_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());

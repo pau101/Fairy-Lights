@@ -68,8 +68,8 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
         final Light[] currLights = conn.getFeatures();
         final Light[] prevLights = conn.getPrevFeatures();
         if (currLights != null && prevLights != null) {
-            final IVertexBuilder bufSolid = ClientProxy.SOLID_TEXTURE.getVertexConsumer(source, RenderType::getEntityCutout);
-            final IVertexBuilder bufTranslucent = ClientProxy.TRANSLUCENT_TEXTURE.getVertexConsumer(source, RenderType::getEntityTranslucent);
+            final IVertexBuilder bufSolid = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+            final IVertexBuilder bufTranslucent = ClientProxy.TRANSLUCENT_TEXTURE.getBuffer(source, RenderType::getEntityTranslucent);
             final int count = Math.min(currLights.length, prevLights.length);
             for (int i = 0; i < count; i++) {
                 final Light prevLight = prevLights[i];
@@ -80,14 +80,14 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
                 light.animate(currLight, delta);
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);
-                matrix.multiply(Vector3f.POSITIVE_Y.getRadialQuaternion(-currLight.getYaw(delta)));
+                matrix.rotate(Vector3f.YP.rotation(-currLight.getYaw(delta)));
                 if (currLight.getVariant().parallelsCord()) {
-                    matrix.multiply(Vector3f.POSITIVE_Z.getRadialQuaternion(currLight.getPitch(delta)));
+                    matrix.rotate(Vector3f.ZP.rotation(currLight.getPitch(delta)));
                 }
                 if (variant != LightVariant.FAIRY) {
-                    matrix.multiply(Vector3f.POSITIVE_Y.getRadialQuaternion(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
+                    matrix.rotate(Vector3f.YP.rotation(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
                 }
-                matrix.multiply(Vector3f.POSITIVE_X.getRadialQuaternion(currLight.getRoll(delta)));
+                matrix.rotate(Vector3f.XP.rotation(currLight.getRoll(delta)));
                 matrix.translate(0.0D, -0.125D, 0.0D);
                 light.render(matrix, bufSolid, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
                 light.renderTranslucent(matrix, bufTranslucent, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);

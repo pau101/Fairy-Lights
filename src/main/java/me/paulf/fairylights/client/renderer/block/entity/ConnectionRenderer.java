@@ -24,7 +24,7 @@ public abstract class ConnectionRenderer<C extends Connection> {
         if (currCat != null && prevCat != null) {
             final Catenary cat = prevCat.lerp(currCat, delta);
             final Catenary.SegmentIterator it = cat.iterator();
-            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getVertexConsumer(source, RenderType::getEntityCutout);
+            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
             while (it.next()) {
                 this.model.root.rotationPointX = it.getX(0.0F) * 16.0F;
                 this.model.root.rotationPointY = it.getY(0.0F) * 16.0F;
@@ -54,12 +54,12 @@ public abstract class ConnectionRenderer<C extends Connection> {
             this.textureHeight = 128;
             this.root = new ModelRenderer(this, u, v) {
                 @Override
-                public void rotate(final MatrixStack stack) {
-                    super.rotate(stack);
+                public void translateRotate(final MatrixStack stack) {
+                    super.translateRotate(stack);
                     stack.scale(1.0F, 1.0F, WireModel.this.length);
                 }
             };
-            this.root.addCuboid(-size * 0.5F, -size * 0.5F, 0.0F, size, size, 1.0F);
+            this.root.addBox(-size * 0.5F, -size * 0.5F, 0.0F, size, size, 1.0F);
         }
 
         @Override

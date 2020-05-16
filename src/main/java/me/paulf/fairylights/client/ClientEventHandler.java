@@ -247,8 +247,8 @@ public final class ClientEventHandler {
 					this.drawConnectionHighlight(hit.result.connection, delta, dx, dy, dz);
                 } else {
                     final AxisAlignedBB aabb = hit.result.intersection.getHitBox().offset(-dx, -dy, -dz).grow(0.002);
-                    final IRenderTypeBuffer.Impl buf = Minecraft.getInstance().getBufferBuilders().getEntityVertexConsumers();
-                    WorldRenderer.drawBox(new MatrixStack(), buf.getBuffer(RenderType.getLines()), aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
+                    final IRenderTypeBuffer.Impl buf = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+                    WorldRenderer.drawBoundingBox(new MatrixStack(), buf.getBuffer(RenderType.getLines()), aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
                     //buf.draw();
                 }
             }
@@ -414,7 +414,7 @@ public final class ClientEventHandler {
             up = Mth.negate(up);
         }
         pos = pos.scale(0.0625F).add(up.scale(cordRadius + 0.01F).add(side.scale(cordRadius + 0.01F)));
-        buf.vertex(pos.x, pos.y, pos.z).color(0, 0, 0, alpha).endVertex();
+        buf.pos(pos.x, pos.y, pos.z).color(0, 0, 0, alpha).endVertex();
     }
 
     private static class HitConnection extends Entity {

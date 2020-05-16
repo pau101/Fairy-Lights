@@ -18,10 +18,10 @@ public class MeteorLightModel extends LightModel {
 
     public MeteorLightModel() {
         this.connector = new ModelRenderer(this, 77, 0);
-        this.connector.addCuboid(-1, -0.5F, -1, 2, 2, 2, -0.05F);
+        this.connector.addBox(-1, -0.5F, -1, 2, 2, 2, -0.05F);
         this.unlit.addChild(this.connector);
         this.cap = new ModelRenderer(this, 77, 0);
-        this.cap.addCuboid(-1, -25.45F + 0.05F, -1, 2, 1, 2, 0);
+        this.cap.addBox(-1, -25.45F + 0.05F, -1, 2, 1, 2, 0);
         this.unlit.addChild(this.cap);
         final int lightCount = 12;
         this.lights = new BulbBuilder[lightCount];
@@ -30,12 +30,12 @@ public class MeteorLightModel extends LightModel {
         for (int i = 0; i < lightCount; i++) {
             final BulbBuilder light = bulb.createChild(37, 72, (m, u, v) -> new ModelRenderer(m, u, v) {
                 @Override
-                public void rotate(final MatrixStack stack) {
-                    super.rotate(stack);
+                public void translateRotate(final MatrixStack stack) {
+                    super.translateRotate(stack);
                     stack.scale(rodScale, 1.0F, rodScale);
                 }
             });
-            light.addCuboid(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, MathHelper.sin(i * Mth.PI / lightCount) * 0.1F);
+            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, MathHelper.sin(i * Mth.PI / lightCount) * 0.1F);
             this.lights[i] = light;
         }
     }

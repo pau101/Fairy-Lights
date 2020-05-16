@@ -23,7 +23,7 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
             this.textureWidth = 32;
             this.textureHeight = 32;
             this.model = new ModelRenderer(this, 0, 12);
-            this.model.addCuboid(-1.0F, -1.0F, 0.05F, 2, 2, 8, -0.05F);
+            this.model.addBox(-1.0F, -1.0F, 0.05F, 2, 2, 8, -0.05F);
         }
 
         @Override

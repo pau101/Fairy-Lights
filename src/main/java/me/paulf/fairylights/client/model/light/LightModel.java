@@ -89,17 +89,17 @@ public abstract class LightModel extends Model {
             this.glow.setTextureOffset(u, v);
         }
 
-        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth) {
-            this.addCuboid(x, y, z, width, height, depth, 0.0F);
+        void addBox(final float x, final float y, final float z, final float width, final float height, final float depth) {
+            this.addBox(x, y, z, width, height, depth, 0.0F);
         }
 
-        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth, final float expand) {
-            this.addCuboid(x, y, z, width, height, depth, expand, 0.7F);
+        void addBox(final float x, final float y, final float z, final float width, final float height, final float depth, final float expand) {
+            this.addBox(x, y, z, width, height, depth, expand, 0.7F);
         }
 
-        void addCuboid(final float x, final float y, final float z, final float width, final float height, final float depth, final float expand, final float glow) {
-            this.base.addCuboid(x, y, z, width, height, depth, expand);
-            this.glow.addCuboid(x, y, z, width, height, depth, expand + glow);
+        void addBox(final float x, final float y, final float z, final float width, final float height, final float depth, final float expand, final float glow) {
+            this.base.addBox(x, y, z, width, height, depth, expand);
+            this.glow.addBox(x, y, z, width, height, depth, expand + glow);
         }
 
         BulbBuilder createChild(final int u, final int v) {

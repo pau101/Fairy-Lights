@@ -34,14 +34,14 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
         catenary.visitPoints(0.25F, false, (index, x, y, z, yaw, pitch) -> {
             matrix.push();
             matrix.translate(x, y, z);
-            matrix.multiply(Vector3f.POSITIVE_Y.getRadialQuaternion(-yaw));
-            matrix.multiply(Vector3f.POSITIVE_Z.getRadialQuaternion(pitch));
-            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getVertexConsumer(source, RenderType::getEntityCutout);
+            matrix.rotate(Vector3f.YP.rotation(-yaw));
+            matrix.rotate(Vector3f.ZP.rotation(pitch));
+            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
             final int uniquifier = 0;//connection.hashCode();
             final float rotZ = RAND.get(index + uniquifier) * 45;
             final float rotY = RAND.get(index + 8 + uniquifier) * 60 + 90;
-            matrix.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(rotZ));
-            matrix.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(rotY));
+            matrix.rotate(Vector3f.ZP.rotationDegrees(rotZ));
+            matrix.rotate(Vector3f.YP.rotationDegrees(rotY));
 //            final int ring = this.rings[index % RING_COUNT];
             final RingModel ring = new RingModel(0, 0);
             ring.render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
@@ -58,7 +58,7 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
             this.textureHeight = 128;
             this.root = new ModelRenderer(this, 14, 91);
             final float size = 4.0F;
-            this.root.addCuboid(-size / 2.0F, -size / 2.0F, -size / 2.0F, size, size, size);
+            this.root.addBox(-size / 2.0F, -size / 2.0F, -size / 2.0F, size, size, size);
         }
 
         @Override
