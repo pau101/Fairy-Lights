@@ -97,7 +97,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
     }
 
     @Override
-    protected void render(final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
+    protected void render(final HangingLightsConnection conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
     }
 
     interface LightModelProvider {

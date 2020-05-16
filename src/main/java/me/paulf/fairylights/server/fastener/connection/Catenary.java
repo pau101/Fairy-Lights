@@ -92,6 +92,9 @@ public final class Catenary {
                 distance += spacing;
             }
             distance -= length;
+            if (!center && !it.hasNext()) {
+                visitor.visit(index++, it.getX(1.0F), it.getY(1.0F), it.getZ(1.0F), it.getYaw(), it.getPitch());
+            }
         }
     }
 

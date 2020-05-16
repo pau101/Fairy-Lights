@@ -36,11 +36,11 @@ public abstract class ConnectionRenderer<C extends Connection> {
                 this.model.render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
                 this.renderSegment(conn, it, delta, matrix, source, packedLight, packedOverlay);
             }
-            this.render(cat, delta, matrix, source, packedLight, packedOverlay);
+            this.render(conn, cat, delta, matrix, source, packedLight, packedOverlay);
         }
     }
 
-    protected void render(final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}
+    protected void render(final C conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}
 
     protected void renderSegment(final C connection, final Catenary.SegmentView it, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}
 

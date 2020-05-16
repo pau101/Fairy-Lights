@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandVineConnection;
+import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.RandomArray;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -15,7 +16,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import java.util.stream.IntStream;
 
 public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnection> {
-    private static final int RING_COUNT = 8;
+    private static final int RING_COUNT = 7;
 
     private static final RandomArray RAND = new RandomArray(8411, RING_COUNT * 4);
 
@@ -29,22 +30,18 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
     }
 
     @Override
-    protected void render(final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
-        super.render(catenary, delta, matrix, source, packedLight, packedOverlay);
+    protected void render(final GarlandVineConnection conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
+        super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
+        final int hash = conn.getUUID().hashCode();
+        final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
         catenary.visitPoints(0.25F, false, (index, x, y, z, yaw, pitch) -> {
             matrix.push();
             matrix.translate(x, y, z);
             matrix.rotate(Vector3f.YP.rotation(-yaw));
             matrix.rotate(Vector3f.ZP.rotation(pitch));
-            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
-            final int uniquifier = 0;//connection.hashCode();
-            final float rotZ = RAND.get(index + uniquifier) * 45;
-            final float rotY = RAND.get(index + 8 + uniquifier) * 60 + 90;
-            matrix.rotate(Vector3f.ZP.rotationDegrees(rotZ));
-            matrix.rotate(Vector3f.YP.rotationDegrees(rotY));
-//            final int ring = this.rings[index % RING_COUNT];
-            final RingModel ring = new RingModel(0, 0);
-            ring.render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+            matrix.rotate(Vector3f.ZP.rotationDegrees(RAND.get(index + hash) * 45.0F));
+            matrix.rotate(Vector3f.YP.rotationDegrees(RAND.get(index + 8 + hash) * 60.F + 90.0F));
+            this.rings[index % RING_COUNT].render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
             matrix.pop();
         });
     }
@@ -59,6 +56,11 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
             this.root = new ModelRenderer(this, 14, 91);
             final float size = 4.0F;
             this.root.addBox(-size / 2.0F, -size / 2.0F, -size / 2.0F, size, size, size);
+            final ModelRenderer cross = new ModelRenderer(this, u, v);
+            cross.rotateAngleZ = Mth.HALF_PI;
+            cross.addBox(-4.0F, -4.0F, 0.0F, 8.0F, 8.0F, 0.0F);
+            cross.addBox(-4.0F, 0.0F, -4.0F, 8.0F, 0.0F, 8.0F);
+            this.root.addChild(cross);
         }
 
         @Override
