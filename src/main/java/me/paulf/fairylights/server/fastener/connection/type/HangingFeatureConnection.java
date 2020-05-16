@@ -57,39 +57,23 @@ public abstract class HangingFeatureConnection<F extends HangingFeature<F>> exte
         final float totalLength = catenary.getLength();
         if (totalLength > 2.0F * Connection.MAX_LENGTH) {
             this.prevFeatures = this.features;
-            this.onBeforeUpdateFeatures(0);
+            this.onBeforeUpdateFeatures();
             this.features = this.createFeatures(0);
-            this.onAfterUpdateFeatures(0);
+            this.onAfterUpdateFeatures();
             return;
         }
-        /*
-         * Distance starts at the value that will center the lights on the cord
-         * Simplified version of t / 2 - ((int) (t / s) - 1) * s / 2
-         */
-        float distance = (totalLength % spacing + spacing) / 2;
         this.prevFeatures = this.features;
-        // Can't use array since there is an elusive edge case were the capacity is off by one
-        final List<F> features = new ArrayList<>((int) (totalLength / spacing));
-        this.onBeforeUpdateFeatures(features.size());
-        final boolean hasPrevLights = this.prevFeatures != null;
-        int index = 0;
-        final Catenary.SegmentIterator it = catenary.iterator();
-        while (it.next()) {
-            final float length = it.getLength();
-            while (distance < length) {
-                final float t = distance / length;
-                final F feature = this.createFeature(index, new Vec3d(it.getX(t), it.getY(t), it.getZ(t)), it.getYaw(), it.getPitch());
-                if (hasPrevLights && index < this.prevFeatures.length) {
-                    feature.inherit(this.prevFeatures[index]);
-                }
-                features.add(feature);
-                distance += spacing;
-                index++;
+        final List<F> features = new ArrayList<>();
+        this.onBeforeUpdateFeatures();
+        catenary.visitPoints(spacing, true, (index, x, y, z, yaw, pitch) -> {
+            final F feature = this.createFeature(index, new Vec3d(x, y, z), yaw, pitch);
+            if (this.prevFeatures != null && index < this.prevFeatures.length) {
+                feature.inherit(this.prevFeatures[index]);
             }
-            distance -= length;
-        }
+            features.add(feature);
+        });
         this.features = features.toArray(this.createFeatures(features.size()));
-        this.onAfterUpdateFeatures(index);
+        this.onAfterUpdateFeatures();
     }
 
     protected abstract F[] createFeatures(int length);
@@ -98,9 +82,9 @@ public abstract class HangingFeatureConnection<F extends HangingFeature<F>> exte
 
     protected abstract float getFeatureSpacing();
 
-    protected void onBeforeUpdateFeatures(final int size) {}
+    protected void onBeforeUpdateFeatures() {}
 
-    protected void onAfterUpdateFeatures(final int size) {}
+    protected void onAfterUpdateFeatures() {}
 
     @Override
     public void addCollision(final List<Collidable> collision, final Vec3d origin) {

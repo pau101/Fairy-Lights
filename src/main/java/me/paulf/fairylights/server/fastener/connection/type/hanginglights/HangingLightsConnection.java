@@ -190,7 +190,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    protected void onBeforeUpdateFeatures(final int size) {
+    protected void onBeforeUpdateFeatures() {
         final Iterator<BlockPos> litIter = this.litBlocks.iterator();
         while (litIter.hasNext()) {
             this.oldLitBlocks.add(litIter.next());
@@ -199,7 +199,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    protected void onAfterUpdateFeatures(final int size) {
+    protected void onAfterUpdateFeatures() {
         this.oldLitBlocks.removeAll(this.litBlocks);
         final Iterator<BlockPos> oldIter = this.oldLitBlocks.iterator();
         while (oldIter.hasNext()) {

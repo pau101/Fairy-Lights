@@ -80,6 +80,21 @@ public final class Catenary {
         return new Catenary(this.count, angle, vx, vz, nx, ny, MathHelper.lerp(delta, this.length, other.length));
     }
 
+    public void visitPoints(final float spacing, final boolean center, final PointVisitor visitor) {
+        float distance = center ? (this.length % spacing + spacing) / 2.0F : 0;
+        int index = 0;
+        final Catenary.SegmentIterator it = this.iterator();
+        while (it.next()) {
+            final float length = it.getLength();
+            while (distance < length) {
+                final float t = distance / length;
+                visitor.visit(index++, it.getX(t), it.getY(t), it.getZ(t), it.getYaw(), it.getPitch());
+                distance += spacing;
+            }
+            distance -= length;
+        }
+    }
+
     public SegmentIterator iterator(final boolean inclusive) {
         return new SegmentIterator() {
             private int index = -1;
@@ -102,6 +117,12 @@ public final class Catenary {
                 if (this.index + (inclusive && t == 0.0F ? 0 : 1) >= Catenary.this.count) {
                     throw new IllegalStateException();
                 }
+            }
+
+            @Override
+            public int getIndex() {
+                this.checkIndex(0.0F);
+                return this.index;
             }
 
             @Override
@@ -171,21 +192,16 @@ public final class Catenary {
                 final float dy = Catenary.this.y[this.index + 1] - Catenary.this.y[this.index];
                 return MathHelper.sqrt(dx * dx + dy * dy);
             }
-
-            @Override
-            public void getEndPitch(final Catenary prevCat, final float dt) {
-                this.checkIndex(1.0F);
-                if (inclusive) {
-                    throw new IllegalStateException();
-                }
-
-            }
         };
     }
-    public interface SegmentIterator {
+    public interface SegmentIterator extends SegmentView {
         boolean hasNext();
 
         boolean next();
+    }
+
+    public interface SegmentView {
+        int getIndex();
 
         float getX(final float t);
 
@@ -200,8 +216,10 @@ public final class Catenary {
         float getPitch();
 
         float getLength();
+    }
 
-        void getEndPitch(Catenary prevCat, float dt);
+    public interface PointVisitor {
+        void visit(final int index, final float x, final float y, final float z, final float yaw, final float pitch);
     }
 
     public float getLength() {
