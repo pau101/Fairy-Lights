@@ -92,7 +92,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    protected void onCalculateCatenary() {
+    protected void onCalculateCatenary(final boolean relocated) {
         this.updateLetters();
     }
 

@@ -3,6 +3,7 @@ package me.paulf.fairylights.client;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.renderer.block.entity.FastenerBlockEntityRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.LightBlockEntityRenderer;
+import me.paulf.fairylights.client.renderer.block.entity.PennantBuntingRenderer;
 import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
 import me.paulf.fairylights.client.renderer.entity.LadderRenderer;
 import me.paulf.fairylights.server.ServerProxy;
@@ -19,16 +20,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.client.renderer.texture.Texture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -36,10 +43,14 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public final class ClientProxy extends ServerProxy {
+    public ClientProxy() {
+    }
+
     @Override
     protected BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> createJingleHandler() {
         return new JingleMessage.Handler();
@@ -76,6 +87,24 @@ public final class ClientProxy extends ServerProxy {
         FMLJavaModLoadingContext.get().getModEventBus().<TextureStitchEvent.Pre>addListener(e -> {
             if (SOLID_TEXTURE.getAtlasLocation().equals(e.getMap().getTextureLocation())) {
                 e.addSprite(SOLID_TEXTURE.getTextureLocation());
+            }
+        });
+        ModelLoader.addSpecialModel(PennantBuntingRenderer.MODEL);
+        FMLJavaModLoadingContext.get().getModEventBus().<ModelBakeEvent>addListener(e -> {
+            final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(PennantBuntingRenderer.MODEL);
+            if (model == Minecraft.getInstance().getModelManager().getMissingModel()) {
+                return;
+            }
+            final TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
+            final int w = (int) (sprite.getWidth() / (sprite.getMaxU() - sprite.getMinU()));
+            final int h = (int) (sprite.getHeight() / (sprite.getMaxV() - sprite.getMinV()));
+            for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
+                final int[] data = quad.getVertexData();
+                for (int n = 0; n < 4; n++) {
+                    // Undo sprite uv contraction
+                    data[n * 8 + 4] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 4]) * w) / w);
+                    data[n * 8 + 5] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 5]) * h) / h);
+                }
             }
         });
     }

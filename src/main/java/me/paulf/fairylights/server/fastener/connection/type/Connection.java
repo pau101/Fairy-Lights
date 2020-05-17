@@ -57,6 +57,9 @@ public abstract class Connection implements NBTSerializable {
 
     private FastenerAccessor destination;
 
+    @Nullable
+    private FastenerAccessor prevDestination;
+
     protected World world;
 
     private boolean isOrigin;
@@ -135,6 +138,7 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public final void setDestination(final Fastener<?> destination) {
+        this.prevDestination = this.destination;
         this.destination = destination.createAccessor();
         this.computeCatenary();
     }
@@ -286,7 +290,7 @@ public abstract class Connection implements NBTSerializable {
 
     protected void onUpdateLate() {}
 
-    protected void onCalculateCatenary() {}
+    protected void onCalculateCatenary(final boolean relocated) {}
 
     public abstract ConnectionType getType();
 
@@ -335,11 +339,12 @@ public abstract class Connection implements NBTSerializable {
             final Vec3d vec = point.subtract(from);
             if (vec.length() > 1e-6) {
                 this.catenary = Catenary.from(vec, SLACK_CURVE, this.slack);
-                this.onCalculateCatenary();
+                this.onCalculateCatenary(this.prevDestination != this.destination);
                 this.collision.update(this, from);
             }
             this.catenaryUpdateState = true;
             this.updateCatenary = false;
+            this.prevDestination = this.destination;
         }
     }
 

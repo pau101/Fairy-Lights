@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 public abstract class ConnectionRenderer<C extends Connection> {
     private final WireModel model;
 
-    protected ConnectionRenderer(final int wireU, final int wireV, final float wireSize) {
-        this.model = new WireModel(wireU, wireV, wireSize);
+    protected ConnectionRenderer(final int wireU, final int wireV, final float wireSize, final float wireGrow) {
+        this.model = new WireModel(wireU, wireV, wireSize, wireGrow);
     }
 
     public void render(final C conn, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
@@ -56,7 +56,7 @@ public abstract class ConnectionRenderer<C extends Connection> {
         final ModelRenderer root;
         float length;
 
-        WireModel(final int u, final int v, final float size) {
+        WireModel(final int u, final int v, final float size, final float grow) {
             super(RenderType::getEntityCutout);
             this.textureWidth = 128;
             this.textureHeight = 128;
@@ -67,7 +67,7 @@ public abstract class ConnectionRenderer<C extends Connection> {
                     stack.scale(1.0F, 1.0F, WireModel.this.length);
                 }
             };
-            this.root.addBox(-size * 0.5F, -size * 0.5F, 0.0F, size, size, 1.0F);
+            this.root.addBox(-size * 0.5F, -size * 0.5F, 0.0F, size, size, 1.0F, grow);
         }
 
         @Override

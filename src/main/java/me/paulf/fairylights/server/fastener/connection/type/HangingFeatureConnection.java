@@ -47,11 +47,11 @@ public abstract class HangingFeatureConnection<F extends HangingFeature<F>> exte
     }
 
     @Override
-    protected void onCalculateCatenary() {
-        this.updateFeatures();
+    protected void onCalculateCatenary(final boolean relocated) {
+        this.updateFeatures(relocated);
     }
 
-    protected void updateFeatures() {
+    protected void updateFeatures(final boolean relocated) {
         final Catenary catenary = this.getCatenary();
         final float spacing = this.getFeatureSpacing();
         final float totalLength = catenary.getLength();
@@ -67,7 +67,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature<F>> exte
         this.onBeforeUpdateFeatures();
         catenary.visitPoints(spacing, true, (index, x, y, z, yaw, pitch) -> {
             final F feature = this.createFeature(index, new Vec3d(x, y, z), yaw, pitch);
-            if (this.prevFeatures != null && index < this.prevFeatures.length) {
+            if (!relocated && this.prevFeatures != null && index < this.prevFeatures.length) {
                 feature.inherit(this.prevFeatures[index]);
             }
             features.add(feature);

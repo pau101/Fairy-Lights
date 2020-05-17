@@ -59,7 +59,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
     );
 
     public HangingLightsRenderer() {
-        super(0, 0, 2.0F);
+        super(0, 0, 2.0F, 0.0F);
     }
 
     @Override

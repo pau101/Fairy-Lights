@@ -95,7 +95,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
 
     @Override
     protected float getFeatureSpacing() {
-        return 11;
+        return 0.6875F;
     }
 
     @Override

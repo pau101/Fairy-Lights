@@ -19,7 +19,7 @@ public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConne
     private final StripModel strip;
 
     public GarlandTinselRenderer() {
-        super(62, 0, 1.0F);
+        super(62, 0, 1.0F, 0.0F);
         this.strip = new StripModel();
     }
 
