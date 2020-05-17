@@ -23,7 +23,7 @@ public class SnowflakeLightModel extends LightModel {
                 final BulbBuilder sub = branch.createChild(10, 39);
                 sub.addBox(-0.5F, 0.0F, -0.5F, 1.0F, size * 0.4F, 1.0F, rng.nextFloat() * 0.01F - 0.05F);
                 sub.setAngles(0.0F, 0.0F, Mth.PI * 0.75F * side);
-                sub.setPosition(-0.2F, -size * 0.55F, 0.0F);
+                sub.setPosition(-0.2F * side, -size * 0.55F, 0.0F);
             }
         }
     }

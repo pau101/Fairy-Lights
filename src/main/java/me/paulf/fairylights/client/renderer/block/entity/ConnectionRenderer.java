@@ -25,6 +25,10 @@ public abstract class ConnectionRenderer<C extends Connection> {
             final Catenary cat = prevCat.lerp(currCat, delta);
             final Catenary.SegmentIterator it = cat.iterator();
             final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+            final int color = this.getWireColor(conn);
+            final float r = ((color >> 16) & 0xFF) / 255.0F;
+            final float g = ((color >> 8) & 0xFF) / 255.0F;
+            final float b = (color & 0xFF) / 255.0F;
             while (it.next()) {
                 this.model.root.rotationPointX = it.getX(0.0F) * 16.0F;
                 this.model.root.rotationPointY = it.getY(0.0F) * 16.0F;
@@ -33,11 +37,15 @@ public abstract class ConnectionRenderer<C extends Connection> {
                 this.model.root.rotateAngleX = -it.getPitch();
                 this.model.root.rotateAngleZ = 0.0F;
                 this.model.length = it.getLength() * 16.0F;
-                this.model.render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+                this.model.render(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
                 this.renderSegment(conn, it, delta, matrix, source, packedLight, packedOverlay);
             }
             this.render(conn, cat, delta, matrix, source, packedLight, packedOverlay);
         }
+    }
+
+    protected int getWireColor(final C conn) {
+        return 0xFFFFFF;
     }
 
     protected void render(final C conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}

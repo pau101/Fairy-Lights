@@ -17,7 +17,7 @@ public class WitchLightModel extends LightModel {
         final BulbBuilder rim = middleBottom.createChild(58, 7);
         rim.setPosition(0, -1, 0);
         rim.addBox(-4.0F, 0, -4.0F, 8, 1, 8, 0);
-        final ModelRenderer belt = new ModelRenderer(this, 62, 0);
+        final ModelRenderer belt = new ModelRenderer(this, 62, 1);
         belt.setRotationPoint(0, -4.5F, 0);
         belt.addBox(-2.5F, 0, -2.5F, 5, 1, 5, 0);
         this.unlit.addChild(belt);
