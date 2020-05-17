@@ -55,7 +55,7 @@ public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConne
             matrix.rotate(Vector3f.YP.rotationDegrees(rotY));
             matrix.rotate(Vector3f.ZP.rotationDegrees(rotX));
             matrix.scale(1.0F, RAND.get(i * 63) * 0.1F + 1.0F, 1.0F);
-            new StripModel().render(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
+            this.strip.render(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
             matrix.pop();
         }
         matrix.pop();
