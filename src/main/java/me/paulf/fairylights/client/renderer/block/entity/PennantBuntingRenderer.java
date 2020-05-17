@@ -14,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix3f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -52,18 +54,18 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
             }
             final int offset = (count - text.length()) / 2;
             for (int i = 0; i < count; i++) {
-                final Pennant prevLight = prevLights[i];
-                final Pennant currLight = currLights[i];
-                final int color = currLight.getColor();
+                final Pennant prevPennant = prevLights[i];
+                final Pennant currPennant = currLights[i];
+                final int color = currPennant.getColor();
                 final float r = ((color >> 16) & 0xFF) / 255.0F;
                 final float g = ((color >> 8) & 0xFF) / 255.0F;
                 final float b = (color & 0xFF) / 255.0F;
-                final Vec3d pos = Mth.lerp(prevLight.getPoint(), currLight.getPoint(), delta);
+                final Vec3d pos = Mth.lerp(prevPennant.getPoint(), currPennant.getPoint(), delta);
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);
-                matrix.rotate(Vector3f.YP.rotation(-currLight.getYaw(delta)));
-                matrix.rotate(Vector3f.ZP.rotation(currLight.getPitch(delta)));
-                matrix.rotate(Vector3f.XP.rotation(currLight.getRoll(delta)));
+                matrix.rotate(Vector3f.YP.rotation(-currPennant.getYaw(delta)));
+                matrix.rotate(Vector3f.ZP.rotation(currPennant.getPitch(delta)));
+                matrix.rotate(Vector3f.XP.rotation(currPennant.getRoll(delta)));
                 matrix.push();
                 //noinspection deprecation (refusing to use handlePerspective due to IForgeTransformationMatrix#push superfluous undocumented MatrixStack#push)
                 model.getItemCameraTransforms().getTransform(ItemCameraTransforms.TransformType.HEAD).apply(false, matrix);
@@ -72,15 +74,15 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 }
                 matrix.pop();
                 if (i >= offset && i < offset + text.length()) {
-                    this.drawLetter(matrix, source, packedLight, font, text, i - offset, 1);
-                    this.drawLetter(matrix, source, packedLight, font, text, text.length() - 1 - (i - offset), -1);
+                    this.drawLetter(matrix, source, currPennant, packedLight, font, text, i - offset, 1, delta);
+                    this.drawLetter(matrix, source, currPennant, packedLight, font, text, text.length() - 1 - (i - offset), -1, delta);
                 }
                 matrix.pop();
             }
         }
     }
 
-    private void drawLetter(final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final FontRenderer font, final StyledString text, final int index, final int side) {
+    private void drawLetter(final MatrixStack matrix, final IRenderTypeBuffer source, final Pennant pennant, final int packedLight, final FontRenderer font, final StyledString text, final int index, final int side, final float delta) {
         final Style style = text.styleAt(index);
         final StringBuilder bob = new StringBuilder();
         if (style.isObfuscated()) bob.append(TextFormatting.OBFUSCATED);
@@ -90,20 +92,82 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         if (style.isItalic()) bob.append(TextFormatting.ITALIC);
         bob.append(text.charAt(index));
         final String chr = bob.toString();
-        matrix.push();
-        matrix.translate(0.0F, -0.25F, 0.04F * side);
-        final Vector3f v = new Vector3f(0.0F, 0.0F, 1.0F);
-        v.transform(matrix.getLast().getNormal());
+        final Matrix3f m = new Matrix3f();
+        m.setIdentity();
+        m.mul(Vector3f.YP.rotation(pennant.getYaw(delta)));
+        m.mul(Vector3f.ZP.rotation(pennant.getPitch(delta)));
+        m.mul(Vector3f.XP.rotation(pennant.getRoll(delta)));
+        final Vector3f v = new Vector3f(0.0F, 0.0F, side);
+        v.transform(m);
+        // TODO: correct entity diffuse
         final float brightness = LightUtil.diffuseLight(v.getX(), v.getY(), v.getZ());
         final int styleColor = MoreObjects.firstNonNull(style.getColor().getColor(), 0xFFFFFF);
         final int r = (int) ((styleColor >> 16 & 0xFF) * brightness);
         final int g = (int) ((styleColor >> 8 & 0xFF) * brightness);
         final int b = (int) ((styleColor & 0xFF) * brightness);
+        final int argb = 0xFF000000 | r << 16 | g << 8 | b;
+        matrix.push();
+        matrix.translate(0.0F, -0.25F, 0.04F * side);
         final float s = 0.03075F;
         matrix.scale(s * side, -s, s);
         final float w = font.getStringWidth(chr);
-        final int argb = 0xFF000000 | r << 16 | g << 8 | b;
         font.renderString(chr, -(w - 1.0F) / 2.0F, -4.0F, argb, false, matrix.getLast().getMatrix(), source, false, 0, packedLight);
         matrix.pop();
+    }
+
+    static class SaveMe implements IRenderTypeBuffer {
+        final IRenderTypeBuffer delegate;
+
+        SaveMe(final IRenderTypeBuffer delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public IVertexBuilder getBuffer(final RenderType type) {
+            return new JustWork(this.delegate.getBuffer(type));
+        }
+    }
+
+    static class JustWork implements IVertexBuilder {
+        final IVertexBuilder delegate;
+
+        JustWork(final IVertexBuilder delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public IVertexBuilder pos(final double x, final double y, final double z) {
+            return this.delegate.pos(x, y, z);
+        }
+
+        @Override
+        public IVertexBuilder color(final int red, final int green, final int blue, final int alpha) {
+            return this.delegate.color(red, green, blue, alpha);
+        }
+
+        @Override
+        public IVertexBuilder tex(final float u, final float v) {
+            return this.delegate.tex(u, v);
+        }
+
+        @Override
+        public IVertexBuilder overlay(final int u, final int v) {
+            return this.delegate.overlay(u, v);
+        }
+
+        @Override
+        public IVertexBuilder lightmap(final int u, final int v) {
+            return this.delegate.lightmap(u, v);
+        }
+
+        @Override
+        public IVertexBuilder normal(final float x, final float y, final float z) {
+            return this.delegate.normal(x, y, z);
+        }
+
+        @Override
+        public void endVertex() {
+
+        }
     }
 }
