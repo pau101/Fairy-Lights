@@ -21,15 +21,12 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.datatransfer.DataFlavor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class StyledTextFieldWidget extends Widget implements IRenderable, IGuiEventListener {
-    private static final DataFlavor RTF_FLAVOR = new DataFlavor("text/rtf", "Rich Text Format");
-
     private static final Predicate<String> ALWAYS_TRUE = str -> true;
 
     private static final Function<String, String> IDENTITY_CHARACTER_TRANSFORMER = c -> c;
