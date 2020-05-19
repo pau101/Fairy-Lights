@@ -1,13 +1,12 @@
 package me.paulf.fairylights.client.gui.component;
 
-import com.google.common.base.MoreObjects;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.styledstring.Style;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import me.paulf.fairylights.util.styledstring.StyledStringBuilder;
-import me.paulf.fairylights.util.styledstring.StyledStringSelection;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.IRenderable;
@@ -22,10 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -666,12 +662,10 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     public void writeText(final String input) {
-        if (!input.isEmpty()) {
-            if (!this.colorBtn.hasDisplayColor()) {
-                this.setCurrentStyleByIndex(Math.min(this.selectionEnd, this.caret));
-            }
-            this.writeText(new StyledString(input, this.currentStyle), false);
+        if (!this.colorBtn.hasDisplayColor()) {
+            this.setCurrentStyleByIndex(Math.min(this.selectionEnd, this.caret));
         }
+        this.writeText(new StyledString(input, this.currentStyle), false);
     }
 
     public void writeText(final StyledString input) {
@@ -953,54 +947,20 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     public StyledString getClipboardString() {
-        try {
-            final Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-			/*/
-			Set<String> mimetypes = new HashSet<>();
-			for (DataFlavor f : transferable.getTransferDataFlavors()) {
-				mimetypes.add(f.getMimeType().substring(0, f.getMimeType().indexOf(';')));
-			}
-			System.out.printf("%s\n", mimetypes);//*/
-            if (transferable != null) {
-                if (transferable.isDataFlavorSupported(StyledStringSelection.FLAVOR)) {
-                    return (StyledString) transferable.getTransferData(StyledStringSelection.FLAVOR);
-                }
-                if (transferable.isDataFlavorSupported(DataFlavor.fragmentHtmlFlavor)) {
-                    final String fragment = (String) transferable.getTransferData(DataFlavor.fragmentHtmlFlavor);
-                    final StyledString str = StyledString.fromHTMLFragment(this.font, fragment);
-                    if (str != null) {
-                        return str;
-                    }
-                }
-                if (transferable.isDataFlavorSupported(RTF_FLAVOR)) {
-                    try (final InputStream in = (InputStream) transferable.getTransferData(RTF_FLAVOR)) {
-                        final StyledString str = StyledString.fromRTF(in);
-                        if (str != null) {
-                            return str;
-                        }
-                    }
-                }
-                if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                    final String str = (String) transferable.getTransferData(DataFlavor.stringFlavor);
-                    if (str.indexOf('\u00a7') == -1) {
-                        return new StyledString(str, this.currentStyle);
-                    } else {
-                        return StyledString.valueOf(str);
-                    }
-                }
-            }
-        } catch (final Exception e) {}
-        return new StyledString();
+        final String str = Minecraft.getInstance().keyboardListener.getClipboardString();
+        if (str.indexOf('\u00a7') == -1) {
+            return new StyledString(str, this.currentStyle);
+        } else {
+            return StyledString.valueOf(str);
+        }
     }
 
     private void setClipboardString(final StyledString value) {
-        try {
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StyledStringSelection(this.font, value), null);
-        } catch (final Exception e) {}
+        Minecraft.getInstance().keyboardListener.setClipboardString(value.toString());
     }
 
     private static int getMultiClickInterval() {
-        return MoreObjects.firstNonNull((Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval"), 500);
+        return 500;
     }
 
     @FunctionalInterface
