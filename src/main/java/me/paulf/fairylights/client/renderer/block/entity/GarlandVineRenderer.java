@@ -23,7 +23,7 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
     private final RingModel[] rings;
 
     protected GarlandVineRenderer() {
-        super(39, 0, 1.0F, 0.0F);
+        super(39, 0, 1.0F);
         this.rings = IntStream.range(0, RING_COUNT)
             .mapToObj(i -> new RingModel(i * 8, 64))
             .toArray(RingModel[]::new);

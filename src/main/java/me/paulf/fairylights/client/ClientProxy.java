@@ -1,7 +1,9 @@
 package me.paulf.fairylights.client;
 
+import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.renderer.block.entity.FastenerBlockEntityRenderer;
+import me.paulf.fairylights.client.renderer.block.entity.LetterBuntingRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.LightBlockEntityRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.PennantBuntingRenderer;
 import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
@@ -89,23 +91,29 @@ public final class ClientProxy extends ServerProxy {
                 e.addSprite(SOLID_TEXTURE.getTextureLocation());
             }
         });
-        ModelLoader.addSpecialModel(PennantBuntingRenderer.MODEL);
+        final ImmutableList<ResourceLocation> entityModels = new ImmutableList.Builder<ResourceLocation>()
+            .add(PennantBuntingRenderer.MODEL)
+            .addAll(LetterBuntingRenderer.MODELS.values())
+            .build();
+        entityModels.forEach(ModelLoader::addSpecialModel);
+        // Undo sprite uv contraction
         FMLJavaModLoadingContext.get().getModEventBus().<ModelBakeEvent>addListener(e -> {
-            final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(PennantBuntingRenderer.MODEL);
-            if (model == Minecraft.getInstance().getModelManager().getMissingModel()) {
-                return;
-            }
-            final TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
-            final int w = (int) (sprite.getWidth() / (sprite.getMaxU() - sprite.getMinU()));
-            final int h = (int) (sprite.getHeight() / (sprite.getMaxV() - sprite.getMinV()));
-            for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
-                final int[] data = quad.getVertexData();
-                for (int n = 0; n < 4; n++) {
-                    // Undo sprite uv contraction
-                    data[n * 8 + 4] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 4]) * w) / w);
-                    data[n * 8 + 5] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 5]) * h) / h);
+            entityModels.forEach(path -> {
+                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(path);
+                if (model == Minecraft.getInstance().getModelManager().getMissingModel()) {
+                    return;
                 }
-            }
+                final TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
+                final int w = (int) (sprite.getWidth() / (sprite.getMaxU() - sprite.getMinU()));
+                final int h = (int) (sprite.getHeight() / (sprite.getMaxV() - sprite.getMinV()));
+                for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
+                    final int[] data = quad.getVertexData();
+                    for (int n = 0; n < 4; n++) {
+                        data[n * 8 + 4] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 4]) * w) / w);
+                        data[n * 8 + 5] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 5]) * h) / h);
+                    }
+                }
+            });
         });
     }
 

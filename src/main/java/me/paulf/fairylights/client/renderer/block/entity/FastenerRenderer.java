@@ -6,6 +6,7 @@ import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandTinselConnection;
 import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandVineConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import me.paulf.fairylights.server.fastener.connection.type.letter.LetterBuntingConnection;
 import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
@@ -14,6 +15,7 @@ public class FastenerRenderer {
     private final GarlandVineRenderer garland = new GarlandVineRenderer();
     private final GarlandTinselRenderer tinsel = new GarlandTinselRenderer();
     private final PennantBuntingRenderer pennants = new PennantBuntingRenderer();
+    private final LetterBuntingRenderer letters = new LetterBuntingRenderer();
 
     public void render(final Fastener<?> fastener, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         for (final Connection conn : fastener.getConnections().values()) {
@@ -26,6 +28,8 @@ public class FastenerRenderer {
                     this.tinsel.render((GarlandTinselConnection) conn, delta, matrix, source, packedLight, packedOverlay);
                 } else if (conn instanceof PennantBuntingConnection) {
                     this.pennants.render((PennantBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
+                } else if (conn instanceof LetterBuntingConnection) {
+                    this.letters.render((LetterBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
                 }
             }
         }

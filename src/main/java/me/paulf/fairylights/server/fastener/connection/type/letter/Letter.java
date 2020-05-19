@@ -26,25 +26,9 @@ public final class Letter extends HangingFeature<Letter> {
         return this.style;
     }
 
-    public int getU() {
-        return this.symbols.getU(this.letter);
-    }
-
-    public int getV() {
-        return this.symbols.getV(this.letter);
-    }
-
     @Override
     public double getWidth() {
         return this.symbols.getWidth(this.letter) / 16F;
-    }
-
-    public int getSymbolWidth() {
-        return this.symbols.getWidth(this.letter);
-    }
-
-    public int getSymbolHeight() {
-        return this.symbols.getHeight();
     }
 
     @Override

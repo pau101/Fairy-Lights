@@ -1,0 +1,9 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "fairylights:entity/letter/latin_capital_letter_r"
+    },
+    "display": {
+        "fixed": {}
+    }
+}

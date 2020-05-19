@@ -36,7 +36,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
 
     private static final Predicate<String> ALWAYS_TRUE = str -> true;
 
-    private static final Function<Character, Character> IDENTITY_CHARACTER_TRANSFORMER = c -> c;
+    private static final Function<String, String> IDENTITY_CHARACTER_TRANSFORMER = c -> c;
 
     private final FontRenderer font;
 
@@ -88,7 +88,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
 
     private int multiClicks;
 
-    private Function<Character, Character> charInputTransformer = IDENTITY_CHARACTER_TRANSFORMER;
+    private Function<String, String> charInputTransformer = IDENTITY_CHARACTER_TRANSFORMER;
 
     private Predicate<String> validator = ALWAYS_TRUE;
 
@@ -281,7 +281,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         this.isWritable = isWritable;
     }
 
-    public void setCharInputTransformer(final Function<Character, Character> charTransformer) {
+    public void setCharInputTransformer(final Function<String, String> charTransformer) {
         this.charInputTransformer = charTransformer;
     }
 
@@ -408,7 +408,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             this.setSelectionPos(0);
         } else if (Screen.isCopy(keyCode)) {
             this.setClipboardString(this.getSelectedText());
-        } else if (Screen.hasControlDown() && keyCode == GLFW.GLFW_KEY_V) {
+        } else if (Screen.isPaste(keyCode)) {
             if (this.isWritable) {
                 final StyledString str = this.getClipboardString();
                 if (Screen.hasShiftDown()) {
@@ -508,10 +508,10 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         if (!this.isFocused) {
             return false;
         }
-        final char writeChar = this.charInputTransformer.apply(typedChar);
-        if (SharedConstants.isAllowedCharacter(writeChar)) {
+        if (SharedConstants.isAllowedCharacter(typedChar)) {
+            final String writeChar = this.charInputTransformer.apply(Character.toString(typedChar));
             if (this.isWritable) {
-                this.writeText(Character.toString(writeChar));
+                this.writeText(writeChar);
             }
             return true;
         }
@@ -666,10 +666,12 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     public void writeText(final String input) {
-        if (!this.colorBtn.hasDisplayColor()) {
-            this.setCurrentStyleByIndex(Math.min(this.selectionEnd, this.caret));
+        if (!input.isEmpty()) {
+            if (!this.colorBtn.hasDisplayColor()) {
+                this.setCurrentStyleByIndex(Math.min(this.selectionEnd, this.caret));
+            }
+            this.writeText(new StyledString(input, this.currentStyle), false);
         }
-        this.writeText(new StyledString(input, this.currentStyle), false);
     }
 
     public void writeText(final StyledString input) {

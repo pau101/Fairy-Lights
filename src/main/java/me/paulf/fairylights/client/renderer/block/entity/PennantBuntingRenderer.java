@@ -15,24 +15,18 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix3f;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-
-import java.util.Random;
 
 public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingConnection> {
     public static final ResourceLocation MODEL = new ResourceLocation(FairyLights.ID, "entity/pennant");
 
     public PennantBuntingRenderer() {
-        super(0, 17, 1.0F, 0.125F);
+        super(0, 17, 1.0F);
     }
 
     @Override
@@ -44,7 +38,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         if (currLights != null && prevLights != null) {
             final FontRenderer font = Minecraft.getInstance().fontRenderer;
             final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
-            final int count = Math.min(currLights.length, prevLights.length);;
+            final int count = Math.min(currLights.length, prevLights.length);
             if (count == 0) {
                 return;
             }
@@ -67,11 +61,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 matrix.rotate(Vector3f.ZP.rotation(currPennant.getPitch(delta)));
                 matrix.rotate(Vector3f.XP.rotation(currPennant.getRoll(delta)));
                 matrix.push();
-                //noinspection deprecation (refusing to use handlePerspective due to IForgeTransformationMatrix#push superfluous undocumented MatrixStack#push)
-                model.getItemCameraTransforms().getTransform(ItemCameraTransforms.TransformType.HEAD).apply(false, matrix);
-                for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
-                    buf.addQuad(matrix.getLast(), quad, r, g, b, packedLight, packedOverlay);
-                }
+                this.renderBakedModel(model, matrix, buf, r, g, b, packedLight, packedOverlay);
                 matrix.pop();
                 if (i >= offset && i < offset + text.length()) {
                     this.drawLetter(matrix, source, currPennant, packedLight, font, text, i - offset, 1, delta);

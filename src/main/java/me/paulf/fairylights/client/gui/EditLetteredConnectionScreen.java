@@ -17,6 +17,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public final class EditLetteredConnectionScreen<C extends Connection & Lettered> extends Screen {
@@ -73,7 +74,7 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
         this.textField.setCaretStart();
         this.textField.setIsBlurable(false);
         this.textField.registerChangeListener(this::validateText);
-        this.textField.setCharInputTransformer(this.connection.getCharInputTransformer());
+        this.textField.setCharInputTransformer(this.connection.getInputTransformer());
         this.textField.setFocused(true);
         this.children.add(this.textField);
         this.paletteBtn.visible = false;
@@ -156,6 +157,16 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
         this.drawCenteredString(this.font, I18n.format("gui.editLetteredConnection.name"), this.width / 2, 20, 0xFFFFFF);
         super.render(mouseX, mouseY, delta);
         this.textField.render(mouseX, mouseY, delta);
+        final String allowed = this.connection.getAllowedDescription();
+        if (!allowed.isEmpty()) {
+            this.drawString(this.font,
+                new TranslationTextComponent("gui.editLetteredConnection.allowed_characters", allowed)
+                    .applyTextStyle(TextFormatting.GRAY).getFormattedText(),
+                this.textField.x,
+                this.textField.y + this.textField.getHeight() + 4,
+                0xFFFFFFFF
+            );
+        }
     }
 
     public static boolean isControlOp(final int key, final int controlKey) {

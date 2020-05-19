@@ -1,0 +1,9 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "fairylights:entity/letter/digit_six"
+    },
+    "display": {
+        "fixed": {}
+    }
+}

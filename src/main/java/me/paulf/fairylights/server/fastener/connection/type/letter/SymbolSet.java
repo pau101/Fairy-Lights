@@ -1,29 +1,31 @@
 package me.paulf.fairylights.server.fastener.connection.type.letter;
 
-import java.util.HashMap;
-import java.util.Map;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public final class SymbolSet {
-    private final Symbol[] symbols;
+    private final int height;
 
-    private final Map<Character, Symbol> chars;
+    private final String description;
 
-    private final int size;
+    private final Int2ObjectMap<Symbol> chars;
 
-    private SymbolSet(final Symbol[] symbols, final int size) {
-        this.symbols = symbols;
-        this.size = size;
-        this.chars = new HashMap<>();
-        for (final Symbol symbol : symbols) {
-            this.chars.put(symbol.character, symbol);
-        }
+    private SymbolSet(final Builder builder) {
+        this.height = builder.height;
+        this.description = builder.description;
+        this.chars = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(builder.symbols));
     }
 
     public int getHeight() {
-        return this.size;
+        return this.height;
     }
 
-    public boolean contains(final char character) {
+    public String getDescription() {
+        return this.description;
+    }
+
+    public boolean contains(final int character) {
         return this.chars.containsKey(character);
     }
 
@@ -31,39 +33,40 @@ public final class SymbolSet {
         return this.chars.getOrDefault(character, Symbol.UNKNOWN).width;
     }
 
-    public int getU(final char character) {
-        return this.chars.getOrDefault(character, Symbol.UNKNOWN).u;
-    }
-
-    public int getV(final char character) {
-        return this.chars.getOrDefault(character, Symbol.UNKNOWN).v;
-    }
-
     private static class Symbol {
-        public static final Symbol UNKNOWN = new Symbol('?', 0, 0, 0);
-
-        private final char character;
+        public static final Symbol UNKNOWN = new Symbol(0);
 
         private final int width;
 
-        private final int u, v;
-
-        public Symbol(final char character, final int width, final int u, final int v) {
-            this.character = character;
+        public Symbol(final int width) {
             this.width = width;
-            this.u = u;
-            this.v = v;
         }
     }
 
-    public static SymbolSet from(final int columns, final int size, final String str) {
-        final String[] chars = str.split(",");
-        final Symbol[] symbols = new Symbol[chars.length / 2];
-        for (int i = 0, j = 0; i < chars.length; j++) {
-            final char c = chars[i++].charAt(0);
-            final int w = Integer.valueOf(chars[i++]);
-            symbols[j] = new Symbol(c, w, (j % columns) * size, (j / columns) * size);
+    public static class Builder {
+        final int height;
+
+        final String description;
+
+        final Int2ObjectMap<Symbol> symbols = new Int2ObjectOpenHashMap<>();
+
+        public Builder(final int height, final String description) {
+            this.height = height;
+            this.description = description;
         }
-        return new SymbolSet(symbols, size);
+
+        public Builder add(final String codepoints, final int width) {
+            codepoints.chars().forEach(codepoint -> this.add(codepoint, width));
+            return this;
+        }
+
+        public Builder add(final int codepoint, final int width) {
+            this.symbols.put(codepoint, new Symbol(width));
+            return this;
+        }
+
+        public SymbolSet build() {
+            return new SymbolSet(this);
+        }
     }
 }

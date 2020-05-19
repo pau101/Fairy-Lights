@@ -24,15 +24,20 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
 public final class LetterBuntingConnection extends Connection implements Lettered {
-    public static final SymbolSet SYMBOLS = SymbolSet.from(6, 10, "0,6,1,3,2,6,3,6,4,6,5,6,6,6,7,6,8,6,9,6,A,8,B,7,C,8,D,7,E,7,F,7,G,8,H,7,I,2,J,6,K,8,L,7,M,10,N,8,O,8,P,7,Q,8,R,7,S,7,T,8,U,7,V,8,W,10,X,8,Y,8,Z,7, ,6");
+    public static final SymbolSet SYMBOLS = new SymbolSet.Builder(7, "0-9, A-Z, &, !, ?")
+        .add(" 0123456789ABCDEFGHJKLMNOPQRSTUVWXYZ&?", 6)
+        .add("I", 4)
+        .add("!", 2)
+        .build();
 
-    private static final float TRACKING = 2;
+    private static final float TRACKING = 1.0F / 16.0F;
 
     private static final StylingPresence SUPPORTED_STYLING = new StylingPresence(true, false, false, false, false, false);
 
@@ -107,8 +112,8 @@ public final class LetterBuntingConnection extends Connection implements Lettere
             final float[] pointOffsets = new float[this.text.length()];
             final float catLength = catenary.getLength();
             for (int i = 0; i < this.text.length(); i++) {
-                final float w = SYMBOLS.getWidth(this.text.charAt(i));
-                pointOffsets[i] = textWidth + w / 2;
+                final float w = SYMBOLS.getWidth(this.text.charAt(i)) / 16.0F;
+                pointOffsets[i] = textWidth + w / 2.0F;
                 textWidth += w + TRACKING;
                 if (textWidth > catLength) {
                     break;
@@ -157,7 +162,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    public boolean isSupportedCharacter(final char chr) {
+    public boolean isSupportedCharacter(final int chr) {
         return SYMBOLS.contains(chr);
     }
 
@@ -166,7 +171,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
         float len = 0;
         final float available = this.getCatenary().getLength();
         for (int i = 0; i < text.length(); i++) {
-            final float w = SYMBOLS.getWidth(text.charAt(i));
+            final float w = SYMBOLS.getWidth(text.charAt(i)) / 16.0F;
             len += w + TRACKING;
             if (len > available) {
                 return false;
@@ -190,8 +195,17 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    public Function<Character, Character> getCharInputTransformer() {
-        return Character::toUpperCase;
+    public Function<String, String> getInputTransformer() {
+        return str -> Normalizer.normalize(str, Normalizer.Form.NFKD).chars()
+            .map(Character::toUpperCase)
+            .filter(this::isSupportedCharacter)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
+    }
+
+    @Override
+    public String getAllowedDescription() {
+        return SYMBOLS.getDescription();
     }
 
     @Override

@@ -11,15 +11,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import java.util.function.Function;
 
 public interface Lettered {
-    int MAX_TEXT_LENGTH = 64;
-
-    Function<Character, Character> IDENTITY_CHARACTER_TRANSFORMER = c -> c;
-
     default StylingPresence getSupportedStyling() {
         return StylingPresence.ALL;
     }
 
-    default boolean isSupportedCharacter(final char chr) {
+    default boolean isSupportedCharacter(final int chr) {
         return Character.isValidCodePoint(chr) && !Character.isISOControl(chr);
     }
 
@@ -32,16 +28,16 @@ public interface Lettered {
         return true;
     }
 
-    default int toSupportedCharacter(final int chr) {
-        return chr;
-    }
-
     void setText(StyledString text);
 
     StyledString getText();
 
-    default Function<Character, Character> getCharInputTransformer() {
-        return IDENTITY_CHARACTER_TRANSFORMER;
+    default String getAllowedDescription() {
+        return "";
+    }
+
+    default Function<String, String> getInputTransformer() {
+        return Function.identity();
     }
 
     Screen createTextGUI();

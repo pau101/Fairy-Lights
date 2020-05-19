@@ -43,6 +43,7 @@
     "entity.fairylights.ladder": "Stepladder",
 
     "gui.editLetteredConnection.name": "Set Bunting Text",
+    "gui.editLetteredConnection.allowed_characters": "Allowed characters: %1$s",
 
     "recipe.ingredient.tooltip": "§7%s",
     "recipe.ingredient.auxiliary.optional": "(Optional)",
