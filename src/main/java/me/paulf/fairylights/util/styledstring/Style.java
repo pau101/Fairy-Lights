@@ -1,259 +1,139 @@
 package me.paulf.fairylights.util.styledstring;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.HashSet;
-import java.util.Set;
+public final class Style implements Comparable<Style> {
+    private static final int COLOR_MASK = 0xF;
 
-public final class Style {
-    private final TextFormatting color;
+    private static final int OBFUSCATED_MASK = 0x10;
 
-    private final boolean isObfuscated;
+    private static final int BOLD_MASK = 0x20;
 
-    private final boolean isBold;
+    private static final int STRIKETHROUGH_MASK = 0x40;
 
-    private final boolean isStrikethrough;
+    private static final int UNDERLINE_MASK = 0x80;
 
-    private final boolean isUnderline;
+    private static final int ITALIC_MASK = 0x100;
 
-    private final boolean isItalic;
+    private static final int FANCY_MASK = OBFUSCATED_MASK | BOLD_MASK | STRIKETHROUGH_MASK | UNDERLINE_MASK | ITALIC_MASK;
+
+    private final int value;
 
     public Style() {
-        this(StyledString.DEFAULT_COLOR);
-    }
-
-    public Style(final TextFormatting color, final TextFormatting... fancy) {
-        Preconditions.checkArgument(color.isColor(), "Must be a color");
-        this.color = color;
-        if (fancy == null) {
-            this.isObfuscated = this.isBold = this.isStrikethrough = this.isUnderline = this.isItalic = false;
-        } else {
-            boolean o = false, b = false, s = false, u = false, i = false;
-            for (final TextFormatting f : fancy) {
-                switch (f) {
-                    case OBFUSCATED:
-                        o = true;
-                        break;
-                    case BOLD:
-                        b = true;
-                        break;
-                    case STRIKETHROUGH:
-                        s = true;
-                    case UNDERLINE:
-                        u = true;
-                        break;
-                    case ITALIC:
-                        i = true;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Cannot use non-fancy formatting");
-                }
-            }
-            this.isObfuscated = o;
-            this.isBold = b;
-            this.isStrikethrough = s;
-            this.isUnderline = u;
-            this.isItalic = i;
-        }
+        this(TextFormatting.WHITE, false, false, false, false, false);
     }
 
     public Style(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
-        Preconditions.checkArgument(color.isColor(), "Must be a color");
-        this.color = color;
-        this.isBold = isBold;
-        this.isStrikethrough = isStrikethrough;
-        this.isUnderline = isUnderline;
-        this.isItalic = isItalic;
-        this.isObfuscated = isObfuscated;
+        this(Style.pack(color, isBold, isStrikethrough, isUnderline, isItalic, isObfuscated));
     }
 
-    public Style(final short style) {
-        this.color = getColorFromStyle(style);
-        this.isObfuscated = (style & (1 << 4)) != 0;
-        this.isBold = (style & (1 << 5)) != 0;
-        this.isStrikethrough = (style & (1 << 6)) != 0;
-        this.isUnderline = (style & (1 << 7)) != 0;
-        this.isItalic = (style & (1 << 8)) != 0;
+    private Style(final int value) {
+        this.value = value;
     }
 
     public TextFormatting getColor() {
-        return this.color;
+        return TextFormatting.fromColorIndex(this.value & COLOR_MASK);
     }
 
     public boolean isObfuscated() {
-        return this.isObfuscated;
+        return (this.value & OBFUSCATED_MASK) != 0;
     }
 
     public boolean isBold() {
-        return this.isBold;
+        return (this.value & BOLD_MASK) != 0;
     }
 
     public boolean isStrikethrough() {
-        return this.isStrikethrough;
+        return (this.value & STRIKETHROUGH_MASK) != 0;
     }
 
     public boolean isUnderline() {
-        return this.isUnderline;
+        return (this.value & UNDERLINE_MASK) != 0;
     }
 
     public boolean isItalic() {
-        return this.isItalic;
+        return (this.value & ITALIC_MASK) != 0;
     }
 
     public boolean isPlain() {
-        return !this.isObfuscated && !this.isBold && !this.isStrikethrough && !this.isUnderline && !this.isItalic;
-    }
-
-    public short getValue() {
-        return getShortStyling(this.color, this.isBold, this.isStrikethrough, this.isUnderline, this.isItalic);
+        return (this.value & FANCY_MASK) == 0;
     }
 
     public Style withColor(final TextFormatting color) {
-        Preconditions.checkArgument(color.isColor(), "Must be color");
-        return new Style(color, this.isBold, this.isStrikethrough, this.isUnderline, this.isItalic, this.isObfuscated);
+        if (!color.isColor()) {
+            throw new IllegalArgumentException("Invalid color formatting: " + color.getFriendlyName());
+        }
+        return new Style(color.getColorIndex() | this.value & FANCY_MASK);
     }
 
     public Style withBold(final boolean isBold) {
-        return new Style(this.color, isBold, this.isStrikethrough, this.isUnderline, this.isItalic, this.isObfuscated);
+        return new Style(isBold ? this.value | BOLD_MASK : this.value & ~BOLD_MASK);
     }
 
     public Style withStrikethrough(final boolean isStrikethrough) {
-        return new Style(this.color, this.isBold, isStrikethrough, this.isUnderline, this.isItalic, this.isObfuscated);
+        return new Style(isStrikethrough ? this.value | STRIKETHROUGH_MASK : this.value & ~STRIKETHROUGH_MASK);
     }
 
     public Style withUnderline(final boolean isUnderline) {
-        return new Style(this.color, this.isBold, this.isStrikethrough, isUnderline, this.isItalic, this.isObfuscated);
+        return new Style(isUnderline ? this.value | UNDERLINE_MASK : this.value & ~UNDERLINE_MASK);
     }
 
     public Style withItalic(final boolean isItalic) {
-        return new Style(this.color, this.isBold, this.isStrikethrough, this.isUnderline, isItalic, this.isObfuscated);
+        return new Style(isItalic ? this.value | ITALIC_MASK : this.value & ~ITALIC_MASK);
     }
 
     public Style withObfuscated(final boolean isObfuscated) {
-        return new Style(this.color, this.isBold, this.isStrikethrough, this.isUnderline, this.isItalic, isObfuscated);
+        return new Style(isObfuscated ? this.value | OBFUSCATED_MASK : this.value & ~OBFUSCATED_MASK);
     }
 
-    public Style withStyling(final TextFormatting styling, final boolean state) {
-        Preconditions.checkArgument(styling != TextFormatting.RESET, "Reset is not styling");
-        if (styling.isColor()) {
-            return this.withColor(styling);
+    public Style withStyling(final TextFormatting formatting, final boolean state) {
+        if (formatting.isColor()) {
+            return this.withColor(formatting);
         }
-        boolean b = this.isBold, s = this.isStrikethrough, u = this.isUnderline, i = this.isItalic, o = this.isObfuscated;
-        switch (styling) {
+        switch (formatting) {
             case BOLD:
-                b = state;
-                break;
+                return this.withBold(state);
             case STRIKETHROUGH:
-                s = state;
-                break;
+                return this.withStrikethrough(state);
             case UNDERLINE:
-                u = state;
-                break;
+                return this.withUnderline(state);
             case ITALIC:
-                i = state;
-                break;
+                return this.withItalic(state);
             case OBFUSCATED:
-                o = state;
-                break;
+                return this.withObfuscated(state);
             default:
+                throw new IllegalArgumentException("Invalid fancy formatting: " + formatting.getFriendlyName());
         }
-        return new Style(this.color, b, s, u, i, o);
     }
 
     @Override
     public int hashCode() {
-        int h = this.color.hashCode();
-        h = 31 * h + (this.isBold ? 1231 : 1237);
-        h = 31 * h + (this.isItalic ? 1231 : 1237);
-        h = 31 * h + (this.isObfuscated ? 1231 : 1237);
-        h = 31 * h + (this.isStrikethrough ? 1231 : 1237);
-        h = 31 * h + (this.isUnderline ? 1231 : 1237);
-        return h;
+        return this.value;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof Style) {
-            final Style other = (Style) obj;
-            if (this.color != other.color) {
-                return false;
-            }
-            if (this.isBold != other.isBold) {
-                return false;
-            }
-            if (this.isItalic != other.isItalic) {
-                return false;
-            }
-            if (this.isObfuscated != other.isObfuscated) {
-                return false;
-            }
-            if (this.isStrikethrough != other.isStrikethrough) {
-                return false;
-            }
-            return this.isUnderline == other.isUnderline;
-        }
-        return true;
+        return this == obj || obj instanceof Style && this.value == ((Style) obj).value;
     }
 
-    public static final TextFormatting getColorFromStyle(final short style) {
-        return TextFormatting.values()[style & 0b1111];
+    @Override
+    public int compareTo(final Style other) {
+        if (this == other) {
+            return 0;
+        }
+        return this.value - other.value;
     }
 
-    public static final short getStylingAsShort(final TextFormatting... styling) {
-        TextFormatting color = null;
-        short value = 0;
-        for (final TextFormatting style : styling) {
-            if (style.isColor()) {
-                color = style;
-            } else if (style.isFancyStyling()) {
-                value |= 1 << 4 + style.ordinal() - 16;
-            }
+    private static int pack(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
+        if (!color.isColor()) {
+            throw new IllegalArgumentException("Invalid color formatting: " + color.getFriendlyName());
         }
-        if (color == null) {
-            color = StyledString.DEFAULT_COLOR;
-        }
-        return (short) (value | color.ordinal());
-    }
-
-    public static final Set<TextFormatting> getFancyStylingFromStyle(final short style) {
-        final Set<TextFormatting> fancy = new HashSet<>();
-        final TextFormatting[] formatting = TextFormatting.values();
-        final int field = style >> 4 & 0b11111;
-        for (int i = 0; i < 5; i++) {
-            if ((field & 1 << i) != 0) {
-                fancy.add(formatting[16 + i]);
-            }
-        }
-        return fancy;
-    }
-
-    public static final short getShortStyling(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic) {
-        short style = (short) color.ordinal();
-        if (isBold) {
-            style |= 1 << 5;
-        }
-        if (isStrikethrough) {
-            style |= 1 << 6;
-        }
-        if (isUnderline) {
-            style |= 1 << 7;
-        }
-        if (isItalic) {
-            style |= 1 << 8;
-        }
-        return style;
-    }
-
-    public static final boolean hasStyling(final short style, final TextFormatting formatting) {
-        if (formatting.isColor()) {
-            return (style & 0b1111) == formatting.ordinal();
-        } else if (formatting.isFancyStyling()) {
-            return (style >> 4 & 0b11111 & 1 << formatting.ordinal() - 16) != 0;
-        }
-        return false;
+        int value = color.getColorIndex();
+        if (isObfuscated) value |= OBFUSCATED_MASK;
+        if (isBold) value |= BOLD_MASK;
+        if (isStrikethrough) value |= STRIKETHROUGH_MASK;
+        if (isUnderline) value |= UNDERLINE_MASK;
+        if (isItalic) value |= ITALIC_MASK;
+        return value;
     }
 }

@@ -28,9 +28,9 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
         final CompoundNBT compound = stack.getTag();
         if (compound.contains("text", NBT.TAG_COMPOUND)) {
             final CompoundNBT text = compound.getCompound("text");
-            final String val = text.getString("value");
-            if (val.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.text", val));
+            final StyledString s = StyledString.deserialize(text);
+            if (s.length() > 0) {
+                tooltip.add(new TranslationTextComponent("format.text", s.toTextComponent()));
             }
         }
     }

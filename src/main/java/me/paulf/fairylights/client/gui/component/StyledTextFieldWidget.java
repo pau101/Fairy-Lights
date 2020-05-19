@@ -129,7 +129,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 start = end;
                 end = t;
             }
-            this.setValue0(this.value.addStyling(start, end, styling, state));
+            this.setValue0(this.value.withStyling(start, end, styling, state));
             this.updateSelectionControls();
         }
     }
@@ -292,7 +292,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         if (this.lineScrollOffset > len) {
             this.lineScrollOffset = len;
         }
-        final int w = this.value.substring(this.lineScrollOffset).trimToWidth(this.font, this.getInnerWidth(), true).length();
+        final int w = trimToWidth(this.value.substring(this.lineScrollOffset), this.font, this.getInnerWidth(), true).length();
         if (this.selectionEnd > w + this.lineScrollOffset) {
             this.lineScrollOffset = this.selectionEnd - w;
         } else if (this.selectionEnd <= this.lineScrollOffset) {
@@ -370,7 +370,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                     scrolled = true;
                 }
             } else if (mouseX > upper) {
-                final int max = this.value.length() - this.value.trimToWidth(this.font, this.getInnerWidth(), true).length();
+                final int max = this.value.length() - trimToWidth(this.value, this.font, this.getInnerWidth(), true).length();
                 if (this.lineScrollOffset < max) {
                     final int rate = (2 + (mouseX - this.x - this.width + 1) / 5) * 2 + 2;
                     this.lineScrollOffset += rate;
@@ -709,7 +709,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         for (int i = 0; i < str.length(); i++) {
             final char chr = str.charAt(i);
             if (isAllowedCharacter(chr)) {
-                bldr.append(chr, str.rawStyleAt(i));
+                bldr.append(chr, str.styleAt(i));
             }
         }
         return bldr.toStyledString();
@@ -798,12 +798,12 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     private int getIndexInTextByX(final int x) {
-        final StyledString s = this.value.substring(this.lineScrollOffset).trimToWidth(this.font, this.getInnerWidth());
-        return s.trimToWidth(this.font, x).length() + this.lineScrollOffset;
+        final StyledString s = trimToWidth(this.value.substring(this.lineScrollOffset), this.font, this.getInnerWidth());
+        return trimToWidth(s, this.font, x).length() + this.lineScrollOffset;
     }
 
     private void resetCurrentFormatting() {
-        this.setStyle(new Style(StyledString.DEFAULT_COLOR));
+        this.setStyle(new Style());
         this.tick = 0;
     }
 
@@ -814,7 +814,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             start = end;
             end = t;
         }
-        this.setValue0(this.value.withStyling(start, end, StyledString.DEFAULT_COLOR));
+        this.setValue0(this.value.withStyling(start, end, new Style()));
     }
 
     @Override
@@ -829,7 +829,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         final int textColor = this.isWritable ? this.writableTextColor : this.readonlyTextColor;
         final int visibleCaret = this.caret - this.lineScrollOffset;
         int visibleSelectionEnd = this.selectionEnd - this.lineScrollOffset;
-        final StyledString visibleText = this.value.substring(this.lineScrollOffset).trimToWidth(this.font, this.getInnerWidth());
+        final StyledString visibleText = trimToWidth(this.value.substring(this.lineScrollOffset), this.font, this.getInnerWidth());
         final boolean isCaretVisible = visibleCaret >= 0 && visibleCaret <= visibleText.length();
         final boolean drawSelection = visibleSelectionEnd != visibleCaret;
         final boolean drawCaret = !drawSelection && this.isFocused && this.tick / 6 % 2 == 0 && isCaretVisible;
@@ -873,7 +873,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             }
         }
         if (drawSelection) {
-            final int selectionX = offsetX + (visibleSelectionEnd < 0 ? 0 : visibleText.substring(0, visibleSelectionEnd).getWidth(this.font));
+            final int selectionX = offsetX + (visibleSelectionEnd < 0 ? 0 : getWidth(visibleText.substring(0, visibleSelectionEnd), this.font));
             int start = caretX, end = selectionX;
             if (end < start) {
                 final int t = start;
@@ -890,7 +890,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 }
                 final int pos = this.getIndexInTextByX(relativeX) - this.lineScrollOffset;
                 if (pos >= 0 && pos <= visibleText.length()) {
-                    final int x = visibleText.substring(0, pos).getWidth(this.font);
+                    final int x = getWidth(visibleText.substring(0, pos), this.font);
                     final int rgb = StyledString.getColor(this.currentStyle.getColor());
                     fill(offsetX + x, offsetY - 2, offsetX + x + 1, offsetY + 1 + this.font.FONT_HEIGHT, 0xFF000000 | rgb);
                 }
@@ -963,5 +963,46 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     @FunctionalInterface
     public interface ChangeListener {
         void onChange(StyledString value);
+    }
+
+    private static int getWidth(final StyledString styledString, final FontRenderer font) {
+        final char[] chars = styledString.toCharArray();
+        final Style[] styling = styledString.getStyling();
+        int w = 0;
+        for (int i = 0, len = styledString.length(); i < len; i++) {
+            w += font.getCharWidth(chars[i]);
+            if (styling[i].isBold()) {
+                w++;
+            }
+        }
+        return w;
+    }
+
+    private static StyledString trimToWidth(final StyledString styledString, final FontRenderer font, final int width) {
+        return trimToWidth(styledString, font, width, false);
+    }
+
+    private static StyledString trimToWidth(final StyledString styledString, final FontRenderer font, final int width, final boolean reverse) {
+        final char[] chars = styledString.toCharArray();
+        final Style[] styling = styledString.getStyling();
+        final int len = styledString.length();
+        final StyledStringBuilder str = new StyledStringBuilder();
+        final int start = reverse ? len - 1 : 0;
+        final int step = reverse ? -1 : 1;
+        for (int i = start, w = 0; i >= 0 && i < len && w < width; i += step) {
+            w += font.getCharWidth(chars[i]);
+            if (styling[i].isBold()) {
+                w++;
+            }
+            if (w > width) {
+                break;
+            }
+            if (reverse) {
+                str.insert(0, styledString.substring(i, i + 1));
+            } else {
+                str.append(styledString.substring(i, i + 1));
+            }
+        }
+        return str.toStyledString();
     }
 }

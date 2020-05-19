@@ -190,7 +190,7 @@ public final class ClientProxy extends ServerProxy {
                     TextFormatting lastColor = null, color = null;
                     int n = (index - 1) % str.length();
                     for (int i = 0; i < str.length(); lastColor = color, i++) {
-                        color = str.colorAt(i);
+                        color = str.styleAt(i).getColor();
                         if (lastColor != color && (n-- == 0)) {
                             break;
                         }
