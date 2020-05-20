@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.block.entity;
 import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.item.LightItem;
+import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;

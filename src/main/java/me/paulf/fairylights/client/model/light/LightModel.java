@@ -3,12 +3,16 @@ package me.paulf.fairylights.client.model.light;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.util.AABBBuilder;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+
+import javax.annotation.Nullable;
 
 public abstract class LightModel extends Model {
     protected final ModelRenderer lit;
@@ -23,6 +27,9 @@ public abstract class LightModel extends Model {
 
     protected float brightness;
 
+    @Nullable
+    private AxisAlignedBB bounds;
+
     public LightModel() {
         super(RenderType::getEntityTranslucent);
         this.textureWidth = 128;
@@ -35,6 +42,18 @@ public abstract class LightModel extends Model {
 
     protected BulbBuilder createBulb() {
         return new BulbBuilder(this.litTint, this.litTintGlow);
+    }
+
+    public AxisAlignedBB getBounds() {
+        if (this.bounds == null) {
+            final MatrixStack matrix = new MatrixStack();
+            final AABBVertexBuilder builder = new AABBVertexBuilder();
+            this.unlit.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.lit.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.litTint.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.bounds = builder.build();
+        }
+        return this.bounds;
     }
 
     public void animate(final Light light, final float delta) {
@@ -73,6 +92,49 @@ public abstract class LightModel extends Model {
             (float) Math.asin(r21),
             (float) MathHelper.atan2(r11, r12)
         };
+    }
+
+    static class AABBVertexBuilder implements IVertexBuilder {
+        final AABBBuilder builder = new AABBBuilder();
+
+        @Override
+        public IVertexBuilder pos(final double x, final double y, final double z) {
+            this.builder.include(x, y, z);
+            return this;
+        }
+
+        @Override
+        public IVertexBuilder color(final int red, final int green, final int blue, final int alpha) {
+            return this;
+        }
+
+        @Override
+        public IVertexBuilder tex(final float u, final float v) {
+            return this;
+        }
+
+        @Override
+        public IVertexBuilder overlay(final int u, final int v) {
+            return this;
+        }
+
+        @Override
+        public IVertexBuilder lightmap(final int u, final int v) {
+            return this;
+        }
+
+        @Override
+        public IVertexBuilder normal(final float x, final float y, final float z) {
+            return this;
+        }
+
+        @Override
+        public void endVertex() {
+        }
+
+        AxisAlignedBB build() {
+            return this.builder.build();
+        }
     }
 
     class BulbBuilder {

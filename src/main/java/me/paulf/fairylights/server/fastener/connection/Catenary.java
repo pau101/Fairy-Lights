@@ -52,6 +52,30 @@ public final class Catenary {
         return this.x[this.count - 1] * this.dz;
     }
 
+    public float getX(final int i) {
+        return this.x[i] * this.dx;
+    }
+
+    public float getY(final int i) {
+        return this.y[i];
+    }
+
+    public float getZ(final int i) {
+        return this.x[i] * this.dz;
+    }
+
+    public float getDx(final int i) {
+        return (this.x[i + 1] - this.x[i]) * this.dx;
+    }
+
+    public float getDy(final int i) {
+        return (this.y[i + 1] - this.y[i]);
+    }
+
+    public float getDz(final int i) {
+        return (this.x[i + 1] - this.x[i]) * this.dz;
+    }
+
     public Vec3d getEnd() {
         return new Vec3d(this.x[this.count - 1] * this.dx, this.y[this.count - 1], this.x[this.count - 1] * this.dz);
     }
