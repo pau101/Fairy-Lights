@@ -17,6 +17,7 @@ import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.Jingle;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -224,6 +225,13 @@ public final class ClientEventHandler {
         return new HitResult(found, rayTrace);
     }
 
+    public static RayTraceResult drawSelectionBox(final RayTraceResult target, final WorldRenderer context, final ActiveRenderInfo info, final float delta, final MatrixStack matrix, final IRenderTypeBuffer buffers) {
+        if (target.getType() == RayTraceResult.Type.ENTITY) {
+            MinecraftForge.EVENT_BUS.post(new DrawHighlightEvent.HighlightEntity(context, info, target, delta, matrix, buffers));
+        }
+        return target;
+    }
+
     @SubscribeEvent
     public void drawBlockHighlight(final DrawHighlightEvent event) {
         final RayTraceResult over = event.getTarget();
@@ -241,7 +249,12 @@ public final class ClientEventHandler {
                 this.drawFenceFastenerHighlight(player, (FenceFastenerEntity) ((EntityRayTraceResult) over).getEntity(), event.getMatrix(), buf.getBuffer(RenderType.getLines()), delta, dx, dy, dz);
             } else if (hit != null && hit.result != null) {
                 if (hit.result.intersection.getFeatureType() == Connection.CORD_FEATURE) {
-					this.renderHighlight(hit.result.connection, event.getMatrix(), buf.getBuffer(RenderType.getLines()));
+                    final MatrixStack matrix = event.getMatrix();
+                    matrix.push();
+                    final Vec3d p = hit.result.connection.getFastener().getConnectionPoint();
+                    matrix.translate(p.x - dx, p.y - dy, p.z - dz);
+					this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.getLines()));
+					matrix.pop();
                 } else {
                     final AxisAlignedBB aabb = hit.result.intersection.getHitBox().offset(-dx, -dy, -dz).grow(0.002);
                     WorldRenderer.drawBoundingBox(event.getMatrix(), buf.getBuffer(RenderType.getLines()), aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
@@ -265,86 +278,72 @@ public final class ClientEventHandler {
         }
         final float cordRadius = connection.getRadius();
         for (int edge = 0; edge < 4; edge++) {
-            final int start;
-			int end;
-			final int step;
-			final boolean forward = edge % 2 == 0;
-            if (forward) {
-                start = 0;
-                end = cat.getCount() - 1;
-                step = 1;
-                final float dirx = cat.getDx(start);
-                final float diry = cat.getDy(start);
-                final float dirz = cat.getDz(start);
-				this.renderVertex(matrix, buf, edge, forward, cat.getX(start), cat.getY(start), cat.getZ(start), dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
-            } else {
-                start = cat.getCount() - 2;
-                end = -1;
-                step = -1;
-                final float dirx = cat.getDx(start);
-                final float diry = cat.getDy(start);
-                final float dirz = cat.getDz(start);
-				this.renderVertex(matrix, buf, edge, forward, cat.getX(start + 1), cat.getY(start + 1), cat.getZ(start + 1), dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
-            }
-            for (int i = start; i != end; i += step) {
-                final int nexti = i + step >= cat.getCount() - 2 || i + step < 0 ? i : i + step;
-                final float dirx = cat.getDx(i);
-                final float diry = cat.getDy(i);
-                final float dirz = cat.getDz(i);
-                final float ndirx = cat.getDx(nexti);
-                final float ndiry = cat.getDy(nexti);
-                final float ndirz = cat.getDz(nexti);
-                final float px = cat.getX(forward ? i + 1 : i);
-                final float py = cat.getX(forward ? i + 1 : i);
-                final float pz = cat.getX(forward ? i + 1 : i);
-				this.renderVertex(matrix, buf, edge, forward, px, py, pz, dirx, diry, dirz, ndirx, ndiry, ndirz, cordRadius, 0.4F);
-            }
+            float dirx = cat.getDx(0);
+            float diry = cat.getDy(0);
+            float dirz = cat.getDz(0);
+            float px = cat.getX(0);
+            float py = cat.getY(0);
+            float pz = cat.getZ(0);
             if (edge == 0) {
-                final int last = cat.getCount() - 2;
-                final float dirx = cat.getDx(last);
-                final float diry = cat.getDy(last);
-                final float dirz = cat.getDz(last);
-                final float px = cat.getX(last + 1);
-                final float py = cat.getY(last + 1);
-                final float pz = cat.getZ(last + 1);
-				this.renderVertex(matrix, buf, 0, false, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, 0);
-				this.renderVertex(matrix, buf, 2, false, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
-				this.renderVertex(matrix, buf, 2, true, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, 0);
-				this.renderVertex(matrix, buf, 0, true, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
-            } else if (edge == 1) {
-                final float dirx = cat.getDx(0);
-                final float diry = cat.getDy(0);
-                final float dirz = cat.getDz(0);
-                final float px = cat.getX(0);
-                final float py = cat.getX(0);
-                final float pz = cat.getX(0);
-				this.renderVertex(matrix, buf, 2, forward, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 2, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 0, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 3, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 1, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 0, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 1, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 2, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 3, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+            }
+            this.renderVertex(matrix, buf, edge, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+            for (int i = 0; i < cat.getCount() - 2; i++) {
+                dirx = cat.getDx(i);
+                diry = cat.getDy(i);
+                dirz = cat.getDz(i);
+                final float ndirx = cat.getDx(i + 1);
+                final float ndiry = cat.getDy(i + 1);
+                final float ndirz = cat.getDz(i + 1);
+                px = cat.getX(i + 1);
+                py = cat.getY(i + 1);
+                pz = cat.getZ(i + 1);
+				this.renderVertex(matrix, buf, edge, px, py, pz, dirx, diry, dirz, ndirx, ndiry, ndirz, cordRadius, HIGHLIGHT_ALPHA);
+				this.renderVertex(matrix, buf, edge, px, py, pz, dirx, diry, dirz, ndirx, ndiry, ndirz, cordRadius, HIGHLIGHT_ALPHA);
+            }
+            final int last = cat.getCount() - 2;
+            dirx = cat.getDx(last);
+            diry = cat.getDy(last);
+            dirz = cat.getDz(last);
+            px = cat.getX(last + 1);
+            py = cat.getY(last + 1);
+            pz = cat.getZ(last + 1);
+            this.renderVertex(matrix, buf, edge, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+            if (edge == 0) {
+                this.renderVertex(matrix, buf, 2, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 0, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 3, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 1, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 0, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 1, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 2, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
+                this.renderVertex(matrix, buf, 3, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
             }
         }
-        final float dirx = cat.getDx(0);
-        final float diry = cat.getDy(0);
-        final float dirz = cat.getDz(0);
-        final float px = cat.getX(0);
-        final float py = cat.getX(0);
-        final float pz = cat.getX(0);
-		this.renderVertex(matrix, buf, 0, true, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, 0);
-		this.renderVertex(matrix, buf, 2, true, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
-		this.renderVertex(matrix, buf, 0, false, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, 0);
-		this.renderVertex(matrix, buf, 0, true, px, py, pz, dirx, diry, dirz, dirx, diry, dirz, cordRadius, HIGHLIGHT_ALPHA);
     }
 
-    private void renderVertex(final MatrixStack matrix, final IVertexBuilder buf, final int edge, final boolean forward, final float px, final float py, final float pz, float dirx, float diry, float dirz, float toDirx, float toDiry, float toDirz, final float cordRadius, final float alpha) {
-        if (forward) {
-            toDirx = -toDirx;
-            toDiry = -toDiry;
-            toDirz = -toDirz;
-        } else {
-            dirx = -dirx;
-            diry = -diry;
-            dirz = -dirz;
-        }
+    private void renderVertex(final MatrixStack matrix, final IVertexBuilder buf, final int edge, final float px, final float py, final float pz, float dirx, float diry, float dirz, float todirx, float todiry, float todirz, final float cordRadius, final float alpha) {
+        float n;
+        n = 1.0F / MathHelper.sqrt(dirx * dirx + diry * diry + dirz * dirz);
+        dirx *= n;
+        diry *= n;
+        dirz *= n;
+        n = 1.0F / MathHelper.sqrt(todirx * todirx + todiry * todiry + todirz * todirz);
+        todirx *= n;
+        todiry *= n;
+        todirz *= n;
+        todirx = -todirx;
+        todiry = -todiry;
+        todirz = -todirz;
         float upx, upy, upz;
-        final boolean colinear = dirx * toDirx + diry * toDiry + dirz * toDirz < -1 + 1e-6F;
+        final boolean colinear = dirx * todirx + diry * todiry + dirz * todirz < -1 + 1e-6F;
         if (colinear) {
             final float h = MathHelper.sqrt(dirx * dirx + dirz * dirz);
             if (h < 1e-6F) {
@@ -353,15 +352,15 @@ public final class ClientEventHandler {
                 upz = 0;
             } else {
                 upx = dirx / h * -diry;
-                upy = h;
+                upy = -h;
                 upz = dirz / h * -diry;
             }
         } else {
-            upx = (dirx + toDirx) / 2.0F;
-            upy = (diry + toDiry) / 2.0F;
-            upz = (dirz + toDirz) / 2.0F;
+            upx = (dirx + todirx) / 2.0F;
+            upy = (diry + todiry) / 2.0F;
+            upz = (dirz + todirz) / 2.0F;
         }
-        float n = 1.0F / MathHelper.sqrt(upx * upx + upy * upy + upz * upz);
+        n = 1.0F / MathHelper.sqrt(upx * upx + upy * upy + upz * upz);
         upx *= n;
         upy *= n;
         upz *= n;
@@ -372,12 +371,17 @@ public final class ClientEventHandler {
         sidex *= n;
         sidey *= n;
         sidez *= n;
+        if (edge % 2 == 0) {
+            sidex = -sidex;
+            sidey = -sidey;
+            sidez = -sidez;
+        }
         if (edge < 2) {
             upx = -upx;
             upy = -upy;
             upz = -upz;
         }
-        final float r = cordRadius * 0.01F;
+        final float r = cordRadius + 0.01F;
         buf.pos(matrix.getLast().getMatrix(), px + upx * r + sidex * r, py + upy * r + sidey * r, pz + upz * r + sidez * r).color(0, 0, 0, alpha).endVertex();
     }
 
