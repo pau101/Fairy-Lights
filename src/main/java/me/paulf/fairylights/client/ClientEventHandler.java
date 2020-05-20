@@ -11,7 +11,7 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.collision.ConnectionCollision;
+import me.paulf.fairylights.server.fastener.connection.collision.Collidable;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
@@ -207,7 +207,7 @@ public final class ClientEventHandler {
                 if (connection.getDestination().getType() == FastenerType.PLAYER) {
                     continue;
                 }
-                final ConnectionCollision collision = connection.getCollision();
+                final Collidable collision = connection.getCollision();
                 final Intersection result = collision.intersect(origin, end);
                 if (result != null) {
                     final double dist = result.getResult().distanceTo(origin);

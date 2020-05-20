@@ -6,5 +6,9 @@ import javax.annotation.Nullable;
 
 public interface Collidable {
     @Nullable
-    Intersection intersect(Vec3d origin, Vec3d end);
+    Intersection intersect(final Vec3d origin, final Vec3d end);
+
+    static Collidable empty() {
+        return (o, e) -> null;
+    }
 }

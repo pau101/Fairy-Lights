@@ -1,18 +1,15 @@
 package me.paulf.fairylights.server.fastener.connection.collision;
 
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-public final class ConnectionCollision implements Collidable {
-    private List<Collidable> collision = Collections.emptyList();
+public final class CollidableList implements Collidable {
+    private final ImmutableList<Collidable> collision;
 
-    public void update(final Connection connection, final Vec3d origin) {
-        connection.addCollision(this.collision = new ArrayList<>(), origin);
+    private CollidableList(final Builder builder) {
+        this.collision = builder.collision.build();
     }
 
     @Nullable
@@ -31,5 +28,18 @@ public final class ConnectionCollision implements Collidable {
             }
         }
         return result;
+    }
+
+    public static class Builder {
+        final ImmutableList.Builder<Collidable> collision = new ImmutableList.Builder<>();
+
+        public Builder add(final Collidable collidable) {
+            this.collision.add(collidable);
+            return this;
+        }
+
+        public CollidableList build() {
+            return new CollidableList(this);
+        }
     }
 }

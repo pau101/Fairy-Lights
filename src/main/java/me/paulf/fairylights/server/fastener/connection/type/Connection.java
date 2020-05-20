@@ -11,7 +11,7 @@ import me.paulf.fairylights.server.fastener.connection.Feature;
 import me.paulf.fairylights.server.fastener.connection.FeatureType;
 import me.paulf.fairylights.server.fastener.connection.PlayerAction;
 import me.paulf.fairylights.server.fastener.connection.collision.Collidable;
-import me.paulf.fairylights.server.fastener.connection.collision.ConnectionCollision;
+import me.paulf.fairylights.server.fastener.connection.collision.CollidableList;
 import me.paulf.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.item.ConnectionItem;
@@ -72,7 +72,7 @@ public abstract class Connection implements NBTSerializable {
 
     protected float slack = 1;
 
-    private final ConnectionCollision collision = new ConnectionCollision();
+    private Collidable collision = Collidable.empty();
 
     private boolean updateCatenary;
 
@@ -125,7 +125,7 @@ public abstract class Connection implements NBTSerializable {
         return this.isOrigin;
     }
 
-    public final ConnectionCollision getCollision() {
+    public final Collidable getCollision() {
         return this.collision;
     }
 
@@ -340,7 +340,9 @@ public abstract class Connection implements NBTSerializable {
             if (vec.length() > 1e-6) {
                 this.catenary = Catenary.from(vec, SLACK_CURVE, this.slack);
                 this.onCalculateCatenary(this.prevDestination != this.destination);
-                this.collision.update(this, from);
+                final CollidableList.Builder bob = new CollidableList.Builder();
+                this.addCollision(bob, from);
+                this.collision = bob.build();
             }
             this.catenaryUpdateState = true;
             this.updateCatenary = false;
@@ -360,7 +362,7 @@ public abstract class Connection implements NBTSerializable {
         return state;
     }
 
-    public void addCollision(final List<Collidable> collision, final Vec3d origin) {
+    public void addCollision(final CollidableList.Builder collision, final Vec3d origin) {
         if (this.catenary == null) {
             return;
         }

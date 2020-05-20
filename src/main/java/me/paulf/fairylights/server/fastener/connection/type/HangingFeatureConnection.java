@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.FeatureType;
-import me.paulf.fairylights.server.fastener.connection.collision.Collidable;
+import me.paulf.fairylights.server.fastener.connection.collision.CollidableList;
 import me.paulf.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
 import me.paulf.fairylights.util.AABBBuilder;
 import me.paulf.fairylights.util.matrix.MatrixStack;
@@ -87,7 +87,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature<F>> exte
     protected void onAfterUpdateFeatures() {}
 
     @Override
-    public void addCollision(final List<Collidable> collision, final Vec3d origin) {
+    public void addCollision(final CollidableList.Builder collision, final Vec3d origin) {
         super.addCollision(collision, origin);
         if (this.features.length > 0) {
             final MatrixStack matrix = new MatrixStack();
