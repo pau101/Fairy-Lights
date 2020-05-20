@@ -8,6 +8,7 @@ import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -90,7 +91,8 @@ public abstract class ConnectionRenderer<C extends Connection> {
                 @Override
                 public void translateRotate(final MatrixStack stack) {
                     super.translateRotate(stack);
-                    stack.scale(1.05F, 1.0F, WireModel.this.length);
+                    // Don't scale normal matrix
+                    stack.getLast().getMatrix().mul(Matrix4f.makeScale(1.0F, 1.0F, WireModel.this.length));
                 }
             };
             this.root.addBox(-size * 0.5F, -size * 0.5F, 0.0F, size, size, 1.0F);
