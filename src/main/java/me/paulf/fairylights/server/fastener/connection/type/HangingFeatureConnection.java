@@ -120,7 +120,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature<F>> exte
                 }
                 matrix.pop();
                 return bounds.add(x, y, z).build();
-            }, i -> i >= 0 && i < this.features.length ? this.features[i] : null));
+            }));
         }
     }
 

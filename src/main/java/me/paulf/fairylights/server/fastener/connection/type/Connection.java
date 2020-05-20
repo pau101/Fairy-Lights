@@ -7,6 +7,7 @@ import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.Feature;
 import me.paulf.fairylights.server.fastener.connection.FeatureType;
 import me.paulf.fairylights.server.fastener.connection.PlayerAction;
 import me.paulf.fairylights.server.fastener.connection.collision.Collidable;
@@ -38,7 +39,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 public abstract class Connection implements NBTSerializable {
     public static final int MAX_LENGTH = 32;
@@ -361,13 +361,16 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public void addCollision(final List<Collidable> collision, final Vec3d origin) {
+        if (this.catenary == null) {
+            return;
+        }
         final int count = this.catenary.getCount();
         if (count < 2) {
             return;
         }
         final float r = this.getRadius();
         final Catenary.SegmentIterator it = this.catenary.iterator();
-        final AxisAlignedBB[] bounds = new AxisAlignedBB[count];
+        final AxisAlignedBB[] bounds = new AxisAlignedBB[count - 1];
         int index = 0;
         while (it.next()) {
             final float x0 = it.getX(0.0F);
@@ -377,11 +380,11 @@ public abstract class Connection implements NBTSerializable {
             final float y1 = it.getY(1.0F);
             final float z1 = it.getZ(1.0F);
             bounds[index++] = new AxisAlignedBB(
-                origin.x + x0 - r, origin.y + y0 - r, origin.z + z0 - r,
-                origin.x + x1 + r, origin.y + y1 + r, origin.z + z1 + r
-            );
+                origin.x + x0, origin.y + y0, origin.z + z0,
+                origin.x + x1, origin.y + y1, origin.z + z1
+            ).grow(r);
         }
-        collision.add(FeatureCollisionTree.build(CORD_FEATURE, bounds, Function.identity(), i -> () -> 0, 1, count - 2));
+        collision.add(FeatureCollisionTree.build(CORD_FEATURE, i -> Segment.INSTANCE, i -> bounds[i], 1, bounds.length - 2));
     }
 
     @Override
@@ -408,4 +411,13 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public void deserializeLogic(final CompoundNBT compound) {}
+
+    static class Segment implements Feature {
+        static final Segment INSTANCE = new Segment();
+
+        @Override
+        public int getId() {
+            return 0;
+        }
+    }
 }
