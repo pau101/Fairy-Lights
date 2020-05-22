@@ -351,9 +351,9 @@ public final class ClientEventHandler {
                 upy = 0;
                 upz = 0;
             } else {
-                upx = dirx / h * -diry;
+                upx = -dirx / h * -diry;
                 upy = -h;
-                upz = dirz / h * -diry;
+                upz = -dirz / h * -diry;
             }
         } else {
             upx = (dirx + todirx) / 2.0F;
