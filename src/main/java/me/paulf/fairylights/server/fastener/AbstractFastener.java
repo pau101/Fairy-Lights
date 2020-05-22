@@ -103,9 +103,11 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             }
             final Catenary.SegmentIterator it = catenary.iterator();
             while (it.next()) {
-                builder.include(it.getPos());
+                builder.include(it.getX(0.0F), it.getY(0.0F), it.getZ(0.0F));
+                if (!it.hasNext()) {
+                    builder.include(it.getX(1.0F), it.getY(1.0F), it.getZ(1.0F));
+                }
             }
-            builder.include(catenary.getEnd());
         }
         this.bounds = builder.add(this.getConnectionPoint()).build();
     }

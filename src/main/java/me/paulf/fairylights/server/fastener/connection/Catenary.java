@@ -76,10 +76,6 @@ public final class Catenary {
         return (this.x[i + 1] - this.x[i]) * this.dz;
     }
 
-    public Vec3d getEnd() {
-        return new Vec3d(this.x[this.count - 1] * this.dx, this.y[this.count - 1], this.x[this.count - 1] * this.dz);
-    }
-
     public SegmentIterator iterator() {
         return this.iterator(false);
     }
