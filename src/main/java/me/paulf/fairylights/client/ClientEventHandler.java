@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -276,94 +277,61 @@ public final class ClientEventHandler {
         if (cat == null) {
             return;
         }
+        final Vector3f p = new Vector3f();
+        final Vector3f v1 = new Vector3f();
+        final Vector3f v2 = new Vector3f();
         final float r = connection.getRadius() + 0.01F;
         for (int edge = 0; edge < 4; edge++) {
-            float dx = cat.getDx(0);
-            float dy = cat.getDy(0);
-            float dz = cat.getDz(0);
-            float x = cat.getX(0);
-            float y = cat.getY(0);
-            float z = cat.getZ(0);
+            p.set(cat.getX(0), cat.getY(0), cat.getZ(0));
+            v1.set(cat.getDx(0), cat.getDy(0), cat.getDz(0));
+            v1.normalize();
+            v2.set(-v1.getX(), -v1.getY(), -v1.getZ());
             for (int n = 0; edge == 0 && n < 8; n++) {
-                this.addVertex(matrix, buf, (n + 1) / 2 % 4, x, y, z, dx, dy, dz, dx, dy, dz, r, HIGHLIGHT_ALPHA);
+                this.addVertex(matrix, buf, (n + 1) / 2 % 4, p, v1, v2, r);
             }
-            this.addVertex(matrix, buf, edge, x, y, z, dx, dy, dz, dx, dy, dz, r, HIGHLIGHT_ALPHA);
+            this.addVertex(matrix, buf, edge, p, v1, v2, r);
             for (int i = 1; i < cat.getCount() - 1; i++) {
-                final float ndx = cat.getDx(i);
-                final float ndy = cat.getDy(i);
-                final float ndz = cat.getDz(i);
-                x = cat.getX(i);
-                y = cat.getY(i);
-                z = cat.getZ(i);
-				this.addVertex(matrix, buf, edge, x, y, z, dx, dy, dz, ndx, ndy, ndz, r, HIGHLIGHT_ALPHA);
-				this.addVertex(matrix, buf, edge, x, y, z, dx, dy, dz, ndx, ndy, ndz, r, HIGHLIGHT_ALPHA);
-				dx = ndx;
-				dy = ndy;
-				dz = ndz;
+                p.set(cat.getX(i), cat.getY(i), cat.getZ(i));
+                v2.set(-cat.getDx(i), -cat.getDy(i), -cat.getDz(i));
+                v2.normalize();
+                this.addVertex(matrix, buf, edge, p, v1, v2, r);
+				this.addVertex(matrix, buf, edge, p, v1, v2, r);
+                v1.set(-v2.getX(), -v2.getY(), -v2.getZ());
             }
-            x = cat.getX();
-            y = cat.getY();
-            z = cat.getZ();
-            this.addVertex(matrix, buf, edge, x, y, z, dx, dy, dz, dx, dy, dz, r, HIGHLIGHT_ALPHA);
+            p.set(cat.getX(), cat.getY(), cat.getZ());
+            v2.set(-v1.getX(), -v1.getY(), -v1.getZ());
+            this.addVertex(matrix, buf, edge, p, v1, v2, r);
             for (int n = 0; edge == 0 && n < 8; n++) {
-                this.addVertex(matrix, buf, (n + 1) / 2 % 4, x, y, z, dx, dy, dz, dx, dy, dz, r, HIGHLIGHT_ALPHA);
+                this.addVertex(matrix, buf, (n + 1) / 2 % 4, p, v1, v2, r);
             }
         }
     }
 
-    private void addVertex(final MatrixStack matrix, final IVertexBuilder buf, final int edge, final float px, final float py, final float pz, float dirx, float diry, float dirz, float todirx, float todiry, float todirz, final float r, final float alpha) {
-        float n;
-        n = 1.0F / MathHelper.sqrt(dirx * dirx + diry * diry + dirz * dirz);
-        dirx *= n;
-        diry *= n;
-        dirz *= n;
-        n = 1.0F / MathHelper.sqrt(todirx * todirx + todiry * todiry + todirz * todirz);
-        todirx *= n;
-        todiry *= n;
-        todirz *= n;
-        todirx = -todirx;
-        todiry = -todiry;
-        todirz = -todirz;
-        float upx, upy, upz;
-        final boolean colinear = dirx * todirx + diry * todiry + dirz * todirz < -1.0F + 1e-6F;
-        if (colinear) {
-            final float h = MathHelper.sqrt(dirx * dirx + dirz * dirz);
-            if (h < 1e-6F) {
-                upx = -1.0F;
-                upy = 0.0F;
-                upz = 0.0F;
+    private void addVertex(final MatrixStack matrix, final IVertexBuilder buf, final int edge, final Vector3f p, final Vector3f v1, final Vector3f v2, final float r) {
+        final Vector3f up = new Vector3f();
+        final Vector3f side = new Vector3f();
+        // if collinear
+        if (v1.dot(v2) < -(1.0F - 1.0e-2F)) {
+            final float h = MathHelper.sqrt(v1.getX() * v1.getX() + v1.getZ() * v1.getZ());
+            // if vertical
+            if (h < 1.0e-2F) {
+                up.set(-1.0F, 0.0F, 0.0F);
             } else {
-                upx = -dirx / h * -diry;
-                upy = -h;
-                upz = -dirz / h * -diry;
+                up.set(-v1.getX() / h * -v1.getY(), -h, -v1.getZ() / h * -v1.getY());
             }
         } else {
-            upx = (dirx + todirx) / 2.0F;
-            upy = (diry + todiry) / 2.0F;
-            upz = (dirz + todirz) / 2.0F;
+            up.set(v2.getX(), v2.getY(), v2.getZ());
+            up.lerp(v1, 0.5F);
         }
-        n = 1.0F / MathHelper.sqrt(upx * upx + upy * upy + upz * upz);
-        upx *= n;
-        upy *= n;
-        upz *= n;
-        float sidex = diry * upz - dirz * upy;
-        float sidey = dirz * upx - dirx * upz;
-        float sidez = dirx * upy - diry * upx;
-        n = 1.0F / MathHelper.sqrt(sidex * sidex + sidey * sidey + sidez * sidez);
-        sidex *= n;
-        sidey *= n;
-        sidez *= n;
-        if (edge == 0 || edge == 3) {
-            sidex = -sidex;
-            sidey = -sidey;
-            sidez = -sidez;
-        }
-        if (edge < 2) {
-            upx = -upx;
-            upy = -upy;
-            upz = -upz;
-        }
-        buf.pos(matrix.getLast().getMatrix(), px + upx * r + sidex * r, py + upy * r + sidey * r, pz + upz * r + sidez * r).color(0, 0, 0, alpha).endVertex();
+        up.normalize();
+        side.set(v1.getX(), v1.getY(), v1.getZ());
+        side.cross(up);
+        side.normalize();
+        side.mul(edge == 0 || edge == 3 ? -r : r);
+        up.mul(edge < 2 ? -r : r);
+        up.add(side);
+        up.add(p);
+        buf.pos(matrix.getLast().getMatrix(), up.getX(), up.getY(), up.getZ()).color(0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA).endVertex();
     }
 
     private static class HitConnection extends Entity {
