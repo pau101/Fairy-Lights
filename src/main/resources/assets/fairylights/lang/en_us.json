@@ -79,5 +79,8 @@
     "subtitles.block.cord.snap": "Cord snaps",
     "subtitles.block.feature.lightTurnOn": "Lights click on",
     "subtitles.block.feature.lightTurnOff": "Lights click off",
-    "subtitles.block.feature.colorChange": "Color plops"
+    "subtitles.block.feature.colorChange": "Color plops",
+
+    "commands.jingler.device.vendor": "Vendor: %1$s",
+    "commands.jingler.device.description": "Description: %1$s"
 }

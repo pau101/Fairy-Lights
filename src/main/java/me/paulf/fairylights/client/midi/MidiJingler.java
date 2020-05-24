@@ -22,6 +22,9 @@ public final class MidiJingler implements Receiver {
 
     @Override
     public void send(final MidiMessage msg, final long timestamp) {
+        if (this.connection == null) {
+            return;
+        }
         if (!(msg instanceof ShortMessage)) {
             return;
         }
