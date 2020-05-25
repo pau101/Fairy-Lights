@@ -110,9 +110,9 @@ public final class Light extends HangingFeature<Light> {
 
     public void jingle(final World world, final Vec3d origin, final int note, final SoundEvent sound, final BasicParticleType... particles) {
         if (world.isRemote) {
-            final double x = origin.x + this.point.x / 16;
-            final double y = origin.y + this.point.y / 16;
-            final double z = origin.z + this.point.z / 16;
+            final double x = origin.x + this.point.x;
+            final double y = origin.y + this.point.y;
+            final double z = origin.z + this.point.z;
             for (final BasicParticleType particle : particles) {
                 double vx = world.rand.nextGaussian();
                 double vy = world.rand.nextGaussian();

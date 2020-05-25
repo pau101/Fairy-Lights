@@ -81,6 +81,13 @@
     "subtitles.block.feature.lightTurnOff": "Lights click off",
     "subtitles.block.feature.colorChange": "Color plops",
 
+    "commands.jingler.open.success": "Successfully opened %1$s",
+    "commands.jingler.open.failure.no_hanging_lights": "No hanging lights selected",
+    "commands.jingler.open.failure.device_unavailable": "Device %1$s is unavailable, likely in use by another program",
+    "commands.jingler.open.failure.not_found": "No device named %1$s",
+    "commands.jingler.close.success.single": "Successfully closed %1$s connection",
+    "commands.jingler.close.success.multiple": "Successfully closed %1$s connections",
+    "commands.jingler.close.failure": "No devices to close",
     "commands.jingler.device.vendor": "Vendor: %1$s",
     "commands.jingler.device.description": "Description: %1$s"
 }

@@ -3,7 +3,7 @@ package me.paulf.fairylights.client;
 import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.command.ClientCommandProvider;
-import me.paulf.fairylights.client.command.JingerCommand;
+import me.paulf.fairylights.client.command.JinglerCommand;
 import me.paulf.fairylights.client.renderer.block.entity.FastenerBlockEntityRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.LetterBuntingRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.LightBlockEntityRenderer;
@@ -81,10 +81,10 @@ public final class ClientProxy extends ServerProxy {
         super.initHandlers();
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         new ClientCommandProvider.Builder()
-            .add(JingerCommand::register)
+            .add(JinglerCommand::register)
             .build()
             .register(MinecraftForge.EVENT_BUS);
-        JingerCommand.register(MinecraftForge.EVENT_BUS);
+        JinglerCommand.register(MinecraftForge.EVENT_BUS);
     }
 
     @Override

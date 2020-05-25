@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import me.paulf.fairylights.client.ClientEventHandler;
 import me.paulf.fairylights.client.midi.MidiJingler;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
@@ -30,11 +31,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public final class JinglerCommand {
-    private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(new TranslationTextComponent("commands.jingler.open.no_hanging_lights"));
+    private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(new TranslationTextComponent("commands.jingler.open.failure.no_hanging_lights"));
 
-    private static final DynamicCommandExceptionType DEVICE_UNAVAILABLE = new DynamicCommandExceptionType(name -> new TranslationTextComponent("commands.jingler.open.unavailable", name));
+    private static final DynamicCommandExceptionType DEVICE_UNAVAILABLE = new DynamicCommandExceptionType(name -> new TranslationTextComponent("commands.jingler.open.failure.device_unavailable", name));
 
-    private static final DynamicCommandExceptionType DEVICE_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslationTextComponent("commands.jingler.open.not_found", name));
+    private static final DynamicCommandExceptionType DEVICE_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslationTextComponent("commands.jingler.open.failure.not_found", name));
 
     private static final SimpleCommandExceptionType CLOSE_FAILURE = new SimpleCommandExceptionType(new TranslationTextComponent("commands.jingler.close.failure"));
 
@@ -42,10 +43,10 @@ public final class JinglerCommand {
         return LiteralArgumentBuilder.<S>literal("jingler")
             .then(LiteralArgumentBuilder.<S>literal("open").then(helper.executes(
                 RequiredArgumentBuilder.<S, String>argument("device", StringArgumentType.greedyString())
-                    .suggests((context, builder) -> {
-                        getDevices().forEach(device -> builder.suggest(device.getDeviceInfo().getName(), createDeviceText(device)));
-                        return builder.buildFuture();
-                    }),
+                    .suggests((context, builder) -> getDevices()
+                        .reduce(builder, (b, device) -> b.suggest(device.getDeviceInfo().getName(), createDeviceText(device)), SuggestionsBuilder::add)
+                        .buildFuture()
+                    ),
                 ctx -> {
                     final Connection conn = ClientEventHandler.getHitConnection();
                     if (!(conn instanceof HangingLightsConnection)) {
@@ -72,12 +73,11 @@ public final class JinglerCommand {
                 })))
             .then(LiteralArgumentBuilder.<S>literal("close").then(helper.executes(
                 RequiredArgumentBuilder.<S, String>argument("device", StringArgumentType.greedyString())
-                    .suggests((context, builder) -> {
-                        getDevices().filter(device -> device.getTransmitters().stream().anyMatch(t -> t.getReceiver() instanceof MidiJingler)).forEach(device -> {
-                            builder.suggest(device.getDeviceInfo().getName(), createDeviceText(device));
-                        });
-                        return builder.buildFuture();
-                    }),
+                    .suggests((context, builder) -> getDevices()
+                        .filter(device -> device.getTransmitters().stream().anyMatch(t -> t.getReceiver() instanceof MidiJingler))
+                        .reduce(builder, (b, device) -> builder.suggest(device.getDeviceInfo().getName(), createDeviceText(device)), SuggestionsBuilder::add)
+                        .buildFuture()
+                    ),
                 ctx -> {
                     final String name = StringArgumentType.getString(ctx, "device");
                     final MidiDevice device = getMidiDevice(name);
@@ -87,10 +87,13 @@ public final class JinglerCommand {
                             transmitter.close();
                             return count + 1;
                         }, Integer::sum);
+                    if (device.getTransmitters().isEmpty()) {
+                        device.close();
+                    }
                     if (closed == 0) {
                         throw CLOSE_FAILURE.create();
                     }
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("commands.jingler.close.success", closed), false);
+                    ctx.getSource().sendFeedback(new TranslationTextComponent(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
                     return closed;
                 }
             )));
