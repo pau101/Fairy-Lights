@@ -17,10 +17,12 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
@@ -31,6 +33,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public final class JinglerCommand {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(new TranslationTextComponent("commands.jingler.open.failure.no_hanging_lights"));
 
     private static final DynamicCommandExceptionType DEVICE_UNAVAILABLE = new DynamicCommandExceptionType(name -> new TranslationTextComponent("commands.jingler.open.failure.device_unavailable", name));
@@ -81,15 +85,7 @@ public final class JinglerCommand {
                 ctx -> {
                     final String name = StringArgumentType.getString(ctx, "device");
                     final MidiDevice device = getMidiDevice(name);
-                    final int closed = device.getTransmitters().stream()
-                        .filter(t -> t.getReceiver() instanceof MidiJingler)
-                        .reduce(0, (count, transmitter) -> {
-                            transmitter.close();
-                            return count + 1;
-                        }, Integer::sum);
-                    if (device.getTransmitters().isEmpty()) {
-                        device.close();
-                    }
+                    final int closed = close(device);
                     if (closed == 0) {
                         throw CLOSE_FAILURE.create();
                     }
@@ -119,7 +115,7 @@ public final class JinglerCommand {
             try {
                 device = MidiSystem.getMidiDevice(info);
             } catch (final MidiUnavailableException e) {
-                LogManager.getLogger().debug("Midi device unavailable: \"{}\", reason: \"{}\"", info.getName(), e.getMessage());
+                LOGGER.debug("Midi device unavailable: \"{}\", reason: \"{}\"", info.getName(), e.getMessage());
                 continue;
             }
             if (device.getMaxTransmitters() != 0 && !(device instanceof Sequencer)) {
@@ -127,6 +123,19 @@ public final class JinglerCommand {
             }
         }
         return bob.build();
+    }
+
+    private static int close(final MidiDevice device) {
+        final int closed = device.getTransmitters().stream()
+            .filter(t -> t.getReceiver() instanceof MidiJingler)
+            .reduce(0, (count, transmitter) -> {
+                transmitter.close();
+                return count + 1;
+            }, Integer::sum);
+        if (device.getTransmitters().isEmpty()) {
+            device.close();
+        }
+        return closed;
     }
 
     private static ITextComponent createDeviceText(final MidiDevice device) {
@@ -156,5 +165,6 @@ public final class JinglerCommand {
                 e.getFontRenderer()
             );
         });
+        bus.<WorldEvent.Unload>addListener(e -> getDevices().forEach(MidiDevice::close));
     }
 }
