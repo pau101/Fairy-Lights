@@ -43,7 +43,7 @@ public class LadderItem extends Item {
             z = context.getHitVec().z;
         }
         final double y = location.getY() + 0.001;
-        if (!world.checkBlockCollision(FLEntities.LADDER.orElseThrow(IllegalStateException::new).func_220328_a(x, y, z))) {
+        if (!world.hasNoCollisions(FLEntities.LADDER.orElseThrow(IllegalStateException::new).func_220328_a(x, y, z))) {
             return ActionResultType.FAIL;
         }
         if (!world.isRemote) {
