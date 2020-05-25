@@ -2,6 +2,7 @@ package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
+import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -30,9 +31,9 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
         final CompoundNBT compound = stack.getTag();
         if (compound.contains("text", NBT.TAG_COMPOUND)) {
             final CompoundNBT text = compound.getCompound("text");
-            final String val = text.getString("value");
-            if (val.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.text", val));
+            final StyledString s = StyledString.deserialize(text);
+            if (s.length() > 0) {
+                tooltip.add(new TranslationTextComponent("format.text", s.toTextComponent()));
             }
         }
         if (compound.contains("pattern", NBT.TAG_LIST)) {
