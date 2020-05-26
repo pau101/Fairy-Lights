@@ -1,6 +1,6 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.*;
 
 /*
  * Based off of

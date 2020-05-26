@@ -1,19 +1,17 @@
 package me.paulf.fairylights.server.fastener.connection;
 
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandTinselConnection;
-import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandVineConnection;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
-import me.paulf.fairylights.server.fastener.connection.type.letter.LetterBuntingConnection;
-import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
-import me.paulf.fairylights.server.item.ConnectionItem;
-import me.paulf.fairylights.server.item.FLItems;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import me.paulf.fairylights.server.fastener.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.server.fastener.connection.type.garland.*;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
+import me.paulf.fairylights.server.fastener.connection.type.letter.*;
+import me.paulf.fairylights.server.fastener.connection.type.pennant.*;
+import me.paulf.fairylights.server.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
-import java.util.UUID;
+import java.util.*;
 
 public enum ConnectionType {
     HANGING_LIGHTS {

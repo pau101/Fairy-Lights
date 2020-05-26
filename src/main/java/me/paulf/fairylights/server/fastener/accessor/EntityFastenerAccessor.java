@@ -1,19 +1,15 @@
 package me.paulf.fairylights.server.fastener.accessor;
 
-import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.fastener.EntityFastener;
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import me.paulf.fairylights.server.capability.*;
+import me.paulf.fairylights.server.fastener.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import net.minecraft.entity.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.UUID;
+import javax.annotation.*;
+import java.util.*;
 
 public abstract class EntityFastenerAccessor<E extends Entity> implements FastenerAccessor {
     private final Class<? extends E> entityClass;

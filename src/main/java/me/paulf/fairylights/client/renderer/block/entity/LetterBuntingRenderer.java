@@ -1,23 +1,18 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.server.fastener.connection.Catenary;
-import me.paulf.fairylights.server.fastener.connection.type.letter.Letter;
-import me.paulf.fairylights.server.fastener.connection.type.letter.LetterBuntingConnection;
-import me.paulf.fairylights.util.Mth;
-import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import com.mojang.blaze3d.matrix.*;
+import com.mojang.blaze3d.vertex.*;
+import it.unimi.dsi.fastutil.ints.*;
+import me.paulf.fairylights.*;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.type.letter.*;
+import me.paulf.fairylights.util.*;
+import me.paulf.fairylights.util.styledstring.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
 
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 
 public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConnection> {
     public static final Int2ObjectMap<ResourceLocation> MODELS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&!?".chars()
@@ -39,7 +34,8 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
         if (currLetters == null || prevLetters == null) {
             return;
         }
-        final int count = Math.min(currLetters.length, prevLetters.length);;
+        final int count = Math.min(currLetters.length, prevLetters.length);
+        ;
         if (count == 0) {
             return;
         }

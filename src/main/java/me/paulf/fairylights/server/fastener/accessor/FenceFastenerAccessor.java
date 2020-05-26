@@ -1,8 +1,7 @@
 package me.paulf.fairylights.server.fastener.accessor;
 
-import me.paulf.fairylights.server.entity.FenceFastenerEntity;
-import me.paulf.fairylights.server.fastener.EntityFastener;
-import me.paulf.fairylights.server.fastener.FastenerType;
+import me.paulf.fairylights.server.entity.*;
+import me.paulf.fairylights.server.fastener.*;
 
 public final class FenceFastenerAccessor extends EntityFastenerAccessor<FenceFastenerEntity> {
     public FenceFastenerAccessor() {

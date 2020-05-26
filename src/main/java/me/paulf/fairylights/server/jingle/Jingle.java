@@ -1,15 +1,13 @@
 package me.paulf.fairylights.server.jingle;
 
-import com.google.common.base.Strings;
-import com.google.common.primitives.UnsignedBytes;
-import me.paulf.fairylights.util.NBTSerializable;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import com.google.common.base.*;
+import com.google.common.primitives.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.nbt.*;
+import net.minecraftforge.common.util.Constants.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
 public final class Jingle implements NBTSerializable {
     private static final Pattern LOWER_UNDERSCORE_CASE = Pattern.compile("[a-z0-9]+(_[a-z0-9]+)*");

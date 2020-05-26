@@ -1,13 +1,10 @@
 package me.paulf.fairylights.client.midi;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.util.Mth;
-import net.minecraft.client.Minecraft;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.client.*;
 
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
+import javax.sound.midi.*;
 
 public final class MidiJingler implements Receiver {
     private HangingLightsConnection connection;

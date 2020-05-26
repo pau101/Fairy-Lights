@@ -1,19 +1,16 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import me.paulf.fairylights.server.fastener.accessor.*;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraftforge.common.capabilities.*;
 
-import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.UUID;
+import javax.annotation.*;
+import java.util.*;
 
 public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<CompoundNBT> {
     @Override

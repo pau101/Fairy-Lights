@@ -1,33 +1,25 @@
 package me.paulf.fairylights.server.integration.jei;
 
-import com.google.common.collect.ImmutableList;
-import me.paulf.fairylights.util.Mth;
-import me.paulf.fairylights.util.crafting.GenericRecipe;
-import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
-import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
-import mezz.jei.api.gui.ingredient.ITooltipCallback;
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IFocus;
-import mezz.jei.api.recipe.IFocus.Mode;
-import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICustomCraftingCategoryExtension;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.Size2i;
+import com.google.common.collect.*;
+import me.paulf.fairylights.util.*;
+import me.paulf.fairylights.util.crafting.*;
+import me.paulf.fairylights.util.crafting.ingredient.*;
+import mezz.jei.api.constants.*;
+import mezz.jei.api.gui.*;
+import mezz.jei.api.gui.ingredient.*;
+import mezz.jei.api.ingredients.*;
+import mezz.jei.api.recipe.*;
+import mezz.jei.api.recipe.IFocus.*;
+import mezz.jei.api.recipe.category.extensions.vanilla.crafting.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.inventory.*;
+import net.minecraft.inventory.container.*;
+import net.minecraft.item.*;
+import net.minecraftforge.common.util.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtension {
     private final GenericRecipe recipe;
@@ -49,12 +41,12 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         final ImmutableList.Builder<ImmutableList<ItemStack>> minimalInputStacks = ImmutableList.builder();
         final RegularIngredient[] ingredients = recipe.getGenericIngredients();
         final AuxiliaryIngredient<?>[] aux = recipe.getAuxiliaryIngredients();
-		this.ingredientMatrix = new Ingredient<?, ?>[9];
+        this.ingredientMatrix = new Ingredient<?, ?>[9];
         int subtypeIndex = -1;
         for (int i = 0, auxIdx = 0; i < 9; i++) {
             final int x = i % 3;
-			final int y = i / 3;
-			boolean isEmpty = true;
+            final int y = i / 3;
+            boolean isEmpty = true;
             if (x < recipe.getWidth() && y < recipe.getHeight()) {
                 final RegularIngredient ingredient = ingredients[x + y * recipe.getWidth()];
                 final ImmutableList<ItemStack> ingInputs = ingredient.getInputs();
@@ -65,7 +57,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
                     } else {
                         minimalInputStacks.add(ImmutableList.of(ingInputs.get(0)));
                     }
-					this.ingredientMatrix[i] = ingredient;
+                    this.ingredientMatrix[i] = ingredient;
                     allInputs.add(ingInputs);
                     isEmpty = false;
                 }
@@ -91,7 +83,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
                     ingredient = null;
                 }
                 minimalInputStacks.add(stacks.isEmpty() || dictator ? stacks : ImmutableList.of(stacks.get(0)));
-				this.ingredientMatrix[i] = ingredient;
+                this.ingredientMatrix[i] = ingredient;
                 allInputs.add(stacks);
             }
         }
@@ -99,7 +91,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         this.minimalInputStacks = minimalInputStacks.build();
         this.subtypeIndex = subtypeIndex;
         final ImmutableList.Builder<ItemStack> outputs = ImmutableList.builder();
-		this.forOutputMatches((v, output) -> outputs.add(output));
+        this.forOutputMatches((v, output) -> outputs.add(output));
         this.outputs = outputs.build();
     }
 
@@ -152,8 +144,8 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         final AuxiliaryIngredient<?>[] aux = this.recipe.getAuxiliaryIngredients();
         for (int i = 0, auxIngIdx = 0, auxIdx = 0; i < 9; i++) {
             final int x = i % 3;
-			final int y = i / 3;
-			final ImmutableList<ImmutableList<ItemStack>> ingInputs;
+            final int y = i / 3;
+            final ImmutableList<ImmutableList<ItemStack>> ingInputs;
             Ingredient<?, ?> ingredient = null;
             if (x < this.recipe.getWidth() && y < this.recipe.getHeight()) {
                 ingredient = ingredients[x + y * this.recipe.getWidth()];
@@ -228,7 +220,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
                     final List<ItemStack> stacks = this.allInputs.get(n);
                     inputs.add(i == n ? Collections.singletonList(matched) : stacks.isEmpty() ? Collections.singletonList(ItemStack.EMPTY) : stacks);
                 }
-				return new Input(inputs, this.ingredientMatrix);
+                return new Input(inputs, this.ingredientMatrix);
             }
         }
         return null;

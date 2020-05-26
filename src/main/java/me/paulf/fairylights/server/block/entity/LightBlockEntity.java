@@ -1,23 +1,18 @@
 package me.paulf.fairylights.server.block.entity;
 
-import me.paulf.fairylights.server.block.LightBlock;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.item.LightItem;
-import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.server.sound.FLSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import me.paulf.fairylights.server.block.*;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
+import me.paulf.fairylights.server.item.*;
+import me.paulf.fairylights.server.sound.*;
+import net.minecraft.block.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.network.play.server.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
 public class LightBlockEntity extends TileEntity {
     private final Light light;

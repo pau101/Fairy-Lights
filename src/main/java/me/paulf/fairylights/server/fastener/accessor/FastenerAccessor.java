@@ -1,10 +1,9 @@
 package me.paulf.fairylights.server.fastener.accessor;
 
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.FastenerType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import me.paulf.fairylights.server.fastener.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
 public interface FastenerAccessor {
     Fastener<?> get(World world);

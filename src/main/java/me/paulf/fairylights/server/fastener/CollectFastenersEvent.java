@@ -1,15 +1,14 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.capability.CapabilityHandler;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.eventbus.api.Event;
+import me.paulf.fairylights.server.capability.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraft.world.chunk.*;
+import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.eventbus.api.*;
 
-import java.util.ConcurrentModificationException;
-import java.util.Set;
+import java.util.*;
 
 public class CollectFastenersEvent extends Event {
     private final World world;

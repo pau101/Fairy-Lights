@@ -1,15 +1,13 @@
 package me.paulf.fairylights.server.net.clientbound;
 
-import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.Lettered;
-import me.paulf.fairylights.server.net.ConnectionMessage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import me.paulf.fairylights.client.gui.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.server.net.*;
+import net.minecraft.client.*;
+import net.minecraft.network.*;
+import net.minecraftforge.fml.network.*;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class OpenEditLetteredConnectionScreenMessage<C extends Connection & Lettered> extends ConnectionMessage<C> {
     public OpenEditLetteredConnectionScreenMessage() {}

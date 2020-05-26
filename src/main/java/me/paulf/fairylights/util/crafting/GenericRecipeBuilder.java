@@ -1,26 +1,16 @@
 package me.paulf.fairylights.util.crafting;
 
-import com.google.common.base.Strings;
-import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.InertOreAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.ListRegularIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.OreRegularIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
+import com.google.common.base.*;
+import me.paulf.fairylights.util.crafting.ingredient.*;
+import net.minecraft.block.*;
+import net.minecraft.item.*;
+import net.minecraft.item.crafting.*;
+import net.minecraft.tags.*;
+import net.minecraft.util.*;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.*;
 import java.util.Objects;
+import java.util.*;
 
 public final class GenericRecipeBuilder {
     private static final char EMPTY_SPACE = ' ';

@@ -1,60 +1,38 @@
 package me.paulf.fairylights.client;
 
-import com.google.common.collect.Sets;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
-import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.entity.FenceFastenerEntity;
-import me.paulf.fairylights.server.fastener.CollectFastenersEvent;
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.FastenerType;
-import me.paulf.fairylights.server.fastener.connection.Catenary;
-import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.collision.Collidable;
-import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
-import me.paulf.fairylights.server.jingle.Jingle;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.client.event.DrawHighlightEvent;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import com.google.common.collect.*;
+import com.mojang.blaze3d.matrix.*;
+import com.mojang.blaze3d.vertex.*;
+import me.paulf.fairylights.server.block.entity.*;
+import me.paulf.fairylights.server.capability.*;
+import me.paulf.fairylights.server.entity.*;
+import me.paulf.fairylights.server.fastener.*;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.collision.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
+import me.paulf.fairylights.server.jingle.*;
+import net.minecraft.client.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.entity.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.network.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraft.world.chunk.*;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.common.*;
+import net.minecraftforge.event.*;
+import net.minecraftforge.event.world.*;
+import net.minecraftforge.eventbus.api.*;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
+import javax.annotation.*;
+import java.util.*;
+import java.util.stream.*;
 
 public final class ClientEventHandler {
 
@@ -83,7 +61,7 @@ public final class ClientEventHandler {
         final Minecraft mc = Minecraft.getInstance();
         final World world = mc.world;
         if (event.phase != TickEvent.Phase.START && world != null && !mc.isGamePaused()) {
-			this.getBlockEntities(world).stream()
+            this.getBlockEntities(world).stream()
                 .filter(FastenerBlockEntity.class::isInstance)
                 .map(FastenerBlockEntity.class::cast)
                 .flatMap(f -> f.getCapability(CapabilityHandler.FASTENER_CAP).map(Stream::of).orElse(Stream.empty()))
@@ -254,8 +232,8 @@ public final class ClientEventHandler {
                     matrix.push();
                     final Vec3d p = hit.result.connection.getFastener().getConnectionPoint();
                     matrix.translate(p.x - dx, p.y - dy, p.z - dz);
-					this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.getLines()));
-					matrix.pop();
+                    this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.getLines()));
+                    matrix.pop();
                 } else {
                     final AxisAlignedBB aabb = hit.result.intersection.getHitBox().offset(-dx, -dy, -dz).grow(0.002);
                     WorldRenderer.drawBoundingBox(event.getMatrix(), buf.getBuffer(RenderType.getLines()), aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
@@ -295,7 +273,7 @@ public final class ClientEventHandler {
                 v2.set(-cat.getDx(i), -cat.getDy(i), -cat.getDz(i));
                 v2.normalize();
                 this.addVertex(matrix, buf, edge, p, v1, v2, r);
-				this.addVertex(matrix, buf, edge, p, v1, v2, r);
+                this.addVertex(matrix, buf, edge, p, v1, v2, r);
                 v1.set(-v2.getX(), -v2.getY(), -v2.getZ());
             }
             p.set(cat.getX(), cat.getY(), cat.getZ());
@@ -340,26 +318,26 @@ public final class ClientEventHandler {
 
         private HitConnection(final World world) {
             super(EntityType.ITEM, world);
-			this.setEntityId(-1);
+            this.setEntityId(-1);
         }
 
         @Override
         public boolean attackEntityFrom(final DamageSource source, final float amount) {
-			this.processAction(PlayerAction.ATTACK);
+            this.processAction(PlayerAction.ATTACK);
             return false;
         }
 
         @Override
         public boolean processInitialInteract(final PlayerEntity player, final Hand hand) {
             if (hand == Hand.MAIN_HAND) {
-				this.processAction(PlayerAction.INTERACT);
+                this.processAction(PlayerAction.INTERACT);
             }
             return false;
         }
 
         private void processAction(final PlayerAction action) {
             if (this.result != null) {
-				this.result.connection.processClientAction(Minecraft.getInstance().player, action, this.result.intersection);
+                this.result.connection.processClientAction(Minecraft.getInstance().player, action, this.result.intersection);
             }
         }
 

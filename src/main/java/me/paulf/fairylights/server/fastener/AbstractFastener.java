@@ -1,35 +1,24 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.fastener.connection.Catenary;
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.util.AABBBuilder;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
+import me.paulf.fairylights.server.capability.*;
+import me.paulf.fairylights.server.fastener.accessor.*;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.entity.item.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.util.Constants.*;
+import net.minecraftforge.common.util.*;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
+import javax.annotation.*;
+import java.util.*;
+import java.util.Map.*;
 
 public abstract class AbstractFastener<F extends FastenerAccessor> implements Fastener<F> {
     protected Map<UUID, Connection> connections = new HashMap<>();

@@ -1,9 +1,8 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import me.paulf.fairylights.util.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.model.*;
 
 public class JackOLanternLightModel extends LightModel {
     public JackOLanternLightModel() {

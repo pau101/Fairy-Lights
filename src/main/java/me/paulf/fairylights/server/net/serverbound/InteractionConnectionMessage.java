@@ -1,22 +1,19 @@
 package me.paulf.fairylights.server.net.serverbound;
 
-import me.paulf.fairylights.server.fastener.connection.FeatureType;
-import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.net.ConnectionMessage;
-import me.paulf.fairylights.util.Utils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.network.NetworkEvent;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.collision.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.server.net.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.network.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraftforge.event.*;
+import net.minecraftforge.fml.network.*;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public final class InteractionConnectionMessage extends ConnectionMessage<Connection> {
     private static final float RANGE = (Connection.MAX_LENGTH + 1) * (Connection.MAX_LENGTH + 1);

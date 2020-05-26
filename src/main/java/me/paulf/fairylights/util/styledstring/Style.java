@@ -1,6 +1,6 @@
 package me.paulf.fairylights.util.styledstring;
 
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 
 public final class Style implements Comparable<Style> {
     private static final int COLOR_MASK = 0xF;

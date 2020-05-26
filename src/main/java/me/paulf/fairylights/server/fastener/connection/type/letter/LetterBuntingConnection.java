@@ -1,33 +1,26 @@
 package me.paulf.fairylights.server.fastener.connection.type.letter;
 
-import com.google.common.base.MoreObjects;
-import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.connection.Catenary;
+import com.google.common.base.*;
+import me.paulf.fairylights.*;
+import me.paulf.fairylights.client.gui.*;
+import me.paulf.fairylights.server.fastener.*;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.Lettered;
-import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
-import me.paulf.fairylights.util.styledstring.StyledString;
-import me.paulf.fairylights.util.styledstring.StylingPresence;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.PacketDistributor;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.collision.*;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.server.net.clientbound.*;
+import me.paulf.fairylights.util.styledstring.*;
+import net.minecraft.client.gui.screen.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraftforge.api.distmarker.*;
+import net.minecraftforge.fml.network.*;
 
-import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.text.*;
+import java.util.*;
 import java.util.function.Function;
 
 public final class LetterBuntingConnection extends Connection implements Lettered {

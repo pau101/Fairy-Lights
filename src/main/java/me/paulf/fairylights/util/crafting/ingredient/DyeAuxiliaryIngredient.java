@@ -1,11 +1,11 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import com.google.common.collect.ImmutableList;
-import me.paulf.fairylights.util.OreDictUtils;
-import me.paulf.fairylights.util.crafting.GenericRecipe;
-import net.minecraft.item.ItemStack;
+import com.google.common.collect.*;
+import me.paulf.fairylights.util.*;
+import me.paulf.fairylights.util.crafting.*;
+import net.minecraft.item.*;
 
-import java.util.Collections;
+import java.util.*;
 
 public abstract class DyeAuxiliaryIngredient<A> implements AuxiliaryIngredient<A> {
     private final boolean isRequired;

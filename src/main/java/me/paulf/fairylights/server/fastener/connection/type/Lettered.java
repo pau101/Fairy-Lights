@@ -1,14 +1,13 @@
 package me.paulf.fairylights.server.fastener.connection.type;
 
-import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
-import me.paulf.fairylights.util.styledstring.StyledString;
-import me.paulf.fairylights.util.styledstring.StylingPresence;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.collision.*;
+import me.paulf.fairylights.util.styledstring.*;
+import net.minecraft.client.*;
+import net.minecraft.client.gui.screen.*;
+import net.minecraft.entity.player.*;
 
-import java.util.function.Function;
+import java.util.function.*;
 
 public interface Lettered {
     default StylingPresence getSupportedStyling() {

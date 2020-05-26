@@ -1,18 +1,14 @@
 package me.paulf.fairylights.client.model.light;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.util.AABBBuilder;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import com.mojang.blaze3d.matrix.*;
+import com.mojang.blaze3d.vertex.*;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.util.math.*;
 
-import javax.annotation.Nullable;
+import javax.annotation.*;
 
 public abstract class LightModel extends Model {
     protected final ModelRenderer lit;
@@ -87,7 +83,7 @@ public abstract class LightModel extends Model {
         final float r21 = -2.0F * (q.getX() * q.getZ() - q.getW() * q.getY());
         final float r31 = 2.0F * (q.getY() * q.getZ() + q.getW() * q.getX());
         final float r32 = q.getW() * q.getW() - q.getX() * q.getX() - q.getY() * q.getY() + q.getZ() * q.getZ();
-        return new float[] {
+        return new float[]{
             (float) MathHelper.atan2(r31, r32),
             (float) Math.asin(r21),
             (float) MathHelper.atan2(r11, r12)

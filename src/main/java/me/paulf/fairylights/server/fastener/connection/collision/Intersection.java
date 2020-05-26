@@ -1,9 +1,7 @@
 package me.paulf.fairylights.server.fastener.connection.collision;
 
-import me.paulf.fairylights.server.fastener.connection.Feature;
-import me.paulf.fairylights.server.fastener.connection.FeatureType;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import me.paulf.fairylights.server.fastener.connection.*;
+import net.minecraft.util.math.*;
 
 public final class Intersection {
     private final Vec3d result;

@@ -1,15 +1,10 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
-import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.fastener.accessor.FenceFastenerAccessor;
-import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
-import net.minecraft.nbt.CompoundNBT;
+import me.paulf.fairylights.server.fastener.accessor.*;
+import net.minecraft.nbt.*;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 
 public enum FastenerType {
     BLOCK(BlockFastenerAccessor::new),

@@ -1,13 +1,11 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.util.Utils;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraft.util.text.*;
 
 public final class TinselConnectionItem extends ConnectionItem {
     public TinselConnectionItem(final Properties properties) {

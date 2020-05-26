@@ -1,9 +1,8 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.util.matrix.Matrix;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import me.paulf.fairylights.util.matrix.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
 public interface BlockView {
     boolean isMoving(final World world, final BlockPos source);

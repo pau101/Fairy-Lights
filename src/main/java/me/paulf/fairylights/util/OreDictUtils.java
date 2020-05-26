@@ -1,15 +1,11 @@
 package me.paulf.fairylights.util;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMultimap;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
-import net.minecraftforge.common.Tags;
+import com.google.common.collect.*;
+import net.minecraft.item.*;
+import net.minecraft.tags.*;
+import net.minecraftforge.common.*;
 
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 public final class OreDictUtils {
     private OreDictUtils() {}
@@ -78,7 +74,7 @@ public final class OreDictUtils {
 
         Dye(final Tag<Item> name, final DyeColor color) {
             this.name = name;
-			this.color = color;
+            this.color = color;
         }
 
         private Tag<Item> getName() {

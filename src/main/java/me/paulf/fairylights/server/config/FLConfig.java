@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.*;
 
 public final class FLConfig {
     private FLConfig() {}

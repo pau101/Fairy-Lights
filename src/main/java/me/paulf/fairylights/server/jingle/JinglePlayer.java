@@ -1,21 +1,17 @@
 package me.paulf.fairylights.server.jingle;
 
-import com.google.common.collect.Sets;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.sound.FLSounds;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import com.google.common.collect.*;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
+import me.paulf.fairylights.server.sound.*;
+import net.minecraft.nbt.*;
+import net.minecraft.particles.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import javax.annotation.*;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 public final class JinglePlayer {
     private static final Set<String> WITH_LOVE = Sets.newHashSet("my_anthem", "im_fine_thank_you");

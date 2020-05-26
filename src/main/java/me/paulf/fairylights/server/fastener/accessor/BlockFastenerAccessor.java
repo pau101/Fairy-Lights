@@ -1,16 +1,13 @@
 package me.paulf.fairylights.server.fastener.accessor;
 
-import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.fastener.BlockFastener;
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.FastenerType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import me.paulf.fairylights.server.capability.*;
+import me.paulf.fairylights.server.fastener.*;
+import net.minecraft.nbt.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
-import javax.annotation.Nullable;
+import javax.annotation.*;
 
 public final class BlockFastenerAccessor implements FastenerAccessor {
     private BlockPos pos = BlockPos.ZERO;

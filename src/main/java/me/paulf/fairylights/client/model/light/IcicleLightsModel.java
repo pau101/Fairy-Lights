@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.model.*;
 
 public class IcicleLightsModel extends LightModel {
     public IcicleLightsModel(final int lights) {

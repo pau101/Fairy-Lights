@@ -1,15 +1,14 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
-import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.fastener.BlockView;
-import me.paulf.fairylights.util.matrix.Matrix;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.Vec3d;
+import com.mojang.blaze3d.platform.*;
+import me.paulf.fairylights.server.block.entity.*;
+import me.paulf.fairylights.server.capability.*;
+import me.paulf.fairylights.server.fastener.*;
+import me.paulf.fairylights.util.matrix.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.tileentity.*;
+import net.minecraft.util.math.*;
 
 public final class FastenerBlockEntityRenderer extends TileEntityRenderer<FastenerBlockEntity> {
     private final BlockView view;

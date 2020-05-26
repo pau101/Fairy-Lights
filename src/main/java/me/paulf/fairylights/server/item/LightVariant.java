@@ -1,21 +1,17 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
-import me.paulf.fairylights.util.Utils;
-import me.paulf.fairylights.util.crafting.GenericRecipe;
-import me.paulf.fairylights.util.crafting.GenericRecipeBuilder;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.RegistryObject;
+import me.paulf.fairylights.server.item.crafting.*;
+import me.paulf.fairylights.util.*;
+import me.paulf.fairylights.util.crafting.*;
+import net.minecraft.block.*;
+import net.minecraft.item.*;
+import net.minecraft.item.crafting.*;
+import net.minecraft.tags.*;
+import net.minecraft.util.*;
+import net.minecraftforge.common.*;
+import net.minecraftforge.fml.*;
 
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 
 public enum LightVariant {
     FAIRY("fairy_light", () -> FLItems.FAIRY_LIGHT, true, 5, 5, b -> b

@@ -1,13 +1,12 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import com.google.common.collect.Multimap;
-import me.paulf.fairylights.util.Utils;
-import me.paulf.fairylights.util.crafting.GenericRecipe;
-import net.minecraft.item.ItemStack;
+import com.google.common.collect.*;
+import me.paulf.fairylights.util.*;
+import me.paulf.fairylights.util.crafting.*;
+import net.minecraft.item.*;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.List;
+import javax.annotation.*;
+import java.util.*;
 
 public interface AuxiliaryIngredient<A> extends Ingredient<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> {
     boolean isRequired();

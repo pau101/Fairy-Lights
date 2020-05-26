@@ -1,14 +1,13 @@
 package me.paulf.fairylights.server.block;
 
-import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.server.item.LightVariant;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import me.paulf.fairylights.*;
+import me.paulf.fairylights.server.item.*;
+import net.minecraft.block.*;
+import net.minecraft.block.material.*;
+import net.minecraftforge.fml.*;
+import net.minecraftforge.registries.*;
 
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public final class FLBlocks {
     private FLBlocks() {}

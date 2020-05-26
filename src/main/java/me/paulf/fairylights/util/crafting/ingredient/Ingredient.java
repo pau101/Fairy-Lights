@@ -1,15 +1,11 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import com.google.common.collect.ImmutableList;
-import me.paulf.fairylights.util.crafting.GenericRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import com.google.common.collect.*;
+import me.paulf.fairylights.util.crafting.*;
+import net.minecraft.item.*;
+import net.minecraft.util.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public interface Ingredient<I extends Ingredient, M extends GenericRecipe.MatchResult<I, M>> {
     /**

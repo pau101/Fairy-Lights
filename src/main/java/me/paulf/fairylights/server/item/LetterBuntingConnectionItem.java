@@ -1,19 +1,16 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.util.styledstring.*;
+import net.minecraft.client.util.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraft.util.text.*;
+import net.minecraft.world.*;
+import net.minecraftforge.common.util.Constants.*;
 
-import java.util.List;
+import java.util.*;
 
 public class LetterBuntingConnectionItem extends ConnectionItem {
     public LetterBuntingConnectionItem(final Item.Properties properties) {

@@ -1,15 +1,11 @@
 package me.paulf.fairylights.server.capability;
 
-import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.server.fastener.Fastener;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import me.paulf.fairylights.*;
+import me.paulf.fairylights.server.fastener.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.capabilities.Capability.*;
 
 public final class CapabilityHandler {
     private CapabilityHandler() {}

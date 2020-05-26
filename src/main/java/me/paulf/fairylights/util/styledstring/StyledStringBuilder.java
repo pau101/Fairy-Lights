@@ -1,9 +1,6 @@
 package me.paulf.fairylights.util.styledstring;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class StyledStringBuilder implements Appendable, CharSequence {
     private final StringBuilder strBldr;

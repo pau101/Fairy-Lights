@@ -1,10 +1,9 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 
-import java.util.Objects;
-import java.util.function.ToIntFunction;
+import java.util.*;
+import java.util.function.*;
 
 public final class Mth {
     private Mth() {}

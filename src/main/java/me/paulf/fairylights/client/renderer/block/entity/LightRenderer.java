@@ -1,34 +1,18 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.client.ClientProxy;
-import me.paulf.fairylights.client.model.light.FairyLightModel;
-import me.paulf.fairylights.client.model.light.FlowerLightModel;
-import me.paulf.fairylights.client.model.light.GhostLightModel;
-import me.paulf.fairylights.client.model.light.IcicleLightsModel;
-import me.paulf.fairylights.client.model.light.JackOLanternLightModel;
-import me.paulf.fairylights.client.model.light.LightModel;
-import me.paulf.fairylights.client.model.light.MeteorLightModel;
-import me.paulf.fairylights.client.model.light.OilLanternModel;
-import me.paulf.fairylights.client.model.light.OrbLanternModel;
-import me.paulf.fairylights.client.model.light.OrnateLanternModel;
-import me.paulf.fairylights.client.model.light.PaperLanternModel;
-import me.paulf.fairylights.client.model.light.SkullLightModel;
-import me.paulf.fairylights.client.model.light.SnowflakeLightModel;
-import me.paulf.fairylights.client.model.light.SpiderLightModel;
-import me.paulf.fairylights.client.model.light.WitchLightModel;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.util.Mth;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
+import com.google.common.collect.*;
+import com.mojang.blaze3d.matrix.*;
+import com.mojang.blaze3d.vertex.*;
+import me.paulf.fairylights.client.*;
+import me.paulf.fairylights.client.model.light.*;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
+import me.paulf.fairylights.server.item.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.client.renderer.*;
 
-import java.util.EnumMap;
-import java.util.function.BiFunction;
-import java.util.stream.IntStream;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 public class LightRenderer {
     private final LightModelProvider defaultLight = LightModelProvider.of(new FairyLightModel());

@@ -1,19 +1,15 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.client.ClientProxy;
-import me.paulf.fairylights.server.fastener.connection.Catenary;
-import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandVineConnection;
-import me.paulf.fairylights.util.Mth;
-import me.paulf.fairylights.util.RandomArray;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.*;
+import com.mojang.blaze3d.vertex.*;
+import me.paulf.fairylights.client.*;
+import me.paulf.fairylights.server.fastener.connection.*;
+import me.paulf.fairylights.server.fastener.connection.type.garland.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.model.*;
 
-import java.util.stream.IntStream;
+import java.util.stream.*;
 
 public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnection> {
     private static final int RING_COUNT = 7;

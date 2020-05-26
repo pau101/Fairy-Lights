@@ -1,13 +1,10 @@
 package me.paulf.fairylights.server.fastener.connection;
 
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.util.CatenaryUtils;
-import me.paulf.fairylights.util.CubicBezier;
-import me.paulf.fairylights.util.Mth;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.util.math.*;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public final class Catenary {
     private static final int MIN_VERTEX_COUNT = 8;
@@ -217,6 +214,7 @@ public final class Catenary {
             }
         };
     }
+
     public interface SegmentIterator extends SegmentView {
         boolean hasNext();
 
@@ -271,7 +269,7 @@ public final class Catenary {
         final float vx = MathHelper.cos(angle);
         final float vz = MathHelper.sin(angle);
         if (dir.length() > 2.0F * Connection.MAX_LENGTH) {
-            return new Catenary(2, angle, vx, vz, new float[] { 0.0F, endX }, new float[] { 0.0F, endY }, MathHelper.sqrt(endX * endX + endY * endY));
+            return new Catenary(2, angle, vx, vz, new float[]{0.0F, endX}, new float[]{0.0F, endY}, MathHelper.sqrt(endX * endX + endY * endY));
         }
         final int count = Math.max((int) (ropeLength * CatenaryUtils.SEG_LENGTH), MIN_VERTEX_COUNT);
         final float[] x = new float[count];

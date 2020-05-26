@@ -1,15 +1,14 @@
 package me.paulf.fairylights.client.renderer.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.server.entity.FenceFastenerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.LightType;
+import com.mojang.blaze3d.matrix.*;
+import me.paulf.fairylights.*;
+import me.paulf.fairylights.server.entity.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
 public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEntity> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/mjolnir.png");

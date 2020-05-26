@@ -1,11 +1,10 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.resources.*;
+import net.minecraft.item.*;
+import net.minecraft.util.text.*;
 
-import java.util.Objects;
+import java.util.*;
 
 public final class Utils {
     private Utils() {}

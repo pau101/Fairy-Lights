@@ -1,10 +1,9 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
+import javax.annotation.*;
+import java.util.*;
 
 public class InertListAuxiliaryIngredient extends ListAuxiliaryIngredient<Void> {
     public InertListAuxiliaryIngredient(final boolean isRequired, final int limit, final AuxiliaryIngredient<?>... ingredients) {
