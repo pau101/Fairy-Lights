@@ -1,8 +1,8 @@
 package me.paulf.fairylights.server.fastener.connection.type.letter;
 
-import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
-import me.paulf.fairylights.util.styledstring.Style;
-import net.minecraft.util.math.Vec3d;
+import me.paulf.fairylights.server.fastener.connection.type.*;
+import me.paulf.fairylights.util.styledstring.*;
+import net.minecraft.util.math.*;
 
 public final class Letter extends HangingFeature<Letter> {
     private final SymbolSet symbols;

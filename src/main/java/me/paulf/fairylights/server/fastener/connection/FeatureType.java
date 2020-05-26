@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.fastener.connection;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.DefaultedRegistry;
+import net.minecraft.util.*;
+import net.minecraft.util.registry.*;
 
 public final class FeatureType {
     private static final DefaultedRegistry<FeatureType> REGISTRY = new DefaultedRegistry<>("");

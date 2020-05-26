@@ -1,9 +1,9 @@
 package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 
-import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.util.NBTSerializable;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
+import me.paulf.fairylights.server.item.*;
+import me.paulf.fairylights.util.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
 
 public final class ColoredLightVariant implements NBTSerializable {
     private LightVariant variant;
