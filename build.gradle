@@ -1,102 +1,102 @@
 buildscript {
-	repositories {
-		maven {
-			url "http://files.minecraftforge.net/maven"
-		}
-		jcenter()
-		mavenCentral()
-	}
-	dependencies {
-		classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
-	}
+    repositories {
+        maven {
+            url 'http://files.minecraftforge.net/maven'
+        }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
 }
 
-apply plugin: "net.minecraftforge.gradle"
+apply plugin: 'net.minecraftforge.gradle'
 
-version = "2.1.15"
-group = "me.paulf.fairylights"
-archivesBaseName = "fairylights"
+version = '2.1.15'
+group = 'me.paulf.fairylights'
+archivesBaseName = 'fairylights'
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    mappings channel: "snapshot", version: "20200514-1.15.1"
-	runs {
-		client {
-			workingDirectory project.file("run")
-			property "forge.logging.markers", "REGISTRIES,REGISTRYDUMP"
-			property "forge.logging.console.level", "debug"
-			args '--width', '1280', '--height', '720'
-			mods {
-				fairylights {
-					source sourceSets.main
-				}
-			}
-		}
-		server {
-			workingDirectory project.file("run")
-			property "forge.logging.markers", "REGISTRIES,REGISTRYDUMP"
-			property "forge.logging.console.level", "debug"
-			mods {
-				fairylights {
-					source sourceSets.main
-				}
-			}
-		}
-		data {
-			workingDirectory project.file('run')
-			property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
-			property 'forge.logging.console.level', 'debug'
-			args '--mod', 'fairylights', '--all', '--output', file('src/generated/resources/')
-			mods {
-				fairylights {
-					source sourceSets.main
-				}
-			}
-		}
-	}
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            args '--width', '1280', '--height', '720'
+            mods {
+                fairylights {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                fairylights {
+                    source sourceSets.main
+                }
+            }
+        }
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'fairylights', '--all', '--output', file('src/generated/resources/')
+            mods {
+                fairylights {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
 jar {
-	classifier "1.15.2"
-	exclude ".cache"
+    classifier '1.15.2'
+    exclude '.cache'
 }
 
 sourceSets {
-	main {
-		resources {
-			srcDirs += "src/generated/resources"
-		}
-	}
+    main {
+        resources {
+            srcDirs += 'src/generated/resources'
+        }
+    }
 }
 
 repositories {
-	maven {
-		name = "Progwml6 maven"
-		url = "https://dvs1.progwml6.com/files/maven/"
-	}
-	maven {
-		name = "ModMaven"
-		url = "https://modmaven.k-4u.nl"
-	}
+    maven {
+        name = 'Progwml6 maven'
+        url = 'https://dvs1.progwml6.com/files/maven/'
+    }
+    maven {
+        name = 'ModMaven'
+        url = 'https://modmaven.k-4u.nl'
+    }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.15.2-31.2.0"
-	compileOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4:api")
-	runtimeOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4")
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
+    compileOnly fg.deobf('mezz.jei:jei-1.15.2:6.0.0.4:api')
+    runtimeOnly fg.deobf('mezz.jei:jei-1.15.2:6.0.0.4')
 }
 
 processResources {
-	def vars = [
-		"version": project.version
-	]
-	inputs.properties(vars)
-	from (sourceSets.main.resources.srcDirs) {
-		include("META-INF/mods.toml")
-		expand(vars)
-	}
-	from (sourceSets.main.resources.srcDirs) {
-		exclude("META-INF/mods.toml")
-		exclude("**/*.xcf")
-	}
+    def vars = [
+        'version': project.version
+    ]
+    inputs.properties(vars)
+    from (sourceSets.main.resources.srcDirs) {
+        include('META-INF/mods.toml')
+        expand(vars)
+    }
+    from (sourceSets.main.resources.srcDirs) {
+        exclude('META-INF/mods.toml')
+        exclude('**/*.xcf')
+    }
 }
