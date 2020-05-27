@@ -11,13 +11,14 @@ import net.minecraft.util.*;
 import javax.annotation.*;
 import java.util.Objects;
 import java.util.*;
+import java.util.function.Supplier;
 
 public final class GenericRecipeBuilder {
     private static final char EMPTY_SPACE = ' ';
 
     private final ResourceLocation name;
 
-    private final IRecipeSerializer<GenericRecipe> serializer;
+    private final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer;
 
     @Nullable
     private ItemStack output;
@@ -32,20 +33,20 @@ public final class GenericRecipeBuilder {
 
     private final List<AuxiliaryIngredient> auxiliaryIngredients = new ArrayList<>();
 
-    public GenericRecipeBuilder(final ResourceLocation name, final IRecipeSerializer<GenericRecipe> serializer, final Item item) {
+    public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final Item item) {
         this(name, serializer, new ItemStack(item));
     }
 
-    public GenericRecipeBuilder(final ResourceLocation name, final IRecipeSerializer<GenericRecipe> serializer, final Block block) {
+    public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final Block block) {
         this(name, serializer, new ItemStack(block));
     }
 
-    public GenericRecipeBuilder(final ResourceLocation name, final IRecipeSerializer<GenericRecipe> serializer, final ItemStack output) {
+    public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output) {
         this(name, serializer);
         this.output = Objects.requireNonNull(output, "output");
     }
 
-    public GenericRecipeBuilder(final ResourceLocation name, final IRecipeSerializer<GenericRecipe> serializer) {
+    public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer) {
         this.name = name;
         this.serializer = serializer;
     }

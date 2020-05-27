@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.*;
 import me.paulf.fairylights.*;
 import me.paulf.fairylights.server.block.*;
 import me.paulf.fairylights.server.item.*;
+import me.paulf.fairylights.server.item.crafting.*;
 import me.paulf.fairylights.util.styledstring.*;
 import net.minecraft.block.*;
 import net.minecraft.data.*;
@@ -72,6 +73,26 @@ public final class DataGatherer {
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_vine", this.hasItem(Items.VINE))
                 .build(consumer);
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.FAIRY_LIGHTS.get()).build(consumer, new ResourceLocation(FairyLights.ID, "fairy_lights"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.FAIRY_LIGHTS_AUGMENTATION.get()).build(consumer, new ResourceLocation(FairyLights.ID, "fairy_lights_augmentation"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.TINSEL_GARLAND.get()).build(consumer, new ResourceLocation(FairyLights.ID, "tinsel_garland"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING.get()).build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING_AUGMENTATION.get()).build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting_augmentation"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "pennant"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.FAIRY_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "fairy_light"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.PAPER_LANTERN.get()).build(consumer, new ResourceLocation(FairyLights.ID, "paper_lantern"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.ORB_LANTERN.get()).build(consumer, new ResourceLocation(FairyLights.ID, "orb_lantern"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.FLOWER_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "flower_light"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.ORNATE_LANTERN.get()).build(consumer, new ResourceLocation(FairyLights.ID, "ornate_lantern"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.OIL_LANTERN.get()).build(consumer, new ResourceLocation(FairyLights.ID, "oil_lantern"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.JACK_O_LANTERN.get()).build(consumer, new ResourceLocation(FairyLights.ID, "jack_o_lantern"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.SKULL_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "skull_light"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.GHOST_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "ghost_light"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.SPIDER_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "spider_light"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.WITCH_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "witch_light"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.SNOWFLAKE_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "snowflake_light"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.ICICLE_LIGHTS.get()).build(consumer, new ResourceLocation(FairyLights.ID, "icicle_lights"));
+            CustomRecipeBuilder.customRecipe(FLCraftingRecipes.METEOR_LIGHT.get()).build(consumer, new ResourceLocation(FairyLights.ID, "meteor_light"));
         }
     }
 

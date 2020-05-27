@@ -1,129 +1,52 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.item.crafting.*;
 import me.paulf.fairylights.util.*;
-import me.paulf.fairylights.util.crafting.*;
-import net.minecraft.block.*;
 import net.minecraft.item.*;
-import net.minecraft.item.crafting.*;
-import net.minecraft.tags.*;
-import net.minecraft.util.*;
-import net.minecraftforge.common.*;
 import net.minecraftforge.fml.*;
 
 import java.util.function.*;
 
 public enum LightVariant {
-    FAIRY("fairy_light", () -> FLItems.FAIRY_LIGHT, true, 5, 5, b -> b
-        .withShape(" I ", "IDI", " G ")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS),
+    FAIRY("fairy_light", () -> FLItems.FAIRY_LIGHT, true, 5, 5,
         Placement.ONWARD
     ),
-    PAPER("paper_lantern", () -> FLItems.PAPER_LANTERN, false, 9, 16.5F, b -> b
-        .withShape(" I ", "PDP", "PPP")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('P', Items.PAPER),
+    PAPER("paper_lantern", () -> FLItems.PAPER_LANTERN, false, 9, 16.5F,
         Placement.UPRIGHT
     ),
-    ORB("orb_lantern", () -> FLItems.ORB_LANTERN, false, 10, 11.5F, b -> b
-        .withShape(" I ", "SDS", " W ")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('S', Items.STRING)
-        .withIngredient('W', Blocks.WHITE_WOOL),
+    ORB("orb_lantern", () -> FLItems.ORB_LANTERN, false, 10, 11.5F,
         Placement.UPRIGHT
     ),
-    FLOWER("flower_light", () -> FLItems.FLOWER_LIGHT, true, 10, 6, b -> b
-        .withShape(" I ", "RDB", " Y ")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('R', Blocks.POPPY)
-        .withIngredient('Y', Blocks.DANDELION)
-        .withIngredient('B', Blocks.BLUE_ORCHID),
+    FLOWER("flower_light", () -> FLItems.FLOWER_LIGHT, true, 10, 6,
         Placement.OUTWARD
     ),
-    ORNATE("ornate_lantern", () -> FLItems.ORNATE_LANTERN, false, 24, 8, 12, b -> b
-        .withShape(" I ", "GDG", "IGI")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('G', Tags.Items.NUGGETS_GOLD),
+    ORNATE("ornate_lantern", () -> FLItems.ORNATE_LANTERN, false, 24, 8, 12,
         Placement.UPRIGHT
     ),
-    OIL("oil_lantern", () -> FLItems.OIL_LANTERN, false, 32, 8, 13.5F, b -> b
-        .withShape(" I ", "SDS", "IGI")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('S', Items.STICK)
-        .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS),
+    OIL("oil_lantern", () -> FLItems.OIL_LANTERN, false, 32, 8, 13.5F,
         Placement.UPRIGHT
     ),
-    JACK_O_LANTERN("jack_o_lantern", () -> FLItems.JACK_O_LANTERN, true, 7, 9, b -> b
-        .withShape(" I ", "SDS", "GPG")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('S', ItemTags.WOODEN_SLABS)
-        .withIngredient('G', Blocks.TORCH)
-        .withIngredient('P', Blocks.PUMPKIN),
+    JACK_O_LANTERN("jack_o_lantern", () -> FLItems.JACK_O_LANTERN, true, 7, 9,
         Placement.UPRIGHT
     ),
-    SKULL("skull_light", () -> FLItems.SKULL_LIGHT, true, 6, 9, b -> b
-        .withShape(" I ", "IDI", " B ")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withAnyIngredient('B', Items.BONE, new ItemStack(Items.SKELETON_SKULL)),
+    SKULL("skull_light", () -> FLItems.SKULL_LIGHT, true, 6, 9,
         Placement.UPRIGHT
     ),
-    GHOST("ghost_light", () -> FLItems.GHOST_LIGHT, true, 6, 8, b -> b
-        .withShape(" I ", "PDP", "IGI")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('P', Items.PAPER)
-        .withIngredient('G', Tags.Items.GLASS_PANES_WHITE),
+    GHOST("ghost_light", () -> FLItems.GHOST_LIGHT, true, 6, 8,
         Placement.UPRIGHT
     ),
-    SPIDER("spider_light", () -> FLItems.SPIDER_LIGHT, true, 12, 14, b -> b
-        .withShape(" I ", "WDW", "SES")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('W', Blocks.COBWEB)
-        .withIngredient('S', Items.STRING)
-        .withIngredient('E', Items.SPIDER_EYE),
+    SPIDER("spider_light", () -> FLItems.SPIDER_LIGHT, true, 12, 14,
         Placement.UPRIGHT
     ),
-    WITCH("witch_light", () -> FLItems.WITCH_LIGHT, true, 8, 10, b -> b
-        .withShape(" I ", "BDW", " S ")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('B', Items.GLASS_BOTTLE)
-        .withIngredient('W', Items.WHEAT)
-        .withIngredient('S', Items.STICK),
+    WITCH("witch_light", () -> FLItems.WITCH_LIGHT, true, 8, 10,
         Placement.UPRIGHT
     ),
-    SNOWFLAKE("snowflake_light", () -> FLItems.SNOWFLAKE_LIGHT, true, 8, 12.5F, b -> b
-        .withShape(" I ", "SDS", " G ")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('S', Items.SNOWBALL)
-        .withIngredient('G', Tags.Items.GLASS_PANES_WHITE),
+    SNOWFLAKE("snowflake_light", () -> FLItems.SNOWFLAKE_LIGHT, true, 8, 12.5F,
         Placement.UPRIGHT
     ),
-    ICICLE("icicle_lights", () -> FLItems.ICICLE_LIGHTS, false, 0.625F, 7, 20, b -> b
-        .withShape(" I ", "GDG", " B ")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS)
-        .withAnyIngredient('B', Items.WATER_BUCKET, Blocks.ICE, Blocks.PACKED_ICE),
+    ICICLE("icicle_lights", () -> FLItems.ICICLE_LIGHTS, false, 0.625F, 7, 20,
         Placement.UPRIGHT
     ),
-    METEOR("meteor_light", () -> FLItems.METEOR_LIGHT, false, 1.5F, 3, 28.5F, b -> b
-        .withShape(" I ", "GDG", "IPI")
-        .withIngredient('I', Tags.Items.INGOTS_IRON)
-        .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
-        .withIngredient('G', Items.GLOWSTONE_DUST)
-        .withIngredient('P', Items.PAPER),
+    METEOR("meteor_light", () -> FLItems.METEOR_LIGHT, false, 1.5F, 3, 28.5F,
         0.02F, 100,
         Placement.UPRIGHT
     );
@@ -140,8 +63,6 @@ public enum LightVariant {
 
     private final float height;
 
-    private final UnaryOperator<GenericRecipeBuilder> recipe;
-
     private final float twinkleChance;
 
     private final int tickCycle;
@@ -150,26 +71,25 @@ public enum LightVariant {
 
     private final Placement placement;
 
-    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float width, final float height, final UnaryOperator<GenericRecipeBuilder> recipe, final Placement orientable) {
-        this(name, item, parallelsCord, 1.0F, width, height, recipe, orientable);
+    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float width, final float height, final Placement orientable) {
+        this(name, item, parallelsCord, 1.0F, width, height, orientable);
     }
 
-    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float spacing, final float width, final float height, final UnaryOperator<GenericRecipeBuilder> recipe, final Placement orientable) {
-        this(name, item, parallelsCord, spacing, width, height, recipe, 0.05F, 40, false, orientable);
+    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float spacing, final float width, final float height, final Placement orientable) {
+        this(name, item, parallelsCord, spacing, width, height, 0.05F, 40, false, orientable);
     }
 
-    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float spacing, final float width, final float height, final UnaryOperator<GenericRecipeBuilder> recipe, final float twinkleChance, final int tickCycle, final Placement orientable) {
-        this(name, item, parallelsCord, spacing, width, height, recipe, twinkleChance, tickCycle, true, orientable);
+    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float spacing, final float width, final float height, final float twinkleChance, final int tickCycle, final Placement orientable) {
+        this(name, item, parallelsCord, spacing, width, height, twinkleChance, tickCycle, true, orientable);
     }
 
-    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float spacing, final float width, final float height, final UnaryOperator<GenericRecipeBuilder> recipe, final float twinkleChance, final int tickCycle, final boolean alwaysTwinkle, final Placement orientable) {
+    LightVariant(final String name, final Supplier<RegistryObject<? extends Item>> item, final boolean parallelsCord, final float spacing, final float width, final float height, final float twinkleChance, final int tickCycle, final boolean alwaysTwinkle, final Placement orientable) {
         this.name = name;
         this.item = item;
         this.parallelsCord = parallelsCord;
         this.spacing = spacing;
         this.width = width / 16;
         this.height = height / 16;
-        this.recipe = recipe;
         this.twinkleChance = twinkleChance;
         this.tickCycle = tickCycle;
         this.alwaysTwinkle = alwaysTwinkle;
@@ -198,12 +118,6 @@ public enum LightVariant {
 
     public float getHeight() {
         return this.height;
-    }
-
-    public GenericRecipe getRecipe(final ResourceLocation name, final IRecipeSerializer<GenericRecipe> serializer) {
-        return this.recipe.apply(new GenericRecipeBuilder(name, serializer))
-            .withOutput(this.getItem(), 4)
-            .build();
     }
 
     public float getTwinkleChance() {

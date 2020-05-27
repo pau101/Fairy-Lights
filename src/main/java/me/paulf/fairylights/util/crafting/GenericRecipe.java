@@ -14,12 +14,13 @@ import net.minecraft.world.*;
 
 import java.util.Objects;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.function.*;
 
 public final class GenericRecipe extends SpecialRecipe {
     public static final EmptyRegularIngredient EMPTY = new EmptyRegularIngredient();
 
-    private final IRecipeSerializer<GenericRecipe> serializer;
+    private final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer;
 
     private final ItemStack output;
 
@@ -37,7 +38,7 @@ public final class GenericRecipe extends SpecialRecipe {
 
     private final NonNullList<net.minecraft.item.crafting.Ingredient> displayIngredients;
 
-    GenericRecipe(final ResourceLocation name, final IRecipeSerializer<GenericRecipe> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height) {
+    GenericRecipe(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height) {
         super(name);
         Objects.requireNonNull(serializer, "serializer");
         Objects.requireNonNull(output, "output");
@@ -78,7 +79,7 @@ public final class GenericRecipe extends SpecialRecipe {
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return this.serializer;
+        return this.serializer.get();
     }
 
     public ItemStack getOutput() {
