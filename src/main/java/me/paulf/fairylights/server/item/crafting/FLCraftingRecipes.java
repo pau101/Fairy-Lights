@@ -14,7 +14,7 @@ import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.DyeRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertListAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertOreAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
+import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.OreAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import me.paulf.fairylights.util.styledstring.StyledString;
@@ -162,7 +162,7 @@ public final class FLCraftingRecipes {
             .build();
     }
 
-    private static boolean useInputsForTagBool(final Ingredient ingredient, final ItemStack output, final String key, final boolean value) {
+    private static boolean useInputsForTagBool(final GenericIngredient ingredient, final ItemStack output, final String key, final boolean value) {
         final CompoundNBT compound = output.getTag();
         return compound != null && compound.getBoolean(key) == value;
     }

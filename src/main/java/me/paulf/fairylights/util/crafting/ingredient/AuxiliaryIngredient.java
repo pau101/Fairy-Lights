@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-public interface AuxiliaryIngredient<A> extends Ingredient<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> {
+public interface AuxiliaryIngredient<A> extends GenericIngredient<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> {
     boolean isRequired();
 
     int getLimit();

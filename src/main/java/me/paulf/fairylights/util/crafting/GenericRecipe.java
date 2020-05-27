@@ -7,7 +7,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.math.IntMath;
 import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.EmptyRegularIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
+import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -165,7 +165,7 @@ public final class GenericRecipe extends SpecialRecipe {
         final MatchResultRegular[] match = new MatchResultRegular[this.ingredients.length];
         final Multimap<AuxiliaryIngredient<?>, MatchResultAuxiliary> auxMatchResults = LinkedListMultimap.create();
         final Map<AuxiliaryIngredient<?>, Integer> auxMatchTotals = new HashMap<>();
-        final Set<Ingredient<?, ?>> presentCalled = new HashSet<>();
+        final Set<GenericIngredient<?, ?>> presentCalled = new HashSet<>();
         final List<MatchResultAuxiliary> auxResults = new ArrayList<>();
         for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight(), auxCount = this.auxiliaryIngredients.length; i < size; i++) {
             final int x = i % w;
@@ -202,7 +202,7 @@ public final class GenericRecipe extends SpecialRecipe {
                 }
             }
         }
-        final Set<Ingredient<?, ?>> absentCalled = new HashSet<>();
+        final Set<GenericIngredient<?, ?>> absentCalled = new HashSet<>();
         for (final MatchResultRegular result : match) {
             result.notifyAbsence(presentCalled, absentCalled, output);
         }
@@ -232,16 +232,16 @@ public final class GenericRecipe extends SpecialRecipe {
         return this.output;
     }
 
-    public interface MatchResult<I extends Ingredient, M extends MatchResult<I, M>> {
+    public interface MatchResult<I extends GenericIngredient, M extends MatchResult<I, M>> {
         I getIngredient();
 
         ItemStack getInput();
 
         boolean doesMatch();
 
-        void forMatch(Set<Ingredient<?, ?>> called, ItemStack output);
+        void forMatch(Set<GenericIngredient<?, ?>> called, ItemStack output);
 
-        void notifyAbsence(Set<Ingredient<?, ?>> presentCalled, Set<Ingredient<?, ?>> absentCalled, ItemStack output);
+        void notifyAbsence(Set<GenericIngredient<?, ?>> presentCalled, Set<GenericIngredient<?, ?>> absentCalled, ItemStack output);
 
         M withParent(M parent);
     }
@@ -278,7 +278,7 @@ public final class GenericRecipe extends SpecialRecipe {
         }
 
         @Override
-        public void forMatch(final Set<Ingredient<?, ?>> called, final ItemStack output) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final ItemStack output) {
             this.ingredient.matched(this.input, output);
             if (!called.contains(this.ingredient)) {
                 this.ingredient.present(output);
@@ -287,7 +287,7 @@ public final class GenericRecipe extends SpecialRecipe {
         }
 
         @Override
-        public void notifyAbsence(final Set<Ingredient<?, ?>> presentCalled, final Set<Ingredient<?, ?>> absentCalled, final ItemStack output) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final ItemStack output) {
             if (!presentCalled.contains(this.ingredient) && !absentCalled.contains(this.ingredient)) {
                 this.ingredient.absent(output);
                 absentCalled.add(this.ingredient);
@@ -312,13 +312,13 @@ public final class GenericRecipe extends SpecialRecipe {
         }
 
         @Override
-        public void forMatch(final Set<Ingredient<?, ?>> called, final ItemStack output) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final ItemStack output) {
             super.forMatch(called, output);
             this.parent.forMatch(called, output);
         }
 
         @Override
-        public void notifyAbsence(final Set<Ingredient<?, ?>> presentCalled, final Set<Ingredient<?, ?>> absentCalled, final ItemStack output) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final ItemStack output) {
             super.notifyAbsence(presentCalled, absentCalled, output);
             this.parent.notifyAbsence(presentCalled, absentCalled, output);
         }
@@ -361,7 +361,7 @@ public final class GenericRecipe extends SpecialRecipe {
         }
 
         @Override
-        public void forMatch(final Set<Ingredient<?, ?>> called, final ItemStack output) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final ItemStack output) {
             if (!called.contains(this.ingredient)) {
                 this.ingredient.present(output);
                 called.add(this.ingredient);
@@ -369,7 +369,7 @@ public final class GenericRecipe extends SpecialRecipe {
         }
 
         @Override
-        public void notifyAbsence(final Set<Ingredient<?, ?>> presentCalled, final Set<Ingredient<?, ?>> absentCalled, final ItemStack output) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final ItemStack output) {
             if (!presentCalled.contains(this.ingredient) && !absentCalled.contains(this.ingredient)) {
                 this.ingredient.absent(output);
                 absentCalled.add(this.ingredient);
@@ -402,13 +402,13 @@ public final class GenericRecipe extends SpecialRecipe {
         }
 
         @Override
-        public void forMatch(final Set<Ingredient<?, ?>> called, final ItemStack output) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final ItemStack output) {
             super.forMatch(called, output);
             this.parent.forMatch(called, output);
         }
 
         @Override
-        public void notifyAbsence(final Set<Ingredient<?, ?>> presentCalled, final Set<Ingredient<?, ?>> absentCalled, final ItemStack output) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final ItemStack output) {
             super.notifyAbsence(presentCalled, absentCalled, output);
             this.parent.notifyAbsence(presentCalled, absentCalled, output);
         }
@@ -437,7 +437,7 @@ public final class GenericRecipe extends SpecialRecipe {
         checkDictatorship(ingredientDictator, auxiliaryIngredients);
     }
 
-    private static void checkForNulls(final Ingredient<?, ?>[] ingredients) {
+    private static void checkForNulls(final GenericIngredient<?, ?>[] ingredients) {
         for (int i = 0; i < ingredients.length; i++) {
             if (ingredients[i] == null) {
                 throw new NullPointerException("Must not have null ingredients, found at index " + i);
@@ -445,8 +445,8 @@ public final class GenericRecipe extends SpecialRecipe {
         }
     }
 
-    private static boolean checkDictatorship(boolean foundDictator, final Ingredient<?, ?>[] ingredients) {
-        for (final Ingredient ingredient : ingredients) {
+    private static boolean checkDictatorship(boolean foundDictator, final GenericIngredient<?, ?>[] ingredients) {
+        for (final GenericIngredient ingredient : ingredients) {
             if (ingredient.dictatesOutputType()) {
                 if (foundDictator) {
                     throw new IllegalRecipeException("Only one ingredient can dictate output type");
