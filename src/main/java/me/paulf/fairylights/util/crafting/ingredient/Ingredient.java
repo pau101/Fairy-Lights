@@ -7,7 +7,7 @@ import net.minecraft.util.*;
 
 import java.util.*;
 
-public interface Ingredient<I extends Ingredient, M extends GenericRecipe.MatchResult<I, M>> {
+public interface Ingredient<I extends Ingredient<? extends I, M>, M extends GenericRecipe.MatchResult<I, M>> {
     /**
      * Provides an immutable list of stacks that will match this ingredient.
      *

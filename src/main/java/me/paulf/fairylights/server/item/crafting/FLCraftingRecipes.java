@@ -29,45 +29,45 @@ public final class FLCraftingRecipes {
 
     public static final DeferredRegister<IRecipeSerializer<?>> REG = new DeferredRegister<>(ForgeRegistries.RECIPE_SERIALIZERS, FairyLights.ID);
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> FAIRY_LIGHTS = REG.register("crafting_special_fairy_lights", makeSerializer(FLCraftingRecipes::createFairyLights));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> FAIRY_LIGHTS = REG.register("crafting_special_fairy_lights", makeSerializer(FLCraftingRecipes::createFairyLights));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> FAIRY_LIGHTS_AUGMENTATION = REG.register("crafting_special_fairy_lights_augmentation", makeSerializer(FLCraftingRecipes::createFairyLightsAugmentation));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> FAIRY_LIGHTS_AUGMENTATION = REG.register("crafting_special_fairy_lights_augmentation", makeSerializer(FLCraftingRecipes::createFairyLightsAugmentation));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> TINSEL_GARLAND = REG.register("crafting_special_tinsel_garland", makeSerializer(FLCraftingRecipes::createTinselGarland));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> TINSEL_GARLAND = REG.register("crafting_special_tinsel_garland", makeSerializer(FLCraftingRecipes::createTinselGarland));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> PENNANT_BUNTING = REG.register("crafting_special_pennant_bunting", makeSerializer(FLCraftingRecipes::createPennantBunting));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT_BUNTING = REG.register("crafting_special_pennant_bunting", makeSerializer(FLCraftingRecipes::createPennantBunting));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> PENNANT_BUNTING_AUGMENTATION = REG.register("crafting_special_pennant_bunting_augmentation", makeSerializer(FLCraftingRecipes::createPennantBuntingAugmentation));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT_BUNTING_AUGMENTATION = REG.register("crafting_special_pennant_bunting_augmentation", makeSerializer(FLCraftingRecipes::createPennantBuntingAugmentation));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> PENNANT = REG.register("crafting_special_pennant", makeSerializer(FLCraftingRecipes::createPennant));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT = REG.register("crafting_special_pennant", makeSerializer(FLCraftingRecipes::createPennant));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> FAIRY_LIGHT = REG.register("crafting_special_fairy_light", makeSerializer(FLCraftingRecipes::createFairyLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> FAIRY_LIGHT = REG.register("crafting_special_fairy_light", makeSerializer(FLCraftingRecipes::createFairyLight));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> PAPER_LANTERN = REG.register("crafting_special_paper_lantern", makeSerializer(FLCraftingRecipes::createPaperLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> PAPER_LANTERN = REG.register("crafting_special_paper_lantern", makeSerializer(FLCraftingRecipes::createPaperLantern));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> ORB_LANTERN = REG.register("crafting_special_orb_lantern", makeSerializer(FLCraftingRecipes::createOrbLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> ORB_LANTERN = REG.register("crafting_special_orb_lantern", makeSerializer(FLCraftingRecipes::createOrbLantern));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> FLOWER_LIGHT = REG.register("crafting_special_flower_light", makeSerializer(FLCraftingRecipes::createFlowerLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> FLOWER_LIGHT = REG.register("crafting_special_flower_light", makeSerializer(FLCraftingRecipes::createFlowerLight));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> ORNATE_LANTERN = REG.register("crafting_special_ornate_lantern", makeSerializer(FLCraftingRecipes::createOrnateLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> ORNATE_LANTERN = REG.register("crafting_special_ornate_lantern", makeSerializer(FLCraftingRecipes::createOrnateLantern));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> OIL_LANTERN = REG.register("crafting_special_oil_lantern", makeSerializer(FLCraftingRecipes::createOilLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> OIL_LANTERN = REG.register("crafting_special_oil_lantern", makeSerializer(FLCraftingRecipes::createOilLantern));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> JACK_O_LANTERN = REG.register("crafting_special_jack_o_lantern", makeSerializer(FLCraftingRecipes::createJackOLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> JACK_O_LANTERN = REG.register("crafting_special_jack_o_lantern", makeSerializer(FLCraftingRecipes::createJackOLantern));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> SKULL_LIGHT = REG.register("crafting_special_skull_light", makeSerializer(FLCraftingRecipes::createSkullLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> SKULL_LIGHT = REG.register("crafting_special_skull_light", makeSerializer(FLCraftingRecipes::createSkullLight));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> GHOST_LIGHT = REG.register("crafting_special_ghost_light", makeSerializer(FLCraftingRecipes::createGhostLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> GHOST_LIGHT = REG.register("crafting_special_ghost_light", makeSerializer(FLCraftingRecipes::createGhostLight));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> SPIDER_LIGHT = REG.register("crafting_special_spider_light", makeSerializer(FLCraftingRecipes::createSpiderLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> SPIDER_LIGHT = REG.register("crafting_special_spider_light", makeSerializer(FLCraftingRecipes::createSpiderLight));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> WITCH_LIGHT = REG.register("crafting_special_witch_light", makeSerializer(FLCraftingRecipes::createWitchLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> WITCH_LIGHT = REG.register("crafting_special_witch_light", makeSerializer(FLCraftingRecipes::createWitchLight));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> SNOWFLAKE_LIGHT = REG.register("crafting_special_snowflake_light", makeSerializer(FLCraftingRecipes::createSnowflakeLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> SNOWFLAKE_LIGHT = REG.register("crafting_special_snowflake_light", makeSerializer(FLCraftingRecipes::createSnowflakeLight));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> ICICLE_LIGHTS = REG.register("crafting_special_icicle_lights", makeSerializer(FLCraftingRecipes::createIcicleLights));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> ICICLE_LIGHTS = REG.register("crafting_special_icicle_lights", makeSerializer(FLCraftingRecipes::createIcicleLights));
 
-    public static final RegistryObject<SpecialRecipeSerializer<GenericRecipe>> METEOR_LIGHT = REG.register("crafting_special_meteor_light", makeSerializer(FLCraftingRecipes::createMeteorLight));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> METEOR_LIGHT = REG.register("crafting_special_meteor_light", makeSerializer(FLCraftingRecipes::createMeteorLight));
 
     public static final RegularIngredient LIGHT_DYE = new DyeRegularIngredient() {
         @Override
@@ -86,7 +86,7 @@ public final class FLCraftingRecipes {
         }
     };
 
-    private static Supplier<SpecialRecipeSerializer<GenericRecipe>> makeSerializer(final Function<ResourceLocation, GenericRecipe> factory) {
+    private static Supplier<IRecipeSerializer<GenericRecipe>> makeSerializer(final Function<ResourceLocation, GenericRecipe> factory) {
         return () -> new SpecialRecipeSerializer<>(factory);
     }
 
