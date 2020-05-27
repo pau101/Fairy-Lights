@@ -1,10 +1,13 @@
 package me.paulf.fairylights.util;
 
-import com.google.common.base.*;
-import net.minecraft.util.math.*;
+import com.google.common.base.Preconditions;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.*;
 import java.util.function.Function;
 
 public final class AABBBuilder {

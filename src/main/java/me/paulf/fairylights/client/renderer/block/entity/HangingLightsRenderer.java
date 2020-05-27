@@ -1,11 +1,13 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.mojang.blaze3d.matrix.*;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
-import me.paulf.fairylights.server.item.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.util.math.*;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.Vec3d;
 
 public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConnection> {
     private final LightRenderer lights = new LightRenderer();

@@ -1,9 +1,10 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.MathHelper;
 
 public class GhostLightModel extends LightModel {
     public GhostLightModel() {

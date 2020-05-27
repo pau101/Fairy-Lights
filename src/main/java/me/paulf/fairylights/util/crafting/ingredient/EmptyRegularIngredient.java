@@ -1,10 +1,10 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import com.google.common.collect.*;
-import me.paulf.fairylights.util.crafting.*;
-import net.minecraft.item.*;
+import com.google.common.collect.ImmutableList;
+import me.paulf.fairylights.util.crafting.GenericRecipe;
+import net.minecraft.item.ItemStack;
 
-import java.util.*;
+import java.util.Collections;
 
 public class EmptyRegularIngredient implements RegularIngredient {
     @Override

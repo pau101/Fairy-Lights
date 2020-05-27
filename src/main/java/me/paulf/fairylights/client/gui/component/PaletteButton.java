@@ -1,17 +1,32 @@
 package me.paulf.fairylights.client.gui.component;
 
-import com.mojang.blaze3d.platform.*;
-import com.mojang.blaze3d.systems.*;
-import me.paulf.fairylights.client.gui.*;
-import me.paulf.fairylights.util.*;
-import me.paulf.fairylights.util.styledstring.*;
-import net.minecraft.client.*;
-import net.minecraft.client.gui.widget.button.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
-import org.apache.commons.lang3.*;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
+import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.styledstring.StyledString;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.ArrayUtils;
 
-import static net.minecraft.util.text.TextFormatting.*;
+import static net.minecraft.util.text.TextFormatting.AQUA;
+import static net.minecraft.util.text.TextFormatting.BLACK;
+import static net.minecraft.util.text.TextFormatting.BLUE;
+import static net.minecraft.util.text.TextFormatting.DARK_AQUA;
+import static net.minecraft.util.text.TextFormatting.DARK_BLUE;
+import static net.minecraft.util.text.TextFormatting.DARK_GRAY;
+import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
+import static net.minecraft.util.text.TextFormatting.DARK_PURPLE;
+import static net.minecraft.util.text.TextFormatting.DARK_RED;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.GREEN;
+import static net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
+import static net.minecraft.util.text.TextFormatting.RED;
+import static net.minecraft.util.text.TextFormatting.WHITE;
+import static net.minecraft.util.text.TextFormatting.YELLOW;
 
 public class PaletteButton extends Button {
     private static final int TEX_U = 0;

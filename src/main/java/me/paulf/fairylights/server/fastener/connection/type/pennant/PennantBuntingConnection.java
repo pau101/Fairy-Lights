@@ -1,25 +1,34 @@
 package me.paulf.fairylights.server.fastener.connection.type.pennant;
 
-import me.paulf.fairylights.client.gui.*;
-import me.paulf.fairylights.server.fastener.*;
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.server.fastener.connection.collision.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.item.*;
-import me.paulf.fairylights.server.sound.*;
-import me.paulf.fairylights.util.*;
-import me.paulf.fairylights.util.styledstring.*;
-import net.minecraft.client.gui.screen.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.world.*;
-import net.minecraftforge.api.distmarker.*;
-import net.minecraftforge.common.util.Constants.*;
+import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.FeatureType;
+import me.paulf.fairylights.server.fastener.connection.PlayerAction;
+import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
+import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
+import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.item.LightItem;
+import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.util.OreDictUtils;
+import me.paulf.fairylights.util.styledstring.StyledString;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public final class PennantBuntingConnection extends HangingFeatureConnection<Pennant> implements Lettered {
     private List<DyeColor> pattern;

@@ -1,9 +1,10 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import net.minecraft.item.*;
-import net.minecraft.tags.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
 
-import javax.annotation.*;
+import javax.annotation.Nullable;
 
 public class InertOreAuxiliaryIngredient extends OreAuxiliaryIngredient<Void> {
     public InertOreAuxiliaryIngredient(final Tag<Item> tag, final boolean isRequired, final int limit) {

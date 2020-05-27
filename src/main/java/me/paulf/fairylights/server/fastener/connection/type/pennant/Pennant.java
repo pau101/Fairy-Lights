@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.fastener.connection.type.pennant;
 
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
+import net.minecraft.util.math.Vec3d;
 
 public class Pennant extends HangingFeature<Pennant> {
     private int color;

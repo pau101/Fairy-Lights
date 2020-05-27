@@ -1,12 +1,15 @@
 package me.paulf.fairylights.server.fastener.connection.collision;
 
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.server.fastener.connection.Feature;
+import me.paulf.fairylights.server.fastener.connection.FeatureType;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.*;
-import java.util.*;
-import java.util.function.*;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 
 public final class FeatureCollisionTree implements Collidable {
     private final FeatureType type;

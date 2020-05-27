@@ -1,9 +1,9 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.*;
-import net.minecraft.client.renderer.model.*;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
-import java.util.*;
+import java.util.Random;
 
 public class SnowflakeLightModel extends LightModel {
     public SnowflakeLightModel() {

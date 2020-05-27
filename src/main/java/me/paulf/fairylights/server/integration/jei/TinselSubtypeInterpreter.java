@@ -1,9 +1,10 @@
 package me.paulf.fairylights.server.integration.jei;
 
-import mezz.jei.api.ingredients.subtypes.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraftforge.common.util.Constants.*;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public final class TinselSubtypeInterpreter implements ISubtypeInterpreter {
     @Override

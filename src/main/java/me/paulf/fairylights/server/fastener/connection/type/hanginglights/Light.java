@@ -1,14 +1,17 @@
 package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 
-import me.paulf.fairylights.server.config.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.item.*;
-import me.paulf.fairylights.server.sound.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.particles.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.world.*;
+import me.paulf.fairylights.server.config.FLConfig;
+import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
+import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.util.CubicBezier;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public final class Light extends HangingFeature<Light> {
     private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);

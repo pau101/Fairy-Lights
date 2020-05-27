@@ -1,6 +1,6 @@
 package me.paulf.fairylights.util;
 
-import com.google.common.base.*;
+import com.google.common.base.Preconditions;
 
 /*
  * Use http://cubic-bezier.com/ to find parameters

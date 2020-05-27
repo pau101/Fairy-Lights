@@ -1,18 +1,24 @@
 package me.paulf.fairylights.client.gui;
 
-import me.paulf.fairylights.*;
-import me.paulf.fairylights.client.gui.component.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.net.serverbound.*;
-import me.paulf.fairylights.util.styledstring.*;
-import net.minecraft.client.*;
-import net.minecraft.client.gui.chat.*;
-import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.widget.button.*;
-import net.minecraft.client.resources.*;
-import net.minecraft.util.*;
-import net.minecraft.util.text.*;
-import org.lwjgl.glfw.*;
+import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.client.gui.component.ColorButton;
+import me.paulf.fairylights.client.gui.component.PaletteButton;
+import me.paulf.fairylights.client.gui.component.StyledTextFieldWidget;
+import me.paulf.fairylights.client.gui.component.ToggleButton;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
+import me.paulf.fairylights.util.styledstring.StyledString;
+import me.paulf.fairylights.util.styledstring.StylingPresence;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.chat.NarratorChatListener;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import org.lwjgl.glfw.GLFW;
 
 public final class EditLetteredConnectionScreen<C extends Connection & Lettered> extends Screen {
     public static final ResourceLocation WIDGETS_TEXTURE = new ResourceLocation(FairyLights.ID, "textures/gui/widgets.png");

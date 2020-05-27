@@ -1,9 +1,9 @@
 package me.paulf.fairylights.server.fastener.connection.type;
 
-import me.paulf.fairylights.server.fastener.*;
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.connection.Feature;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.util.math.Vec3d;
 
 public abstract class HangingFeature<F extends HangingFeature<F>> implements Feature {
     protected final int index;

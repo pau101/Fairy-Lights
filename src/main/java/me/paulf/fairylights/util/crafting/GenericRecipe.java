@@ -1,21 +1,32 @@
 package me.paulf.fairylights.util.crafting;
 
-import com.google.common.base.*;
-import com.google.common.collect.*;
-import com.google.common.math.*;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.math.IntMath;
+import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.EmptyRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
-import me.paulf.fairylights.util.crafting.ingredient.*;
-import net.minecraft.inventory.*;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.*;
+import java.util.Set;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
-import java.util.function.*;
 
 public final class GenericRecipe extends SpecialRecipe {
     public static final EmptyRegularIngredient EMPTY = new EmptyRegularIngredient();

@@ -1,8 +1,9 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.entity.*;
-import me.paulf.fairylights.server.fastener.accessor.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.server.entity.FenceFastenerEntity;
+import me.paulf.fairylights.server.fastener.accessor.EntityFastenerAccessor;
+import me.paulf.fairylights.server.fastener.accessor.FenceFastenerAccessor;
+import net.minecraft.util.math.BlockPos;
 
 public final class FenceFastener extends EntityFastener<FenceFastenerEntity> {
     public FenceFastener(final FenceFastenerEntity entity) {

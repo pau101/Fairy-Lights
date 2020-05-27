@@ -1,26 +1,35 @@
 package me.paulf.fairylights.server;
 
-import me.paulf.fairylights.*;
-import me.paulf.fairylights.server.capability.*;
-import me.paulf.fairylights.server.config.*;
-import me.paulf.fairylights.server.fastener.*;
-import me.paulf.fairylights.server.jingle.*;
-import me.paulf.fairylights.server.net.clientbound.*;
-import me.paulf.fairylights.server.net.serverbound.*;
-import net.minecraft.entity.*;
-import net.minecraft.network.*;
-import net.minecraft.resources.*;
-import net.minecraft.server.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.world.*;
-import net.minecraftforge.common.*;
-import net.minecraftforge.fml.*;
-import net.minecraftforge.fml.config.*;
-import net.minecraftforge.fml.event.server.*;
-import net.minecraftforge.fml.network.*;
+import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.server.capability.CapabilityHandler;
+import me.paulf.fairylights.server.config.FLConfig;
+import me.paulf.fairylights.server.fastener.BlockView;
+import me.paulf.fairylights.server.fastener.CreateBlockViewEvent;
+import me.paulf.fairylights.server.fastener.RegularBlockView;
+import me.paulf.fairylights.server.jingle.JingleLibrary;
+import me.paulf.fairylights.server.net.clientbound.JingleMessage;
+import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
+import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
+import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
+import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ServerProxy {
     private int nextMessageId;

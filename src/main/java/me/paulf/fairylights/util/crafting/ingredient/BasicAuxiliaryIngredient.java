@@ -1,13 +1,14 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import com.google.common.base.*;
-import com.google.common.collect.*;
-import me.paulf.fairylights.util.crafting.*;
-import net.minecraft.block.*;
-import net.minecraft.item.*;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import me.paulf.fairylights.util.crafting.GenericRecipe;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
+import java.util.Collections;
 import java.util.Objects;
-import java.util.*;
 
 public abstract class BasicAuxiliaryIngredient<A> implements AuxiliaryIngredient<A> {
     protected final ItemStack ingredient;

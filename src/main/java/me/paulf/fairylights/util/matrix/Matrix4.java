@@ -1,8 +1,9 @@
 package me.paulf.fairylights.util.matrix;
 
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
-import java.util.*;
+import java.util.Objects;
 
 public final class Matrix4 {
     public float m00;

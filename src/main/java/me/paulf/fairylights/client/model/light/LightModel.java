@@ -1,14 +1,18 @@
 package me.paulf.fairylights.client.model.light;
 
-import com.mojang.blaze3d.matrix.*;
-import com.mojang.blaze3d.vertex.*;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.util.math.*;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.util.AABBBuilder;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.*;
+import javax.annotation.Nullable;
 
 public abstract class LightModel extends Model {
     protected final ModelRenderer lit;

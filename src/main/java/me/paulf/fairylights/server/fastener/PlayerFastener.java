@@ -1,15 +1,18 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.fastener.accessor.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.network.play.server.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SEntityVelocityPacket;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
-import java.util.*;
-import java.util.Map.*;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     public PlayerFastener(final PlayerEntity entity) {

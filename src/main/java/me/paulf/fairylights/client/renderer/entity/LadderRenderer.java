@@ -1,12 +1,13 @@
 package me.paulf.fairylights.client.renderer.entity;
 
-import com.mojang.blaze3d.matrix.*;
-import me.paulf.fairylights.*;
-import me.paulf.fairylights.client.model.*;
-import me.paulf.fairylights.server.entity.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.util.*;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.client.model.LadderModel;
+import me.paulf.fairylights.server.entity.LadderEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class LadderRenderer extends LivingRenderer<LadderEntity, LadderModel> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/ladder.png");

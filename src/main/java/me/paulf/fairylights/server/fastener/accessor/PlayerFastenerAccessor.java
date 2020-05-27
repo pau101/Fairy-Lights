@@ -1,8 +1,9 @@
 package me.paulf.fairylights.server.fastener.accessor;
 
-import me.paulf.fairylights.server.fastener.*;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
+import me.paulf.fairylights.server.fastener.FastenerType;
+import me.paulf.fairylights.server.fastener.PlayerFastener;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 
 public final class PlayerFastenerAccessor extends EntityFastenerAccessor<PlayerEntity> {
     public PlayerFastenerAccessor() {

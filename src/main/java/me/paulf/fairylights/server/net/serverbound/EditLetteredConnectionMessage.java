@@ -1,13 +1,15 @@
 package me.paulf.fairylights.server.net.serverbound;
 
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.net.*;
-import me.paulf.fairylights.util.styledstring.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.network.*;
-import net.minecraftforge.fml.network.*;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.net.ConnectionMessage;
+import me.paulf.fairylights.util.styledstring.StyledString;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public class EditLetteredConnectionMessage<C extends Connection & Lettered> extends ConnectionMessage<C> {
     private StyledString text;

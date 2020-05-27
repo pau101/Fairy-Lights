@@ -1,7 +1,8 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.*;
-import net.minecraft.client.renderer.*;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 
 public class FlowerLightModel extends LightModel {
     public FlowerLightModel() {

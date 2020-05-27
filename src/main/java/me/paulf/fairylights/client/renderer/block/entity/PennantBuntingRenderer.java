@@ -1,22 +1,26 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.google.common.base.*;
-import com.mojang.blaze3d.matrix.*;
-import com.mojang.blaze3d.vertex.*;
-import me.paulf.fairylights.*;
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.server.fastener.connection.type.pennant.*;
-import me.paulf.fairylights.util.*;
+import com.google.common.base.MoreObjects;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.server.fastener.connection.Catenary;
+import me.paulf.fairylights.server.fastener.connection.type.pennant.Pennant;
+import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
+import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.styledstring.Style;
-import me.paulf.fairylights.util.styledstring.*;
-import net.minecraft.client.*;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.*;
-import net.minecraftforge.client.model.pipeline.*;
+import me.paulf.fairylights.util.styledstring.StyledString;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.Atlases;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix3f;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.model.pipeline.LightUtil;
 
 public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingConnection> {
     public static final ResourceLocation MODEL = new ResourceLocation(FairyLights.ID, "entity/pennant");

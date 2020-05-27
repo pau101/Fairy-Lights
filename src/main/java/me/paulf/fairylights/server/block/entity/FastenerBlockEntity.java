@@ -1,17 +1,21 @@
 package me.paulf.fairylights.server.block.entity;
 
-import me.paulf.fairylights.server.block.*;
-import me.paulf.fairylights.server.capability.*;
-import me.paulf.fairylights.server.fastener.*;
-import net.minecraft.block.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
-import net.minecraft.network.play.server.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.world.*;
-import net.minecraftforge.common.util.*;
+import me.paulf.fairylights.server.block.FLBlocks;
+import me.paulf.fairylights.server.block.FastenerBlock;
+import me.paulf.fairylights.server.capability.CapabilityHandler;
+import me.paulf.fairylights.server.fastener.Fastener;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 
 public final class FastenerBlockEntity extends TileEntity implements ITickableTileEntity {
     public FastenerBlockEntity() {

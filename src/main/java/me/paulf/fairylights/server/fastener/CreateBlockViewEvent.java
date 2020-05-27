@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.fastener;
 
-import net.minecraftforge.eventbus.api.*;
+import net.minecraftforge.eventbus.api.Event;
 
 public class CreateBlockViewEvent extends Event {
     private BlockView view;

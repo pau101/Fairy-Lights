@@ -1,14 +1,18 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.mojang.blaze3d.matrix.*;
-import com.mojang.blaze3d.vertex.*;
-import me.paulf.fairylights.client.*;
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.server.fastener.connection.type.garland.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.util.math.*;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import me.paulf.fairylights.client.ClientProxy;
+import me.paulf.fairylights.server.fastener.connection.Catenary;
+import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandTinselConnection;
+import me.paulf.fairylights.util.RandomArray;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.MathHelper;
 
 public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConnection> {
     private static final RandomArray RAND = new RandomArray(9171, 128);

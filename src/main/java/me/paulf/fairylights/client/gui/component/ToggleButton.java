@@ -1,9 +1,9 @@
 package me.paulf.fairylights.client.gui.component;
 
-import com.mojang.blaze3d.systems.*;
-import me.paulf.fairylights.client.gui.*;
-import net.minecraft.client.*;
-import net.minecraft.client.gui.widget.button.*;
+import com.mojang.blaze3d.systems.RenderSystem;
+import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
 
 public class ToggleButton extends Button {
     private final int u;

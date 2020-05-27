@@ -1,10 +1,10 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.util.*;
-import net.minecraft.item.*;
-import net.minecraftforge.fml.*;
+import me.paulf.fairylights.util.Utils;
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.RegistryObject;
 
-import java.util.function.*;
+import java.util.function.Supplier;
 
 public enum LightVariant {
     FAIRY("fairy_light", () -> FLItems.FAIRY_LIGHT, true, 5, 5,

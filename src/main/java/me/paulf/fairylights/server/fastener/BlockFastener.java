@@ -1,9 +1,11 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.block.entity.*;
-import me.paulf.fairylights.server.fastener.accessor.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
+import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public final class BlockFastener extends AbstractFastener {
     private final FastenerBlockEntity fastener;

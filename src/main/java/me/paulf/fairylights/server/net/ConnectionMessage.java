@@ -1,15 +1,16 @@
 package me.paulf.fairylights.server.net;
 
-import me.paulf.fairylights.server.fastener.*;
-import me.paulf.fairylights.server.fastener.accessor.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import net.minecraft.network.*;
-import net.minecraft.util.math.*;
-import net.minecraft.world.*;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.FastenerType;
+import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-import javax.annotation.*;
-import java.util.*;
-import java.util.function.*;
+import javax.annotation.Nullable;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 public abstract class ConnectionMessage<C extends Connection> {
     public BlockPos pos;

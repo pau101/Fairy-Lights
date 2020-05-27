@@ -1,25 +1,33 @@
 package me.paulf.fairylights.server.integration.jei;
 
-import com.google.common.collect.*;
-import me.paulf.fairylights.util.*;
-import me.paulf.fairylights.util.crafting.*;
-import me.paulf.fairylights.util.crafting.ingredient.*;
-import mezz.jei.api.constants.*;
-import mezz.jei.api.gui.*;
-import mezz.jei.api.gui.ingredient.*;
-import mezz.jei.api.ingredients.*;
-import mezz.jei.api.recipe.*;
-import mezz.jei.api.recipe.IFocus.*;
-import mezz.jei.api.recipe.category.extensions.vanilla.crafting.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.inventory.*;
-import net.minecraft.inventory.container.*;
-import net.minecraft.item.*;
-import net.minecraftforge.common.util.*;
+import com.google.common.collect.ImmutableList;
+import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.crafting.GenericRecipe;
+import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
+import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.ITooltipCallback;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocus.Mode;
+import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICustomCraftingCategoryExtension;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.Size2i;
 
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtension {
     private final GenericRecipe recipe;

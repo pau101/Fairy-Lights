@@ -1,7 +1,7 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.*;
-import net.minecraft.client.renderer.model.*;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class OrnateLanternModel extends LightModel {
     public OrnateLanternModel() {

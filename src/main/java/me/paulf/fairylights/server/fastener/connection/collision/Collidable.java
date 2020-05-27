@@ -1,8 +1,8 @@
 package me.paulf.fairylights.server.fastener.connection.collision;
 
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.*;
+import javax.annotation.Nullable;
 
 public interface Collidable {
     @Nullable

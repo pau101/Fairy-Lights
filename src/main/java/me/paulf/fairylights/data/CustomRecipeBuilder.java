@@ -1,12 +1,12 @@
 package me.paulf.fairylights.data;
 
-import com.google.gson.*;
-import net.minecraft.data.*;
-import net.minecraft.item.crafting.*;
-import net.minecraft.util.*;
+import com.google.gson.JsonObject;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.*;
-import java.util.function.*;
+import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public class CustomRecipeBuilder {
     private final IRecipeSerializer<?> serializer;

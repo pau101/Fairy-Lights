@@ -1,27 +1,45 @@
 package me.paulf.fairylights.server.item.crafting;
 
-import com.google.common.collect.*;
-import me.paulf.fairylights.*;
-import me.paulf.fairylights.server.item.*;
-import me.paulf.fairylights.util.*;
-import me.paulf.fairylights.util.crafting.*;
+import com.google.common.collect.ImmutableList;
+import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.server.item.FLItems;
+import me.paulf.fairylights.server.item.LightItem;
+import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.util.OreDictUtils;
+import me.paulf.fairylights.util.Utils;
+import me.paulf.fairylights.util.crafting.GenericRecipe;
+import me.paulf.fairylights.util.crafting.GenericRecipeBuilder;
+import me.paulf.fairylights.util.crafting.ingredient.BasicAuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.DyeRegularIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.InertListAuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.InertOreAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.Ingredient;
-import me.paulf.fairylights.util.crafting.ingredient.*;
-import me.paulf.fairylights.util.styledstring.*;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.*;
-import net.minecraft.nbt.*;
-import net.minecraft.tags.*;
-import net.minecraft.util.*;
-import net.minecraftforge.common.*;
-import net.minecraftforge.common.util.*;
-import net.minecraftforge.fml.*;
-import net.minecraftforge.fml.common.Mod.*;
-import net.minecraftforge.registries.*;
-import org.apache.commons.lang3.mutable.*;
+import me.paulf.fairylights.util.crafting.ingredient.OreAuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
+import me.paulf.fairylights.util.styledstring.StyledString;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.mutable.MutableInt;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 @EventBusSubscriber(modid = FairyLights.ID)
 public final class FLCraftingRecipes {

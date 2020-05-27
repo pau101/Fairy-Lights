@@ -1,15 +1,17 @@
 package me.paulf.fairylights.server.net.clientbound;
 
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
-import me.paulf.fairylights.server.jingle.*;
-import me.paulf.fairylights.server.net.*;
-import net.minecraft.client.*;
-import net.minecraft.network.*;
-import net.minecraftforge.fml.network.*;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import me.paulf.fairylights.server.jingle.Jingle;
+import me.paulf.fairylights.server.jingle.JingleLibrary;
+import me.paulf.fairylights.server.net.ConnectionMessage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import javax.annotation.*;
-import java.util.function.*;
+import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public final class JingleMessage extends ConnectionMessage<Connection> {
     private int lightOffset;

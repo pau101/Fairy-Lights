@@ -1,23 +1,33 @@
 package me.paulf.fairylights.server.item;
 
-import com.google.common.base.*;
-import me.paulf.fairylights.server.block.*;
-import me.paulf.fairylights.server.capability.*;
-import me.paulf.fairylights.server.entity.*;
-import me.paulf.fairylights.server.fastener.*;
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.sound.*;
-import net.minecraft.block.*;
-import net.minecraft.entity.item.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.tags.*;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.world.*;
+import com.google.common.base.MoreObjects;
+import me.paulf.fairylights.server.block.FLBlocks;
+import me.paulf.fairylights.server.block.FastenerBlock;
+import me.paulf.fairylights.server.capability.CapabilityHandler;
+import me.paulf.fairylights.server.entity.FenceFastenerEntity;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.sound.FLSounds;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
+import net.minecraft.entity.item.HangingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public abstract class ConnectionItem extends Item {
     public ConnectionItem(final Properties properties) {

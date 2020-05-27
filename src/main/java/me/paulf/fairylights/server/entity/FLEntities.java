@@ -1,9 +1,11 @@
 package me.paulf.fairylights.server.entity;
 
-import me.paulf.fairylights.*;
-import net.minecraft.entity.*;
-import net.minecraftforge.fml.*;
-import net.minecraftforge.registries.*;
+import me.paulf.fairylights.FairyLights;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public final class FLEntities {
     private FLEntities() {}

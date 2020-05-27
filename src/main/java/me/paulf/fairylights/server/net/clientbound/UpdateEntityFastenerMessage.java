@@ -1,13 +1,14 @@
 package me.paulf.fairylights.server.net.clientbound;
 
-import me.paulf.fairylights.server.capability.*;
-import net.minecraft.client.*;
-import net.minecraft.entity.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
-import net.minecraftforge.fml.network.*;
+import me.paulf.fairylights.server.capability.CapabilityHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public final class UpdateEntityFastenerMessage {
     private int entityId;

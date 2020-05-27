@@ -1,24 +1,36 @@
 package me.paulf.fairylights.client.command;
 
-import com.google.common.collect.*;
-import com.mojang.brigadier.arguments.*;
-import com.mojang.brigadier.builder.*;
-import com.mojang.brigadier.exceptions.*;
-import com.mojang.brigadier.suggestion.*;
-import me.paulf.fairylights.client.*;
-import me.paulf.fairylights.client.midi.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.*;
-import net.minecraft.util.text.*;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.event.world.*;
-import net.minecraftforge.eventbus.api.*;
-import net.minecraftforge.fml.client.gui.*;
-import org.apache.logging.log4j.*;
+import com.google.common.collect.ImmutableList;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.paulf.fairylights.client.ClientEventHandler;
+import me.paulf.fairylights.client.midi.MidiJingler;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.sound.midi.*;
-import java.util.*;
-import java.util.stream.*;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.Transmitter;
+import java.util.List;
+import java.util.stream.Stream;
 
 public final class JinglerCommand {
     private static final Logger LOGGER = LogManager.getLogger();

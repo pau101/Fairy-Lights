@@ -1,10 +1,13 @@
 package me.paulf.fairylights.server.fastener.connection;
 
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.util.*;
-import net.minecraft.util.math.*;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.util.CatenaryUtils;
+import me.paulf.fairylights.util.CubicBezier;
+import me.paulf.fairylights.util.Mth;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
-import java.util.*;
+import java.util.NoSuchElementException;
 
 public final class Catenary {
     private static final int MIN_VERTEX_COUNT = 8;

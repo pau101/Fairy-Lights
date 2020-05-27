@@ -1,8 +1,10 @@
 package me.paulf.fairylights.util.matrix;
 
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.Vec3d;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Objects;
 
 public final class MatrixStack implements Matrix {
     private final Deque<Matrix4> stack;

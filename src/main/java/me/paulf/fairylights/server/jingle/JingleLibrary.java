@@ -1,16 +1,21 @@
 package me.paulf.fairylights.server.jingle;
 
-import com.google.common.collect.*;
-import me.paulf.fairylights.*;
-import net.minecraft.nbt.*;
-import net.minecraft.resources.*;
-import net.minecraft.server.*;
-import net.minecraft.util.*;
-import net.minecraft.util.registry.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import me.paulf.fairylights.FairyLights;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.resources.IResource;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.DefaultedRegistry;
 
-import javax.annotation.*;
-import java.io.*;
-import java.util.*;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class JingleLibrary {
     private static final String UNKNOWN_ID = "";

@@ -1,11 +1,13 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import com.google.common.collect.*;
-import me.paulf.fairylights.util.crafting.*;
-import net.minecraft.item.*;
-import net.minecraft.tags.*;
+import com.google.common.collect.ImmutableList;
+import me.paulf.fairylights.util.crafting.GenericRecipe;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Objects;
 
 public class OreRegularIngredient implements RegularIngredient {
     private final Tag<Item> tag;

@@ -1,9 +1,9 @@
 package me.paulf.fairylights.util;
 
-import com.google.common.base.*;
-import net.minecraft.util.math.*;
+import com.google.common.base.Preconditions;
+import net.minecraft.util.math.MathHelper;
 
-import java.util.*;
+import java.util.Random;
 
 public final class RandomArray {
     private final float[] values;

@@ -1,11 +1,15 @@
 package me.paulf.fairylights.util;
 
-import com.google.common.collect.*;
-import net.minecraft.item.*;
-import net.minecraft.tags.*;
-import net.minecraftforge.common.*;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMultimap;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
+import net.minecraftforge.common.Tags;
 
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 public final class OreDictUtils {
     private OreDictUtils() {}

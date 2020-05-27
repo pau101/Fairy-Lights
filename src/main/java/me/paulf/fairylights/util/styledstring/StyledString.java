@@ -1,15 +1,18 @@
 package me.paulf.fairylights.util.styledstring;
 
-import com.google.common.base.*;
-import com.google.gson.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.text.*;
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonParseException;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 
-import java.io.*;
-import java.nio.charset.*;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
-import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 public final class StyledString implements Comparable<StyledString>, CharSequence {
     private final String value;

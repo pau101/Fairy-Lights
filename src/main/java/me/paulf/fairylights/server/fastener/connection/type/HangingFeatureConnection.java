@@ -1,17 +1,21 @@
 package me.paulf.fairylights.server.fastener.connection.type;
 
-import com.google.common.base.*;
-import me.paulf.fairylights.server.fastener.*;
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.server.fastener.connection.collision.*;
-import me.paulf.fairylights.util.*;
-import me.paulf.fairylights.util.matrix.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.math.*;
-import net.minecraft.world.*;
+import com.google.common.base.MoreObjects;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.connection.Catenary;
+import me.paulf.fairylights.server.fastener.connection.FeatureType;
+import me.paulf.fairylights.server.fastener.connection.collision.CollidableList;
+import me.paulf.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
+import me.paulf.fairylights.util.AABBBuilder;
+import me.paulf.fairylights.util.matrix.MatrixStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class HangingFeatureConnection<F extends HangingFeature<F>> extends Connection {
     protected static final FeatureType FEATURE = FeatureType.create("feature");

@@ -1,17 +1,20 @@
 package me.paulf.fairylights.server.integration.jei;
 
-import me.paulf.fairylights.*;
-import me.paulf.fairylights.server.item.*;
-import me.paulf.fairylights.util.crafting.*;
-import mezz.jei.api.*;
-import mezz.jei.api.constants.*;
-import mezz.jei.api.registration.*;
-import net.minecraft.client.*;
-import net.minecraft.client.world.*;
-import net.minecraft.item.crafting.*;
-import net.minecraft.util.*;
+import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.server.item.FLItems;
+import me.paulf.fairylights.util.crafting.GenericRecipe;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.util.ResourceLocation;
 
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public final class FairyLightsJEIPlugin implements IModPlugin {

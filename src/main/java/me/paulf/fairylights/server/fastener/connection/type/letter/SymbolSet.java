@@ -1,6 +1,8 @@
 package me.paulf.fairylights.server.fastener.connection.type.letter;
 
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public final class SymbolSet {
     private final int height;

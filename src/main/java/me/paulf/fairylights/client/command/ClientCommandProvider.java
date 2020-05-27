@@ -1,26 +1,33 @@
 package me.paulf.fairylights.client.command;
 
-import com.google.common.collect.*;
-import com.google.gson.internal.*;
-import com.mojang.brigadier.*;
-import com.mojang.brigadier.builder.*;
-import com.mojang.brigadier.tree.*;
-import net.minecraft.client.*;
-import net.minecraft.client.entity.player.*;
-import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.network.play.*;
-import net.minecraft.command.*;
-import net.minecraft.entity.*;
-import net.minecraft.profiler.*;
-import net.minecraft.server.integrated.*;
-import net.minecraft.util.text.*;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.eventbus.api.*;
-import net.minecraftforge.fml.common.*;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.internal.UnsafeAllocator;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.RootCommandNode;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ICommandSource;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.entity.Entity;
+import net.minecraft.profiler.DebugProfiler;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import java.util.*;
-import java.util.regex.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Paul Fulham

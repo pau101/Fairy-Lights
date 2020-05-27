@@ -1,10 +1,11 @@
 package me.paulf.fairylights.server.block.entity;
 
-import me.paulf.fairylights.*;
-import me.paulf.fairylights.server.block.*;
-import net.minecraft.tileentity.*;
-import net.minecraftforge.fml.*;
-import net.minecraftforge.registries.*;
+import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.server.block.FLBlocks;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public final class FLBlockEntities {
     private FLBlockEntities() {}

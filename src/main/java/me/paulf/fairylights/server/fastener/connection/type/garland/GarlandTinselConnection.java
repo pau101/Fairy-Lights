@@ -1,14 +1,14 @@
 package me.paulf.fairylights.server.fastener.connection.type.garland;
 
-import me.paulf.fairylights.server.fastener.*;
-import me.paulf.fairylights.server.fastener.connection.*;
-import me.paulf.fairylights.server.fastener.connection.type.*;
-import me.paulf.fairylights.server.item.*;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.world.*;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.item.LightItem;
+import net.minecraft.item.DyeColor;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.UUID;
 
 public final class GarlandTinselConnection extends Connection {
     private DyeColor color;

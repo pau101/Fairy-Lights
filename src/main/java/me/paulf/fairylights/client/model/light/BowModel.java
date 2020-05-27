@@ -1,9 +1,10 @@
 package me.paulf.fairylights.client.model.light;
 
-import com.mojang.blaze3d.matrix.*;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.*;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class BowModel extends Model {
     private final ModelRenderer root;

@@ -1,11 +1,11 @@
 package me.paulf.fairylights.client.gui.component;
 
-import com.mojang.blaze3d.systems.*;
-import me.paulf.fairylights.client.gui.*;
-import me.paulf.fairylights.util.styledstring.*;
-import net.minecraft.client.*;
-import net.minecraft.client.gui.widget.button.*;
-import net.minecraft.util.text.*;
+import com.mojang.blaze3d.systems.RenderSystem;
+import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
+import me.paulf.fairylights.util.styledstring.StyledString;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.TextFormatting;
 
 public final class ColorButton extends Button {
     private static final int TEX_U = 0;
