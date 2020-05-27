@@ -22,6 +22,7 @@
     }
   },
   "result": {
-    "item": "fairylights:letter_bunting"
+    "item": "fairylights:letter_bunting",
+    "nbt": "{text:{value:\u0027{\"text\":\"\"}\u0027}}"
   }
 }

@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "fairylights:letter_bunting"
+      "fairylights:garland"
     ]
   },
   "criteria": {
@@ -16,12 +16,12 @@
         ]
       }
     },
-    "has_string": {
+    "has_vine": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:string"
+            "item": "minecraft:vine"
           }
         ]
       }
@@ -29,14 +29,14 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fairylights:letter_bunting"
+        "recipe": "fairylights:garland"
       }
     }
   },
   "requirements": [
     [
       "has_iron",
-      "has_string",
+      "has_vine",
       "has_the_recipe"
     ]
   ]

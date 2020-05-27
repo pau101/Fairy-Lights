@@ -1,14 +1,18 @@
 package me.paulf.fairylights.data;
 
 import com.google.common.collect.*;
+import com.google.gson.*;
 import com.mojang.datafixers.util.*;
 import me.paulf.fairylights.*;
 import me.paulf.fairylights.server.block.*;
 import me.paulf.fairylights.server.item.*;
+import me.paulf.fairylights.util.styledstring.*;
 import net.minecraft.block.*;
 import net.minecraft.data.*;
 import net.minecraft.data.loot.*;
 import net.minecraft.item.*;
+import net.minecraft.item.crafting.*;
+import net.minecraft.nbt.*;
 import net.minecraft.util.*;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.functions.*;
@@ -19,6 +23,7 @@ import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.registries.*;
 
+import javax.annotation.*;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -39,6 +44,8 @@ public final class DataGatherer {
 
         @Override
         protected void registerRecipes(final Consumer<IFinishedRecipe> consumer) {
+            final CompoundNBT nbt = new CompoundNBT();
+            nbt.put("text", StyledString.serialize(new StyledString()));
             ShapedRecipeBuilder.shapedRecipe(FLItems.LETTER_BUNTING.get())
                 .patternLine("I-I")
                 .patternLine("PBF")
@@ -49,7 +56,7 @@ public final class DataGatherer {
                 .key('F', Tags.Items.FEATHERS)
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
-                .build(consumer);
+                .build(addNbt(consumer, nbt));
             ShapedRecipeBuilder.shapedRecipe(FLItems.LADDER.get())
                 .patternLine("#/")
                 .patternLine("#/")
@@ -57,6 +64,13 @@ public final class DataGatherer {
                 .key('#', Items.LADDER)
                 .key('/', Items.STICK)
                 .addCriterion("has_stick", this.hasItem(Items.STICK))
+                .build(consumer);
+            ShapedRecipeBuilder.shapedRecipe(FLItems.GARLAND.get(), 2)
+                .patternLine("I-I")
+                .key('I', Tags.Items.INGOTS_IRON)
+                .key('-', Items.VINE)
+                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_vine", this.hasItem(Items.VINE))
                 .build(consumer);
         }
     }
@@ -100,6 +114,52 @@ public final class DataGatherer {
                     )
                 );
             }
+        }
+    }
+
+    static Consumer<IFinishedRecipe> addNbt(final Consumer<IFinishedRecipe> consumer, final CompoundNBT nbt) {
+        return recipe -> consumer.accept(new ForwardingFinishedRecipe() {
+            @Override
+            protected IFinishedRecipe delegate() {
+                return recipe;
+            }
+
+            @Override
+            public void serialize(final JsonObject json) {
+                super.serialize(json);
+                json.getAsJsonObject("result").addProperty("nbt", nbt.toString());
+            }
+        });
+    }
+
+    abstract static class ForwardingFinishedRecipe implements IFinishedRecipe {
+        protected abstract IFinishedRecipe delegate();
+
+        @Override
+        public void serialize(final JsonObject json) {
+            this.delegate().serialize(json);
+        }
+
+        @Override
+        public ResourceLocation getID() {
+            return this.delegate().getID();
+        }
+
+        @Override
+        public IRecipeSerializer<?> getSerializer() {
+            return this.delegate().getSerializer();
+        }
+
+        @Nullable
+        @Override
+        public JsonObject getAdvancementJson() {
+            return this.delegate().getAdvancementJson();
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getAdvancementID() {
+            return this.delegate().getAdvancementID();
         }
     }
 }
