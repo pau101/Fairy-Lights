@@ -49,6 +49,7 @@ public final class FairyLights {
         FLCraftingRecipes.REG.register(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
         bus.<ModelRegistryEvent>addListener(this::init);
+//        new DataGatherer().register(bus);
     }
 
     public void init(final FMLCommonSetupEvent event) {
