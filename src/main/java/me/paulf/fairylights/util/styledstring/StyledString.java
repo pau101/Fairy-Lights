@@ -609,15 +609,15 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
                         style = style.withColor(color);
                     }
                 } else if (ch == 'k') {
-                    style = style.withObfuscated(false);
+                    style = style.withObfuscated(true);
                 } else if (ch == 'l') {
-                    style = style.withBold(false);
+                    style = style.withBold(true);
                 } else if (ch == 'm') {
-                    style = style.withStrikethrough(false);
+                    style = style.withStrikethrough(true);
                 } else if (ch == 'n') {
-                    style = style.withUnderline(false);
+                    style = style.withUnderline(true);
                 } else if (ch == 'o') {
-                    style = style.withItalic(false);
+                    style = style.withItalic(true);
                 } else if (ch == 'r') {
                     style = plainStyle;
                 } else {
