@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.Random;
@@ -93,10 +94,11 @@ public abstract class ConnectionRenderer<C extends Connection> {
                 public void translateRotate(final MatrixStack stack) {
                     super.translateRotate(stack);
                     // Don't scale normal matrix
-                    stack.getLast().getMatrix().mul(Matrix4f.makeScale(1.0F, 1.0F, WireModel.this.length));
+                    stack.getLast().getMatrix().mul(Matrix4f.makeScale(1.0F + (size % 1.0F), 1.0F, WireModel.this.length));
                 }
             };
-            this.root.addBox(-size * 0.5F, -size * 0.5F, 0.0F, size, size, 1.0F);
+            final int s = MathHelper.floor(size);
+            this.root.addBox(-s * 0.5F, -s * 0.5F, 0.0F, s, s, 1.0F);
         }
 
         @Override

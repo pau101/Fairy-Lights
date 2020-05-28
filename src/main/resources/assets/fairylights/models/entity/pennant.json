@@ -4,7 +4,7 @@
         "layer0": "fairylights:entity/pennant"
     },
     "display": {
-        "head": {
+        "fixed": {
             "translation": [ -7.5, -16, -8 ]
         }
     }

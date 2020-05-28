@@ -26,7 +26,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
     public static final ResourceLocation MODEL = new ResourceLocation(FairyLights.ID, "entity/pennant");
 
     public PennantBuntingRenderer() {
-        super(0, 17, 1.0F);
+        super(0, 17, 1.25F);
     }
 
     @Override
