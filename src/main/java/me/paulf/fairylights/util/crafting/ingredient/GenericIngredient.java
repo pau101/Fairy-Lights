@@ -2,12 +2,9 @@ package me.paulf.fairylights.util.crafting.ingredient;
 
 import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.crafting.Ingredient;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,20 +39,9 @@ public interface GenericIngredient<I extends GenericIngredient<? extends I, M>, 
 
     default void absent(final ItemStack output) {}
 
-    default ImmutableList<ItemStack> getMatchingSubtypes(final ItemStack stack) {
+    default ImmutableList<ItemStack> getMatchingSubtypes(final Ingredient stack) {
         Objects.requireNonNull(stack, "stack");
-        final NonNullList<ItemStack> subtypes = NonNullList.create();
-        final Item item = stack.getItem();
-        for (final ItemGroup tab : item.getCreativeTabs()) {
-            item.fillItemGroup(tab, subtypes);
-        }
-        final Iterator<ItemStack> iter = subtypes.iterator();
-        while (iter.hasNext()) {
-            if (!this.matches(iter.next(), ItemStack.EMPTY).doesMatch()) {
-                iter.remove();
-            }
-        }
-        return ImmutableList.copyOf(subtypes);
+        return ImmutableList.copyOf(stack.getMatchingStacks());
     }
 
     default void addTooltip(final List<String> tooltip) {}

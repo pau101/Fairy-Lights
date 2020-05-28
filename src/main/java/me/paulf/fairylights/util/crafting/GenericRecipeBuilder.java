@@ -4,14 +4,13 @@ import com.google.common.base.Strings;
 import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.InertOreAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.ListRegularIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.OreRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public final class GenericRecipeBuilder {
     private static final char EMPTY_SPACE = ' ';
 
@@ -41,7 +41,7 @@ public final class GenericRecipeBuilder {
 
     private final Map<Character, RegularIngredient> ingredients = new HashMap<>();
 
-    private final List<AuxiliaryIngredient> auxiliaryIngredients = new ArrayList<>();
+    private final List<AuxiliaryIngredient<?>> auxiliaryIngredients = new ArrayList<>();
 
     public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final Item item) {
         this(name, serializer, new ItemStack(item));
@@ -113,11 +113,15 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder withIngredient(final char key, final ItemStack stack) {
-        return this.withIngredient(key, new BasicRegularIngredient(Objects.requireNonNull(stack, "stack")));
+        return this.withIngredient(key, Ingredient.fromStacks(Objects.requireNonNull(stack, "stack")));
+    }
+
+    public GenericRecipeBuilder withIngredient(final char key, final Ingredient ingredient) {
+        return this.withIngredient(key, new BasicRegularIngredient(ingredient));
     }
 
     public GenericRecipeBuilder withIngredient(final char key, final Tag<Item> tag) {
-        return this.withIngredient(key, new OreRegularIngredient(tag));
+        return this.withIngredient(key, new BasicRegularIngredient(Ingredient.fromTag(tag)));
     }
 
     public GenericRecipeBuilder withIngredient(final char key, final RegularIngredient ingredient) {
@@ -128,8 +132,8 @@ public final class GenericRecipeBuilder {
     public GenericRecipeBuilder withAnyIngredient(final char key, final Object... objects) {
         Objects.requireNonNull(objects, "objects");
         final List<RegularIngredient> ingredients = new ArrayList<>(objects.length);
-        for (int i = 0; i < objects.length; i++) {
-            ingredients.add(asIngredient(objects[i]));
+        for (final Object object : objects) {
+            ingredients.add(asIngredient(object));
         }
         this.ingredients.put(key, new ListRegularIngredient(ingredients));
         return this;
@@ -156,7 +160,7 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final ItemStack stack, final boolean isRequired, final int limit) {
-        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Objects.requireNonNull(stack, "stack"), isRequired, limit));
+        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromStacks(Objects.requireNonNull(stack, "stack")), isRequired, limit));
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final Tag<Item> tag) {
@@ -164,7 +168,15 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final Tag<Item> tag, final boolean isRequired, final int limit) {
-        return this.withAuxiliaryIngredient(new InertOreAuxiliaryIngredient(tag, isRequired, limit));
+        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(tag), isRequired, limit));
+    }
+
+    public GenericRecipeBuilder withAuxiliaryIngredient(final Ingredient ingredient) {
+        return this.withAuxiliaryIngredient(ingredient, false, 1);
+    }
+
+    public GenericRecipeBuilder withAuxiliaryIngredient(final Ingredient ingredient, final boolean isRequired, final int limit) {
+        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(ingredient, isRequired, limit));
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final AuxiliaryIngredient<?> ingredient) {
@@ -186,23 +198,24 @@ public final class GenericRecipeBuilder {
             ingredients[i] = ingredient;
         }
         final AuxiliaryIngredient<?>[] auxiliaryIngredients = this.auxiliaryIngredients.toArray(
-            new AuxiliaryIngredient<?>[this.auxiliaryIngredients.size()]
+            new AuxiliaryIngredient<?>[0]
         );
         return new GenericRecipe(this.name, this.serializer, this.output, ingredients, auxiliaryIngredients, this.width, this.height);
     }
 
+    @SuppressWarnings("unchecked")
     private static RegularIngredient asIngredient(final Object object) {
         if (object instanceof Item) {
-            return new BasicRegularIngredient(new ItemStack((Item) object));
+            return new BasicRegularIngredient(Ingredient.fromItems((Item) object));
         }
         if (object instanceof Block) {
-            return new BasicRegularIngredient(new ItemStack((Block) object));
+            return new BasicRegularIngredient(Ingredient.fromItems((Block) object));
         }
         if (object instanceof ItemStack) {
-            return new BasicRegularIngredient((ItemStack) object);
+            return new BasicRegularIngredient(Ingredient.fromStacks((ItemStack) object));
         }
         if (object instanceof Tag) {
-            return new OreRegularIngredient((Tag<Item>) object);
+            return new BasicRegularIngredient(Ingredient.fromTag((Tag<Item>) object));
         }
         if (object instanceof RegularIngredient) {
             return (RegularIngredient) object;

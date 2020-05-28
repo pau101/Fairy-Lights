@@ -11,17 +11,15 @@ import me.paulf.fairylights.util.crafting.GenericRecipe;
 import me.paulf.fairylights.util.crafting.GenericRecipeBuilder;
 import me.paulf.fairylights.util.crafting.ingredient.BasicAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.DyeRegularIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertListAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.InertOreAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.OreAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -87,7 +85,11 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> METEOR_LIGHT = REG.register("crafting_special_meteor_light", makeSerializer(FLCraftingRecipes::createMeteorLight));
 
-    public static final RegularIngredient LIGHT_DYE = new DyeRegularIngredient() {
+    private static Ingredient dyeIngredient() {
+        return Ingredient.fromTag(Tags.Items.DYES);
+    }
+
+    public static final RegularIngredient LIGHT_DYE = new BasicRegularIngredient(dyeIngredient()) {
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
             return ImmutableList.of(OreDictUtils.getDyes(LightItem.getLightColor(output)));
@@ -113,44 +115,44 @@ public final class FLCraftingRecipes {
             .withShape("I-I")
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withAnyIngredient('-',
-                new BasicRegularIngredient(Items.STRING) {
+                new BasicRegularIngredient(Ingredient.fromTag(Tags.Items.STRING)) {
                     @Override
                     public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                        return useInputsForTagBool(this, output, "tight", false) ? super.getInput(output) : ImmutableList.of();
+                        return useInputsForTagBool(output, "tight", false) ? super.getInput(output) : ImmutableList.of();
                     }
                 },
-                new BasicRegularIngredient(Items.STICK) {
+                new BasicRegularIngredient(Ingredient.fromItems(Items.STICK)) {
                     @Override
                     public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                        return useInputsForTagBool(this, output, "tight", true) ? super.getInput(output) : ImmutableList.of();
+                        return useInputsForTagBool(output, "tight", true) ? super.getInput(output) : ImmutableList.of();
                     }
 
                     @Override
                     public void present(final ItemStack output) {
-                        output.getTag().putBoolean("tight", true);
+                        output.getOrCreateTag().putBoolean("tight", true);
                     }
 
                     @Override
                     public void absent(final ItemStack output) {
-                        output.getTag().putBoolean("tight", false);
+                        output.getOrCreateTag().putBoolean("tight", false);
                     }
                 }
             )
             .withAuxiliaryIngredient(new LightIngredient(true))
-            .withAuxiliaryIngredient(new InertOreAuxiliaryIngredient(Tags.Items.DUSTS_GLOWSTONE, false, 1) {
+            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(Tags.Items.DUSTS_GLOWSTONE), false, 1) {
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                    return useInputsForTagBool(this, output, "twinkle", true) ? super.getInput(output) : ImmutableList.of();
+                    return useInputsForTagBool(output, "twinkle", true) ? super.getInput(output) : ImmutableList.of();
                 }
 
                 @Override
                 public void present(final ItemStack output) {
-                    output.getTag().putBoolean("twinkle", true);
+                    output.getOrCreateTag().putBoolean("twinkle", true);
                 }
 
                 @Override
                 public void absent(final ItemStack output) {
-                    output.getTag().putBoolean("twinkle", false);
+                    output.getOrCreateTag().putBoolean("twinkle", false);
                 }
 
                 @Override
@@ -162,7 +164,7 @@ public final class FLCraftingRecipes {
             .build();
     }
 
-    private static boolean useInputsForTagBool(final GenericIngredient ingredient, final ItemStack output, final String key, final boolean value) {
+    private static boolean useInputsForTagBool(final ItemStack output, final String key, final boolean value) {
         final CompoundNBT compound = output.getTag();
         return compound != null && compound.getBoolean(key) == value;
     }
@@ -175,12 +177,15 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createFairyLightsAugmentation(final ResourceLocation name) {
         return new GenericRecipeBuilder(name, FAIRY_LIGHTS_AUGMENTATION, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new))
             .withShape("F")
-            .withIngredient('F', new BasicRegularIngredient(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new)) {
+            .withIngredient('F', new BasicRegularIngredient(Ingredient.fromItems(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new))) {
                 @Override
                 public ImmutableList<ItemStack> getInputs() {
-                    final ItemStack stack = this.ingredient.copy();
-                    stack.setTag(new CompoundNBT());
-                    return makeHangingLightsExamples(stack);
+                    return Arrays.stream(this.ingredient.getMatchingStacks())
+                        .map(ItemStack::copy)
+                        .flatMap(stack -> {
+                            stack.setTag(new CompoundNBT());
+                            return makeHangingLightsExamples(stack).stream();
+                        }).collect(ImmutableList.toImmutableList());
                 }
 
                 @Override
@@ -215,7 +220,7 @@ public final class FLCraftingRecipes {
                         return ImmutableList.of();
                     }
                 },
-                new OreAuxiliaryIngredient<MutableInt>(Tags.Items.DUSTS_GLOWSTONE, false, 1) {
+                new BasicAuxiliaryIngredient<MutableInt>(Ingredient.fromTag(Tags.Items.DUSTS_GLOWSTONE), false, 1) {
                     @Override
                     public MutableInt accumulator() {
                         return new MutableInt();
@@ -229,10 +234,10 @@ public final class FLCraftingRecipes {
                     @Override
                     public boolean finish(final MutableInt count, final ItemStack output) {
                         if (count.intValue() > 0) {
-                            if (output.getTag().getBoolean("twinkle")) {
+                            if (output.getOrCreateTag().getBoolean("twinkle")) {
                                 return true;
                             }
-                            output.getTag().putBoolean("twinkle", true);
+                            output.getOrCreateTag().putBoolean("twinkle", true);
                         }
                         return false;
                     }
@@ -276,8 +281,8 @@ public final class FLCraftingRecipes {
             .withShape(" P ", "I-I", " D ")
             .withIngredient('P', Items.PAPER)
             .withIngredient('I', Tags.Items.INGOTS_IRON)
-            .withIngredient('-', Items.STRING)
-            .withIngredient('D', new DyeRegularIngredient() {
+            .withIngredient('-', Tags.Items.STRING)
+            .withIngredient('D', new BasicRegularIngredient(dyeIngredient()) {
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
                     final CompoundNBT compound = output.getTag();
@@ -304,7 +309,7 @@ public final class FLCraftingRecipes {
         return new GenericRecipeBuilder(name, PENNANT_BUNTING, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))
             .withShape("I-I")
             .withIngredient('I', Tags.Items.INGOTS_IRON)
-            .withIngredient('-', Items.STRING)
+            .withIngredient('-', Tags.Items.STRING)
             .withAuxiliaryIngredient(new PennantIngredient())
             .build();
     }
@@ -312,12 +317,15 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createPennantBuntingAugmentation(final ResourceLocation name) {
         return new GenericRecipeBuilder(name, PENNANT_BUNTING_AUGMENTATION, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))
             .withShape("B")
-            .withIngredient('B', new BasicRegularIngredient(FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new)) {
+            .withIngredient('B', new BasicRegularIngredient(Ingredient.fromItems(FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))) {
                 @Override
                 public ImmutableList<ItemStack> getInputs() {
-                    final ItemStack stack = this.ingredient.copy();
-                    stack.setTag(new CompoundNBT());
-                    return makePennantExamples(stack);
+                    return Arrays.stream(this.ingredient.getMatchingStacks())
+                        .map(ItemStack::copy)
+                        .flatMap(stack -> {
+                            stack.setTag(new CompoundNBT());
+                            return makePennantExamples(stack).stream();
+                        }).collect(ImmutableList.toImmutableList());
                 }
 
                 @Override
@@ -372,8 +380,8 @@ public final class FLCraftingRecipes {
         return new GenericRecipeBuilder(name, PENNANT, FLItems.PENNANT.orElseThrow(IllegalStateException::new))
             .withShape("- -", "PDP", " P ")
             .withIngredient('P', Items.PAPER)
-            .withIngredient('-', Items.STRING)
-            .withIngredient('D', new DyeRegularIngredient() {
+            .withIngredient('-', Tags.Items.STRING)
+            .withIngredient('D', new BasicRegularIngredient(dyeIngredient()) {
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
                     return ImmutableList.of(OreDictUtils.getDyes(LightItem.getLightColor(output)));
@@ -409,7 +417,7 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createOrbLantern(final ResourceLocation name) {
         return createLight(name, ORB_LANTERN, LightVariant.ORB, b -> b
             .withShape(" I ", "SDS", " W ")
-            .withIngredient('S', Items.STRING)
+            .withIngredient('S', Tags.Items.STRING)
             .withIngredient('W', Items.WHITE_WOOL)
         );
     }
@@ -466,7 +474,7 @@ public final class FLCraftingRecipes {
         return createLight(name, SPIDER_LIGHT, LightVariant.SPIDER, b -> b
             .withShape(" I ", "WDW", "SES")
             .withIngredient('W', Items.COBWEB)
-            .withIngredient('S', Items.STRING)
+            .withIngredient('S', Tags.Items.STRING)
             .withIngredient('E', Items.SPIDER_EYE)
         );
     }
@@ -512,9 +520,9 @@ public final class FLCraftingRecipes {
             .build();
     }
 
-    private static class LightIngredient extends OreAuxiliaryIngredient<ListNBT> {
+    private static class LightIngredient extends BasicAuxiliaryIngredient<ListNBT> {
         private LightIngredient(final boolean isRequired) {
-            super(new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights")), isRequired, 8);
+            super(Ingredient.fromTag(new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights"))), isRequired, 8);
         }
 
         @Override
@@ -575,7 +583,7 @@ public final class FLCraftingRecipes {
 
     private static class PennantIngredient extends BasicAuxiliaryIngredient<ListNBT> {
         private PennantIngredient() {
-            super(new ItemStack(FLItems.PENNANT.orElseThrow(IllegalStateException::new)), true, 8);
+            super(Ingredient.fromItems(FLItems.PENNANT.orElseThrow(IllegalStateException::new)), true, 8);
         }
 
         @Override
