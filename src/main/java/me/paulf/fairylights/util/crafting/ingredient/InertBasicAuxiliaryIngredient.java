@@ -6,12 +6,12 @@ import net.minecraft.item.crafting.Ingredient;
 import javax.annotation.Nullable;
 
 public class InertBasicAuxiliaryIngredient extends BasicAuxiliaryIngredient<Void> {
-    public InertBasicAuxiliaryIngredient(final Ingredient stack, final boolean isRequired, final int limit) {
-        super(stack, isRequired, limit);
+    public InertBasicAuxiliaryIngredient(final Ingredient ingredient, final boolean isRequired, final int limit) {
+        super(ingredient, isRequired, limit);
     }
 
-    public InertBasicAuxiliaryIngredient(final Ingredient stack) {
-        super(stack, true, Integer.MAX_VALUE);
+    public InertBasicAuxiliaryIngredient(final Ingredient ingredient) {
+        super(ingredient, true, Integer.MAX_VALUE);
     }
 
     @Nullable
