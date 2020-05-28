@@ -11,9 +11,9 @@ import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +29,9 @@ import java.util.Set;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
-public final class GenericRecipe extends SpecialRecipe {
+public final class GenericRecipe implements ICraftingRecipe {
+    private final ResourceLocation id;
+
     public static final EmptyRegularIngredient EMPTY = new EmptyRegularIngredient();
 
     private final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer;
@@ -50,8 +52,8 @@ public final class GenericRecipe extends SpecialRecipe {
 
     private final NonNullList<Ingredient> displayIngredients;
 
-    GenericRecipe(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height) {
-        super(name);
+    GenericRecipe(final ResourceLocation id, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height) {
+        this.id = Objects.requireNonNull(id, "name");
         Objects.requireNonNull(serializer, "serializer");
         Objects.requireNonNull(output, "output");
         Objects.requireNonNull(ingredients, "ingredients");
@@ -87,6 +89,11 @@ public final class GenericRecipe extends SpecialRecipe {
             }
         }
         return ingredients;
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return this.id;
     }
 
     @Override

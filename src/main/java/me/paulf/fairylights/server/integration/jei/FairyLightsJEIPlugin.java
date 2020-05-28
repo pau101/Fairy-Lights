@@ -42,6 +42,7 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(final ISubtypeRegistration registry) {
         registry.registerSubtypeInterpreter(FLItems.TINSEL.orElseThrow(IllegalStateException::new), new TinselSubtypeInterpreter());
-        //registry.useNbtForSubtypes(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
+//        registry.useNbtForSubtypes(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
+//        registry.useNbtForSubtypes(Arrays.stream(LightVariant.values()).map(LightVariant::getItem).toArray(Item[]::new));
     }
 }

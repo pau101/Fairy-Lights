@@ -6,8 +6,11 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.util.Constants;
 
 public final class LightItem extends BlockItem {
     public LightItem(final Block block, final Properties properties) {
@@ -31,7 +34,11 @@ public final class LightItem extends BlockItem {
     }
 
     public static DyeColor getLightColor(final ItemStack stack) {
-        return stack.hasTag() ? DyeColor.byId(stack.getTag().getByte("color")) : DyeColor.YELLOW;
+        final CompoundNBT tag = stack.getTag();
+        if (tag != null && tag.contains("color", Constants.NBT.TAG_ANY_NUMERIC)) {
+            return DyeColor.byId(tag.getByte("color"));
+        }
+        return DyeColor.byId(Math.floorMod((int) (Util.milliTime() / 1500), 16));
     }
 
     public static void setLightColor(final ItemStack stack, final DyeColor color) {
