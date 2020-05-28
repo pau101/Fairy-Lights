@@ -12,6 +12,7 @@ import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
@@ -47,7 +48,7 @@ public final class GenericRecipe extends SpecialRecipe {
 
     private final ImmutableList<IntUnaryOperator> xFunctions = ImmutableList.of(IntUnaryOperator.identity(), i -> this.getWidth() - 1 - i);
 
-    private final NonNullList<net.minecraft.item.crafting.Ingredient> displayIngredients;
+    private final NonNullList<Ingredient> displayIngredients;
 
     GenericRecipe(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height) {
         super(name);
@@ -67,21 +68,21 @@ public final class GenericRecipe extends SpecialRecipe {
         this.displayIngredients = this.createDisplayIngredients();
     }
 
-    private NonNullList<net.minecraft.item.crafting.Ingredient> createDisplayIngredients() {
-        final NonNullList<net.minecraft.item.crafting.Ingredient> ingredients = NonNullList.withSize(9, net.minecraft.item.crafting.Ingredient.EMPTY);
+    private NonNullList<Ingredient> createDisplayIngredients() {
+        final NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
         for (int i = 0; i < this.ingredients.length; i++) {
             final int x = i % this.width;
             final int y = i / this.width;
             final ItemStack[] stacks = this.ingredients[i].getInputs().toArray(new ItemStack[0]);
-            ingredients.set(x + y * 3, net.minecraft.item.crafting.Ingredient.fromStacks(stacks));
+            ingredients.set(x + y * 3, Ingredient.fromStacks(stacks));
         }
         for (int i = 0, slot = 0; i < this.auxiliaryIngredients.length && slot < ingredients.size(); slot++) {
-            final net.minecraft.item.crafting.Ingredient ing = ingredients.get(slot);
-            if (ing == net.minecraft.item.crafting.Ingredient.EMPTY) {
+            final Ingredient ing = ingredients.get(slot);
+            if (ing == Ingredient.EMPTY) {
                 final AuxiliaryIngredient<?> aux = this.auxiliaryIngredients[i++];
                 if (aux.isRequired()) {
                     final ItemStack[] stacks = aux.getInputs().toArray(new ItemStack[0]);
-                    ingredients.set(slot, net.minecraft.item.crafting.Ingredient.fromStacks(stacks));
+                    ingredients.set(slot, Ingredient.fromStacks(stacks));
                 }
             }
         }
@@ -114,7 +115,7 @@ public final class GenericRecipe extends SpecialRecipe {
     }
 
     @Override
-    public NonNullList<net.minecraft.item.crafting.Ingredient> getIngredients() {
+    public NonNullList<Ingredient> getIngredients() {
         return this.displayIngredients;
     }
 
