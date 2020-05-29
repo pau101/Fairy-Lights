@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "fairylights:pennant"
+      "fairylights:triangle_pennant"
     ]
   },
   "criteria": {
@@ -29,7 +29,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fairylights:pennant"
+        "recipe": "fairylights:triangle_pennant"
       }
     }
   },

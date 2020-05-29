@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -99,7 +100,7 @@ public final class ClientProxy extends ServerProxy {
             }
         });
         final ImmutableList<ResourceLocation> entityModels = new ImmutableList.Builder<ResourceLocation>()
-            .add(PennantBuntingRenderer.MODEL)
+            .addAll(PennantBuntingRenderer.MODELS.values())
             .addAll(LetterBuntingRenderer.MODELS.values())
             .build();
         entityModels.forEach(ModelLoader::addSpecialModel);
@@ -127,12 +128,7 @@ public final class ClientProxy extends ServerProxy {
     @Override
     public void initRendersLate() {
         final ItemColors colors = Minecraft.getInstance().getItemColors();
-        colors.register((stack, index) -> {
-                if (index == 0) {
-                    return 0xFFFFFFFF;
-                }
-                return LightItem.getColorValue(LightItem.getLightColor(stack));
-            },
+        colors.register(ClientProxy::secondLayerColor,
             FLItems.FAIRY_LIGHT.orElseThrow(IllegalStateException::new),
             FLItems.PAPER_LANTERN.orElseThrow(IllegalStateException::new),
             FLItems.ORB_LANTERN.orElseThrow(IllegalStateException::new),
@@ -178,12 +174,10 @@ public final class ClientProxy extends ServerProxy {
             }
             return 0xFFFFFFFF;
         }, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new));
-        colors.register((stack, index) -> {
-            if (index == 0) {
-                return 0xFFFFFF;
-            }
-            return LightItem.getColorValue(LightItem.getLightColor(stack));
-        }, FLItems.PENNANT.orElseThrow(IllegalStateException::new));
+        colors.register(ClientProxy::secondLayerColor, FLItems.TRIANGLE_PENNANT.orElseThrow(IllegalStateException::new));
+        colors.register(ClientProxy::secondLayerColor, FLItems.SPEARHEAD_PENNANT.orElseThrow(IllegalStateException::new));
+        colors.register(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.orElseThrow(IllegalStateException::new));
+        colors.register(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.orElseThrow(IllegalStateException::new));
         colors.register((stack, index) -> {
             if (index > 0 && stack.hasTag()) {
                 final StyledString str = StyledString.deserialize(stack.getTag().getCompound("text"));
@@ -228,5 +222,9 @@ public final class ClientProxy extends ServerProxy {
         RenderTypeLookup.setRenderLayer(FLBlocks.SNOWFLAKE_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(FLBlocks.ICICLE_LIGHTS.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(FLBlocks.METEOR_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());*/
+    }
+
+    private static int secondLayerColor(final ItemStack stack, final int index) {
+        return index == 0 ? 0xFFFFFF : LightItem.getColorValue(LightItem.getLightColor(stack));
     }
 }

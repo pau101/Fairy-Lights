@@ -1,0 +1,11 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "fairylights:entity/spearhead_pennant"
+    },
+    "display": {
+        "fixed": {
+            "translation": [ -7.5, -16, -8 ]
+        }
+    }
+}

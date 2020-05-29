@@ -1,10 +1,13 @@
 package me.paulf.fairylights.server.fastener.connection.type.pennant;
 
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec3d;
 
 public class Pennant extends HangingFeature<Pennant> {
     private int color;
+    private Item item = Items.AIR;
 
     public Pennant(final int index, final Vec3d point, final float yaw, final float pitch) {
         super(index, point, yaw, pitch, 0.0F);
@@ -14,8 +17,16 @@ public class Pennant extends HangingFeature<Pennant> {
         this.color = color;
     }
 
+    public void setItem(final Item item) {
+        this.item = item;
+    }
+
     public int getColor() {
         return this.color;
+    }
+
+    public Item getItem() {
+        return this.item;
     }
 
     @Override

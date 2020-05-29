@@ -1,12 +1,14 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.pennant.Pennant;
 import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
+import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.styledstring.Style;
 import me.paulf.fairylights.util.styledstring.StyledString;
@@ -17,13 +19,21 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix3f;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
 public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingConnection> {
-    public static final ResourceLocation MODEL = new ResourceLocation(FairyLights.ID, "entity/pennant");
+    public static final ResourceLocation DEFAULT_MODEL = new ResourceLocation(FairyLights.ID, "entity/triangle_pennant");
+
+    public static final ImmutableMap<Item, ResourceLocation> MODELS = ImmutableMap.of(
+        FLItems.TRIANGLE_PENNANT.get(), DEFAULT_MODEL,
+        FLItems.SPEARHEAD_PENNANT.get(), new ResourceLocation(FairyLights.ID, "entity/spearhead_pennant"),
+        FLItems.SWALLOWTAIL_PENNANT.get(), new ResourceLocation(FairyLights.ID, "entity/swallowtail_pennant"),
+        FLItems.SQUARE_PENNANT.get(), new ResourceLocation(FairyLights.ID, "entity/square_pennant")
+    );
 
     public PennantBuntingRenderer() {
         super(0, 17, 1.25F);
@@ -32,7 +42,6 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
     @Override
     protected void render(final PennantBuntingConnection conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
-        final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(MODEL);
         final Pennant[] currLights = conn.getFeatures();
         final Pennant[] prevLights = conn.getPrevFeatures();
         if (currLights != null && prevLights != null) {
@@ -54,6 +63,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 final float r = ((color >> 16) & 0xFF) / 255.0F;
                 final float g = ((color >> 8) & 0xFF) / 255.0F;
                 final float b = (color & 0xFF) / 255.0F;
+                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(MODELS.getOrDefault(currPennant.getItem(), DEFAULT_MODEL));
                 final Vec3d pos = Mth.lerp(prevPennant.getPoint(), currPennant.getPoint(), delta);
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);

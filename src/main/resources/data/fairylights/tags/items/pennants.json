@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+        "fairylights:triangle_pennant",
+        "fairylights:spearhead_pennant",
+        "fairylights:swallowtail_pennant",
+        "fairylights:square_pennant"
+    ]
+}

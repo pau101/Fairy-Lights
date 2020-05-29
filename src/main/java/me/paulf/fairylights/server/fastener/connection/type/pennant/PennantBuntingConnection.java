@@ -10,28 +10,33 @@ import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnec
 import me.paulf.fairylights.server.fastener.connection.type.Lettered;
 import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.util.NBTSerializable;
 import me.paulf.fairylights.util.OreDictUtils;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public final class PennantBuntingConnection extends HangingFeatureConnection<Pennant> implements Lettered {
-    private List<DyeColor> pattern;
+    private List<Entry> pattern;
 
     private StyledString text;
 
@@ -66,10 +71,10 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
         if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
             final int index = feature % this.pattern.size();
-            final DyeColor patternColor = this.pattern.get(index);
+            final Entry patternEntry = this.pattern.get(index);
             final DyeColor color = DyeColor.getColor(heldStack);
-            if (patternColor != color) {
-                this.pattern.set(index, color);
+            if (patternEntry.getColor() != color) {
+                patternEntry.color = color;
                 this.dataUpdateState = true;
                 heldStack.shrink(1);
                 this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
@@ -88,7 +93,9 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     protected Pennant createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
         final Pennant pennant = new Pennant(index, point, yaw, pitch);
         if (this.pattern.size() > 0) {
-            pennant.setColor(LightItem.getColorValue(this.pattern.get(index % this.pattern.size())));
+            final Entry e = this.pattern.get(index % this.pattern.size());
+            pennant.setColor(LightItem.getColorValue(e.getColor()));
+            pennant.setItem(e.item);
         }
         return pennant;
     }
@@ -124,10 +131,8 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     public CompoundNBT serializeLogic() {
         final CompoundNBT compound = super.serializeLogic();
         final ListNBT patternList = new ListNBT();
-        for (final DyeColor color : this.pattern) {
-            final CompoundNBT colorCompound = new CompoundNBT();
-            colorCompound.putByte("color", (byte) color.getId());
-            patternList.add(colorCompound);
+        for (final Entry entry : this.pattern) {
+            patternList.add(entry.serialize());
         }
         compound.put("pattern", patternList);
         compound.put("text", StyledString.serialize(this.text));
@@ -140,9 +145,49 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         this.pattern = new ArrayList<>();
         final ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
         for (int i = 0; i < patternList.size(); i++) {
-            final CompoundNBT colorCompound = patternList.getCompound(i);
-            this.pattern.add(DyeColor.byId(colorCompound.getByte("color")));
+            this.pattern.add(Entry.from(patternList.getCompound(i)));
         }
         this.text = StyledString.deserialize(compound.getCompound("text"));
+    }
+
+    static class Entry implements NBTSerializable {
+        Item item;
+
+        DyeColor color;
+
+        private Entry() {}
+
+        Entry(final Item item, final DyeColor color) {
+            this.item = item;
+            this.color = color;
+        }
+
+        public Item getItem() {
+            return this.item;
+        }
+
+        public DyeColor getColor() {
+            return this.color;
+        }
+
+        @Override
+        public CompoundNBT serialize() {
+            final CompoundNBT compound = new CompoundNBT();
+            compound.putString("item", this.item.getRegistryName().toString());
+            compound.putByte("color", (byte) this.color.getId());
+            return compound;
+        }
+
+        @Override
+        public void deserialize(final CompoundNBT compound) {
+            this.item = Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(compound.getString("item"))), "item");
+            this.color = DyeColor.byId(compound.getByte("color"));
+        }
+
+        static Entry from(final CompoundNBT compound) {
+            final Entry entry = new Entry();
+            entry.deserialize(compound);
+            return entry;
+        }
     }
 }

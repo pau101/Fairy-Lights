@@ -105,10 +105,14 @@ public final class DataGatherer {
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING_AUGMENTATION.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting_augmentation"));
-            GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT.get())
-                .addCriterion("has_paper", this.hasItem(Items.PAPER))
-                .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
-                .build(consumer, new ResourceLocation(FairyLights.ID, "pennant"));
+            this.pennantRecipe(FLCraftingRecipes.TRIANGLE_PENNANT.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "triangle_pennant"));
+            this.pennantRecipe(FLCraftingRecipes.SPEARHEAD_PENNANT.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "spearhead_pennant"));
+            this.pennantRecipe(FLCraftingRecipes.SWALLOWTAIL_PENNANT.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "swallowtail_pennant"));
+            this.pennantRecipe(FLCraftingRecipes.SQUARE_PENNANT.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "square_pennant"));
             this.lightRecipe(FLCraftingRecipes.FAIRY_LIGHT.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "fairy_light"));
             this.lightRecipe(FLCraftingRecipes.PAPER_LANTERN.get())
@@ -143,6 +147,12 @@ public final class DataGatherer {
             return GenericRecipeBuilder.customRecipe(serializer)
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_dye", this.hasItem(Tags.Items.DYES));
+        }
+
+        GenericRecipeBuilder pennantRecipe(final IRecipeSerializer<?> serializer) {
+            return GenericRecipeBuilder.customRecipe(serializer)
+                .addCriterion("has_paper", this.hasItem(Items.PAPER))
+                .addCriterion("has_string", this.hasItem(Tags.Items.STRING));
         }
     }
 

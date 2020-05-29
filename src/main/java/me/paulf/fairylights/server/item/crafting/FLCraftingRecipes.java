@@ -16,6 +16,7 @@ import me.paulf.fairylights.util.crafting.ingredient.InertListAuxiliaryIngredien
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -55,7 +56,13 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT_BUNTING_AUGMENTATION = REG.register("crafting_special_pennant_bunting_augmentation", makeSerializer(FLCraftingRecipes::createPennantBuntingAugmentation));
 
-    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> PENNANT = REG.register("crafting_special_pennant", makeSerializer(FLCraftingRecipes::createPennant));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> TRIANGLE_PENNANT = REG.register("crafting_special_triangle_pennant", makeSerializer(FLCraftingRecipes::createTrianglePennant));
+
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> SPEARHEAD_PENNANT = REG.register("crafting_special_spearhead_pennant", makeSerializer(FLCraftingRecipes::createSpearheadPennant));
+
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> SWALLOWTAIL_PENNANT = REG.register("crafting_special_swallowtail_pennant", makeSerializer(FLCraftingRecipes::createSwallowtailPennant));
+
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> SQUARE_PENNANT = REG.register("crafting_special_square_pennant", makeSerializer(FLCraftingRecipes::createSquarePennant));
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> FAIRY_LIGHT = REG.register("crafting_special_fairy_light", makeSerializer(FLCraftingRecipes::createFairyLight));
 
@@ -89,7 +96,7 @@ public final class FLCraftingRecipes {
         return Ingredient.fromTag(Tags.Items.DYES);
     }
 
-    public static final RegularIngredient LIGHT_DYE = new BasicRegularIngredient(dyeIngredient()) {
+    public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(dyeIngredient()) {
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
             return ImmutableList.of(OreDictUtils.getDyes(LightItem.getLightColor(output)));
@@ -365,6 +372,7 @@ public final class FLCraftingRecipes {
         for (final DyeColor color : colors) {
             final CompoundNBT pennant = new CompoundNBT();
             pennant.putByte("color", (byte) color.getId());
+            pennant.putString("item", FLItems.TRIANGLE_PENNANT.get().getRegistryName().toString());
             pennants.add(pennant);
         }
         if (compound == null) {
@@ -376,28 +384,29 @@ public final class FLCraftingRecipes {
         return stack;
     }
 
-    private static GenericRecipe createPennant(final ResourceLocation name) {
-        return new GenericRecipeBuilder(name, PENNANT, FLItems.PENNANT.orElseThrow(IllegalStateException::new))
-            .withShape("- -", "PDP", " P ")
+    private static GenericRecipe createPennant(final ResourceLocation name, final Supplier<IRecipeSerializer<GenericRecipe>> serializer, final Item item, final String pattern) {
+        return new GenericRecipeBuilder(name, serializer, item)
+            .withShape("- -", "PDP", pattern)
             .withIngredient('P', Items.PAPER)
             .withIngredient('-', Tags.Items.STRING)
-            .withIngredient('D', new BasicRegularIngredient(dyeIngredient()) {
-                @Override
-                public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                    return ImmutableList.of(OreDictUtils.getDyes(LightItem.getLightColor(output)));
-                }
-
-                @Override
-                public boolean dictatesOutputType() {
-                    return true;
-                }
-
-                @Override
-                public void matched(final ItemStack ingredient, final ItemStack output) {
-                    LightItem.setLightColor(output, OreDictUtils.getDyeMetadata(ingredient));
-                }
-            })
+            .withIngredient('D', DYE_SUBTYPE_INGREDIENT)
             .build();
+    }
+
+    private static GenericRecipe createTrianglePennant(final ResourceLocation name) {
+        return createPennant(name, TRIANGLE_PENNANT, FLItems.TRIANGLE_PENNANT.orElseThrow(IllegalStateException::new), " P ");
+    }
+
+    private static GenericRecipe createSpearheadPennant(final ResourceLocation name) {
+        return createPennant(name, SPEARHEAD_PENNANT, FLItems.SPEARHEAD_PENNANT.orElseThrow(IllegalStateException::new), " PP");
+    }
+
+    private static GenericRecipe createSwallowtailPennant(final ResourceLocation name) {
+        return createPennant(name, SWALLOWTAIL_PENNANT, FLItems.SWALLOWTAIL_PENNANT.orElseThrow(IllegalStateException::new), "P P");
+    }
+
+    private static GenericRecipe createSquarePennant(final ResourceLocation name) {
+        return createPennant(name, SQUARE_PENNANT, FLItems.SQUARE_PENNANT.orElseThrow(IllegalStateException::new), "PPP");
     }
 
     private static GenericRecipe createFairyLight(final ResourceLocation name) {
@@ -515,7 +524,7 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createLight(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final LightVariant variant, final UnaryOperator<GenericRecipeBuilder> recipe) {
         return recipe.apply(new GenericRecipeBuilder(name, serializer))
             .withIngredient('I', Tags.Items.INGOTS_IRON)
-            .withIngredient('D', FLCraftingRecipes.LIGHT_DYE)
+            .withIngredient('D', FLCraftingRecipes.DYE_SUBTYPE_INGREDIENT)
             .withOutput(variant.getItem(), 4)
             .build();
     }
@@ -583,7 +592,7 @@ public final class FLCraftingRecipes {
 
     private static class PennantIngredient extends BasicAuxiliaryIngredient<ListNBT> {
         private PennantIngredient() {
-            super(Ingredient.fromItems(FLItems.PENNANT.orElseThrow(IllegalStateException::new)), true, 8);
+            super(Ingredient.fromTag(new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"))), true, 8);
         }
 
         @Override
@@ -599,7 +608,7 @@ public final class FLCraftingRecipes {
             final ImmutableList.Builder<ImmutableList<ItemStack>> pennants = ImmutableList.builder();
             for (int i = 0; i < pattern.size(); i++) {
                 final CompoundNBT pennant = pattern.getCompound(i);
-                final ItemStack stack = new ItemStack(FLItems.PENNANT.orElseThrow(IllegalStateException::new));
+                final ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(pennant.getString("item"))));
                 LightItem.setLightColor(stack, DyeColor.byId(pennant.getByte("color")));
                 pennants.add(ImmutableList.of(stack));
             }
@@ -620,6 +629,7 @@ public final class FLCraftingRecipes {
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
             final CompoundNBT pennant = new CompoundNBT();
             pennant.putByte("color", (byte) LightItem.getLightColor(ingredient).getId());
+            pennant.putString("item", ingredient.getItem().getRegistryName().toString());
             patternList.add(pennant);
         }
 

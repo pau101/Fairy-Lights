@@ -14,11 +14,14 @@
     "item.fairyLights.tight": "Uncurved",
 
     "item.fairylights.pennant_bunting": "Pennant Bunting",
-    "item.pennantBunting.colors": "Colors:",
+    "item.pennantBunting.pattern": "Pattern:",
 
     "item.fairylights.letter_bunting": "Letter Bunting",
 
-    "item.fairylights.pennant": "Pennant",
+    "item.fairylights.triangle_pennant": "Triangle Pennant",
+    "item.fairylights.spearhead_pennant": "Spearhead Pennant",
+    "item.fairylights.swallowtail_pennant": "Swallowtail Pennant",
+    "item.fairylights.square_pennant": "Square Pennant",
 
     "item.light.name": "Light",
     "block.fairylights.fairy_light": "Fairy Light",
