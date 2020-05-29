@@ -21,11 +21,8 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
 
     private final FastenerRenderer renderer = new FastenerRenderer();
 
-    //private final FastenerModel model;
-
     public FenceFastenerRenderer(final EntityRendererManager mgr) {
         super(mgr);
-        //this.model = new FastenerModel();
     }
 
     @Override
@@ -39,9 +36,7 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
         matrix.push();
         FastenerRenderer.renderBakedModel(MODEL, matrix, buf, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
         matrix.pop();
-        entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> {
-            this.renderer.render(f, delta, matrix, source, packedLight, OverlayTexture.NO_OVERLAY);
-        });
+        entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> this.renderer.render(f, delta, matrix, source, packedLight, OverlayTexture.NO_OVERLAY));
         super.render(entity, yaw, delta, matrix, source, packedLight);
     }
 
@@ -49,19 +44,4 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
     public ResourceLocation getEntityTexture(final FenceFastenerEntity p_110775_1_) {
         return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
-
-    /*static class FastenerModel extends Model {
-        RendererModel root;
-
-        FastenerModel() {
-            this.textureWidth = 32;
-            this.textureHeight = 32;
-            this.root = new RendererModel(this);
-            this.root.addBox(-3.0F, -3.0F, -3.0F, 6, 6, 6);
-        }
-
-        void render(final float scale) {
-            this.root.render(scale);
-        }
-    }*/
 }
