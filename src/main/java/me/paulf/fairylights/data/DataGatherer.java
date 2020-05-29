@@ -94,8 +94,6 @@ public final class DataGatherer {
                 .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "fairy_lights"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.FAIRY_LIGHTS_AUGMENTATION.get())
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "fairy_lights_augmentation"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.TINSEL_GARLAND.get())
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
@@ -106,8 +104,6 @@ public final class DataGatherer {
                 .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING_AUGMENTATION.get())
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting_augmentation"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT.get())
                 .addCriterion("has_paper", this.hasItem(Items.PAPER))

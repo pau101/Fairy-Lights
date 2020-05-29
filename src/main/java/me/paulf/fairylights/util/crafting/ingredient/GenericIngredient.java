@@ -8,7 +8,7 @@ import net.minecraft.item.crafting.Ingredient;
 import java.util.List;
 import java.util.Objects;
 
-public interface GenericIngredient<I extends GenericIngredient<? extends I, M>, M extends GenericRecipe.MatchResult<I, M>> {
+public interface GenericIngredient<I extends GenericIngredient<I, M>, M extends GenericRecipe.MatchResult<I, M>> {
     /**
      * Provides an immutable list of stacks that will match this ingredient.
      *

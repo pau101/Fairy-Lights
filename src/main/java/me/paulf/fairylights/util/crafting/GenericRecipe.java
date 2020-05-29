@@ -53,18 +53,13 @@ public final class GenericRecipe implements ICraftingRecipe {
     private final NonNullList<Ingredient> displayIngredients;
 
     GenericRecipe(final ResourceLocation id, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height) {
+        Preconditions.checkArgument(width > 0, "width must be greater than zero");
+        Preconditions.checkArgument(height > 0, "height must be greater than zero");
         this.id = Objects.requireNonNull(id, "name");
-        Objects.requireNonNull(serializer, "serializer");
-        Objects.requireNonNull(output, "output");
-        Objects.requireNonNull(ingredients, "ingredients");
-        Objects.requireNonNull(auxiliaryIngredients, "auxiliaryIngredients");
-        checkIngredients(ingredients, auxiliaryIngredients);
-        Preconditions.checkArgument(width >= 0, "width must be greater than or equal to zero");
-        Preconditions.checkArgument(height >= 0, "height must be greater than or equal to zero");
-        this.serializer = serializer;
-        this.output = output;
-        this.ingredients = ingredients;
-        this.auxiliaryIngredients = auxiliaryIngredients;
+        this.serializer = Objects.requireNonNull(serializer, "serializer");
+        this.output = Objects.requireNonNull(output, "output");
+        this.ingredients = Objects.requireNonNull(ingredients, "ingredients");
+        this.auxiliaryIngredients = checkIngredients(ingredients, Objects.requireNonNull(auxiliaryIngredients, "auxiliaryIngredients"));
         this.width = width;
         this.height = height;
         this.displayIngredients = this.createDisplayIngredients();
@@ -164,7 +159,8 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     private void prepareResult() {
         final ItemStack result = this.result.get();
-        if (result.hasTag() && result.getTag().isEmpty()) {
+        final CompoundNBT tag = result.getTag();
+        if (tag != null && tag.isEmpty()) {
             result.setTag(null);
         }
     }
@@ -175,7 +171,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         final Map<AuxiliaryIngredient<?>, Integer> auxMatchTotals = new HashMap<>();
         final Set<GenericIngredient<?, ?>> presentCalled = new HashSet<>();
         final List<MatchResultAuxiliary> auxResults = new ArrayList<>();
-        for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight(), auxCount = this.auxiliaryIngredients.length; i < size; i++) {
+        for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight();  i < size; i++) {
             final int x = i % w;
             final int y = i / w;
             final int ingX = x - originX;
@@ -192,8 +188,8 @@ public final class GenericRecipe implements ICraftingRecipe {
                 result.forMatch(presentCalled, output);
             } else if (!EMPTY.matches(input, output).doesMatch()) {
                 boolean nonAuxiliary = true;
-                for (int n = 0; n < auxCount; n++) {
-                    final MatchResultAuxiliary result = this.auxiliaryIngredients[n].matches(input, output);
+                for (final AuxiliaryIngredient<?> auxiliaryIngredient : this.auxiliaryIngredients) {
+                    final MatchResultAuxiliary result = auxiliaryIngredient.matches(input, output);
                     if (result.doesMatch()) {
                         if (result.isAtLimit(auxMatchTotals.getOrDefault(result.ingredient, 0))) {
                             return ItemStack.EMPTY;
@@ -240,7 +236,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         return this.output;
     }
 
-    public interface MatchResult<I extends GenericIngredient, M extends MatchResult<I, M>> {
+    public interface MatchResult<I extends GenericIngredient<I, M>, M extends MatchResult<I, M>> {
         I getIngredient();
 
         ItemStack getInput();
@@ -338,7 +334,7 @@ public final class GenericRecipe implements ICraftingRecipe {
     }
 
     public static class MatchResultAuxiliary implements MatchResult<AuxiliaryIngredient<?>, MatchResultAuxiliary> {
-        protected final AuxiliaryIngredient ingredient;
+        protected final AuxiliaryIngredient<?> ingredient;
 
         protected final ItemStack input;
 
@@ -346,7 +342,7 @@ public final class GenericRecipe implements ICraftingRecipe {
 
         protected final ImmutableList<MatchResultAuxiliary> supplementaryResults;
 
-        public MatchResultAuxiliary(final AuxiliaryIngredient ingredient, final ItemStack input, final boolean doesMatch, final List<MatchResultAuxiliary> supplementaryResults) {
+        public MatchResultAuxiliary(final AuxiliaryIngredient<?> ingredient, final ItemStack input, final boolean doesMatch, final List<MatchResultAuxiliary> supplementaryResults) {
             this.ingredient = Objects.requireNonNull(ingredient, "ingredient");
             this.input = input;
             this.doesMatch = doesMatch;
@@ -354,7 +350,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
 
         @Override
-        public final AuxiliaryIngredient getIngredient() {
+        public final AuxiliaryIngredient<?> getIngredient() {
             return this.ingredient;
         }
 
@@ -404,7 +400,7 @@ public final class GenericRecipe implements ICraftingRecipe {
     public static class MatchResultParentedAuxiliary extends MatchResultAuxiliary {
         protected final MatchResultAuxiliary parent;
 
-        public MatchResultParentedAuxiliary(final AuxiliaryIngredient ingredient, final ItemStack input, final boolean doesMatch, final List<MatchResultAuxiliary> supplementaryResults, final MatchResultAuxiliary parent) {
+        public MatchResultParentedAuxiliary(final AuxiliaryIngredient<?> ingredient, final ItemStack input, final boolean doesMatch, final List<MatchResultAuxiliary> supplementaryResults, final MatchResultAuxiliary parent) {
             super(ingredient, input, doesMatch, supplementaryResults);
             this.parent = Objects.requireNonNull(parent, "parent");
         }
@@ -438,11 +434,12 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
     }
 
-    private static void checkIngredients(final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients) {
+    private static AuxiliaryIngredient<?>[] checkIngredients(final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients) {
         checkForNulls(ingredients);
         checkForNulls(auxiliaryIngredients);
         final boolean ingredientDictator = checkDictatorship(false, ingredients);
         checkDictatorship(ingredientDictator, auxiliaryIngredients);
+        return auxiliaryIngredients;
     }
 
     private static void checkForNulls(final GenericIngredient<?, ?>[] ingredients) {
@@ -454,7 +451,7 @@ public final class GenericRecipe implements ICraftingRecipe {
     }
 
     private static boolean checkDictatorship(boolean foundDictator, final GenericIngredient<?, ?>[] ingredients) {
-        for (final GenericIngredient ingredient : ingredients) {
+        for (final GenericIngredient<?, ?> ingredient : ingredients) {
             if (ingredient.dictatesOutputType()) {
                 if (foundDictator) {
                     throw new IllegalRecipeException("Only one ingredient can dictate output type");

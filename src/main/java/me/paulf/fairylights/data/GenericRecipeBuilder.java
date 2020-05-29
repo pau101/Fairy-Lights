@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GenericRecipeBuilder {
     private final IRecipeSerializer<?> serializer;
@@ -29,11 +30,20 @@ public class GenericRecipeBuilder {
     }
 
     public void build(final Consumer<IFinishedRecipe> consumer, final ResourceLocation id) {
-        this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-            .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id))
-            .withRewards(AdvancementRewards.Builder.recipe(id))
-            .withRequirementsStrategy(IRequirementsStrategy.OR);
-        consumer.accept(new Result(this.serializer, id, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + FairyLights.ID + "/" + id.getPath())));
+        final Supplier<JsonObject> advancementBuilder;
+        final ResourceLocation advancementId;
+        if (this.advancementBuilder.getCriteria().isEmpty()) {
+            advancementBuilder = () -> null;
+            advancementId = new ResourceLocation("");
+        } else {
+            advancementBuilder = this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
+                .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id))
+                .withRewards(AdvancementRewards.Builder.recipe(id))
+                .withRequirementsStrategy(IRequirementsStrategy.OR)
+                ::serialize;
+            advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + FairyLights.ID + "/" + id.getPath());
+        }
+        consumer.accept(new Result(this.serializer, id, advancementBuilder, advancementId));
     }
 
     public static GenericRecipeBuilder customRecipe(final IRecipeSerializer<?> serializer) {
@@ -41,18 +51,18 @@ public class GenericRecipeBuilder {
     }
 
     static class Result implements IFinishedRecipe {
-        private final IRecipeSerializer<?> serializer;
+        final IRecipeSerializer<?> serializer;
 
-        private final ResourceLocation id;
+        final ResourceLocation id;
 
-        private final Advancement.Builder advancementBuilder;
+        final Supplier<JsonObject> advancementJson;
 
-        private final ResourceLocation advancementId;
+        final ResourceLocation advancementId;
 
-        public Result(final IRecipeSerializer<?> serializer, final ResourceLocation id, final Advancement.Builder advancementBuilder, final ResourceLocation advancementId) {
+        public Result(final IRecipeSerializer<?> serializer, final ResourceLocation id, final Supplier<JsonObject> advancementJson, final ResourceLocation advancementId) {
             this.serializer = serializer;
             this.id = id;
-            this.advancementBuilder = advancementBuilder;
+            this.advancementJson = advancementJson;
             this.advancementId = advancementId;
         }
 
@@ -72,7 +82,7 @@ public class GenericRecipeBuilder {
 
         @Override
         public JsonObject getAdvancementJson() {
-            return this.advancementBuilder.serialize();
+            return this.advancementJson.get();
         }
 
         @Override
