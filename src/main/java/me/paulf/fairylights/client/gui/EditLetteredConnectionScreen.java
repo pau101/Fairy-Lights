@@ -88,7 +88,7 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     }
 
     private void validateText(final StyledString text) {
-        this.doneBtn.active = this.connection.isSuppportedText(text) && !this.connection.getText().equals(text);
+        this.doneBtn.active = this.connection.isSupportedText(text) && !this.connection.getText().equals(text);
     }
 
     @Override

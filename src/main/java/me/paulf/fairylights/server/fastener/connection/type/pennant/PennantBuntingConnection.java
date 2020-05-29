@@ -107,8 +107,8 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     }
 
     @Override
-    public boolean isSuppportedText(final StyledString text) {
-        return text.length() <= this.features.length && Lettered.super.isSuppportedText(text);
+    public boolean isSupportedText(final StyledString text) {
+        return text.length() <= this.features.length && Lettered.super.isSupportedText(text);
     }
 
     @Override

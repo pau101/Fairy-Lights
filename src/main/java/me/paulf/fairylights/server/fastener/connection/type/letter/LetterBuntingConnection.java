@@ -167,7 +167,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    public boolean isSuppportedText(final StyledString text) {
+    public boolean isSupportedText(final StyledString text) {
         float len = 0;
         final float available = this.getCatenary().getLength();
         for (int i = 0; i < text.length(); i++) {
@@ -180,7 +180,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
                 return false;
             }
         }
-        return Lettered.super.isSuppportedText(text);
+        return Lettered.super.isSupportedText(text);
     }
 
     @Override

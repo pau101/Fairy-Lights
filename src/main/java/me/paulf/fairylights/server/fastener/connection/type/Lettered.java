@@ -19,7 +19,7 @@ public interface Lettered {
         return Character.isValidCodePoint(chr) && !Character.isISOControl(chr);
     }
 
-    default boolean isSuppportedText(final StyledString text) {
+    default boolean isSupportedText(final StyledString text) {
         for (int i = 0; i < text.length(); i++) {
             if (!this.isSupportedCharacter(text.charAt(i))) {
                 return false;
