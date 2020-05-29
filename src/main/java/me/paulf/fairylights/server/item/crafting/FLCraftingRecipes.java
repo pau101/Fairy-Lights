@@ -118,7 +118,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createFairyLights(final ResourceLocation name) {
-        return new GenericRecipeBuilder(name, FAIRY_LIGHTS, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new))
+        return new GenericRecipeBuilder(name, FAIRY_LIGHTS, FLItems.HANGING_LIGHTS.get())
             .withShape("I-I")
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withAnyIngredient('-',
@@ -182,9 +182,9 @@ public final class FLCraftingRecipes {
      *  new light pattern as well.
      */
     private static GenericRecipe createFairyLightsAugmentation(final ResourceLocation name) {
-        return new GenericRecipeBuilder(name, FAIRY_LIGHTS_AUGMENTATION, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new))
+        return new GenericRecipeBuilder(name, FAIRY_LIGHTS_AUGMENTATION, FLItems.HANGING_LIGHTS.get())
             .withShape("F")
-            .withIngredient('F', new BasicRegularIngredient(Ingredient.fromItems(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new))) {
+            .withIngredient('F', new BasicRegularIngredient(Ingredient.fromItems(FLItems.HANGING_LIGHTS.get())) {
                 @Override
                 public ImmutableList<ItemStack> getInputs() {
                     return Arrays.stream(this.ingredient.getMatchingStacks())
@@ -284,7 +284,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createTinselGarland(final ResourceLocation name) {
-        return new GenericRecipeBuilder(name, TINSEL_GARLAND, FLItems.TINSEL.orElseThrow(IllegalStateException::new))
+        return new GenericRecipeBuilder(name, TINSEL_GARLAND, FLItems.TINSEL.get())
             .withShape(" P ", "I-I", " D ")
             .withIngredient('P', Items.PAPER)
             .withIngredient('I', Tags.Items.INGOTS_IRON)
@@ -313,7 +313,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createPennantBunting(final ResourceLocation name) {
-        return new GenericRecipeBuilder(name, PENNANT_BUNTING, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))
+        return new GenericRecipeBuilder(name, PENNANT_BUNTING, FLItems.PENNANT_BUNTING.get())
             .withShape("I-I")
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withIngredient('-', Tags.Items.STRING)
@@ -322,9 +322,9 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createPennantBuntingAugmentation(final ResourceLocation name) {
-        return new GenericRecipeBuilder(name, PENNANT_BUNTING_AUGMENTATION, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))
+        return new GenericRecipeBuilder(name, PENNANT_BUNTING_AUGMENTATION, FLItems.PENNANT_BUNTING.get())
             .withShape("B")
-            .withIngredient('B', new BasicRegularIngredient(Ingredient.fromItems(FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new))) {
+            .withIngredient('B', new BasicRegularIngredient(Ingredient.fromItems(FLItems.PENNANT_BUNTING.get())) {
                 @Override
                 public ImmutableList<ItemStack> getInputs() {
                     return Arrays.stream(this.ingredient.getMatchingStacks())
@@ -394,19 +394,19 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createTrianglePennant(final ResourceLocation name) {
-        return createPennant(name, TRIANGLE_PENNANT, FLItems.TRIANGLE_PENNANT.orElseThrow(IllegalStateException::new), " P ");
+        return createPennant(name, TRIANGLE_PENNANT, FLItems.TRIANGLE_PENNANT.get(), " P ");
     }
 
     private static GenericRecipe createSpearheadPennant(final ResourceLocation name) {
-        return createPennant(name, SPEARHEAD_PENNANT, FLItems.SPEARHEAD_PENNANT.orElseThrow(IllegalStateException::new), " PP");
+        return createPennant(name, SPEARHEAD_PENNANT, FLItems.SPEARHEAD_PENNANT.get(), " PP");
     }
 
     private static GenericRecipe createSwallowtailPennant(final ResourceLocation name) {
-        return createPennant(name, SWALLOWTAIL_PENNANT, FLItems.SWALLOWTAIL_PENNANT.orElseThrow(IllegalStateException::new), "P P");
+        return createPennant(name, SWALLOWTAIL_PENNANT, FLItems.SWALLOWTAIL_PENNANT.get(), "P P");
     }
 
     private static GenericRecipe createSquarePennant(final ResourceLocation name) {
-        return createPennant(name, SQUARE_PENNANT, FLItems.SQUARE_PENNANT.orElseThrow(IllegalStateException::new), "PPP");
+        return createPennant(name, SQUARE_PENNANT, FLItems.SQUARE_PENNANT.get(), "PPP");
     }
 
     private static GenericRecipe createFairyLight(final ResourceLocation name) {

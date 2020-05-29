@@ -24,7 +24,7 @@ public class LightBlockEntity extends TileEntity {
     private DyeColor color = DyeColor.YELLOW;
 
     public LightBlockEntity() {
-        super(FLBlockEntities.LIGHT.orElseThrow(IllegalStateException::new));
+        super(FLBlockEntities.LIGHT.get());
         this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, true);
     }
 
@@ -53,10 +53,10 @@ public class LightBlockEntity extends TileEntity {
         final SoundEvent lightSnd;
         final float pitch;
         if (this.light.isOn()) {
-            lightSnd = FLSounds.FEATURE_LIGHT_TURNON.orElseThrow(IllegalStateException::new);
+            lightSnd = FLSounds.FEATURE_LIGHT_TURNON.get();
             pitch = 0.6F;
         } else {
-            lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.orElseThrow(IllegalStateException::new);
+            lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.get();
             pitch = 0.5F;
         }
         this.world.playSound(null, pos, lightSnd, SoundCategory.BLOCKS, 1.0F, pitch);

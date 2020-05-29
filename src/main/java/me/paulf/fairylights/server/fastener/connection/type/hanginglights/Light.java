@@ -105,7 +105,7 @@ public final class Light extends HangingFeature<Light> {
     }
 
     public void jingle(final World world, final Vec3d origin, final int note, final BasicParticleType particle) {
-        this.jingle(world, origin, note, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), particle);
+        this.jingle(world, origin, note, FLSounds.JINGLE_BELL.get(), particle);
     }
 
     public void jingle(final World world, final Vec3d origin, final int note, final SoundEvent sound, final BasicParticleType... particles) {

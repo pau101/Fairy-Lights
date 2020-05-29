@@ -45,7 +45,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     }
 
     public FenceFastenerEntity(final World world) {
-        this(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), world);
+        this(FLEntities.FASTENER.get(), world);
     }
 
     public FenceFastenerEntity(final World world, final BlockPos pos) {
@@ -117,13 +117,13 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     public void onBroken(@Nullable final Entity breaker) {
         this.getFastener().ifPresent(fastener -> fastener.dropItems(this.world, this.hangingPosition));
         if (breaker != null) {
-            this.world.playEvent(2001, this.hangingPosition, Block.getStateId(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState()));
+            this.world.playEvent(2001, this.hangingPosition, Block.getStateId(FLBlocks.FASTENER.get().getDefaultState()));
         }
     }
 
     @Override
     public void playPlaceSound() {
-        final SoundType sound = FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getSoundType(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getDefaultState(), this.world, this.getHangingPosition(), null);
+        final SoundType sound = FLBlocks.FASTENER.get().getSoundType(FLBlocks.FASTENER.get().getDefaultState(), this.world, this.getHangingPosition(), null);
         this.playSound(sound.getPlaceSound(), (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8F);
     }
 

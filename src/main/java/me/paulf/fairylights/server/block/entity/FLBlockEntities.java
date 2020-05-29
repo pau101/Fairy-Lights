@@ -12,22 +12,22 @@ public final class FLBlockEntities {
 
     public static final DeferredRegister<TileEntityType<?>> REG = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, FairyLights.ID);
 
-    public static final RegistryObject<TileEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> TileEntityType.Builder.create(FastenerBlockEntity::new, FLBlocks.FASTENER.orElseThrow(IllegalStateException::new)).build(null));
+    public static final RegistryObject<TileEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> TileEntityType.Builder.create(FastenerBlockEntity::new, FLBlocks.FASTENER.get()).build(null));
 
     public static final RegistryObject<TileEntityType<LightBlockEntity>> LIGHT = REG.register("light", () -> TileEntityType.Builder.create(LightBlockEntity::new,
-        FLBlocks.FAIRY_LIGHT.orElseThrow(IllegalStateException::new),
-        FLBlocks.PAPER_LANTERN.orElseThrow(IllegalStateException::new),
-        FLBlocks.ORB_LANTERN.orElseThrow(IllegalStateException::new),
-        FLBlocks.FLOWER_LIGHT.orElseThrow(IllegalStateException::new),
-        FLBlocks.ORNATE_LANTERN.orElseThrow(IllegalStateException::new),
-        FLBlocks.OIL_LANTERN.orElseThrow(IllegalStateException::new),
-        FLBlocks.JACK_O_LANTERN.orElseThrow(IllegalStateException::new),
-        FLBlocks.SKULL_LIGHT.orElseThrow(IllegalStateException::new),
-        FLBlocks.GHOST_LIGHT.orElseThrow(IllegalStateException::new),
-        FLBlocks.SPIDER_LIGHT.orElseThrow(IllegalStateException::new),
-        FLBlocks.WITCH_LIGHT.orElseThrow(IllegalStateException::new),
-        FLBlocks.SNOWFLAKE_LIGHT.orElseThrow(IllegalStateException::new),
-        FLBlocks.ICICLE_LIGHTS.orElseThrow(IllegalStateException::new),
-        FLBlocks.METEOR_LIGHT.orElseThrow(IllegalStateException::new)
+        FLBlocks.FAIRY_LIGHT.get(),
+        FLBlocks.PAPER_LANTERN.get(),
+        FLBlocks.ORB_LANTERN.get(),
+        FLBlocks.FLOWER_LIGHT.get(),
+        FLBlocks.ORNATE_LANTERN.get(),
+        FLBlocks.OIL_LANTERN.get(),
+        FLBlocks.JACK_O_LANTERN.get(),
+        FLBlocks.SKULL_LIGHT.get(),
+        FLBlocks.GHOST_LIGHT.get(),
+        FLBlocks.SPIDER_LIGHT.get(),
+        FLBlocks.WITCH_LIGHT.get(),
+        FLBlocks.SNOWFLAKE_LIGHT.get(),
+        FLBlocks.ICICLE_LIGHTS.get(),
+        FLBlocks.METEOR_LIGHT.get()
     ).build(null));
 }

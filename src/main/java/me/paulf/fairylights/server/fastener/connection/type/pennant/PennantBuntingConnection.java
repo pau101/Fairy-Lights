@@ -77,7 +77,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
                 patternEntry.color = color;
                 this.dataUpdateState = true;
                 heldStack.shrink(1);
-                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
                 return true;
             }
         }

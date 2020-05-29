@@ -12,6 +12,6 @@ public final class FairyLightsItemGroup extends ItemGroup {
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
+        return new ItemStack(FLItems.HANGING_LIGHTS.get());
     }
 }

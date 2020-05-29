@@ -45,7 +45,7 @@ public abstract class ConnectionItem extends Item {
         final World world = context.getWorld();
         final Direction side = context.getFace();
         final BlockPos clickPos = context.getPos();
-        final Block fastener = FLBlocks.FASTENER.orElseThrow(IllegalStateException::new);
+        final Block fastener = FLBlocks.FASTENER.get();
         final ItemStack stack = context.getItem();
         if (this.isConnectionInOtherHand(world, user, stack)) {
             return ActionResultType.PASS;
@@ -135,7 +135,7 @@ public abstract class ConnectionItem extends Item {
             }
             if (playSound) {
                 final Vec3d pos = fastener.getConnectionPoint();
-                world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+                world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
             }
         });
     }

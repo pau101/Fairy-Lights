@@ -43,7 +43,7 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
     }
 
     public LadderEntity(final World world) {
-        this(FLEntities.LADDER.orElseThrow(IllegalStateException::new), world);
+        this(FLEntities.LADDER.get(), world);
     }
 
     @Override
@@ -53,7 +53,7 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
 
     @Override
     public ItemStack getPickedResult(final RayTraceResult target) {
-        return new ItemStack(FLItems.LADDER.orElseThrow(IllegalStateException::new));
+        return new ItemStack(FLItems.LADDER.get());
     }
 
     @Override
@@ -76,17 +76,17 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
 
     @Override
     protected SoundEvent getFallSound(final int distance) {
-        return FLSounds.LADDER_FALL.orElseThrow(IllegalStateException::new);
+        return FLSounds.LADDER_FALL.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(final DamageSource damage) {
-        return FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new);
+        return FLSounds.LADDER_HIT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return FLSounds.LADDER_BREAK.orElseThrow(IllegalStateException::new);
+        return FLSounds.LADDER_BREAK.get();
     }
 
     @Override
@@ -182,7 +182,7 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
     }
 
     private void dropIt() {
-        Block.spawnAsEntity(this.world, new BlockPos(this), new ItemStack(FLItems.LADDER.orElseThrow(IllegalStateException::new)));
+        Block.spawnAsEntity(this.world, new BlockPos(this), new ItemStack(FLItems.LADDER.get()));
     }
 
     private void playBreakSound() {
@@ -209,7 +209,7 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
     public void handleStatusUpdate(final byte id) {
         if (id == PUNCH_ID) {
             if (this.world.isRemote) {
-                this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), FLSounds.LADDER_HIT.orElseThrow(IllegalStateException::new), this.getSoundCategory(), 0.3F, 1, false);
+                this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), FLSounds.LADDER_HIT.get(), this.getSoundCategory(), 0.3F, 1, false);
                 this.lastPunchTime = this.world.getGameTime();
             }
         } else {

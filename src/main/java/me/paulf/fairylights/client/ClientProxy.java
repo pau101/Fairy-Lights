@@ -90,10 +90,10 @@ public final class ClientProxy extends ServerProxy {
 
     @Override
     public void initRenders() {
-        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.orElseThrow(IllegalStateException::new), dispatcher -> new FastenerBlockEntityRenderer(dispatcher, ServerProxy.buildBlockView()));
-        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.orElseThrow(IllegalStateException::new), LightBlockEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.orElseThrow(IllegalStateException::new), FenceFastenerRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.orElseThrow(IllegalStateException::new), LadderRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.get(), dispatcher -> new FastenerBlockEntityRenderer(dispatcher, ServerProxy.buildBlockView()));
+        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.get(), LightBlockEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.get(), FenceFastenerRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.get(), LadderRenderer::new);
         FMLJavaModLoadingContext.get().getModEventBus().<TextureStitchEvent.Pre>addListener(e -> {
             if (SOLID_TEXTURE.getAtlasLocation().equals(e.getMap().getTextureLocation())) {
                 e.addSprite(SOLID_TEXTURE.getTextureLocation());
@@ -129,20 +129,20 @@ public final class ClientProxy extends ServerProxy {
     public void initRendersLate() {
         final ItemColors colors = Minecraft.getInstance().getItemColors();
         colors.register(ClientProxy::secondLayerColor,
-            FLItems.FAIRY_LIGHT.orElseThrow(IllegalStateException::new),
-            FLItems.PAPER_LANTERN.orElseThrow(IllegalStateException::new),
-            FLItems.ORB_LANTERN.orElseThrow(IllegalStateException::new),
-            FLItems.FLOWER_LIGHT.orElseThrow(IllegalStateException::new),
-            FLItems.ORNATE_LANTERN.orElseThrow(IllegalStateException::new),
-            FLItems.OIL_LANTERN.orElseThrow(IllegalStateException::new),
-            FLItems.JACK_O_LANTERN.orElseThrow(IllegalStateException::new),
-            FLItems.SKULL_LIGHT.orElseThrow(IllegalStateException::new),
-            FLItems.GHOST_LIGHT.orElseThrow(IllegalStateException::new),
-            FLItems.SPIDER_LIGHT.orElseThrow(IllegalStateException::new),
-            FLItems.WITCH_LIGHT.orElseThrow(IllegalStateException::new),
-            FLItems.SNOWFLAKE_LIGHT.orElseThrow(IllegalStateException::new),
-            FLItems.ICICLE_LIGHTS.orElseThrow(IllegalStateException::new),
-            FLItems.METEOR_LIGHT.orElseThrow(IllegalStateException::new)
+            FLItems.FAIRY_LIGHT.get(),
+            FLItems.PAPER_LANTERN.get(),
+            FLItems.ORB_LANTERN.get(),
+            FLItems.FLOWER_LIGHT.get(),
+            FLItems.ORNATE_LANTERN.get(),
+            FLItems.OIL_LANTERN.get(),
+            FLItems.JACK_O_LANTERN.get(),
+            FLItems.SKULL_LIGHT.get(),
+            FLItems.GHOST_LIGHT.get(),
+            FLItems.SPIDER_LIGHT.get(),
+            FLItems.WITCH_LIGHT.get(),
+            FLItems.SNOWFLAKE_LIGHT.get(),
+            FLItems.ICICLE_LIGHTS.get(),
+            FLItems.METEOR_LIGHT.get()
         );
         colors.register((stack, index) -> {
             if (index == 0) {
@@ -158,10 +158,10 @@ public final class ClientProxy extends ServerProxy {
                 return (index + System.currentTimeMillis() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
             }
             return 0xFFD584;
-        }, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
+        }, FLItems.HANGING_LIGHTS.get());
         colors.register((stack, index) -> {
             return LightItem.getColorValue(LightItem.getLightColor(stack));
-        }, FLItems.TINSEL.orElseThrow(IllegalStateException::new));
+        }, FLItems.TINSEL.get());
         colors.register((stack, index) -> {
             if (index == 0) {
                 return 0xFFFFFFFF;
@@ -173,11 +173,11 @@ public final class ClientProxy extends ServerProxy {
                 }
             }
             return 0xFFFFFFFF;
-        }, FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new));
-        colors.register(ClientProxy::secondLayerColor, FLItems.TRIANGLE_PENNANT.orElseThrow(IllegalStateException::new));
-        colors.register(ClientProxy::secondLayerColor, FLItems.SPEARHEAD_PENNANT.orElseThrow(IllegalStateException::new));
-        colors.register(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.orElseThrow(IllegalStateException::new));
-        colors.register(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.orElseThrow(IllegalStateException::new));
+        }, FLItems.PENNANT_BUNTING.get());
+        colors.register(ClientProxy::secondLayerColor, FLItems.TRIANGLE_PENNANT.get());
+        colors.register(ClientProxy::secondLayerColor, FLItems.SPEARHEAD_PENNANT.get());
+        colors.register(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.get());
+        colors.register(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.get());
         colors.register((stack, index) -> {
             if (index > 0 && stack.hasTag()) {
                 final StyledString str = StyledString.deserialize(stack.getTag().getCompound("text"));
@@ -194,7 +194,7 @@ public final class ClientProxy extends ServerProxy {
                 }
             }
             return 0xFFFFFFFF;
-        }, FLItems.LETTER_BUNTING.orElseThrow(IllegalStateException::new));
+        }, FLItems.LETTER_BUNTING.get());
         // Early runTick hook after getMouseOver
         class HackyHook extends Texture implements ITickable {
             @Override
@@ -207,21 +207,21 @@ public final class ClientProxy extends ServerProxy {
             }
         }
         Minecraft.getInstance().getTextureManager().loadTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new HackyHook());
-        RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        /*RenderTypeLookup.setRenderLayer(FLBlocks.FAIRY_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.PAPER_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.ORB_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.FLOWER_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.ORNATE_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.OIL_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.JACK_O_LANTERN.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.SKULL_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.GHOST_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.SPIDER_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.WITCH_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.SNOWFLAKE_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.ICICLE_LIGHTS.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.METEOR_LIGHT.orElseThrow(IllegalStateException::new), RenderType.getCutoutMipped());*/
+        RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
+        /*RenderTypeLookup.setRenderLayer(FLBlocks.FAIRY_LIGHT.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.PAPER_LANTERN.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.ORB_LANTERN.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.FLOWER_LIGHT.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.ORNATE_LANTERN.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.OIL_LANTERN.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.JACK_O_LANTERN.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.SKULL_LIGHT.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.GHOST_LIGHT.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.SPIDER_LIGHT.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.WITCH_LIGHT.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.SNOWFLAKE_LIGHT.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.ICICLE_LIGHTS.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.METEOR_LIGHT.get(), RenderType.getCutoutMipped());*/
     }
 
     private static int secondLayerColor(final ItemStack stack, final int index) {

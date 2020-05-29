@@ -101,7 +101,7 @@ public enum LightVariant {
     }
 
     public Item getItem() {
-        return this.item.get().orElseThrow(IllegalStateException::new);
+        return this.item.get().get();
     }
 
     public boolean parallelsCord() {

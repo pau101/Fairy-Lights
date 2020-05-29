@@ -97,7 +97,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
                 this.pattern.set(index, light.withColor(color));
                 this.dataUpdateState = true;
                 heldStack.shrink(1);
-                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
                 return true;
             }
         }
@@ -108,10 +108,10 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         final SoundEvent lightSnd;
         final float pitch;
         if (this.isOn) {
-            lightSnd = FLSounds.FEATURE_LIGHT_TURNON.orElseThrow(IllegalStateException::new);
+            lightSnd = FLSounds.FEATURE_LIGHT_TURNON.get();
             pitch = 0.6F;
         } else {
-            lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.orElseThrow(IllegalStateException::new);
+            lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.get();
             pitch = 0.5F;
         }
         this.world.playSound(null, hit.x, hit.y, hit.z, lightSnd, SoundCategory.BLOCKS, 1, pitch);
@@ -149,7 +149,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     private void updateNeighbors(final Fastener<?> fastener) {
-        this.world.updateComparatorOutputLevel(fastener.getPos(), FLBlocks.FASTENER.orElseThrow(IllegalStateException::new));
+        this.world.updateComparatorOutputLevel(fastener.getPos(), FLBlocks.FASTENER.get());
     }
 
     @Override

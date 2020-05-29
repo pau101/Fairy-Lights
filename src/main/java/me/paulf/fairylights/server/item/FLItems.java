@@ -68,6 +68,6 @@ public final class FLItems {
     }
 
     private static Supplier<LightItem> createLight(final RegistryObject<LightBlock> block) {
-        return () -> new LightItem(block.orElseThrow(IllegalStateException::new), defaultProperties().maxStackSize(16));
+        return () -> new LightItem(block.get(), defaultProperties().maxStackSize(16));
     }
 }

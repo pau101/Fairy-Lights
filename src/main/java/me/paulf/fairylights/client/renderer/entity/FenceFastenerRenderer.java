@@ -45,7 +45,7 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
         this.bindTexture(TEXTURE);
         this.model.render(0.0625F);
         this.bindEntityTexture(fastener);
-        FastenerRenderer.render(fastener.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new), delta);
+        FastenerRenderer.render(fastener.getCapability(CapabilityHandler.FASTENER_CAP).get(), delta);
         if (this.renderOutlines) {
             GlStateManager.tearDownSolidRenderingTextureCombine();
             GlStateManager.disableColorMaterial();

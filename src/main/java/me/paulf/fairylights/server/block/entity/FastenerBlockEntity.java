@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public final class FastenerBlockEntity extends TileEntity implements ITickableTileEntity {
     public FastenerBlockEntity() {
-        super(FLBlockEntities.FASTENER.orElseThrow(IllegalStateException::new));
+        super(FLBlockEntities.FASTENER.get());
     }
 
     @Override
@@ -28,12 +28,12 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
     }
 
     public Vec3d getOffset() {
-        return FLBlocks.FASTENER.orElseThrow(IllegalStateException::new).getOffset(this.getFacing(), 0.125F);
+        return FLBlocks.FASTENER.get().getOffset(this.getFacing(), 0.125F);
     }
 
     public Direction getFacing() {
         final BlockState state = this.world.getBlockState(this.pos);
-        if (state.getBlock() != FLBlocks.FASTENER.orElseThrow(IllegalStateException::new)) {
+        if (state.getBlock() != FLBlocks.FASTENER.get()) {
             return Direction.UP;
         }
         return state.get(FastenerBlock.FACING);

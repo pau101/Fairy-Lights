@@ -126,10 +126,10 @@ public final class ServerEventHandler {
         final BlockPos pos = event.getPos();
         final Block noteBlock = world.getBlockState(pos).getBlock();
         final BlockState below = world.getBlockState(pos.down());
-        if (below.getBlock() == FLBlocks.FASTENER.orElseThrow(IllegalStateException::new) && below.get(FastenerBlock.FACING) == Direction.DOWN) {
+        if (below.getBlock() == FLBlocks.FASTENER.get() && below.get(FastenerBlock.FACING) == Direction.DOWN) {
             final int note = event.getVanillaNoteId();
             final float pitch = (float) Math.pow(2, (note - 12) / 12D);
-            world.playSound(null, pos, FLSounds.JINGLE_BELL.orElseThrow(IllegalStateException::new), SoundCategory.RECORDS, 3, pitch);
+            world.playSound(null, pos, FLSounds.JINGLE_BELL.get(), SoundCategory.RECORDS, 3, pitch);
             world.addParticle(ParticleTypes.NOTE, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5, note / 24D, 0, 0);
             if (!world.isRemote) {
                 final IPacket<?> pkt = new SBlockActionPacket(pos, noteBlock, event.getInstrument().ordinal(), note);

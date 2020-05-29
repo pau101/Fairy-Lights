@@ -26,11 +26,11 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(final ISubtypeRegistration registry) {
-        registry.registerSubtypeInterpreter(FLItems.TINSEL.orElseThrow(IllegalStateException::new), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.TRIANGLE_PENNANT.orElseThrow(IllegalStateException::new), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.SPEARHEAD_PENNANT.orElseThrow(IllegalStateException::new), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.SWALLOWTAIL_PENNANT.orElseThrow(IllegalStateException::new), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.SQUARE_PENNANT.orElseThrow(IllegalStateException::new), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(FLItems.TINSEL.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(FLItems.TRIANGLE_PENNANT.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(FLItems.SPEARHEAD_PENNANT.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(FLItems.SWALLOWTAIL_PENNANT.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(FLItems.SQUARE_PENNANT.get(), new ColorSubtypeInterpreter());
         Arrays.stream(LightVariant.values()).map(LightVariant::getItem).forEach(i -> registry.registerSubtypeInterpreter(i, new ColorSubtypeInterpreter()));
     }
 }

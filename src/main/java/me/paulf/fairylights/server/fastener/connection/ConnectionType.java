@@ -29,7 +29,7 @@ public enum ConnectionType {
 
         @Override
         public ConnectionItem getItem() {
-            return FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new);
+            return FLItems.HANGING_LIGHTS.get();
         }
 
         @Override
@@ -50,7 +50,7 @@ public enum ConnectionType {
 
         @Override
         public ConnectionItem getItem() {
-            return FLItems.GARLAND.orElseThrow(IllegalStateException::new);
+            return FLItems.GARLAND.get();
         }
 
         @Override
@@ -71,7 +71,7 @@ public enum ConnectionType {
 
         @Override
         public ConnectionItem getItem() {
-            return FLItems.TINSEL.orElseThrow(IllegalStateException::new);
+            return FLItems.TINSEL.get();
         }
 
         @Override
@@ -92,7 +92,7 @@ public enum ConnectionType {
 
         @Override
         public ConnectionItem getItem() {
-            return FLItems.PENNANT_BUNTING.orElseThrow(IllegalStateException::new);
+            return FLItems.PENNANT_BUNTING.get();
         }
 
         @Override
@@ -113,7 +113,7 @@ public enum ConnectionType {
 
         @Override
         public ConnectionItem getItem() {
-            return FLItems.LETTER_BUNTING.orElseThrow(IllegalStateException::new);
+            return FLItems.LETTER_BUNTING.get();
         }
 
         @Override

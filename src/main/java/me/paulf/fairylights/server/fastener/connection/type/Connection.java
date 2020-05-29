@@ -225,7 +225,7 @@ public abstract class Connection implements NBTSerializable {
             );
             this.world.addEntity(item);
         }
-        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_DISCONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_DISCONNECT.get(), SoundCategory.BLOCKS, 1, 1);
     }
 
     public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
@@ -264,7 +264,7 @@ public abstract class Connection implements NBTSerializable {
         final ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
         this.fastener.connectWith(this.world, dest, type, data).onConnect(player.world, player, heldStack);
         heldStack.shrink(1);
-        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 1);
+        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
     }
 
     private boolean slacken(final Vec3d hit, final ItemStack heldStack, final float amount) {
@@ -276,7 +276,7 @@ public abstract class Connection implements NBTSerializable {
             this.slack = 0;
         }
         this.dataUpdateState = true;
-        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_STRETCH.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - this.slack) * 0.4F);
+        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_STRETCH.get(), SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - this.slack) * 0.4F);
         return true;
     }
 
@@ -308,12 +308,12 @@ public abstract class Connection implements NBTSerializable {
             if (pull > 0) {
                 final int stage = (int) (pull + 0.1F);
                 if (stage > this.prevStretchStage) {
-                    this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_STRETCH.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
+                    this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_STRETCH.get(), SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
                 }
                 this.prevStretchStage = stage;
             }
             if (dist > MAX_LENGTH + PULL_RANGE) {
-                this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP.orElseThrow(IllegalStateException::new), SoundCategory.BLOCKS, 0.75F, 0.8F + this.world.rand.nextFloat() * 0.3F);
+                this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP.get(), SoundCategory.BLOCKS, 0.75F, 0.8F + this.world.rand.nextFloat() * 0.3F);
                 this.forceRemove = true;
             } else if (dest.isMoving()) {
                 dest.resistSnap(from);
