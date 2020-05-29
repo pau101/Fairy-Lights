@@ -47,8 +47,8 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     private Letter[] prevLetters;
 
-    public LetterBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-        super(world, fastener, uuid, destination, isOrigin, compound);
+    public LetterBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        super(world, fastener, uuid, destination, isOrigin, compound, drop);
     }
 
     public LetterBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid) {

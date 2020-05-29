@@ -113,11 +113,6 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public boolean shouldDropConnection() {
-        return true;
-    }
-
-    @Override
     public void dropItems(final World world, final BlockPos pos) {
         final float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
         final float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
@@ -208,7 +203,8 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
                 final UUID uuid = entry.getKey();
                 oldDestination.removeConnectionImmediately(uuid);
                 connection.setDestination(newDestination);
-                final Connection other = newDestination.createConnection(this.world, uuid, this, connection.getType(), !connection.isOrigin(), connection.serializeLogic());
+                connection.setDrop();
+                final Connection other = newDestination.createConnection(this.world, uuid, this, connection.getType(), !connection.isOrigin(), connection.serializeLogic(), true);
                 newDestination.getConnections().put(uuid, other);
                 return connection;
             }
@@ -217,17 +213,17 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public Connection connectWith(final World world, final Fastener<?> destination, final ConnectionType type, final CompoundNBT compound) {
+    public Connection connectWith(final World world, final Fastener<?> destination, final ConnectionType type, final CompoundNBT compound, final boolean drop) {
         final UUID uuid = MathHelper.getRandomUUID();
-        this.connections.put(uuid, this.createConnection(world, uuid, destination, type, true, compound));
-        final Connection c = destination.createConnection(world, uuid, this, type, false, compound);
+        this.connections.put(uuid, this.createConnection(world, uuid, destination, type, true, compound, drop));
+        final Connection c = destination.createConnection(world, uuid, this, type, false, compound, drop);
         destination.getConnections().put(uuid, c);
         return c;
     }
 
     @Override
-    public Connection createConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType type, final boolean isOrigin, final CompoundNBT compound) {
-        return type.createConnection(world, this, uuid, destination, isOrigin, compound);
+    public Connection createConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType type, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        return type.createConnection(world, this, uuid, destination, isOrigin, compound, drop);
     }
 
     @Override

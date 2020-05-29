@@ -64,8 +64,8 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     private int lightUpdateIndex;
 
-    public HangingLightsConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-        super(world, fastener, uuid, destination, isOrigin, compound);
+    public HangingLightsConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        super(world, fastener, uuid, destination, isOrigin, compound, drop);
     }
 
     public HangingLightsConnection(final World world, final Fastener<?> fastenerOrigin, final UUID uuid) {

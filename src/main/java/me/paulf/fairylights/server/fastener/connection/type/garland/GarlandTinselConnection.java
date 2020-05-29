@@ -13,8 +13,8 @@ import java.util.UUID;
 public final class GarlandTinselConnection extends Connection {
     private DyeColor color;
 
-    public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-        super(world, fastener, uuid, destination, isOrigin, compound);
+    public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        super(world, fastener, uuid, destination, isOrigin, compound, drop);
     }
 
     public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid) {

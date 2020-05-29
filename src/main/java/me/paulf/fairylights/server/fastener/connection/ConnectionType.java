@@ -18,8 +18,8 @@ import java.util.UUID;
 public enum ConnectionType {
     HANGING_LIGHTS {
         @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-            return new HangingLightsConnection(world, fastener, uuid, destination, isOrigin, compound);
+        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+            return new HangingLightsConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
         }
 
         @Override
@@ -39,8 +39,8 @@ public enum ConnectionType {
     },
     GARLAND {
         @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-            return new GarlandVineConnection(world, fastener, uuid, destination, isOrigin, compound);
+        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+            return new GarlandVineConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
         }
 
         @Override
@@ -60,8 +60,8 @@ public enum ConnectionType {
     },
     TINSEL {
         @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-            return new GarlandTinselConnection(world, fastener, uuid, destination, isOrigin, compound);
+        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+            return new GarlandTinselConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
         }
 
         @Override
@@ -81,8 +81,8 @@ public enum ConnectionType {
     },
     PENNANT_BUNTING {
         @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-            return new PennantBuntingConnection(world, fastener, uuid, destination, isOrigin, compound);
+        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+            return new PennantBuntingConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
         }
 
         @Override
@@ -102,8 +102,8 @@ public enum ConnectionType {
     },
     LETTER_BUNTING {
         @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-            return new LetterBuntingConnection(world, fastener, uuid, destination, isOrigin, compound);
+        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+            return new LetterBuntingConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
         }
 
         @Override
@@ -122,7 +122,7 @@ public enum ConnectionType {
         }
     };
 
-    public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid, Fastener<?> fastenerDestination, boolean isOrigin, CompoundNBT compound);
+    public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid, Fastener<?> fastenerDestination, boolean isOrigin, CompoundNBT compound, final boolean drop);
 
     public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid);
 

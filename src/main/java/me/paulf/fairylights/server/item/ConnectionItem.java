@@ -113,7 +113,7 @@ public abstract class ConnectionItem extends Item {
         }
     }
 
-    public void connect(final ItemStack stack, final PlayerEntity user, final World world, final Fastener fastener) {
+    public void connect(final ItemStack stack, final PlayerEntity user, final World world, final Fastener<?> fastener) {
         this.connect(stack, user, world, fastener, true);
     }
 
@@ -122,8 +122,8 @@ public abstract class ConnectionItem extends Item {
             boolean playSound = playConnectSound;
             final Connection conn = attacher.getFirstConnection();
             if (conn == null) {
-                final CompoundNBT data = MoreObjects.firstNonNull(stack.getTag(), new CompoundNBT());
-                fastener.connectWith(world, attacher, this.getConnectionType(), data);
+                final CompoundNBT data = stack.getTag();
+                fastener.connectWith(world, attacher, this.getConnectionType(), data == null ? new CompoundNBT() : data, false);
             } else if (conn.getDestination().isLoaded(world)) {
                 final Connection c = conn.getDestination().get(world).reconnect(attacher, fastener);
                 if (c == null) {

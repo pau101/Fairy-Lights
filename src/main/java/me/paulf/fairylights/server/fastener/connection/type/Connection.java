@@ -89,10 +89,13 @@ public abstract class Connection implements NBTSerializable {
     @Nullable
     private List<Runnable> removeListeners;
 
-    public Connection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
+    private boolean drop;
+
+    public Connection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
         this(world, fastener, uuid);
         this.destination = destination.createAccessor();
         this.isOrigin = isOrigin;
+        this.drop = drop;
         this.deserializeLogic(compound);
     }
 
@@ -151,8 +154,12 @@ public abstract class Connection implements NBTSerializable {
         return this.destination.equals(location);
     }
 
+    public void setDrop() {
+        this.drop = true;
+    }
+
     public boolean shouldDrop() {
-        return this.fastener.shouldDropConnection() && this.destination.isLoaded(this.world) && this.destination.get(this.world).shouldDropConnection();
+        return this.drop;
     }
 
     public boolean shouldDisconnect() {
@@ -262,7 +269,7 @@ public abstract class Connection implements NBTSerializable {
         }
         final CompoundNBT data = MoreObjects.firstNonNull(heldStack.getTag(), new CompoundNBT());
         final ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
-        this.fastener.connectWith(this.world, dest, type, data).onConnect(player.world, player, heldStack);
+        this.fastener.connectWith(this.world, dest, type, data, true).onConnect(player.world, player, heldStack);
         heldStack.shrink(1);
         this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
     }
@@ -396,6 +403,7 @@ public abstract class Connection implements NBTSerializable {
         compound.put("destination", FastenerType.serialize(this.destination));
         compound.put("logic", this.serializeLogic());
         compound.putFloat("slack", this.slack);
+        if (!this.drop) compound.putBoolean("drop", false);
         return compound;
     }
 
@@ -405,6 +413,7 @@ public abstract class Connection implements NBTSerializable {
         this.destination = FastenerType.deserialize(compound.getCompound("destination"));
         this.deserializeLogic(compound.getCompound("logic"));
         this.slack = compound.contains("slack", NBT.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;
+        this.drop = !compound.contains("drop", NBT.TAG_ANY_NUMERIC) || compound.getBoolean("drop");
         this.updateCatenary = true;
     }
 

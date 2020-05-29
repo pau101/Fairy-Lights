@@ -40,8 +40,8 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
 
     private StyledString text;
 
-    public PennantBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-        super(world, fastener, uuid, destination, isOrigin, compound);
+    public PennantBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        super(world, fastener, uuid, destination, isOrigin, compound, drop);
     }
 
     public PennantBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid) {

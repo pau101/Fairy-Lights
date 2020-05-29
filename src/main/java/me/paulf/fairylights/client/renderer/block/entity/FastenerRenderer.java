@@ -28,17 +28,7 @@ public class FastenerRenderer {
         boolean renderBow = true;
         for (final Connection conn : fastener.getConnections().values()) {
             if (conn.isOrigin()) {
-                if (conn instanceof HangingLightsConnection) {
-                    this.hangingLights.render((HangingLightsConnection) conn, delta, matrix, source, packedLight, packedOverlay);
-                } else if (conn instanceof GarlandVineConnection) {
-                    this.garland.render((GarlandVineConnection) conn, delta, matrix, source, packedLight, packedOverlay);
-                } else if (conn instanceof GarlandTinselConnection) {
-                    this.tinsel.render((GarlandTinselConnection) conn, delta, matrix, source, packedLight, packedOverlay);
-                } else if (conn instanceof PennantBuntingConnection) {
-                    this.pennants.render((PennantBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
-                } else if (conn instanceof LetterBuntingConnection) {
-                    this.letters.render((LetterBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
-                }
+                this.renderConnection(delta, matrix, source, packedLight, packedOverlay, conn);
             }
             if (renderBow && conn instanceof GarlandVineConnection && fastener.getFacing().getAxis() != Direction.Axis.Y) {
                 final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
@@ -48,6 +38,20 @@ public class FastenerRenderer {
                 matrix.pop();
                 renderBow = false;
             }
+        }
+    }
+
+    private void renderConnection(final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay, final Connection conn) {
+        if (conn instanceof HangingLightsConnection) {
+            this.hangingLights.render((HangingLightsConnection) conn, delta, matrix, source, packedLight, packedOverlay);
+        } else if (conn instanceof GarlandVineConnection) {
+            this.garland.render((GarlandVineConnection) conn, delta, matrix, source, packedLight, packedOverlay);
+        } else if (conn instanceof GarlandTinselConnection) {
+            this.tinsel.render((GarlandTinselConnection) conn, delta, matrix, source, packedLight, packedOverlay);
+        } else if (conn instanceof PennantBuntingConnection) {
+            this.pennants.render((PennantBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
+        } else if (conn instanceof LetterBuntingConnection) {
+            this.letters.render((LetterBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
         }
     }
 }

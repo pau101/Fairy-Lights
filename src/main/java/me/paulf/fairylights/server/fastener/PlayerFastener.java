@@ -44,11 +44,6 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     }
 
     @Override
-    public boolean shouldDropConnection() {
-        return false;
-    }
-
-    @Override
     public boolean isMoving() {
         return true;
     }
@@ -59,9 +54,9 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
             final Iterator<Entry<UUID, Connection>> entries = this.connections.entrySet().iterator();
             while (entries.hasNext()) {
                 final Entry<UUID, Connection> entry = entries.next();
-                entries.remove();
                 final Connection connection = entry.getValue();
-                if (connection.getDestination().isLoaded(this.getWorld())) {
+                if (!connection.shouldDrop()) {
+                    entries.remove();
                     connection.getDestination().get(this.getWorld()).removeConnection(entry.getKey());
                 }
             }

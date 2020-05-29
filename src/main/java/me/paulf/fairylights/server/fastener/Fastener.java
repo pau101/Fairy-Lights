@@ -48,8 +48,6 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
     void setDirty();
 
-    boolean shouldDropConnection();
-
     void dropItems(World world, BlockPos pos);
 
     void remove();
@@ -72,7 +70,7 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
     @Nullable
     Connection reconnect(Fastener<?> oldDestination, Fastener<?> newDestination);
 
-    Connection connectWith(World world, Fastener<?> destination, ConnectionType type, CompoundNBT compound);
+    Connection connectWith(World world, Fastener<?> destination, ConnectionType type, CompoundNBT compound, final boolean drop);
 
-    Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, CompoundNBT compound);
+    Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType type, boolean isOrigin, CompoundNBT compound, final boolean drop);
 }

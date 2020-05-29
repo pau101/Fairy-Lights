@@ -25,8 +25,8 @@ public abstract class HangingFeatureConnection<F extends HangingFeature<F>> exte
     @Nullable
     protected F[] prevFeatures;
 
-    public HangingFeatureConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound) {
-        super(world, fastener, uuid, destination, isOrigin, compound);
+    public HangingFeatureConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        super(world, fastener, uuid, destination, isOrigin, compound, drop);
     }
 
     public HangingFeatureConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
