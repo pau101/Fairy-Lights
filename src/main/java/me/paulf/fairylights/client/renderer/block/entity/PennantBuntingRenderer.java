@@ -71,7 +71,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 matrix.rotate(Vector3f.ZP.rotation(currPennant.getPitch(delta)));
                 matrix.rotate(Vector3f.XP.rotation(currPennant.getRoll(delta)));
                 matrix.push();
-                this.renderBakedModel(model, matrix, buf, r, g, b, packedLight, packedOverlay);
+                FastenerRenderer.renderBakedModel(model, matrix, buf, r, g, b, packedLight, packedOverlay);
                 matrix.pop();
                 if (i >= offset && i < offset + text.length()) {
                     this.drawLetter(matrix, source, currPennant, packedLight, font, text, i - offset, 1, delta);

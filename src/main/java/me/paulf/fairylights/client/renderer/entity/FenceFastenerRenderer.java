@@ -1,18 +1,25 @@
 package me.paulf.fairylights.client.renderer.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.client.renderer.block.entity.FastenerRenderer;
+import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.LightType;
 
 public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEntity> {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(FairyLights.ID, "textures/entity/mjolnir.png");
+    public static final ResourceLocation MODEL = new ResourceLocation(FairyLights.ID, "block/fence_fastener");
+
+    private final FastenerRenderer renderer = new FastenerRenderer();
 
     //private final FastenerModel model;
 
@@ -27,32 +34,16 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
     }
 
     @Override
-    public void render(final FenceFastenerEntity p_225623_1_, final float p_225623_2_, final float p_225623_3_, final MatrixStack p_225623_4_, final IRenderTypeBuffer p_225623_5_, final int p_225623_6_) {
-        super.render(p_225623_1_, p_225623_2_, p_225623_3_, p_225623_4_, p_225623_5_, p_225623_6_);
+    public void render(final FenceFastenerEntity entity, final float yaw, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight) {
+        final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
+        matrix.push();
+        FastenerRenderer.renderBakedModel(MODEL, matrix, buf, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
+        matrix.pop();
+        entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> {
+            this.renderer.render(f, delta, matrix, source, packedLight, OverlayTexture.NO_OVERLAY);
+        });
+        super.render(entity, yaw, delta, matrix, source, packedLight);
     }
-
-    /*@Override
-    public void doRender(final FenceFastenerEntity fastener, final double x, final double y, final double z, final float yaw, final float delta) {
-        GlStateManager.pushMatrix();
-        GlStateManager.disableCull();
-        GlStateManager.translated(x, y, z);
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.enableAlphaTest();
-        if (this.renderOutlines) {
-            GlStateManager.enableColorMaterial();
-            GlStateManager.setupSolidRenderingTextureCombine(this.getTeamColor(fastener));
-        }
-        this.bindTexture(TEXTURE);
-        this.model.render(0.0625F);
-        this.bindEntityTexture(fastener);
-        FastenerRenderer.render(fastener.getCapability(CapabilityHandler.FASTENER_CAP).get(), delta);
-        if (this.renderOutlines) {
-            GlStateManager.tearDownSolidRenderingTextureCombine();
-            GlStateManager.disableColorMaterial();
-        }
-        GlStateManager.popMatrix();
-        super.doRender(fastener, x, y, z, yaw, delta);
-    }*/
 
     @Override
     public ResourceLocation getEntityTexture(final FenceFastenerEntity p_110775_1_) {

@@ -19,7 +19,7 @@ public final class FastenerBlockEntityRenderer extends TileEntityRenderer<Fasten
         this.view = view;
     }
 
-    private FastenerRenderer renderer = new FastenerRenderer();
+    private final FastenerRenderer renderer = new FastenerRenderer();
 
     @Override
     public boolean isGlobalRenderer(final FastenerBlockEntity fastener) {

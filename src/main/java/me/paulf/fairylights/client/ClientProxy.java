@@ -99,6 +99,7 @@ public final class ClientProxy extends ServerProxy {
                 e.addSprite(SOLID_TEXTURE.getTextureLocation());
             }
         });
+        ModelLoader.addSpecialModel(FenceFastenerRenderer.MODEL);
         final ImmutableList<ResourceLocation> entityModels = new ImmutableList.Builder<ResourceLocation>()
             .addAll(PennantBuntingRenderer.MODELS.values())
             .addAll(LetterBuntingRenderer.MODELS.values())

@@ -62,7 +62,7 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
             matrix.rotate(Vector3f.ZP.rotation(currPennant.getPitch(delta)));
             matrix.rotate(Vector3f.XP.rotation(currPennant.getRoll(delta)));
             matrix.translate(-0.5F, -1.0F - 0.5F / 16.0F, -0.5F);
-            this.renderBakedModel(path, matrix, buf, r, g, b, packedLight, packedOverlay);
+            FastenerRenderer.renderBakedModel(path, matrix, buf, r, g, b, packedLight, packedOverlay);
             matrix.pop();
         }
     }

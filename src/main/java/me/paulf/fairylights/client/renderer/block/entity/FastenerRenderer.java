@@ -11,10 +11,18 @@ import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandVineC
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.letter.LetterBuntingConnection;
 import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.data.EmptyModelData;
+
+import java.util.Random;
 
 public class FastenerRenderer {
     private final HangingLightsRenderer hangingLights = new HangingLightsRenderer();
@@ -52,6 +60,28 @@ public class FastenerRenderer {
             this.pennants.render((PennantBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
         } else if (conn instanceof LetterBuntingConnection) {
             this.letters.render((LetterBuntingConnection) conn, delta, matrix, source, packedLight, packedOverlay);
+        }
+    }
+
+    public static void renderBakedModel(final ResourceLocation path, final MatrixStack matrix, final IVertexBuilder buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
+        renderBakedModel(Minecraft.getInstance().getModelManager().getModel(path), matrix, buf, r, g, b, packedLight, packedOverlay);
+    }
+
+    public static void renderBakedModel(final IBakedModel model, final MatrixStack matrix, final IVertexBuilder buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
+        renderBakedModel(model, ItemCameraTransforms.TransformType.FIXED, matrix, buf, r, g, b, packedLight, packedOverlay);
+    }
+
+    @SuppressWarnings("deprecation")
+    // (refusing to use handlePerspective due to IForgeTransformationMatrix#push superfluous undocumented MatrixStack#push)
+    public static void renderBakedModel(final IBakedModel model, final ItemCameraTransforms.TransformType type, final MatrixStack matrix, final IVertexBuilder buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
+        model.getItemCameraTransforms().getTransform(type).apply(false, matrix);
+        for (final Direction side : Direction.values()) {
+            for (final BakedQuad quad : model.getQuads(null, side, new Random(42L), EmptyModelData.INSTANCE)) {
+                buf.addQuad(matrix.getLast(), quad, r, g, b, packedLight, packedOverlay);
+            }
+        }
+        for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
+            buf.addQuad(matrix.getLast(), quad, r, g, b, packedLight, packedOverlay);
         }
     }
 }

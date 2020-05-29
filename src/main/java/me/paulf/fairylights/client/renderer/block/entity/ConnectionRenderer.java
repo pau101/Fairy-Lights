@@ -6,21 +6,12 @@ import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.util.Mth;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.model.data.EmptyModelData;
-
-import java.util.Random;
 
 public abstract class ConnectionRenderer<C extends Connection> {
     private final WireModel model;
@@ -62,24 +53,6 @@ public abstract class ConnectionRenderer<C extends Connection> {
     protected void render(final C conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}
 
     protected void renderSegment(final C connection, final Catenary.SegmentView it, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}
-
-    protected final void renderBakedModel(final ResourceLocation path, final MatrixStack matrix, final IVertexBuilder buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
-        this.renderBakedModel(Minecraft.getInstance().getModelManager().getModel(path), matrix, buf, r, g, b, packedLight, packedOverlay);
-    }
-
-    @SuppressWarnings("deprecation")
-    // (refusing to use handlePerspective due to IForgeTransformationMatrix#push superfluous undocumented MatrixStack#push)
-    protected final void renderBakedModel(final IBakedModel model, final MatrixStack matrix, final IVertexBuilder buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
-        model.getItemCameraTransforms().getTransform(ItemCameraTransforms.TransformType.FIXED).apply(false, matrix);
-        for (final Direction side : Direction.values()) {
-            for (final BakedQuad quad : model.getQuads(null, side, new Random(42L), EmptyModelData.INSTANCE)) {
-                buf.addQuad(matrix.getLast(), quad, r, g, b, packedLight, packedOverlay);
-            }
-        }
-        for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
-            buf.addQuad(matrix.getLast(), quad, r, g, b, packedLight, packedOverlay);
-        }
-    }
 
     private static class WireModel extends Model {
         final ModelRenderer root;

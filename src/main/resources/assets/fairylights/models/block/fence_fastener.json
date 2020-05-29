@@ -1,0 +1,23 @@
+{
+    "textures": {
+        "texture": "fairylights:block/fastener",
+        "particle": "fairylights:block/fastener"
+    },
+    "elements": [{
+        "from": [ 5, 5, 5 ],
+        "to": [ 11, 11, 11 ],
+        "faces": {
+            "down":  { "uv": [  8,  4, 14, 10 ], "texture": "#texture" },
+            "up":    { "uv": [  8,  4, 14, 10 ], "texture": "#texture" },
+            "north": { "uv": [  2,  8,  8, 14 ], "texture": "#texture" },
+            "south": { "uv": [  2,  8,  8, 14 ], "texture": "#texture" },
+            "west":  { "uv": [  8, 10, 14, 16 ], "texture": "#texture" },
+            "east":  { "uv": [  8, 10, 14, 16 ], "texture": "#texture" }
+        }
+    }],
+    "display": {
+        "fixed": {
+            "translation": [ -8, -8, -8 ]
+        }
+    }
+}
