@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -111,6 +112,20 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     public void remove() {
         this.getFastener().ifPresent(Fastener::remove);
         super.remove();
+    }
+
+    // Copy from super but remove() moved to after onBroken()
+    @Override
+    public boolean attackEntityFrom(final DamageSource source, final float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        }
+        if (!this.world.isRemote && this.isAlive()) {
+            this.markVelocityChanged();
+            this.onBroken(source.getTrueSource());
+            this.remove();
+        }
+        return true;
     }
 
     @Override
