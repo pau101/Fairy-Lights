@@ -9,6 +9,7 @@ public class SpiderLightModel extends LightModel {
         string.addBox(-1, 0, -1, 2, 2, 2, -0.05F);
         this.unlit.addChild(string);
         final BulbBuilder bulb = this.createBulb();
+        bulb.setAngles(0.0F, -Mth.PI / 2.0F, 0.0F);
         final BulbBuilder abdomen = bulb.createChild(20, 54);
         abdomen.addBox(-2.5F, -5.0F, -2.5F, 5, 5, 5, 0);
         final BulbBuilder pedicel = abdomen.createChild(6, 0);

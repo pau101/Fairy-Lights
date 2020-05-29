@@ -40,7 +40,7 @@ public enum LightVariant {
     WITCH("witch_light", () -> FLItems.WITCH_LIGHT, true, 8, 10,
         Placement.UPRIGHT
     ),
-    SNOWFLAKE("snowflake_light", () -> FLItems.SNOWFLAKE_LIGHT, true, 8, 12.5F,
+    SNOWFLAKE("snowflake_light", () -> FLItems.SNOWFLAKE_LIGHT, true, 10.0F, 15.0F,
         Placement.UPRIGHT
     ),
     ICICLE("icicle_lights", () -> FLItems.ICICLE_LIGHTS, false, 0.625F, 7, 20,
