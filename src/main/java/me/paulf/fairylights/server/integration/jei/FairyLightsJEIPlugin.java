@@ -2,19 +2,15 @@ package me.paulf.fairylights.server.integration.jei;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.item.FLItems;
+import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
 @JeiPlugin
 public final class FairyLightsJEIPlugin implements IModPlugin {
@@ -29,20 +25,9 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(final IRecipeRegistration registration) {
-        final ClientWorld world = Minecraft.getInstance().world;
-        final RecipeManager recipeManager = world.getRecipeManager();
-        registration.addRecipes(recipeManager.getRecipes().stream()
-                .filter(GenericRecipe.class::isInstance)
-                .collect(Collectors.toList()),
-            VanillaRecipeCategoryUid.CRAFTING
-        );
-    }
-
-    @Override
     public void registerItemSubtypes(final ISubtypeRegistration registry) {
-        registry.registerSubtypeInterpreter(FLItems.TINSEL.orElseThrow(IllegalStateException::new), new TinselSubtypeInterpreter());
-//        registry.useNbtForSubtypes(FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
-//        registry.useNbtForSubtypes(Arrays.stream(LightVariant.values()).map(LightVariant::getItem).toArray(Item[]::new));
+        registry.registerSubtypeInterpreter(FLItems.TINSEL.orElseThrow(IllegalStateException::new), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(FLItems.PENNANT.orElseThrow(IllegalStateException::new), new ColorSubtypeInterpreter());
+        Arrays.stream(LightVariant.values()).map(LightVariant::getItem).forEach(i -> registry.registerSubtypeInterpreter(i, new ColorSubtypeInterpreter()));
     }
 }

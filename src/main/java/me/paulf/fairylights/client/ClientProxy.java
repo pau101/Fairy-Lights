@@ -164,13 +164,7 @@ public final class ClientProxy extends ServerProxy {
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.orElseThrow(IllegalStateException::new));
         colors.register((stack, index) -> {
-            final DyeColor color;
-            if (stack.hasTag()) {
-                color = DyeColor.byId(stack.getTag().getByte("color"));
-            } else {
-                color = DyeColor.BLACK;
-            }
-            return LightItem.getColorValue(color);
+            return LightItem.getColorValue(LightItem.getLightColor(stack));
         }, FLItems.TINSEL.orElseThrow(IllegalStateException::new));
         colors.register((stack, index) -> {
             if (index == 0) {
