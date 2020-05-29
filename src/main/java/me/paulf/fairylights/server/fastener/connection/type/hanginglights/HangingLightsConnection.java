@@ -268,7 +268,6 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
         compound.put("pattern", tagList);
         compound.putBoolean("twinkle", this.twinkle);
-        compound.putBoolean("tight", this.slack == 0);
         return compound;
     }
 
@@ -282,8 +281,5 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             this.pattern.add(ColoredLightVariant.from(lightCompound));
         }
         this.twinkle = compound.getBoolean("twinkle");
-        if (compound.getBoolean("tight")) {
-            this.slack = 0;
-        }
     }
 }

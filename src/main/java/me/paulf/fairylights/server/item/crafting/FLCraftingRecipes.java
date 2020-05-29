@@ -121,30 +121,7 @@ public final class FLCraftingRecipes {
         return new GenericRecipeBuilder(name, FAIRY_LIGHTS, FLItems.HANGING_LIGHTS.get())
             .withShape("I-I")
             .withIngredient('I', Tags.Items.INGOTS_IRON)
-            .withAnyIngredient('-',
-                new BasicRegularIngredient(Ingredient.fromTag(Tags.Items.STRING)) {
-                    @Override
-                    public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                        return useInputsForTagBool(output, "tight", false) ? super.getInput(output) : ImmutableList.of();
-                    }
-                },
-                new BasicRegularIngredient(Ingredient.fromItems(Items.STICK)) {
-                    @Override
-                    public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                        return useInputsForTagBool(output, "tight", true) ? super.getInput(output) : ImmutableList.of();
-                    }
-
-                    @Override
-                    public void present(final ItemStack output) {
-                        output.getOrCreateTag().putBoolean("tight", true);
-                    }
-
-                    @Override
-                    public void absent(final ItemStack output) {
-                        output.getOrCreateTag().putBoolean("tight", false);
-                    }
-                }
-            )
+            .withIngredient('-', Tags.Items.STRING)
             .withAuxiliaryIngredient(new LightIngredient(true))
             .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(Tags.Items.DUSTS_GLOWSTONE), false, 1) {
                 @Override
@@ -279,7 +256,6 @@ public final class FLCraftingRecipes {
         }
         compound.put("pattern", lights);
         compound.putBoolean("twinkle", false);
-        compound.putBoolean("tight", false);
         return stack;
     }
 
