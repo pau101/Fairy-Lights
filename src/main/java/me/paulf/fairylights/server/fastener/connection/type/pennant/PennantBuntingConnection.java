@@ -8,6 +8,7 @@ import me.paulf.fairylights.server.fastener.connection.PlayerAction;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
 import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.NBTSerializable;
@@ -180,7 +181,12 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
 
         @Override
         public void deserialize(final CompoundNBT compound) {
-            this.item = Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(compound.getString("item"))), "item");
+            final ResourceLocation key = ResourceLocation.tryCreate(compound.getString("item"));
+            if (ForgeRegistries.ITEMS.containsKey(key)) {
+                this.item = Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(key), "item");
+            } else {
+                this.item = FLItems.TRIANGLE_PENNANT.get();
+            }
             this.color = DyeColor.byId(compound.getByte("color"));
         }
 
