@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "fairylights:fairy_lights"
+      "fairylights:hanging_lights"
     ]
   },
   "criteria": {
@@ -29,7 +29,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fairylights:fairy_lights"
+        "recipe": "fairylights:hanging_lights"
       }
     }
   },

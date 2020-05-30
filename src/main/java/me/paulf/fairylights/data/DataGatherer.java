@@ -89,12 +89,12 @@ public final class DataGatherer {
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_vine", this.hasItem(Items.VINE))
                 .build(consumer);
-            GenericRecipeBuilder.customRecipe(FLCraftingRecipes.FAIRY_LIGHTS.get())
+            GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS.get())
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
-                .build(consumer, new ResourceLocation(FairyLights.ID, "fairy_lights"));
-            GenericRecipeBuilder.customRecipe(FLCraftingRecipes.FAIRY_LIGHTS_AUGMENTATION.get())
-                .build(consumer, new ResourceLocation(FairyLights.ID, "fairy_lights_augmentation"));
+                .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights"));
+            GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS_AUGMENTATION.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights_augmentation"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.TINSEL_GARLAND.get())
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
