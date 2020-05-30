@@ -37,10 +37,10 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
             if (currLight.getVariant().parallelsCord()) {
                 matrix.rotate(Vector3f.ZP.rotation(currLight.getPitch(delta)));
             }
+            matrix.rotate(Vector3f.XP.rotation(currLight.getRoll(delta)));
             if (variant != LightVariant.FAIRY) {
                 matrix.rotate(Vector3f.YP.rotation(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
             }
-            matrix.rotate(Vector3f.XP.rotation(currLight.getRoll(delta)));
             matrix.translate(0.0D, -0.125D, 0.0D);
             this.lights.render(matrix, data, currLight, i, delta, packedLight, packedOverlay);
             matrix.pop();
