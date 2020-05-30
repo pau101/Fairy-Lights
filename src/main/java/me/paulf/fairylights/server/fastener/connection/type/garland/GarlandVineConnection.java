@@ -19,7 +19,7 @@ public final class GarlandVineConnection extends Connection {
 
     @Override
     public float getRadius() {
-        return 0.1875F;
+        return 2.5F / 16.0F;
     }
 
     @Override
