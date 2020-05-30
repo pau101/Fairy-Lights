@@ -1,6 +1,5 @@
 package me.paulf.fairylights.server.item;
 
-import com.google.common.base.MoreObjects;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.FastenerBlock;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
@@ -119,21 +118,23 @@ public abstract class ConnectionItem extends Item {
 
     public void connect(final ItemStack stack, final PlayerEntity user, final World world, final Fastener<?> fastener, final boolean playConnectSound) {
         user.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(attacher -> {
-            boolean playSound = playConnectSound;
+            final boolean[] playSound = { playConnectSound };
             final Connection conn = attacher.getFirstConnection();
             if (conn == null) {
                 final CompoundNBT data = stack.getTag();
                 fastener.connectWith(world, attacher, this.getConnectionType(), data == null ? new CompoundNBT() : data, false);
-            } else if (conn.getDestination().isLoaded(world)) {
-                final Connection c = conn.getDestination().get(world).reconnect(attacher, fastener);
-                if (c == null) {
-                    playSound = false;
-                } else {
-                    c.onConnect(world, user, stack);
-                    stack.shrink(1);
-                }
+            } else {
+                conn.getDestination().get(world).ifPresent(dest -> {
+                    final Connection c = dest.reconnect(attacher, fastener);
+                    if (c == null) {
+                        playSound[0] = false;
+                    } else {
+                        c.onConnect(world, user, stack);
+                        stack.shrink(1);
+                    }
+                });
             }
-            if (playSound) {
+            if (playSound[0]) {
                 final Vec3d pos = fastener.getConnectionPoint();
                 world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
             }

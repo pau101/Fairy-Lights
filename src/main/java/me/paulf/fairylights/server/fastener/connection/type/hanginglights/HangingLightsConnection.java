@@ -125,14 +125,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         final boolean playing = this.jinglePlayer.isPlaying();
         if (playing || this.wasPlaying) {
             this.updateNeighbors(this.fastener);
-            if (this.getDestination().isLoaded(this.world)) {
-                this.updateNeighbors(this.getDestination().get(this.world));
-            }
+            this.getDestination().get(this.world, false).ifPresent(this::updateNeighbors);
         }
         this.wasPlaying = playing;
         final boolean on = !this.isDynamic() && this.isOn;
-        for (int i = 0; i < this.features.length; i++) {
-            final Light light = this.features[i];
+        for (final Light light : this.features) {
             light.tick(this, this.twinkle, on);
         }
         if (on && this.isOrigin() && this.features.length > 0) {

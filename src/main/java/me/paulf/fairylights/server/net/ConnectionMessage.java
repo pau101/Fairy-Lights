@@ -8,7 +8,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -40,17 +40,15 @@ public abstract class ConnectionMessage<C extends Connection> {
         message.uuid = buf.readUniqueId();
     }
 
-    @Nullable
-    public static <C extends Connection> C getConnection(final ConnectionMessage<C> message, final Predicate<? super Connection> typePredicate, final World world) {
+    public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage<C> message, final Predicate<? super Connection> typePredicate, final World world) {
         message.accessor.update(world, message.pos);
-        if (message.accessor.isLoaded(world)) {
-            final Fastener<?> fastener = message.accessor.get(world);
-            final Connection c = fastener.getConnections().get(message.uuid);
+        return message.accessor.get(world, false).map(Optional::of).orElse(Optional.empty()).flatMap(f -> {
+            final Connection c = f.getConnections().get(message.uuid);
             if (typePredicate.test(c)) {
                 //noinspection unchecked
-                return (C) c;
+                return Optional.of((C) c);
             }
-        }
-        return null;
+            return Optional.empty();
+        });
     }
 }

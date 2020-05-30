@@ -66,25 +66,25 @@ public final class InteractionConnectionMessage extends ConnectionMessage<Connec
         public void accept(final InteractionConnectionMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             final ServerPlayerEntity player = context.getSender();
-            context.enqueueWork(() -> this.handle(message, player));
+            if (player != null) {
+                context.enqueueWork(() -> this.handle(message, player));
+            }
             context.setPacketHandled(true);
         }
 
         private void handle(final InteractionConnectionMessage message, final PlayerEntity player) {
-            if (player == null) {
-                return;
-            }
-            final Connection connection = getConnection(message, c -> true, player.world);
-            if (connection == null) {
-                return;
-            }
-            if (player.getPositionVec().squareDistanceTo(new Vec3d(connection.getFastener().getPos())) < RANGE && player.getDistanceSq(message.hit.x, message.hit.y, message.hit.z) < REACH && connection.isModifiable(player)) {
-                if (message.type == PlayerAction.ATTACK) {
-                    connection.disconnect(player, message.hit);
-                } else {
-                    this.interact(message, player, connection, message.hit);
+            getConnection(message, c -> true, player.world).ifPresent(connection -> {
+                if (connection.isModifiable(player) &&
+                    player.getPositionVec().squareDistanceTo(new Vec3d(connection.getFastener().getPos())) < RANGE &&
+                    player.getDistanceSq(message.hit.x, message.hit.y, message.hit.z) < REACH
+                ) {
+                    if (message.type == PlayerAction.ATTACK) {
+                        connection.disconnect(player, message.hit);
+                    } else {
+                        this.interact(message, player, connection, message.hit);
+                    }
                 }
-            }
+            });
         }
 
         private void interact(final InteractionConnectionMessage message, final PlayerEntity player, final Connection connection, final Vec3d hit) {

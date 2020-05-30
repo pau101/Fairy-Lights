@@ -44,10 +44,11 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
 
         private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayerEntity player) {
             if (player != null) {
-                final C connection = ConnectionMessage.getConnection(message, c -> c instanceof Lettered, player.world);
-                if (connection != null && connection.isModifiable(player) && connection.isSupportedText(message.text)) {
-                    connection.setText(message.text);
-                }
+                ConnectionMessage.getConnection(message, c -> c instanceof Lettered, player.world).ifPresent(connection -> {
+                    if (connection.isModifiable(player) && connection.isSupportedText(message.text)) {
+                        connection.setText(message.text);
+                    }
+                });
             }
         }
     }

@@ -12,7 +12,6 @@ import me.paulf.fairylights.server.fastener.BlockFastener;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FenceFastener;
 import me.paulf.fairylights.server.fastener.PlayerFastener;
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
@@ -190,11 +189,11 @@ public final class ServerEventHandler {
         if (FairyLights.CHRISTMAS.isOccurringNow() && FLConfig.isJingleEnabled() && this.rng.nextFloat() < this.jingleProbability) {
             final List<TileEntity> tileEntities = event.world.loadedTileEntityList;
             final List<Vec3d> playingSources = new ArrayList<>();
-            final Map<Fastener<?>, List<Entry<UUID, Connection>>> feasibleConnections = new HashMap<>();
+            final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections = new HashMap<>();
             for (final TileEntity tileEntity : tileEntities) {
                 tileEntity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
                     final List<Vec3d> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
-                    if (newPlayingSources != null && newPlayingSources.size() > 0) {
+                    if (!newPlayingSources.isEmpty()) {
                         playingSources.addAll(newPlayingSources);
                     }
                 });
@@ -202,22 +201,16 @@ public final class ServerEventHandler {
             ((ServerWorld) event.world).getEntities().forEach(entity -> {
                 entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
                     final List<Vec3d> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
-                    if (newPlayingSources != null && newPlayingSources.size() > 0) {
+                    if (!newPlayingSources.isEmpty()) {
                         playingSources.addAll(newPlayingSources);
                     }
                 });
             });
             final Iterator<Fastener<?>> feasibleFasteners = feasibleConnections.keySet().iterator();
             while (feasibleFasteners.hasNext()) {
-                final Fastener fastener = feasibleFasteners.next();
-                final List<Entry<UUID, Connection>> connections = feasibleConnections.get(fastener);
-                final Iterator<Entry<UUID, Connection>> connectionIterator = connections.iterator();
-                while (connectionIterator.hasNext()) {
-                    final Connection connection = connectionIterator.next().getValue();
-                    if (this.isTooCloseTo(fastener, ((HangingLightsConnection) connection).getFeatures(), playingSources)) {
-                        connectionIterator.remove();
-                    }
-                }
+                final Fastener<?> fastener = feasibleFasteners.next();
+                final List<HangingLightsConnection> connections = feasibleConnections.get(fastener);
+                connections.removeIf(connection -> this.isTooCloseTo(fastener, connection.getFeatures(), playingSources));
                 if (connections.size() == 0) {
                     feasibleFasteners.remove();
                 }
@@ -225,32 +218,31 @@ public final class ServerEventHandler {
             if (feasibleConnections.size() == 0) {
                 return;
             }
-            final Fastener fastener = feasibleConnections.keySet().toArray(new Fastener[0])[this.rng.nextInt(feasibleConnections.size())];
-            final List<Entry<UUID, Connection>> connections = feasibleConnections.get(fastener);
-            final Entry<UUID, Connection> connectionEntry = connections.get(this.rng.nextInt(connections.size()));
-            final Connection connection = connectionEntry.getValue();
-            tryJingle(event.world, connection, (HangingLightsConnection) connection, FairyLights.christmasJingles);
+            final Fastener<?> fastener = feasibleConnections.keySet().toArray(new Fastener[0])[this.rng.nextInt(feasibleConnections.size())];
+            final List<HangingLightsConnection> connections = feasibleConnections.get(fastener);
+            final HangingLightsConnection connection = connections.get(this.rng.nextInt(connections.size()));
+            tryJingle(event.world, connection, FairyLights.christmasJingles);
         }
     }
 
-    private List<Vec3d> getPlayingLightSources(final World world, final Map<Fastener<?>, List<Entry<UUID, Connection>>> feasibleConnections, final Fastener<?> fastener) {
+    private List<Vec3d> getPlayingLightSources(final World world, final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections, final Fastener<?> fastener) {
         final List<Vec3d> points = new ArrayList<>();
         final double expandAmount = FLConfig.getJingleAmplitude();
         final AxisAlignedBB listenerRegion = fastener.getBounds().expand(expandAmount, expandAmount, expandAmount);
-        final List<PlayerEntity> nearPlayers = fastener.getWorld().getEntitiesWithinAABB(PlayerEntity.class, listenerRegion);
+        final List<PlayerEntity> nearPlayers = world.getEntitiesWithinAABB(PlayerEntity.class, listenerRegion);
         final boolean arePlayersNear = nearPlayers.size() > 0;
         for (final Entry<UUID, Connection> connectionEntry : fastener.getConnections().entrySet()) {
             final Connection connection = connectionEntry.getValue();
-            if (connection.isOrigin() && connection.getDestination().isLoaded(world) && connection.getType() == ConnectionType.HANGING_LIGHTS) {
+            if (connection.isOrigin() && connection.getDestination().get(world, false).isPresent() && connection instanceof HangingLightsConnection) {
                 final HangingLightsConnection connectionLogic = (HangingLightsConnection) connection;
                 final Light[] lightPoints = connectionLogic.getFeatures();
                 if (connectionLogic.canCurrentlyPlayAJingle()) {
                     if (arePlayersNear) {
                         if (feasibleConnections.containsKey(fastener)) {
-                            feasibleConnections.get(fastener).add(connectionEntry);
+                            feasibleConnections.get(fastener).add((HangingLightsConnection) connection);
                         } else {
-                            final List<Entry<UUID, Connection>> connections = new ArrayList<>();
-                            connections.add(connectionEntry);
+                            final List<HangingLightsConnection> connections = new ArrayList<>();
+                            connections.add((HangingLightsConnection) connection);
                             feasibleConnections.put(fastener, connections);
                         }
                     }
@@ -264,7 +256,7 @@ public final class ServerEventHandler {
         return points;
     }
 
-    public boolean isTooCloseTo(final Fastener fastener, final Light[] lights, final List<Vec3d> playingSources) {
+    public boolean isTooCloseTo(final Fastener<?> fastener, final Light[] lights, final List<Vec3d> playingSources) {
         for (final Light light : lights) {
             for (final Vec3d point : playingSources) {
                 if (light.getAbsolutePoint(fastener).distanceTo(point) <= FLConfig.getJingleAmplitude()) {
@@ -275,13 +267,13 @@ public final class ServerEventHandler {
         return false;
     }
 
-    public static boolean tryJingle(final World world, final Connection connection, final HangingLightsConnection hangingLights, final JingleLibrary library) {
+    public static boolean tryJingle(final World world, final HangingLightsConnection hangingLights, final JingleLibrary library) {
         final Light[] lights = hangingLights.getFeatures();
         final Jingle jingle = library.getRandom(world.rand, lights.length);
         if (jingle != null) {
             final int lightOffset = lights.length / 2 - jingle.getRange() / 2;
             hangingLights.play(library, jingle, lightOffset);
-            ServerProxy.sendToPlayersWatchingChunk(new JingleMessage(connection, lightOffset, library, jingle), world, connection.getFastener().getPos());
+            ServerProxy.sendToPlayersWatchingChunk(new JingleMessage(hangingLights, lightOffset, library, jingle), world, hangingLights.getFastener().getPos());
             return true;
         }
         return false;

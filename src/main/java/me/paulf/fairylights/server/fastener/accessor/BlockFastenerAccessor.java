@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -26,23 +27,21 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
     }
 
     @Override
-    public Fastener<?> get(final World world) {
-        // FIXME
-        return world.getTileEntity(this.pos).getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
-    }
-
-    @Override
-    public boolean isLoaded(final World world) {
-        if (world.isBlockLoaded(this.pos)) {
+    public LazyOptional<Fastener<?>> get(final World world, final boolean load) {
+        if (load || world.isBlockPresent(this.pos)) {
             final TileEntity entity = world.getTileEntity(this.pos);
-            return entity != null && !entity.isRemoved();
+            if (entity != null) {
+                return entity.getCapability(CapabilityHandler.FASTENER_CAP);
+            }
         }
-        return false;
+        return LazyOptional.empty();
     }
 
     @Override
     public boolean exists(final World world) {
-        return !world.isBlockLoaded(this.pos) || world.getTileEntity(this.pos) != null;
+        if (!world.isBlockPresent(this.pos)) return true;
+        final TileEntity entity = world.getTileEntity(this.pos);
+        return entity != null && entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
     }
 
     @Override

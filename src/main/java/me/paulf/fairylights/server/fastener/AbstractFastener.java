@@ -193,10 +193,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     public Connection reconnect(final Fastener<?> oldDestination, final Fastener<?> newDestination) {
         for (final Entry<UUID, Connection> entry : this.connections.entrySet()) {
             final Connection connection = entry.getValue();
-            if (!connection.getDestination().isLoaded(this.world)) {
-                continue;
-            }
-            if (connection.getDestination().get(this.world).equals(oldDestination)) {
+            if (connection.getDestination().get(this.world).filter(oldDestination::equals).isPresent()) {
                 if (connection.getFastener().equals(newDestination) || newDestination.hasConnectionWith(connection.getFastener())) {
                     return null;
                 }

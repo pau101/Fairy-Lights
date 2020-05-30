@@ -10,9 +10,10 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.UUID;
 
 public abstract class EntityFastenerAccessor<E extends Entity> implements FastenerAccessor {
@@ -37,36 +38,14 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
         this.uuid = uuid;
     }
 
-    public UUID getUUID() {
-        return this.uuid;
-    }
-
-    public E getEntity() {
-        return this.entity;
-    }
-
-    public boolean hasEntity() {
-        return this.entity != null;
-    }
-
-    protected boolean equalsUUID(final Entity entity) {
-        return this.uuid.equals(entity.getUniqueID());
-    }
-
     @Override
-    public Fastener<?> get(final World world) {
-        // FIXME
-        return this.entity.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
-    }
-
-    @Override
-    public boolean isLoaded(final World world) {
-        return this.entity != null && this.entity.isAlive();
+    public LazyOptional<Fastener<?>> get(final World world, final boolean load) {
+        return this.entity != null ? this.entity.getCapability(CapabilityHandler.FASTENER_CAP) : LazyOptional.empty();
     }
 
     @Override
     public boolean exists(final World world) {
-        return this.entity == null || this.entity.isAlive();
+        return this.entity == null || this.entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
     }
 
     @Override
@@ -83,12 +62,18 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
     @Override
     public void update(final World world, final BlockPos pos) {
         if (this.entity == null) {
-            final AxisAlignedBB aabb = new AxisAlignedBB(pos).grow(Connection.MAX_LENGTH);
-            final List<E> nearEntities = world.getEntitiesWithinAABB(this.entityClass, aabb);
-            for (final E entity : nearEntities) {
-                if (this.equalsUUID(entity)) {
-                    this.entity = entity;
-                    break;
+            if (world instanceof ServerWorld) {
+                final Entity e = ((ServerWorld) world).getEntityByUuid(this.uuid);
+                if (this.entityClass.isInstance(e)) {
+                    this.entity = this.entityClass.cast(e);
+                }
+            } else {
+                final AxisAlignedBB aabb = new AxisAlignedBB(pos).grow(Connection.MAX_LENGTH);
+                for (final E entity : world.<E>getEntitiesWithinAABB(this.entityClass, aabb)) {
+                    if (this.uuid.equals(entity.getUniqueID())) {
+                        this.entity = entity;
+                        break;
+                    }
                 }
             }
         }

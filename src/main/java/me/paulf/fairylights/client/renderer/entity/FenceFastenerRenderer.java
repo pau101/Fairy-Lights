@@ -21,8 +21,8 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
 
     private final FastenerRenderer renderer = new FastenerRenderer();
 
-    public FenceFastenerRenderer(final EntityRendererManager mgr) {
-        super(mgr);
+    public FenceFastenerRenderer(final EntityRendererManager manager) {
+        super(manager);
     }
 
     @Override
@@ -41,7 +41,7 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
     }
 
     @Override
-    public ResourceLocation getEntityTexture(final FenceFastenerEntity p_110775_1_) {
+    public ResourceLocation getEntityTexture(final FenceFastenerEntity entity) {
         return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 }

@@ -1,9 +1,11 @@
 package me.paulf.fairylights.server.block;
 
+import com.mojang.datafixers.util.Pair;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.ServerEventHandler;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
+import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
@@ -31,7 +33,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public final class FastenerBlock extends DirectionalBlock {
@@ -181,22 +185,25 @@ public final class FastenerBlock extends DirectionalBlock {
             return super.getComparatorInputOverride(state, world, pos);
         }
         return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
-            .filter(e -> {
-                Connection connection = e.getValue();
-                return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
+            .flatMap(e -> {
+                final Connection connection = e.getValue();
+                if (connection.getType() == ConnectionType.HANGING_LIGHTS) {
+                    return connection.getDestination().get(world, false).<Pair<Map.Entry<UUID, Connection>, Fastener<?>>>map(fd -> Pair.of(e, fd)).map(Stream::of).orElse(Stream.empty());
+                }
+                return Stream.empty();
             })
             .flatMap(e -> {
-                Connection connection = e.getValue();
+                Connection connection = e.getFirst().getValue();
                 if (connection.isOrigin()) {
                     return Stream.of(connection);
                 }
-                BlockPos to = connection.getDestination().get(world).getPos();
+                BlockPos to = e.getSecond().getPos();
                 TileEntity toEntity = world.getTileEntity(to);
                 if (!(toEntity instanceof FastenerBlockEntity)) {
                     return Stream.empty();
                 }
                 return toEntity.getCapability(CapabilityHandler.FASTENER_CAP)
-                    .map(toFastener -> Stream.of(toFastener.getConnections().get(e.getKey())))
+                    .map(toFastener -> Stream.of(toFastener.getConnections().get(e.getFirst().getKey())))
                     .orElse(Stream.empty());
             })
             .mapToInt(c -> (int) Math.ceil(((HangingLightsConnection) c).getJingleProgress() * 15))
@@ -219,13 +226,16 @@ public final class FastenerBlock extends DirectionalBlock {
             return false;
         }
         return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
-            .filter(e -> {
-                Connection connection = e.getValue();
-                return connection.getType() == ConnectionType.HANGING_LIGHTS && connection.getDestination().isLoaded(world);
+            .flatMap(e -> {
+                final Connection connection = e.getValue();
+                if (connection.getType() == ConnectionType.HANGING_LIGHTS) {
+                    return connection.getDestination().get(world, false).<Pair<Map.Entry<UUID, Connection>, Fastener<?>>>map(fd -> Pair.of(e, fd)).map(Stream::of).orElse(Stream.empty());
+                }
+                return Stream.empty();
             })
             .flatMap(e -> {
-                Connection connection = e.getValue();
-                BlockPos to = connection.getDestination().get(world).getPos();
+                Connection connection = e.getFirst().getValue();
+                BlockPos to = e.getSecond().getPos();
                 if (!connection.isDestination(new BlockFastenerAccessor(to))) {
                     return Stream.empty();
                 }
@@ -239,11 +249,11 @@ public final class FastenerBlock extends DirectionalBlock {
                 if (!(toEntity instanceof FastenerBlockEntity)) {
                     return Stream.empty();
                 }
-                return toEntity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> Stream.of(f.getConnections().get(e.getKey()))).orElse(Stream.empty());
+                return toEntity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> Stream.of(f.getConnections().get(e.getFirst().getKey()))).orElse(Stream.empty());
             })
             .anyMatch(connection -> {
                 final HangingLightsConnection logic = (HangingLightsConnection) connection;
-                return logic.canCurrentlyPlayAJingle() && ServerEventHandler.tryJingle(world, connection, logic, FairyLights.randomJingles);
+                return logic.canCurrentlyPlayAJingle() && ServerEventHandler.tryJingle(world, logic, FairyLights.randomJingles);
             });
     }
 

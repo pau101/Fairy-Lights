@@ -180,10 +180,7 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public final boolean isDynamic() {
-        if (this.destination.isLoaded(this.world)) {
-            return this.fastener.isMoving() || this.destination.get(this.world).isMoving();
-        }
-        return false;
+        return this.fastener.isMoving() || this.destination.get(this.world, false).filter(Fastener::isMoving).isPresent();
     }
 
     public final boolean isModifiable(final PlayerEntity player) {
@@ -216,11 +213,12 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public void disconnect(final PlayerEntity player, final Vec3d hit) {
-        if (!this.destination.isLoaded(this.world)) {
-            return;
-        }
+        this.destination.get(this.world).ifPresent(f -> this.disconnect(f, hit));
+    }
+
+    private void disconnect(final Fastener<?> destinationFastener, final Vec3d hit) {
         this.fastener.removeConnection(this);
-        this.destination.get(this.world).removeConnection(this.uuid);
+        destinationFastener.removeConnection(this.uuid);
         if (this.shouldDrop()) {
             final ItemStack stack = this.getItemStack();
             final ItemEntity item = new ItemEntity(this.world, hit.x, hit.y, hit.z, stack);
@@ -238,10 +236,7 @@ public abstract class Connection implements NBTSerializable {
     public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
         final Item item = heldStack.getItem();
         if (item instanceof ConnectionItem && !this.matches(heldStack)) {
-            if (this.destination.isLoaded(this.world)) {
-                this.replace(player, hit, heldStack);
-                return true;
-            }
+            return this.replace(player, hit, heldStack);
         } else if (heldStack.getItem().isIn(Tags.Items.STRING)) {
             return this.slacken(hit, heldStack, 0.2F);
         } else if (heldStack.getItem() == Items.STICK) {
@@ -260,18 +255,20 @@ public abstract class Connection implements NBTSerializable {
         return !stack.hasTag() || NBTUtil.areNBTEquals(this.serializeLogic(), stack.getTag(), true);
     }
 
-    private void replace(final PlayerEntity player, final Vec3d hit, final ItemStack heldStack) {
-        final Fastener<?> dest = this.destination.get(this.world);
-        this.fastener.removeConnectionImmediately(this);
-        dest.removeConnectionImmediately(this.uuid);
-        if (this.shouldDrop()) {
-            player.inventory.addItemStackToInventory(this.getItemStack());
-        }
-        final CompoundNBT data = MoreObjects.firstNonNull(heldStack.getTag(), new CompoundNBT());
-        final ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
-        this.fastener.connectWith(this.world, dest, type, data, true).onConnect(player.world, player, heldStack);
-        heldStack.shrink(1);
-        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
+    private boolean replace(final PlayerEntity player, final Vec3d hit, final ItemStack heldStack) {
+        return this.destination.get(this.world).map(dest -> {
+            this.fastener.removeConnectionImmediately(this);
+            dest.removeConnectionImmediately(this.uuid);
+            if (this.shouldDrop()) {
+                player.inventory.addItemStackToInventory(this.getItemStack());
+            }
+            final CompoundNBT data = MoreObjects.firstNonNull(heldStack.getTag(), new CompoundNBT());
+            final ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
+            this.fastener.connectWith(this.world, dest, type, data, true).onConnect(player.world, player, heldStack);
+            heldStack.shrink(1);
+            this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
+            return true;
+        }).orElse(false);
     }
 
     private boolean slacken(final Vec3d hit, final ItemStack heldStack, final float amount) {
@@ -305,9 +302,8 @@ public abstract class Connection implements NBTSerializable {
         this.prevCatenary = this.catenary;
         this.updatePrev();
         this.destination.update(this.world, this.fastener.getPos());
-        if (this.destination.isLoaded(this.world)) {
+        this.destination.get(this.world, false).ifPresent(dest -> {
             this.onUpdateEarly();
-            final Fastener<?> dest = this.destination.get(this.world);
             final Vec3d point = dest.getConnectionPoint();
             this.updateCatenary(from, dest, point);
             final double dist = point.distanceTo(from);
@@ -326,18 +322,16 @@ public abstract class Connection implements NBTSerializable {
                 dest.resistSnap(from);
             }
             this.onUpdateLate();
-        }
+        });
     }
 
     public void updateCatenary(final Vec3d from) {
-        if (this.world.isBlockLoaded(this.fastener.getPos())) {
+        if (this.world.isBlockPresent(this.fastener.getPos())) {
             this.destination.update(this.world, this.fastener.getPos());
-            if (this.destination.isLoaded(this.world)) {
-                final Fastener<?> dest = this.destination.get(this.world);
-                final Vec3d point = dest.getConnectionPoint();
-                this.updateCatenary(from, dest, point);
+            this.destination.get(this.world).ifPresent(dest -> {
+                this.updateCatenary(from, dest, dest.getConnectionPoint());
                 this.updateCatenary = false;
-            }
+            });
         }
     }
 

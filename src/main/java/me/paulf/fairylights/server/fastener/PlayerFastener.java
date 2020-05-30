@@ -57,7 +57,7 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
                 final Connection connection = entry.getValue();
                 if (!connection.shouldDrop()) {
                     entries.remove();
-                    connection.getDestination().get(this.getWorld()).removeConnection(entry.getKey());
+                    connection.getDestination().get(this.getWorld()).ifPresent(f -> f.removeConnection(entry.getKey()));
                 }
             }
         }
