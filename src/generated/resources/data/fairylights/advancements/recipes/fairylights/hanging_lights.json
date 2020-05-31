@@ -6,22 +6,12 @@
     ]
   },
   "criteria": {
-    "has_iron": {
+    "has_lights": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/iron"
-          }
-        ]
-      }
-    },
-    "has_string": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:string"
+            "tag": "fairylights:lights"
           }
         ]
       }
@@ -35,8 +25,7 @@
   },
   "requirements": [
     [
-      "has_iron",
-      "has_string",
+      "has_lights",
       "has_the_recipe"
     ]
   ]

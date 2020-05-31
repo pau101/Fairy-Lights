@@ -1,6 +1,7 @@
 package me.paulf.fairylights.server;
 
 import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.client.ClippyController;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.fastener.BlockView;
@@ -60,6 +61,7 @@ public class ServerProxy {
     public void initHandlers() {
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         CapabilityHandler.register();
+        new ClippyController().register(MinecraftForge.EVENT_BUS);
     }
 
     public void initNetwork() {

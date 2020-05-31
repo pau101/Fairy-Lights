@@ -25,6 +25,7 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants;
@@ -91,6 +92,10 @@ public final class FLCraftingRecipes {
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> ICICLE_LIGHTS = REG.register("crafting_special_icicle_lights", makeSerializer(FLCraftingRecipes::createIcicleLights));
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> METEOR_LIGHT = REG.register("crafting_special_meteor_light", makeSerializer(FLCraftingRecipes::createMeteorLight));
+
+    public static final Tag<Item> LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights"));
+
+    public static final Tag<Item> PENNANTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"));
 
     private static Ingredient dyeIngredient() {
         return Ingredient.fromTag(Tags.Items.DYES);
@@ -507,7 +512,7 @@ public final class FLCraftingRecipes {
 
     private static class LightIngredient extends BasicAuxiliaryIngredient<ListNBT> {
         private LightIngredient(final boolean isRequired) {
-            super(Ingredient.fromTag(new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights"))), isRequired, 8);
+            super(Ingredient.fromTag(LIGHTS), isRequired, 8);
         }
 
         @Override
@@ -568,7 +573,7 @@ public final class FLCraftingRecipes {
 
     private static class PennantIngredient extends BasicAuxiliaryIngredient<ListNBT> {
         private PennantIngredient() {
-            super(Ingredient.fromTag(new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"))), true, 8);
+            super(Ingredient.fromTag(PENNANTS), true, 8);
         }
 
         @Override
