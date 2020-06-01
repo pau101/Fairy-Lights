@@ -53,7 +53,6 @@ public final class FairyLights {
     }
 
     public void init(final FMLCommonSetupEvent event) {
-        this.proxy.initConfig();
         this.proxy.initIntegration();
         this.proxy.initRenders();
         this.proxy.initNetwork();

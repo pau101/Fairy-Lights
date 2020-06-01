@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server;
 
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.client.ClippyController;
+import me.paulf.fairylights.client.tutorial.ClippyController;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.fastener.BlockView;
@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 public class ServerProxy {
     private int nextMessageId;
 
-    public void initConfig() {
+    public ServerProxy() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
     }
 
@@ -61,7 +61,7 @@ public class ServerProxy {
     public void initHandlers() {
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         CapabilityHandler.register();
-        new ClippyController().register(MinecraftForge.EVENT_BUS);
+        new ClippyController().init();
     }
 
     public void initNetwork() {

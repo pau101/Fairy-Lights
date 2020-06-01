@@ -92,5 +92,8 @@
     "commands.jingler.close.success.multiple": "Successfully closed %1$s connections",
     "commands.jingler.close.failure": "No devices to close",
     "commands.jingler.device.vendor": "Vendor: %1$s",
-    "commands.jingler.device.description": "Description: %1$s"
+    "commands.jingler.device.description": "Description: %1$s",
+
+    "tutorial.fairylights.craft_hanging_lights.title": "Craft hanging lights",
+    "tutorial.fairylights.craft_hanging_lights.description": "The recipe book can help"
 }
