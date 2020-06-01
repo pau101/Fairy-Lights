@@ -10,6 +10,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.gui.toasts.ToastGui;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.text.ITextComponent;
@@ -93,7 +94,7 @@ public class ClippyController {
 
         CraftHangingLightsState() {
             this.balloon = new Balloon(
-                FLItems.HANGING_LIGHTS.get().getDefaultInstance(),
+                FLItems.HANGING_LIGHTS.map(Item::getDefaultInstance).orElse(ItemStack.EMPTY),
                 new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.title"),
                 new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.description")
             );
@@ -113,9 +114,10 @@ public class ClippyController {
         public void tick(final ClientPlayerEntity player, final ClippyController controller) {
             if (!player.inventory.hasTag(FLCraftingRecipes.LIGHTS) && !player.inventory.getItemStack().getItem().isIn(FLCraftingRecipes.LIGHTS)) {
                 controller.setState(new NoProgressState());
-            } else if (player.inventory.getItemStack().getItem() == FLItems.HANGING_LIGHTS.get() ||
-                player.inventory.hasItemStack(new ItemStack(FLItems.HANGING_LIGHTS.get())) ||
-                player.getStats().getValue(Stats.ITEM_CRAFTED.get(FLItems.HANGING_LIGHTS.get())) > 0) {
+            } else if (FLItems.HANGING_LIGHTS.filter(i ->
+                    player.inventory.getItemStack().getItem() == i ||
+                    player.inventory.hasItemStack(new ItemStack(i)) ||
+                    player.getStats().getValue(Stats.ITEM_CRAFTED.get(i)) > 0).isPresent()) {
                 controller.setState(new CompleteState());
             }
         }
