@@ -15,6 +15,16 @@ public final class FLItems {
 
     public static final DeferredRegister<Item> REG = new DeferredRegister<>(ForgeRegistries.ITEMS, FairyLights.ID);
 
+    public static final RegistryObject<ConnectionItem> HANGING_LIGHTS = REG.register("hanging_lights", () -> new HangingLightsConnectionItem(defaultProperties()));
+
+    public static final RegistryObject<ConnectionItem> PENNANT_BUNTING = REG.register("pennant_bunting", () -> new PennantBuntingConnectionItem(defaultProperties()));
+
+    public static final RegistryObject<ConnectionItem> TINSEL = REG.register("tinsel", () -> new TinselConnectionItem(defaultProperties()));
+
+    public static final RegistryObject<ConnectionItem> LETTER_BUNTING = REG.register("letter_bunting", () -> new LetterBuntingConnectionItem(defaultProperties()));
+
+    public static final RegistryObject<ConnectionItem> GARLAND = REG.register("garland", () -> new GarlandConnectionItem(defaultProperties()));
+
     public static final RegistryObject<LightItem> FAIRY_LIGHT = REG.register("fairy_light", FLItems.createLight(FLBlocks.FAIRY_LIGHT));
 
     public static final RegistryObject<LightItem> PAPER_LANTERN = REG.register("paper_lantern", FLItems.createLight(FLBlocks.PAPER_LANTERN));
@@ -42,16 +52,6 @@ public final class FLItems {
     public static final RegistryObject<LightItem> ICICLE_LIGHTS = REG.register("icicle_lights", FLItems.createLight(FLBlocks.ICICLE_LIGHTS));
 
     public static final RegistryObject<LightItem> METEOR_LIGHT = REG.register("meteor_light", FLItems.createLight(FLBlocks.METEOR_LIGHT));
-
-    public static final RegistryObject<ConnectionItem> HANGING_LIGHTS = REG.register("hanging_lights", () -> new HangingLightsConnectionItem(defaultProperties()));
-
-    public static final RegistryObject<ConnectionItem> GARLAND = REG.register("garland", () -> new GarlandConnectionItem(defaultProperties()));
-
-    public static final RegistryObject<ConnectionItem> TINSEL = REG.register("tinsel", () -> new TinselConnectionItem(defaultProperties()));
-
-    public static final RegistryObject<ConnectionItem> PENNANT_BUNTING = REG.register("pennant_bunting", () -> new PennantBuntingConnectionItem(defaultProperties()));
-
-    public static final RegistryObject<ConnectionItem> LETTER_BUNTING = REG.register("letter_bunting", () -> new LetterBuntingConnectionItem(defaultProperties()));
 
     public static final RegistryObject<Item> TRIANGLE_PENNANT = REG.register("triangle_pennant", () -> new PennantItem(defaultProperties()));
 
