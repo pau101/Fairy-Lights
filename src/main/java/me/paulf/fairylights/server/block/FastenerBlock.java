@@ -14,10 +14,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DirectionalBlock;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -120,7 +122,8 @@ public final class FastenerBlock extends DirectionalBlock {
     public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
         final Direction facing = state.get(FACING);
         final BlockPos attachedPos = pos.offset(facing.getOpposite());
-        return world.getBlockState(attachedPos).isSolidSide(world, attachedPos, facing);
+        final BlockState attachedState = world.getBlockState(attachedPos);
+        return state.getBlock() instanceof LeavesBlock || attachedState.isSolidSide(world, attachedPos, facing) || facing == Direction.UP && attachedState.isIn(BlockTags.WALLS);
     }
 
     @Nullable
