@@ -74,9 +74,8 @@ public final class ClientEventHandler {
     @SubscribeEvent
     public void onClientTick(final TickEvent.ClientTickEvent event) {
         final Minecraft mc = Minecraft.getInstance();
-        final World world = mc.world;
-        if (event.phase != TickEvent.Phase.START && world != null && !mc.isGamePaused()) {
-            this.getBlockEntities(world).stream()
+        if (event.phase == TickEvent.Phase.END && mc.world != null && !mc.isGamePaused()) {
+            this.getBlockEntities(mc.world).stream()
                 .filter(FastenerBlockEntity.class::isInstance)
                 .map(FastenerBlockEntity.class::cast)
                 .flatMap(f -> f.getCapability(CapabilityHandler.FASTENER_CAP).map(Stream::of).orElse(Stream.empty()))
@@ -116,7 +115,7 @@ public final class ClientEventHandler {
         if (mc.objectMouseOver != null && mc.world != null && viewer != null) {
             final HitResult result = getHitConnection(mc.world, viewer);
             if (result != null) {
-                final Vec3d eyes = viewer.getEyePosition(1);
+                final Vec3d eyes = viewer.getEyePosition(1.0F);
                 if (result.intersection.getResult().distanceTo(eyes) < mc.objectMouseOver.getHitVec().distanceTo(eyes)) {
                     mc.objectMouseOver = new EntityRayTraceResult(new HitConnection(mc.world, result));
                     mc.pointedEntity = null;
@@ -127,7 +126,7 @@ public final class ClientEventHandler {
 
     @Nullable
     private static HitResult getHitConnection(final World world, final Entity viewer) {
-        final AxisAlignedBB bounds = new AxisAlignedBB(viewer.getPosition()).grow(Connection.MAX_LENGTH + 1);
+        final AxisAlignedBB bounds = new AxisAlignedBB(viewer.getPosition()).grow(Connection.MAX_LENGTH + 1.0D);
         final Set<Fastener<?>> fasteners = collectFasteners(world, bounds);
         return getHitConnection(viewer, bounds, fasteners);
     }
@@ -225,9 +224,9 @@ public final class ClientEventHandler {
     private void drawFenceFastenerHighlight(final FenceFastenerEntity fence, final MatrixStack matrix, final IVertexBuilder buf, final float delta, final double dx, final double dy, final double dz) {
         final PlayerEntity player = Minecraft.getInstance().player;
         // Check if the server will allow interaction
-        if (player != null && (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9)) {
-            final AxisAlignedBB selection = fence.getBoundingBox().offset(-dx, -dy, -dz).grow(0.002);
-            WorldRenderer.drawBoundingBox(matrix, buf, selection, 0, 0, 0, HIGHLIGHT_ALPHA);
+        if (player != null && (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9.0D)) {
+            final AxisAlignedBB selection = fence.getBoundingBox().offset(-dx, -dy, -dz).grow(0.002D);
+            WorldRenderer.drawBoundingBox(matrix, buf, selection, 0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA);
         }
     }
 
