@@ -28,13 +28,10 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.ITickable;
-import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -199,18 +196,6 @@ public final class ClientProxy extends ServerProxy {
             }
             return 0xFFFFFFFF;
         }, FLItems.LETTER_BUNTING.get());
-        // Early runTick hook after getMouseOver
-        class HackyHook extends Texture implements ITickable {
-            @Override
-            public void tick() {
-                ClientEventHandler.updateHitConnection();
-            }
-
-            @Override
-            public void loadTexture(final IResourceManager manager) {
-            }
-        }
-        Minecraft.getInstance().getTextureManager().loadTexture(new ResourceLocation(FairyLights.ID, "hacky_hook"), new HackyHook());
         RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
         /*RenderTypeLookup.setRenderLayer(FLBlocks.FAIRY_LIGHT.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(FLBlocks.PAPER_LANTERN.get(), RenderType.getCutoutMipped());
