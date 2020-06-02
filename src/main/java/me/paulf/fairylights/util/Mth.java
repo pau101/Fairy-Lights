@@ -1,6 +1,5 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Objects;
@@ -51,49 +50,11 @@ public final class Mth {
         return (rangeMax - rangeMin) * (x - domainMin) / (domainMax - domainMin) + rangeMin;
     }
 
-    public static float[] toEulerYZX(float x, float y, float z, final float angle) {
-        final float s = MathHelper.sin(angle);
-        final float c = MathHelper.cos(angle);
-        final float t = 1 - c;
-        final float magnitude = MathHelper.sqrt(x * x + y * y + z * z);
-        if (magnitude == 0) {
-            throw new IllegalArgumentException("Ubiquitous vector!");
-        }
-        x /= magnitude;
-        y /= magnitude;
-        z /= magnitude;
-        final float pitch;
-        float yaw;
-        final float roll;
-        // north pole singularity
-        if (x * y * t + z * s > 0.998F) {
-            pitch = (float) (2 * Math.atan2(x * Math.sin(angle / 2), Math.cos(angle / 2)));
-            yaw = PI / 2;
-            roll = 0;
-            return new float[]{roll, pitch, yaw};
-        }
-        // south pole singularity
-        if (x * y * t + z * s < -0.998F) {
-            pitch = (float) (-2 * Math.atan2(x * Math.sin(angle / 2), Math.cos(angle / 2)));
-            yaw = -PI / 2;
-            roll = 0;
-            return new float[]{roll, pitch, yaw};
-        }
-        pitch = (float) Math.atan2(y * s - x * z * t, 1 - (y * y + z * z) * t);
-        yaw = (float) Math.asin(x * y * t + z * s);
-        roll = (float) Math.atan2(x * s - y * z * t, 1 - (x * x + z * z) * t);
-        return new float[]{roll, pitch, yaw};
-    }
-
     public static int hash(int x) {
         x = (x >> 16 ^ x) * 0x45D9F3B;
         x = (x >> 16 ^ x) * 0x45D9F3B;
         x = x >> 16 ^ x;
         return x;
-    }
-
-    public static Vec3d negate(final Vec3d vector) {
-        return new Vec3d(-Objects.requireNonNull(vector, "vector").x, -vector.y, -vector.z);
     }
 
     public static Vec3d lerp(final Vec3d a, final Vec3d b, final double t) {

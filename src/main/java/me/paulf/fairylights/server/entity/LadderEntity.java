@@ -137,7 +137,7 @@ public final class LadderEntity extends LivingEntity implements IEntityAdditiona
 
     @Override
     public boolean attackEntityFrom(final DamageSource source, final float amount) {
-        if (this.world.isRemote || this.removed || this.isInvulnerableTo(source)) {
+        if (this.world.isRemote || !this.isAlive() || this.isInvulnerableTo(source)) {
             return false;
         }
         if (DamageSource.OUT_OF_WORLD == source) {

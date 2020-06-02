@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class HangingFeatureConnection<F extends HangingFeature<F>> extends Connection {
-    protected static final FeatureType FEATURE = FeatureType.create("feature");
+    protected static final FeatureType FEATURE = FeatureType.register("feature");
 
     protected F[] features = this.createFeatures(0);
 

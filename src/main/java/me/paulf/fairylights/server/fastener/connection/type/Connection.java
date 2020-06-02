@@ -45,7 +45,7 @@ public abstract class Connection implements NBTSerializable {
 
     public static final double PULL_RANGE = 5;
 
-    public static final FeatureType CORD_FEATURE = FeatureType.create("cord");
+    public static final FeatureType CORD_FEATURE = FeatureType.register("cord");
 
     private static final CubicBezier SLACK_CURVE = new CubicBezier(0.495F, 0.505F, 0.495F, 0.505F);
 
