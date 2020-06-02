@@ -27,7 +27,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.INetHandler;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -40,11 +42,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.DrawHighlightEvent;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nullable;
@@ -57,25 +57,18 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public final class ClientEventHandler {
-
     private static final float HIGHLIGHT_ALPHA = 0.4F;
 
     @Nullable
-    private static HitConnection hit;
-
-    @Nullable
-    private Vec3d prevCatenaryVec;
-
-    @Nullable
-    private net.minecraft.client.renderer.vertex.VertexBuffer connHighlightVBO;
-
-    private int connHighlightId;
-
-    private boolean useVBO;
-
-    @Nullable
     public static Connection getHitConnection() {
-        return hit == null || hit.result == null ? null : hit.result.connection;
+        final RayTraceResult result = Minecraft.getInstance().objectMouseOver;
+        if (result instanceof EntityRayTraceResult) {
+            final Entity entity = ((EntityRayTraceResult) result).getEntity();
+            if (entity instanceof HitConnection) {
+                return ((HitConnection) entity).result.connection;
+            }
+        }
+        return null;
     }
 
     @SubscribeEvent
@@ -102,10 +95,7 @@ public final class ClientEventHandler {
 
     @SubscribeEvent
     public void gatherOverlayText(final RenderGameOverlayEvent.Text event) {
-        if (hit == null || hit.result == null) {
-            return;
-        }
-        final Connection conn = hit.result.connection;
+        final Connection conn = getHitConnection();
         if (!(conn instanceof HangingLightsConnection)) {
             return;
         }
@@ -120,22 +110,6 @@ public final class ClientEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void renderWorldEarly(final EntityViewRenderEvent.FogColors event) {
-        if (hit != null && hit.result != null) {
-            final Minecraft mc = Minecraft.getInstance();
-            hit.setWorld(mc.world);
-            mc.objectMouseOver = new EntityRayTraceResult(hit);
-        }
-    }
-
-    @SubscribeEvent
-    public void onWorldUnload(final WorldEvent.Unload event) {
-        if (hit != null && hit.world == event.getWorld()) {
-            hit = null;
-        }
-    }
-
     public static void updateHitConnection() {
         final Minecraft mc = Minecraft.getInstance();
         final Entity viewer = mc.getRenderViewEntity();
@@ -144,18 +118,10 @@ public final class ClientEventHandler {
             if (result != null) {
                 final Vec3d eyes = viewer.getEyePosition(1);
                 if (result.intersection.getResult().distanceTo(eyes) < mc.objectMouseOver.getHitVec().distanceTo(eyes)) {
-                    if (hit == null) {
-                        hit = new HitConnection(mc.world);
-                    }
-                    hit.result = result;
-                    hit.setWorld(mc.world);
-                    mc.objectMouseOver = new EntityRayTraceResult(hit);
-                    return;
+                    mc.objectMouseOver = new EntityRayTraceResult(new HitConnection(mc.world, result));
+                    mc.pointedEntity = null;
                 }
             }
-        }
-        if (hit != null) {
-            hit.result = null;
         }
     }
 
@@ -234,39 +200,32 @@ public final class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void drawBlockHighlight(final DrawHighlightEvent event) {
-        final RayTraceResult over = event.getTarget();
-        final boolean isFence = over instanceof EntityRayTraceResult && ((EntityRayTraceResult) over).getEntity() instanceof FenceFastenerEntity;
-        final boolean isHitConnection = over instanceof EntityRayTraceResult && ((EntityRayTraceResult) over).getEntity() == hit;
-        if (isFence || isHitConnection) {
-            final PlayerEntity player = Minecraft.getInstance().player;
-            final float delta = event.getPartialTicks();
-            final Vec3d pos = event.getInfo().getProjectedView();
-            final double dx = pos.x;
-            final double dy = pos.y;
-            final double dz = pos.z;
-            final IRenderTypeBuffer buf = event.getBuffers();
-            if (isFence) {
-                this.drawFenceFastenerHighlight(player, (FenceFastenerEntity) ((EntityRayTraceResult) over).getEntity(), event.getMatrix(), buf.getBuffer(RenderType.getLines()), delta, dx, dy, dz);
-            } else if (hit != null && hit.result != null) {
-                if (hit.result.intersection.getFeatureType() == Connection.CORD_FEATURE) {
-                    final MatrixStack matrix = event.getMatrix();
-                    matrix.push();
-                    final Vec3d p = hit.result.connection.getFastener().getConnectionPoint();
-                    matrix.translate(p.x - dx, p.y - dy, p.z - dz);
-                    this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.getLines()));
-                    matrix.pop();
-                } else {
-                    final AxisAlignedBB aabb = hit.result.intersection.getHitBox().offset(-dx, -dy, -dz).grow(0.002);
-                    WorldRenderer.drawBoundingBox(event.getMatrix(), buf.getBuffer(RenderType.getLines()), aabb, 0, 0, 0, HIGHLIGHT_ALPHA);
-                }
+    public void drawBlockHighlight(final DrawHighlightEvent.HighlightEntity event) {
+        final Entity entity = event.getTarget().getEntity();
+        final Vec3d pos = event.getInfo().getProjectedView();
+        final IRenderTypeBuffer buf = event.getBuffers();
+        if (entity instanceof FenceFastenerEntity) {
+            this.drawFenceFastenerHighlight((FenceFastenerEntity) entity, event.getMatrix(), buf.getBuffer(RenderType.getLines()), event.getPartialTicks(), pos.x, pos.y, pos.z);
+        } else if (entity instanceof HitConnection) {
+            final HitConnection hit = (HitConnection) entity;
+            if (hit.result.intersection.getFeatureType() == Connection.CORD_FEATURE) {
+                final MatrixStack matrix = event.getMatrix();
+                matrix.push();
+                final Vec3d p = hit.result.connection.getFastener().getConnectionPoint();
+                matrix.translate(p.x - pos.x, p.y - pos.y, p.z - pos.z);
+                this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.getLines()));
+                matrix.pop();
+            } else {
+                final AxisAlignedBB bb = hit.result.intersection.getHitBox().offset(-pos.x, -pos.y, -pos.z).grow(0.002D);
+                WorldRenderer.drawBoundingBox(event.getMatrix(), buf.getBuffer(RenderType.getLines()), bb, 0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA);
             }
         }
     }
 
-    private void drawFenceFastenerHighlight(final PlayerEntity player, final FenceFastenerEntity fence, final MatrixStack matrix, final IVertexBuilder buf, final float delta, final double dx, final double dy, final double dz) {
+    private void drawFenceFastenerHighlight(final FenceFastenerEntity fence, final MatrixStack matrix, final IVertexBuilder buf, final float delta, final double dx, final double dy, final double dz) {
+        final PlayerEntity player = Minecraft.getInstance().player;
         // Check if the server will allow interaction
-        if (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9) {
+        if (player != null && (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9)) {
             final AxisAlignedBB selection = fence.getBoundingBox().offset(-dx, -dy, -dz).grow(0.002);
             WorldRenderer.drawBoundingBox(matrix, buf, selection, 0, 0, 0, HIGHLIGHT_ALPHA);
         }
@@ -334,40 +293,39 @@ public final class ClientEventHandler {
         buf.pos(matrix.getLast().getMatrix(), up.getX(), up.getY(), up.getZ()).color(0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA).endVertex();
     }
 
-    private static class HitConnection extends Entity {
-        @Nullable
-        private HitResult result;
+    static class HitConnection extends Entity {
+        final HitResult result;
 
-        private HitConnection(final World world) {
+        HitConnection(final World world, final HitResult result) {
             super(EntityType.ITEM, world);
             this.setEntityId(-1);
+            this.result = result;
         }
 
         @Override
         public boolean attackEntityFrom(final DamageSource source, final float amount) {
-            this.processAction(PlayerAction.ATTACK);
+            if (source.getTrueSource() == Minecraft.getInstance().player) {
+                this.processAction(PlayerAction.ATTACK);
+                return true;
+            }
             return false;
         }
 
         @Override
         public boolean processInitialInteract(final PlayerEntity player, final Hand hand) {
-            if (hand == Hand.MAIN_HAND) {
+            if (player == Minecraft.getInstance().player) {
                 this.processAction(PlayerAction.INTERACT);
+                return true;
             }
             return false;
         }
 
         private void processAction(final PlayerAction action) {
-            if (this.result != null) {
-                this.result.connection.processClientAction(Minecraft.getInstance().player, action, this.result.intersection);
-            }
+            this.result.connection.processClientAction(Minecraft.getInstance().player, action, this.result.intersection);
         }
 
         @Override
         public ItemStack getPickedResult(final RayTraceResult target) {
-            if (this.result == null) {
-                return ItemStack.EMPTY;
-            }
             return this.result.connection.getItemStack();
         }
 
@@ -375,14 +333,26 @@ public final class ClientEventHandler {
         protected void registerData() {}
 
         @Override
-        protected void readAdditional(final CompoundNBT compound) {}
-
-        @Override
         protected void writeAdditional(final CompoundNBT compound) {}
 
         @Override
+        protected void readAdditional(final CompoundNBT compound) {}
+
+        @Override
         public IPacket<?> createSpawnPacket() {
-            return null;
+            return new IPacket<INetHandler>() {
+                @Override
+                public void readPacketData(final PacketBuffer buf) {
+                }
+
+                @Override
+                public void writePacketData(final PacketBuffer buf) {
+                }
+
+                @Override
+                public void processPacket(final INetHandler handler) {
+                }
+            };
         }
     }
 
