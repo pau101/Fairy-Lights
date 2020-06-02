@@ -7,7 +7,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public final class BlockFastener extends AbstractFastener {
+public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor> {
     private final FastenerBlockEntity fastener;
 
     private final BlockView view;
