@@ -8,7 +8,6 @@ import me.paulf.fairylights.server.creativetabs.FairyLightsItemGroup;
 import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
-import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CalendarEvent;
 import net.minecraft.item.ItemGroup;
@@ -31,13 +30,9 @@ public final class FairyLights {
 
     public static SimpleChannel network;
 
-    public static ItemGroup fairyLightsTab = new FairyLightsItemGroup();
+    public static final ItemGroup ITEM_GROUP = new FairyLightsItemGroup();
 
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
-
-    public static JingleLibrary christmasJingles;
-
-    public static JingleLibrary randomJingles;
 
     public FairyLights() {
         this.proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());

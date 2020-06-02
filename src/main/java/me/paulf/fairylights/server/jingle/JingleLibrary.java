@@ -9,6 +9,7 @@ import net.minecraft.resources.IResource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.DefaultedRegistry;
+import net.minecraft.util.registry.Registry;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -18,20 +19,23 @@ import java.util.Map;
 import java.util.Random;
 
 public class JingleLibrary {
-    private static final String UNKNOWN_ID = "";
+    private static final ResourceLocation DEFAULT_ID = new ResourceLocation(FairyLights.ID, "unknown");
 
-    private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(UNKNOWN_ID);
+    private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(DEFAULT_ID.toString());
 
-    private static final JingleLibrary UNKNOWN = register(new JingleLibrary(UNKNOWN_ID) {
+    private static final JingleLibrary DEFAULT = register(new JingleLibrary(DEFAULT_ID) {
         @Override
-        public void load(final MinecraftServer server) {}
+        public void load(final MinecraftServer server) {
+        }
     });
+
+    public static final JingleLibrary CHRISTMAS = JingleLibrary.create("christmas");
+
+    public static final JingleLibrary RANDOM = JingleLibrary.create("random");
 
     private static final int MAX_RANGE = 25;
 
-    private static int nextFeatureId;
-
-    private final String name;
+    private final ResourceLocation name;
 
     private final Map<String, Jingle> jingles = new HashMap<>();
 
@@ -39,12 +43,12 @@ public class JingleLibrary {
 
     private final Map<Integer, Integer> rangeWeights = new HashMap<>();
 
-    private JingleLibrary(final String name) {
+    private JingleLibrary(final ResourceLocation name) {
         this.name = name;
     }
 
-    public int getId() {
-        return REGISTRY.getId(this);
+    public ResourceLocation getName() {
+        return this.name;
     }
 
     public boolean contains(final String id) {
@@ -65,7 +69,7 @@ public class JingleLibrary {
     }
 
     @Nullable
-    public synchronized Jingle getRandom(final Random rng, final int range) {
+    public Jingle getRandom(final Random rng, final int range) {
         final int fitRange = Math.min(range, MAX_RANGE);
         final Collection<Jingle> jingles = this.jinglesWithinRange.get(fitRange);
         if (jingles.isEmpty()) {
@@ -82,14 +86,14 @@ public class JingleLibrary {
     }
 
     public void load(final MinecraftServer server) {
-        try (final IResource resource = server.getResourceManager().getResource(new ResourceLocation(FairyLights.ID, "/jingles/" + this.name + ".dat"))) {
+        try (final IResource resource = server.getResourceManager().getResource(new ResourceLocation(this.name.getNamespace(), "/jingles/" + this.name.getPath() + ".dat"))) {
             this.deserialize(CompressedStreamTools.readCompressed(resource.getInputStream()));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private synchronized void deserialize(final CompoundNBT library) {
+    private void deserialize(final CompoundNBT library) {
         this.jingles.clear();
         this.jinglesWithinRange.clear();
         this.rangeWeights.clear();
@@ -103,16 +107,15 @@ public class JingleLibrary {
     }
 
     public static JingleLibrary create(final String name) {
-        return register(new JingleLibrary(name));
+        return register(new JingleLibrary(new ResourceLocation(FairyLights.ID, name)));
     }
 
     private static JingleLibrary register(final JingleLibrary library) {
-        REGISTRY.register(nextFeatureId++, new ResourceLocation(library.name), library);
-        return library;
+        return Registry.register(REGISTRY, library.name, library);
     }
 
-    public static JingleLibrary fromId(final int id) {
-        return REGISTRY.getByValue(id);
+    public static JingleLibrary fromName(final ResourceLocation name) {
+        return REGISTRY.getOrDefault(name);
     }
 
     public static void loadAll(final MinecraftServer server) {

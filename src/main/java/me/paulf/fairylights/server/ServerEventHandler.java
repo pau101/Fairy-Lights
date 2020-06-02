@@ -221,7 +221,7 @@ public final class ServerEventHandler {
             final Fastener<?> fastener = feasibleConnections.keySet().toArray(new Fastener[0])[this.rng.nextInt(feasibleConnections.size())];
             final List<HangingLightsConnection> connections = feasibleConnections.get(fastener);
             final HangingLightsConnection connection = connections.get(this.rng.nextInt(connections.size()));
-            tryJingle(event.world, connection, FairyLights.christmasJingles);
+            tryJingle(event.world, connection, JingleLibrary.CHRISTMAS);
         }
     }
 

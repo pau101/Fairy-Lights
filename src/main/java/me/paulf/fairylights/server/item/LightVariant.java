@@ -19,10 +19,10 @@ public enum LightVariant {
     FLOWER("flower_light", () -> FLItems.FLOWER_LIGHT, true, 10, 6,
         Placement.OUTWARD
     ),
-    ORNATE("ornate_lantern", () -> FLItems.ORNATE_LANTERN, false, 24, 8, 12,
+    ORNATE("ornate_lantern", () -> FLItems.ORNATE_LANTERN, false, 24, 8, 11,
         Placement.UPRIGHT
     ),
-    OIL("oil_lantern", () -> FLItems.OIL_LANTERN, false, 32, 8, 13.5F,
+    OIL("oil_lantern", () -> FLItems.OIL_LANTERN, false, 32, 8, 13,
         Placement.UPRIGHT
     ),
     JACK_O_LANTERN("jack_o_lantern", () -> FLItems.JACK_O_LANTERN, true, 7, 9,

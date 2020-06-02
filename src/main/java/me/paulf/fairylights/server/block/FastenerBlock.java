@@ -1,7 +1,6 @@
 package me.paulf.fairylights.server.block;
 
 import com.mojang.datafixers.util.Pair;
-import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.ServerEventHandler;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
@@ -10,6 +9,7 @@ import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import me.paulf.fairylights.server.jingle.JingleLibrary;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -253,7 +253,7 @@ public final class FastenerBlock extends DirectionalBlock {
             })
             .anyMatch(connection -> {
                 final HangingLightsConnection logic = (HangingLightsConnection) connection;
-                return logic.canCurrentlyPlayAJingle() && ServerEventHandler.tryJingle(world, logic, FairyLights.randomJingles);
+                return logic.canCurrentlyPlayAJingle() && ServerEventHandler.tryJingle(world, logic, JingleLibrary.RANDOM);
             });
     }
 

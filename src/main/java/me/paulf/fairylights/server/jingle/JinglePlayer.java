@@ -6,6 +6,7 @@ import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -258,7 +259,7 @@ public final class JinglePlayer {
                 @Override
                 public CompoundNBT serialize(final PlayingState state) {
                     final CompoundNBT compound = new CompoundNBT();
-                    compound.putInt("library", state.library.getId());
+                    compound.putString("library", state.library.getName().toString());
                     compound.putString("jingle", state.jingle.getId());
                     compound.putInt("lightOffset", state.lightOffset);
                     compound.putInt("index", state.index);
@@ -269,7 +270,7 @@ public final class JinglePlayer {
 
                 @Override
                 public State<?> deserialize(final CompoundNBT compound) {
-                    final JingleLibrary library = JingleLibrary.fromId(compound.getInt("library"));
+                    final JingleLibrary library = JingleLibrary.fromName(ResourceLocation.tryCreate(compound.getString("library")));
                     final Jingle jingle = library.get(compound.getString("jingle"));
                     if (jingle == null) {
                         return new NotPlayingState();

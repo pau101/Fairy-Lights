@@ -32,7 +32,7 @@ public final class JingleMessage extends ConnectionMessage<HangingLightsConnecti
     public static void serialize(final JingleMessage message, final PacketBuffer buf) {
         ConnectionMessage.serialize(message, buf);
         buf.writeVarInt(message.lightOffset);
-        buf.writeByte(message.library.getId());
+        buf.writeResourceLocation(message.library.getName());
         buf.writeString(message.jingle.getId());
     }
 
@@ -40,7 +40,7 @@ public final class JingleMessage extends ConnectionMessage<HangingLightsConnecti
         final JingleMessage message = new JingleMessage();
         ConnectionMessage.deserialize(message, buf);
         message.lightOffset = buf.readVarInt();
-        message.library = JingleLibrary.fromId(buf.readUnsignedByte());
+        message.library = JingleLibrary.fromName(buf.readResourceLocation());
         message.jingle = message.library.get(buf.readString());
         return message;
     }

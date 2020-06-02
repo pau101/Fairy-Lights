@@ -64,7 +64,7 @@ public final class FLItems {
     public static final RegistryObject<Item> LADDER = REG.register("ladder", () -> new LadderItem(defaultProperties()));
 
     private static Item.Properties defaultProperties() {
-        return new Item.Properties().group(FairyLights.fairyLightsTab);
+        return new Item.Properties().group(FairyLights.ITEM_GROUP);
     }
 
     private static Supplier<LightItem> createLight(final RegistryObject<LightBlock> block) {

@@ -39,19 +39,15 @@ public class ServerProxy {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
     }
 
-    /*
+    /**
+     * <pre>
      * |\   /|    __     __     __     __
      *  \|_|/    /  \   /  \   /  \   /  \
      *  /. .\   |%%%%| |@@@@| |####| |$$$$|
      * =\_Y_/=   \__/   \__/   \__/   \__/
+     * </pre>
      */
     public void initEggs() {
-        FairyLights.christmasJingles = JingleLibrary.create("christmas");
-        FairyLights.randomJingles = JingleLibrary.create("random");
-        this.loadJingleLibraries();
-    }
-
-    private void loadJingleLibraries() {
         MinecraftForge.EVENT_BUS.<FMLServerAboutToStartEvent>addListener(e -> {
             final MinecraftServer server = e.getServer();
             server.getResourceManager().addReloadListener((IResourceManagerReloadListener) mgr -> JingleLibrary.loadAll(server));
