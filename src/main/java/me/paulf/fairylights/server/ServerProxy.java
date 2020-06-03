@@ -7,6 +7,7 @@ import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.fastener.BlockView;
 import me.paulf.fairylights.server.fastener.CreateBlockViewEvent;
 import me.paulf.fairylights.server.fastener.RegularBlockView;
+import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.net.clientbound.JingleMessage;
 import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
@@ -14,13 +15,17 @@ import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
 import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
@@ -57,6 +62,19 @@ public class ServerProxy {
     public void initHandlers() {
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         CapabilityHandler.register();
+        CapabilityManager.INSTANCE.register(LightVariant.class,  new Capability.IStorage<LightVariant>() {
+            @Override
+            public INBT writeNBT(final Capability<LightVariant> capability, final LightVariant instance, final Direction side) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void readNBT(final Capability<LightVariant> capability, final LightVariant instance, final Direction side, final INBT nbt) {
+                throw new UnsupportedOperationException();
+            }
+        }, () -> {
+            throw new UnsupportedOperationException();
+        });
         new ClippyController().init();
     }
 

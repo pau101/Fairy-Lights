@@ -5,15 +5,14 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.FeatureType;
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
-import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.server.item.StandardLightVariant;
+import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.jingle.JinglePlayer;
 import me.paulf.fairylights.server.sound.FLSounds;
-import me.paulf.fairylights.util.OreDictUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -28,6 +27,7 @@ import net.minecraft.world.lighting.IWorldLightListener;
 import net.minecraft.world.lighting.LightEngine;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -46,7 +46,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     private static final int LIGHT_UPDATE_RATE = 10;
 
-    private List<ColoredLightVariant> pattern;
+    private List<ItemStack> pattern;
 
     private boolean twinkle;
 
@@ -89,14 +89,14 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     @Override
     public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
-        if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
+        if (featureType == FEATURE && heldStack.getItem().isIn(FLCraftingRecipes.LIGHTS )) {
             final int index = feature % this.pattern.size();
-            final ColoredLightVariant light = this.pattern.get(index);
-            final DyeColor color = DyeColor.getColor(heldStack);
-            if (light.getColor() != color) {
-                this.pattern.set(index, light.withColor(color));
+            final ItemStack light = this.pattern.get(index);
+            if (!ItemStack.areItemStacksEqual(light, heldStack)) {
+                final ItemStack placed = heldStack.split(1);
+                this.pattern.set(index, placed);
+                ItemHandlerHelper.giveItemToPlayer(player, light);
                 this.dataUpdateState = true;
-                heldStack.shrink(1);
                 this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
                 return true;
             }
@@ -157,16 +157,12 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     protected Light createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
         final boolean on = !this.isDynamic() && this.isOn;
-        final Light light = new Light(index, point, yaw, pitch, on);
+        final ItemStack lightData = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
+        final Light light = new Light(index, point, yaw, pitch, lightData, on);
         if (on && this.isOrigin()) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
             this.setLight(pos);
-        }
-        if (this.pattern.size() > 0) {
-            final ColoredLightVariant lightData = this.pattern.get(index % this.pattern.size());
-            light.setVariant(lightData.getVariant());
-            light.setColor(LightItem.getColorValue(lightData.getColor()));
         }
         return light;
     }
@@ -174,11 +170,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     protected float getFeatureSpacing() {
         if (this.pattern.isEmpty()) {
-            return LightVariant.FAIRY.getSpacing();
+            return StandardLightVariant.FAIRY.getSpacing();
         }
         float spacing = 0;
-        for (final ColoredLightVariant patternLightData : this.pattern) {
-            final float lightSpacing = patternLightData.getVariant().getSpacing();
+        for (final ItemStack patternLightData : this.pattern) {
+            final float lightSpacing = LightVariant.get(patternLightData).orElse(StandardLightVariant.FAIRY).getSpacing();
             if (lightSpacing > spacing) {
                 spacing = lightSpacing;
             }
@@ -260,8 +256,8 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     public CompoundNBT serializeLogic() {
         final CompoundNBT compound = super.serializeLogic();
         final ListNBT tagList = new ListNBT();
-        for (final ColoredLightVariant light : this.pattern) {
-            tagList.add(light.serialize());
+        for (final ItemStack light : this.pattern) {
+            tagList.add(light.write(new CompoundNBT()));
         }
         compound.put("pattern", tagList);
         compound.putBoolean("twinkle", this.twinkle);
@@ -275,7 +271,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         this.pattern = new ArrayList<>();
         for (int i = 0; i < patternList.size(); i++) {
             final CompoundNBT lightCompound = patternList.getCompound(i);
-            this.pattern.add(ColoredLightVariant.from(lightCompound));
+            this.pattern.add(ItemStack.read(lightCompound));
         }
         this.twinkle = compound.getBoolean("twinkle");
     }

@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.block;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.server.item.StandardLightVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -39,9 +40,9 @@ public class LightBlock extends HorizontalFaceBlock {
 
     private final VoxelShape floorShape, eastWallShape, westWallShape, northWallShape, southWallShape, ceilingShape;
 
-    private final LightVariant variant;
+    private final StandardLightVariant variant;
 
-    public LightBlock(final Properties properties, final LightVariant variant) {
+    public LightBlock(final Properties properties, final StandardLightVariant variant) {
         super(properties);
         this.variant = variant;
         final float w = this.variant.getWidth();
@@ -66,7 +67,7 @@ public class LightBlock extends HorizontalFaceBlock {
         this.setDefaultState(this.stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(FACE, AttachFace.WALL).with(LIT, true));
     }
 
-    public LightVariant getVariant() {
+    public StandardLightVariant getVariant() {
         return this.variant;
     }
 
@@ -121,10 +122,11 @@ public class LightBlock extends HorizontalFaceBlock {
     @Override
     public void onBlockPlacedBy(final World world, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer, final ItemStack stack) {
         super.onBlockPlacedBy(world, pos, state, placer, stack);
-        final DyeColor color = LightItem.getLightColor(stack);
         final TileEntity entity = world.getTileEntity(pos);
         if (entity instanceof LightBlockEntity) {
-            ((LightBlockEntity) entity).setColor(color);
+            final ItemStack lightItem = stack.copy();
+            lightItem.setCount(1);
+            ((LightBlockEntity) entity).setItemStack(lightItem);
         }
     }
 
@@ -164,8 +166,11 @@ public class LightBlock extends HorizontalFaceBlock {
     @Override
     public ItemStack getItem(final IBlockReader world, final BlockPos pos, final BlockState state) {
         final TileEntity entity = world.getTileEntity(pos);
-        final ItemStack stack = new ItemStack(this.variant.getItem());
-        LightItem.setLightColor(stack, entity instanceof LightBlockEntity ? ((LightBlockEntity) entity).getColor() : DyeColor.YELLOW);
+        if (entity instanceof LightBlockEntity) {
+            return ((LightBlockEntity) entity).getLight().getItem().copy();
+        }
+        final ItemStack stack = new ItemStack(this);
+        LightItem.setLightColor(stack, DyeColor.YELLOW);
         return stack;
     }
 

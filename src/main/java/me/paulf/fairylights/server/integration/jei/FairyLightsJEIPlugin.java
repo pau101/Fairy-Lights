@@ -2,15 +2,12 @@ package me.paulf.fairylights.server.integration.jei;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.Arrays;
 
 @JeiPlugin
 public final class FairyLightsJEIPlugin implements IModPlugin {
@@ -31,6 +28,6 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
         registry.registerSubtypeInterpreter(FLItems.SPEARHEAD_PENNANT.get(), new ColorSubtypeInterpreter());
         registry.registerSubtypeInterpreter(FLItems.SWALLOWTAIL_PENNANT.get(), new ColorSubtypeInterpreter());
         registry.registerSubtypeInterpreter(FLItems.SQUARE_PENNANT.get(), new ColorSubtypeInterpreter());
-        Arrays.stream(LightVariant.values()).map(LightVariant::getItem).forEach(i -> registry.registerSubtypeInterpreter(i, new ColorSubtypeInterpreter()));
+        FLItems.lights().forEach(i -> registry.registerSubtypeInterpreter(i, new ColorSubtypeInterpreter()));
     }
 }

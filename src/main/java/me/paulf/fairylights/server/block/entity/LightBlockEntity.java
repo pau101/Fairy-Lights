@@ -2,11 +2,10 @@ package me.paulf.fairylights.server.block.entity;
 
 import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
@@ -19,26 +18,19 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class LightBlockEntity extends TileEntity {
-    private final Light light;
-
-    private DyeColor color = DyeColor.YELLOW;
+    private Light light;
 
     public LightBlockEntity() {
         super(FLBlockEntities.LIGHT.get());
-        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, true);
+        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, true);
     }
 
     public Light getLight() {
         return this.light;
     }
 
-    public DyeColor getColor() {
-        return this.color;
-    }
-
-    public void setColor(final DyeColor color) {
-        this.color = color;
-        this.light.setColor(LightItem.getColorValue(color));
+    public void setItemStack(final ItemStack stack) {
+        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, stack, true);
         this.markDirty();
     }
 
@@ -75,7 +67,7 @@ public class LightBlockEntity extends TileEntity {
     @Override
     public CompoundNBT write(final CompoundNBT compound) {
         super.write(compound);
-        compound.putByte("color", (byte) this.color.getId());
+        compound.put("item", this.light.getItem().write(new CompoundNBT()));
         compound.putBoolean("on", this.light.isOn());
         return compound;
     }
@@ -83,7 +75,7 @@ public class LightBlockEntity extends TileEntity {
     @Override
     public void read(final CompoundNBT compound) {
         super.read(compound);
-        this.setColor(DyeColor.byId(compound.getByte("color")));
+        this.setItemStack(ItemStack.read(compound.getCompound("item")));
         this.setOn(compound.getBoolean("on"));
     }
 }

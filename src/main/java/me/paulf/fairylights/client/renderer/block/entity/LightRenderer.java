@@ -1,7 +1,6 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
@@ -22,37 +21,37 @@ import me.paulf.fairylights.client.model.light.SpiderLightModel;
 import me.paulf.fairylights.client.model.light.WitchLightModel;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.server.item.StandardLightVariant;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 
-import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
 public class LightRenderer {
     private final LightModelProvider defaultLight = LightModelProvider.of(new FairyLightModel());
 
-    private final EnumMap<LightVariant, LightModelProvider> lights = Maps.newEnumMap(new ImmutableMap.Builder<LightVariant, LightModelProvider>()
-        .put(LightVariant.FAIRY, this.defaultLight)
-        .put(LightVariant.PAPER, LightModelProvider.of(new PaperLanternModel()))
-        .put(LightVariant.ORB, LightModelProvider.of(new OrbLanternModel()))
-        .put(LightVariant.FLOWER, LightModelProvider.of(new FlowerLightModel()))
-        .put(LightVariant.ORNATE, LightModelProvider.of(new OrnateLanternModel()))
-        .put(LightVariant.OIL, LightModelProvider.of(new OilLanternModel()))
-        .put(LightVariant.JACK_O_LANTERN, LightModelProvider.of(new JackOLanternLightModel()))
-        .put(LightVariant.SKULL, LightModelProvider.of(new SkullLightModel()))
-        .put(LightVariant.GHOST, LightModelProvider.of(new GhostLightModel()))
-        .put(LightVariant.SPIDER, LightModelProvider.of(new SpiderLightModel()))
-        .put(LightVariant.WITCH, LightModelProvider.of(new WitchLightModel()))
-        .put(LightVariant.SNOWFLAKE, LightModelProvider.of(new SnowflakeLightModel()))
-        .put(LightVariant.ICICLE, LightModelProvider.of(
+    private final Map<LightVariant, LightModelProvider> lights = new ImmutableMap.Builder<LightVariant, LightModelProvider>()
+        .put(StandardLightVariant.FAIRY, this.defaultLight)
+        .put(StandardLightVariant.PAPER, LightModelProvider.of(new PaperLanternModel()))
+        .put(StandardLightVariant.ORB, LightModelProvider.of(new OrbLanternModel()))
+        .put(StandardLightVariant.FLOWER, LightModelProvider.of(new FlowerLightModel()))
+        .put(StandardLightVariant.ORNATE, LightModelProvider.of(new OrnateLanternModel()))
+        .put(StandardLightVariant.OIL, LightModelProvider.of(new OilLanternModel()))
+        .put(StandardLightVariant.JACK_O_LANTERN, LightModelProvider.of(new JackOLanternLightModel()))
+        .put(StandardLightVariant.SKULL, LightModelProvider.of(new SkullLightModel()))
+        .put(StandardLightVariant.GHOST, LightModelProvider.of(new GhostLightModel()))
+        .put(StandardLightVariant.SPIDER, LightModelProvider.of(new SpiderLightModel()))
+        .put(StandardLightVariant.WITCH, LightModelProvider.of(new WitchLightModel()))
+        .put(StandardLightVariant.SNOWFLAKE, LightModelProvider.of(new SnowflakeLightModel()))
+        .put(StandardLightVariant.ICICLE, LightModelProvider.of(
             IntStream.rangeClosed(1, 4).mapToObj(IcicleLightsModel::new).toArray(LightModel[]::new),
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
         ))
-        .put(LightVariant.METEOR, LightModelProvider.of(new MeteorLightModel()))
-        .build()
-    );
+        .put(StandardLightVariant.METEOR, LightModelProvider.of(new MeteorLightModel()))
+        .build();
 
     public Data start(final IRenderTypeBuffer source) {
         final IVertexBuilder solid = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);

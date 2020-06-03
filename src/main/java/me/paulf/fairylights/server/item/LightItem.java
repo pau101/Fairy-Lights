@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.item;
 
+import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.util.Utils;
-import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
@@ -10,11 +10,22 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
+
 public final class LightItem extends BlockItem {
-    public LightItem(final Block block, final Properties properties) {
-        super(block, properties);
+    private final LightBlock light;
+
+    public LightItem(final LightBlock light, final Properties properties) {
+        super(light, properties);
+        this.light = light;
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(final ItemStack stack, @Nullable final CompoundNBT nbt) {
+        return LightVariant.provider(this.light.getVariant());
     }
 
     @Override
@@ -26,9 +37,7 @@ public final class LightItem extends BlockItem {
     public void fillItemGroup(final ItemGroup group, final NonNullList<ItemStack> items) {
         if (this.isInGroup(group)) {
             for (final DyeColor dye : DyeColor.values()) {
-                final ItemStack stack = new ItemStack(this);
-                LightItem.setLightColor(stack, dye);
-                items.add(stack);
+                items.add(LightItem.setLightColor(new ItemStack(this), dye));
             }
         }
     }
@@ -41,8 +50,9 @@ public final class LightItem extends BlockItem {
         return DyeColor.byId(Math.floorMod((int) (Util.milliTime() / 1500), 16));
     }
 
-    public static void setLightColor(final ItemStack stack, final DyeColor color) {
+    public static ItemStack setLightColor(final ItemStack stack, final DyeColor color) {
         stack.getOrCreateTag().putByte("color", (byte) color.getId());
+        return stack;
     }
 
     public static int getColorValue(final DyeColor color) {

@@ -2,7 +2,6 @@ package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
-import me.paulf.fairylights.util.Utils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
@@ -42,9 +41,7 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
                 tooltip.add(new TranslationTextComponent("item.fairyLights.pattern"));
             }
             for (int i = 0; i < tagCount; i++) {
-                final CompoundNBT lightCompound = tagList.getCompound(i);
-                final ITextComponent variant = LightVariant.getLightVariant(lightCompound.getInt("light")).getItem().getName();
-                tooltip.add(new TranslationTextComponent("format.pattern.entry", Utils.formatColored(DyeColor.byId(lightCompound.getByte("color")), variant)));
+                tooltip.add(new TranslationTextComponent("format.pattern.entry", ItemStack.read(tagList.getCompound(i)).getDisplayName()));
             }
         }
     }

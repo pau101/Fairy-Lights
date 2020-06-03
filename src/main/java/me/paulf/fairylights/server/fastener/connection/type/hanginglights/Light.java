@@ -3,9 +3,11 @@ package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
 import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.server.item.StandardLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.Mth;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -24,9 +26,7 @@ public final class Light extends HangingFeature<Light> {
 
     private static final int SWAY_CYCLE = SWAY_RATE * SWAY_PEAK_COUNT;
 
-    private LightVariant variant = LightVariant.FAIRY;
-
-    private Vec3d color = new Vec3d(1, 0.92, 0.76);
+    private final ItemStack item;
 
     private int prevTwinkleTime;
 
@@ -44,13 +44,10 @@ public final class Light extends HangingFeature<Light> {
 
     private int lastJingledTick = -1;
 
-    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final boolean isOn) {
+    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final boolean isOn) {
         super(index, point, yaw, pitch, 0.0F);
+        this.item = item;
         this.isTwinkling = !isOn;
-    }
-
-    public boolean isTwinkling() {
-        return this.isTwinkling;
     }
 
     public float getBrightness(final float delta) {
@@ -65,28 +62,12 @@ public final class Light extends HangingFeature<Light> {
         return x < 0.25F ? EASE_IN_OUT.eval(x / 0.25F) : 1 - EASE_IN_OUT.eval(Mth.transform(x, 0.25F, 1, 0, 1));
     }
 
+    public ItemStack getItem() {
+        return this.item;
+    }
+
     public LightVariant getVariant() {
-        return this.variant;
-    }
-
-    public Vec3d getLight() {
-        return this.color;
-    }
-
-    public void setVariant(final LightVariant variant) {
-        this.variant = variant;
-    }
-
-    public void setColor(final int colorValue) {
-        this.color = new Vec3d((colorValue >> 16 & 0xFF) / 255F, (colorValue >> 8 & 0xFF) / 255F, (colorValue & 0xFF) / 255F);
-    }
-
-    public void setTwinkleTime(final int twinkleTime) {
-        this.twinkleTime = twinkleTime;
-    }
-
-    public int getTwinkleTime() {
-        return this.twinkleTime;
+        return LightVariant.get(this.item).orElse(StandardLightVariant.FAIRY);
     }
 
     @Override
@@ -159,14 +140,14 @@ public final class Light extends HangingFeature<Light> {
         this.prevRoll = this.roll;
         this.prevTwinkleTime = this.twinkleTime;
         if (isOn) {
-            if (this.isTwinkling || this.variant.alwaysDoTwinkleLogic()) {
+            if (this.isTwinkling || this.getVariant().alwaysDoTwinkleLogic()) {
                 if (lights.getWorld().rand.nextFloat() < this.getVariant().getTwinkleChance() && this.twinkleTime == NORMAL_LIGHT) {
                     this.twinkleTime = 0;
                 }
                 if (this.twinkleTime >= 0) {
                     this.twinkleTime++;
                 }
-                if (this.twinkleTime == this.variant.getTickCycle()) {
+                if (this.twinkleTime == this.getVariant().getTickCycle()) {
                     this.twinkleTime = NORMAL_LIGHT;
                 }
             } else {
@@ -190,16 +171,16 @@ public final class Light extends HangingFeature<Light> {
 
     @Override
     public double getWidth() {
-        return this.variant.getWidth();
+        return this.getVariant().getWidth();
     }
 
     @Override
     public double getHeight() {
-        return this.variant.getHeight();
+        return this.getVariant().getHeight();
     }
 
     @Override
     public boolean parallelsCord() {
-        return this.variant.parallelsCord();
+        return this.getVariant().parallelsCord();
     }
 }

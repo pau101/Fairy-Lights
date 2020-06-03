@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.server.item.StandardLightVariant;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
@@ -34,11 +35,11 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
             matrix.push();
             matrix.translate(pos.x, pos.y, pos.z);
             matrix.rotate(Vector3f.YP.rotation(-currLight.getYaw(delta)));
-            if (currLight.getVariant().parallelsCord()) {
+            if (currLight.parallelsCord()) {
                 matrix.rotate(Vector3f.ZP.rotation(currLight.getPitch(delta)));
             }
             matrix.rotate(Vector3f.XP.rotation(currLight.getRoll(delta)));
-            if (variant != LightVariant.FAIRY) {
+            if (variant != StandardLightVariant.FAIRY) {
                 matrix.rotate(Vector3f.YP.rotation(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
             }
             matrix.translate(0.0D, -0.125D, 0.0D);

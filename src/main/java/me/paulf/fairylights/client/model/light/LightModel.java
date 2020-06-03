@@ -3,6 +3,7 @@ package me.paulf.fairylights.client.model.light;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.util.AABBBuilder;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
@@ -10,7 +11,6 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
@@ -23,7 +23,7 @@ public abstract class LightModel extends Model {
 
     protected final ModelRenderer unlit;
 
-    private Vec3d color;
+    private int color;
 
     protected float brightness;
 
@@ -58,7 +58,7 @@ public abstract class LightModel extends Model {
 
     public void animate(final Light light, final float delta) {
         this.brightness = light.getBrightness(delta);
-        this.color = light.getLight();
+        this.color = LightItem.getColorValue(LightItem.getLightColor(light.getItem()));
     }
 
     @Override
@@ -66,17 +66,17 @@ public abstract class LightModel extends Model {
         this.unlit.render(matrix, builder, light, overlay, r, g, b, a);
         final int emissiveLight = (int) (this.brightness * 15.0F * 16.0F) | light & (255 << 16);
         this.lit.render(matrix, builder, emissiveLight, overlay, r, g, b, a);
-        final float lr = r * (float) this.color.x;
-        final float lg = g * (float) this.color.y;
-        final float lb = b * (float) this.color.z;
+        final float lr = r * ((this.color >> 16 & 0xFF) / 255.0F);
+        final float lg = g * ((this.color >> 8 & 0xFF) / 255.0F);
+        final float lb = b * ((this.color & 0xFF) / 255.0F);
         this.litTint.render(matrix, builder, emissiveLight, overlay, lr, lg, lb, a);
     }
 
     public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         final int emissiveLight = (int) (this.brightness * 15.0F * 16.0F) | light & (255 << 16);
-        final float lr = r * (float) this.color.x;
-        final float lg = g * (float) this.color.y;
-        final float lb = b * (float) this.color.z;
+        final float lr = r * ((this.color >> 16 & 0xFF) / 255.0F);
+        final float lg = g * ((this.color >> 8 & 0xFF) / 255.0F);
+        final float lb = b * ((this.color & 0xFF) / 255.0F);
         this.litTintGlow.render(matrix, builder, emissiveLight, overlay, lr, lg, lb, this.brightness * 0.15F + 0.1F);
     }
 

@@ -6,7 +6,6 @@ import com.mojang.datafixers.util.Pair;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.block.Block;
@@ -182,8 +181,8 @@ public final class DataGatherer {
 
         @Override
         protected void addTables() {
-            for (final LightVariant variant : LightVariant.values()) {
-                final Block block = Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(variant.getItem().getRegistryName()));
+            FLItems.lights().forEach(light -> {
+                final Block block = Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(light.getRegistryName()));
                 this.registerLootTable(block, (factory) -> LootTable.builder()
                     .addLootPool(withSurvivesExplosion(factory, LootPool.builder()
                         .rolls(ConstantRange.of(1))
@@ -192,7 +191,7 @@ public final class DataGatherer {
                         )
                     )
                 );
-            }
+            });
         }
     }
 

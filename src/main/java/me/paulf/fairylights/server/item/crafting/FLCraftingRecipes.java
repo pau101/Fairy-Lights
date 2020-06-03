@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.LightItem;
-import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.util.OreDictUtils;
 import me.paulf.fairylights.util.Utils;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
@@ -250,10 +249,7 @@ public final class FLCraftingRecipes {
         CompoundNBT compound = stack.getTag();
         final ListNBT lights = new ListNBT();
         for (final DyeColor color : colors) {
-            final CompoundNBT light = new CompoundNBT();
-            light.putByte("color", (byte) color.getId());
-            light.putInt("light", LightVariant.FAIRY.ordinal());
-            lights.add(light);
+            lights.add(LightItem.setLightColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
         }
         if (compound == null) {
             compound = new CompoundNBT();
@@ -391,21 +387,21 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createFairyLight(final ResourceLocation name) {
-        return createLight(name, FAIRY_LIGHT, LightVariant.FAIRY, b -> b
+        return createLight(name, FAIRY_LIGHT, FLItems.FAIRY_LIGHT, b -> b
             .withShape(" I ", "IDI", " G ")
             .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS)
         );
     }
 
     private static GenericRecipe createPaperLantern(final ResourceLocation name) {
-        return createLight(name, PAPER_LANTERN, LightVariant.PAPER, b -> b
+        return createLight(name, PAPER_LANTERN, FLItems.PAPER_LANTERN, b -> b
             .withShape(" I ", "PDP", "PPP")
             .withIngredient('P', Items.PAPER)
         );
     }
 
     private static GenericRecipe createOrbLantern(final ResourceLocation name) {
-        return createLight(name, ORB_LANTERN, LightVariant.ORB, b -> b
+        return createLight(name, ORB_LANTERN, FLItems.ORB_LANTERN, b -> b
             .withShape(" I ", "SDS", " W ")
             .withIngredient('S', Tags.Items.STRING)
             .withIngredient('W', Items.WHITE_WOOL)
@@ -413,7 +409,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createFlowerLight(final ResourceLocation name) {
-        return createLight(name, FLOWER_LIGHT, LightVariant.FLOWER, b -> b
+        return createLight(name, FLOWER_LIGHT, FLItems.FLOWER_LIGHT, b -> b
             .withShape(" I ", "RDB", " Y ")
             .withIngredient('R', Items.POPPY)
             .withIngredient('Y', Items.DANDELION)
@@ -422,14 +418,14 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createOrnateLantern(final ResourceLocation name) {
-        return createLight(name, ORNATE_LANTERN, LightVariant.ORNATE, b -> b
+        return createLight(name, ORNATE_LANTERN, FLItems.ORNATE_LANTERN, b -> b
             .withShape(" I ", "GDG", "IGI")
             .withIngredient('G', Tags.Items.NUGGETS_GOLD)
         );
     }
 
     private static GenericRecipe createOilLantern(final ResourceLocation name) {
-        return createLight(name, OIL_LANTERN, LightVariant.OIL, b -> b
+        return createLight(name, OIL_LANTERN, FLItems.OIL_LANTERN, b -> b
             .withShape(" I ", "SDS", "IGI")
             .withIngredient('S', Items.STICK)
             .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS)
@@ -437,7 +433,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createJackOLantern(final ResourceLocation name) {
-        return createLight(name, JACK_O_LANTERN, LightVariant.JACK_O_LANTERN, b -> b
+        return createLight(name, JACK_O_LANTERN, FLItems.JACK_O_LANTERN, b -> b
             .withShape(" I ", "SDS", "GPG")
             .withIngredient('S', ItemTags.WOODEN_SLABS)
             .withIngredient('G', Items.TORCH)
@@ -446,14 +442,14 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createSkullLight(final ResourceLocation name) {
-        return createLight(name, SKULL_LIGHT, LightVariant.SKULL, b -> b
+        return createLight(name, SKULL_LIGHT, FLItems.SKULL_LIGHT, b -> b
             .withShape(" I ", "IDI", " B ")
             .withIngredient('B', Tags.Items.BONES)
         );
     }
 
     private static GenericRecipe createGhostLight(final ResourceLocation name) {
-        return createLight(name, GHOST_LIGHT, LightVariant.GHOST, b -> b
+        return createLight(name, GHOST_LIGHT, FLItems.GHOST_LIGHT, b -> b
             .withShape(" I ", "PDP", "IGI")
             .withIngredient('P', Items.PAPER)
             .withIngredient('G', Tags.Items.GLASS_PANES_WHITE)
@@ -461,7 +457,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createSpiderLight(final ResourceLocation name) {
-        return createLight(name, SPIDER_LIGHT, LightVariant.SPIDER, b -> b
+        return createLight(name, SPIDER_LIGHT, FLItems.SPIDER_LIGHT, b -> b
             .withShape(" I ", "WDW", "SES")
             .withIngredient('W', Items.COBWEB)
             .withIngredient('S', Tags.Items.STRING)
@@ -470,7 +466,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createWitchLight(final ResourceLocation name) {
-        return createLight(name, WITCH_LIGHT, LightVariant.WITCH, b -> b
+        return createLight(name, WITCH_LIGHT, FLItems.WITCH_LIGHT, b -> b
             .withShape(" I ", "BDW", " S ")
             .withIngredient('B', Items.GLASS_BOTTLE)
             .withIngredient('W', Items.WHEAT)
@@ -479,7 +475,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createSnowflakeLight(final ResourceLocation name) {
-        return createLight(name, SNOWFLAKE_LIGHT, LightVariant.SNOWFLAKE, b -> b
+        return createLight(name, SNOWFLAKE_LIGHT, FLItems.SNOWFLAKE_LIGHT, b -> b
             .withShape(" I ", "SDS", " G ")
             .withIngredient('S', Items.SNOWBALL)
             .withIngredient('G', Tags.Items.GLASS_PANES_WHITE)
@@ -487,7 +483,7 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createIcicleLights(final ResourceLocation name) {
-        return createLight(name, ICICLE_LIGHTS, LightVariant.ICICLE, b -> b
+        return createLight(name, ICICLE_LIGHTS, FLItems.ICICLE_LIGHTS, b -> b
             .withShape(" I ", "GDG", " B ")
             .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS)
             .withIngredient('B', Items.WATER_BUCKET)
@@ -495,18 +491,18 @@ public final class FLCraftingRecipes {
     }
 
     private static GenericRecipe createMeteorLight(final ResourceLocation name) {
-        return createLight(name, METEOR_LIGHT, LightVariant.METEOR, b -> b
+        return createLight(name, METEOR_LIGHT, FLItems.METEOR_LIGHT, b -> b
             .withShape(" I ", "GDG", "IPI")
             .withIngredient('G', Tags.Items.DUSTS_GLOWSTONE)
             .withIngredient('P', Items.PAPER)
         );
     }
 
-    private static GenericRecipe createLight(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final LightVariant variant, final UnaryOperator<GenericRecipeBuilder> recipe) {
+    private static GenericRecipe createLight(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final Supplier<? extends Item> variant, final UnaryOperator<GenericRecipeBuilder> recipe) {
         return recipe.apply(new GenericRecipeBuilder(name, serializer))
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withIngredient('D', FLCraftingRecipes.DYE_SUBTYPE_INGREDIENT)
-            .withOutput(variant.getItem(), 4)
+            .withOutput(variant.get(), 4)
             .build();
     }
 
@@ -527,10 +523,7 @@ public final class FLCraftingRecipes {
             }
             final ImmutableList.Builder<ImmutableList<ItemStack>> lights = ImmutableList.builder();
             for (int i = 0; i < pattern.size(); i++) {
-                final CompoundNBT light = pattern.getCompound(i);
-                final ItemStack stack = new ItemStack(LightVariant.getLightVariant(light.getInt("light")).getItem());
-                LightItem.setLightColor(stack, DyeColor.byId(light.getByte("color")));
-                lights.add(ImmutableList.of(stack));
+                lights.add(ImmutableList.of(ItemStack.read(pattern.getCompound(i))));
             }
             return lights.build();
         }
@@ -547,14 +540,7 @@ public final class FLCraftingRecipes {
 
         @Override
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
-            final CompoundNBT light = new CompoundNBT();
-            light.putInt("light", Arrays.stream(LightVariant.values())
-                .filter(v -> ingredient.getItem().equals(v.getItem()))
-                .mapToInt(Enum::ordinal)
-                .findFirst().orElse(0)
-            );
-            light.putByte("color", (byte) LightItem.getLightColor(ingredient).getId());
-            patternList.add(light);
+            patternList.add(ingredient.write(new CompoundNBT()));
         }
 
         @Override

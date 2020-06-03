@@ -9,6 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public final class FLItems {
     private FLItems() {}
@@ -69,5 +70,12 @@ public final class FLItems {
 
     private static Supplier<LightItem> createLight(final RegistryObject<LightBlock> block) {
         return () -> new LightItem(block.get(), defaultProperties().maxStackSize(16));
+    }
+
+    public static Stream<LightItem> lights() {
+        return REG.getEntries().stream()
+            .flatMap(RegistryObject::stream)
+            .filter(LightItem.class::isInstance)
+            .map(LightItem.class::cast);
     }
 }

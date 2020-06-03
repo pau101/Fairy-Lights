@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -152,7 +153,8 @@ public final class ClientProxy extends ServerProxy {
             if (stack.hasTag()) {
                 final ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return LightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
+                    final CompoundNBT tag = ItemStack.read(tagList.getCompound((index - 1) % tagList.size())).getTag();
+                    return LightItem.getColorValue(tag == null ? DyeColor.YELLOW : DyeColor.byId(tag.getByte("color")));
                 }
             }
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
