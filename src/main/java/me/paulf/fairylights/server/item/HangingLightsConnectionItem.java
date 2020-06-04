@@ -24,17 +24,8 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
 
     @Override
     public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<ITextComponent> tooltip, final ITooltipFlag flagIn) {
-        if (!stack.hasTag()) {
-            return;
-        }
         final CompoundNBT compound = stack.getTag();
-        if (compound.getBoolean("twinkle")) {
-            tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle"));
-        }
-        if (compound.getBoolean("tight")) {
-            tooltip.add(new TranslationTextComponent("item.fairyLights.tight"));
-        }
-        if (compound.contains("pattern", NBT.TAG_LIST)) {
+        if (compound != null && compound.contains("pattern", NBT.TAG_LIST)) {
             final ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);
             final int tagCount = tagList.size();
             if (tagCount > 0) {

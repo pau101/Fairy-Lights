@@ -1,7 +1,9 @@
 package me.paulf.fairylights.server.item;
 
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
 import me.paulf.fairylights.util.EmptyProvider;
 import me.paulf.fairylights.util.SimpleProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -19,8 +21,6 @@ public interface LightVariant {
         public static Capability<LightVariant> CAPABILITY;
     }
 
-    String getName();
-
     boolean parallelsCord();
 
     float getSpacing();
@@ -29,11 +29,7 @@ public interface LightVariant {
 
     float getHeight();
 
-    float getTwinkleChance();
-
-    int getTickCycle();
-
-    boolean alwaysDoTwinkleLogic();
+    LightBehavior createBehavior(final ItemStack stack);
 
     Placement getPlacement();
 

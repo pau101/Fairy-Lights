@@ -1,22 +1,28 @@
 package me.paulf.fairylights.server.item;
 
-public enum StandardLightVariant implements LightVariant {
-    FAIRY("fairy_light", true, 5, 5, LightVariant.Placement.ONWARD),
-    PAPER("paper_lantern", false, 9, 16.5F, LightVariant.Placement.UPRIGHT),
-    ORB("orb_lantern", false, 10, 11.5F, LightVariant.Placement.UPRIGHT),
-    FLOWER("flower_light", true, 10, 6, LightVariant.Placement.OUTWARD),
-    ORNATE("ornate_lantern", false, 24, 8, 11, LightVariant.Placement.UPRIGHT),
-    OIL("oil_lantern", false, 32, 8, 13, LightVariant.Placement.UPRIGHT),
-    JACK_O_LANTERN("jack_o_lantern", true, 7, 9, LightVariant.Placement.UPRIGHT),
-    SKULL("skull_light", true, 6, 9, LightVariant.Placement.UPRIGHT),
-    GHOST("ghost_light", true, 6, 8, LightVariant.Placement.UPRIGHT),
-    SPIDER("spider_light", true, 12, 14, LightVariant.Placement.UPRIGHT),
-    WITCH("witch_light", true, 8, 10, LightVariant.Placement.UPRIGHT),
-    SNOWFLAKE("snowflake_light", true, 10.0F, 15.0F, LightVariant.Placement.UPRIGHT),
-    ICICLE("icicle_lights", false, 0.625F, 7, 20, LightVariant.Placement.UPRIGHT),
-    METEOR("meteor_light", false, 1.5F, 3, 28.5F, 0.02F, 100, LightVariant.Placement.UPRIGHT);
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.ConstantBehavior;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.TwinkleBehavior;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 
-    private final String name;
+import java.util.function.Function;
+
+public enum StandardLightVariant implements LightVariant {
+    FAIRY(true, 5, 5, LightVariant.Placement.ONWARD),
+    PAPER(false, 9, 16.5F, LightVariant.Placement.UPRIGHT),
+    ORB(false, 10, 11.5F, LightVariant.Placement.UPRIGHT),
+    FLOWER(true, 10, 6, LightVariant.Placement.OUTWARD),
+    ORNATE(false, 24, 8, 11, LightVariant.Placement.UPRIGHT),
+    OIL(false, 32, 8, 13, LightVariant.Placement.UPRIGHT),
+    JACK_O_LANTERN(true, 7, 9, LightVariant.Placement.UPRIGHT),
+    SKULL(true, 6, 9, LightVariant.Placement.UPRIGHT),
+    GHOST(true, 6, 8, LightVariant.Placement.UPRIGHT),
+    SPIDER(true, 12, 14, LightVariant.Placement.UPRIGHT),
+    WITCH(true, 8, 10, LightVariant.Placement.UPRIGHT),
+    SNOWFLAKE(true, 10.0F, 15.0F, LightVariant.Placement.UPRIGHT),
+    ICICLE(false, 0.625F, 7, 20, LightVariant.Placement.UPRIGHT),
+    METEOR(false, 1.5F, 3, 28.5F, stack -> new TwinkleBehavior(0.02F, 100), LightVariant.Placement.UPRIGHT);
 
     private final boolean parallelsCord;
 
@@ -26,41 +32,25 @@ public enum StandardLightVariant implements LightVariant {
 
     private final float height;
 
-    private final float twinkleChance;
-
-    private final int tickCycle;
-
-    private final boolean alwaysTwinkle;
+    private final Function<ItemStack, LightBehavior> behaviorFactory;
 
     private final LightVariant.Placement placement;
 
-    StandardLightVariant(final String name, final boolean parallelsCord, final float width, final float height, final LightVariant.Placement orientable) {
-        this(name, parallelsCord, 1.0F, width, height, orientable);
+    StandardLightVariant(final boolean parallelsCord, final float width, final float height, final Placement orientable) {
+        this(parallelsCord, 1.0F, width, height, orientable);
     }
 
-    StandardLightVariant(final String name, final boolean parallelsCord, final float spacing, final float width, final float height, final LightVariant.Placement orientable) {
-        this(name, parallelsCord, spacing, width, height, 0.05F, 40, false, orientable);
+    StandardLightVariant(final boolean parallelsCord, final float spacing, final float width, final float height, final Placement orientable) {
+        this(parallelsCord, spacing, width, height, StandardLightVariant::standardBehavior, orientable);
     }
 
-    StandardLightVariant(final String name, final boolean parallelsCord, final float spacing, final float width, final float height, final float twinkleChance, final int tickCycle, final LightVariant.Placement orientable) {
-        this(name, parallelsCord, spacing, width, height, twinkleChance, tickCycle, true, orientable);
-    }
-
-    StandardLightVariant(final String name, final boolean parallelsCord, final float spacing, final float width, final float height, final float twinkleChance, final int tickCycle, final boolean alwaysTwinkle, final LightVariant.Placement orientable) {
-        this.name = name;
+    StandardLightVariant(final boolean parallelsCord, final float spacing, final float width, final float height, final Function<ItemStack, LightBehavior> behaviorFactory, final Placement orientable) {
         this.parallelsCord = parallelsCord;
         this.spacing = spacing;
         this.width = width / 16;
         this.height = height / 16;
-        this.twinkleChance = twinkleChance;
-        this.tickCycle = tickCycle;
-        this.alwaysTwinkle = alwaysTwinkle;
+        this.behaviorFactory = behaviorFactory;
         this.placement = orientable;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
     @Override
@@ -84,22 +74,20 @@ public enum StandardLightVariant implements LightVariant {
     }
 
     @Override
-    public float getTwinkleChance() {
-        return this.twinkleChance;
-    }
-
-    @Override
-    public int getTickCycle() {
-        return this.tickCycle;
-    }
-
-    @Override
-    public boolean alwaysDoTwinkleLogic() {
-        return this.alwaysTwinkle;
+    public LightBehavior createBehavior(final ItemStack stack) {
+        return this.behaviorFactory.apply(stack);
     }
 
     @Override
     public LightVariant.Placement getPlacement() {
         return this.placement;
+    }
+
+    private static LightBehavior standardBehavior(final ItemStack stack) {
+        final CompoundNBT tag = stack.getTag();
+        if (tag != null && tag.getBoolean("twinkle")) {
+            return new TwinkleBehavior(0.05F, 40);
+        }
+        return ConstantBehavior.on();
     }
 }

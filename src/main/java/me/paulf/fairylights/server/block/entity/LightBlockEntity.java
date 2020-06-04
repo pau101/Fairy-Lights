@@ -1,7 +1,9 @@
 package me.paulf.fairylights.server.block.entity;
 
 import me.paulf.fairylights.server.block.LightBlock;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.ConstantBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +24,7 @@ public class LightBlockEntity extends TileEntity {
 
     public LightBlockEntity() {
         super(FLBlockEntities.LIGHT.get());
-        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, true);
+        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, ConstantBehavior.on());
     }
 
     public Light getLight() {
@@ -30,7 +32,7 @@ public class LightBlockEntity extends TileEntity {
     }
 
     public void setItemStack(final ItemStack stack) {
-        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, stack, true);
+        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).map(lv -> lv.createBehavior(stack)).orElse(ConstantBehavior.on()));
         this.markDirty();
     }
 

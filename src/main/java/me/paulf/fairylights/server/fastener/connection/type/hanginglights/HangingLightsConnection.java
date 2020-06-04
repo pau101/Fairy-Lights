@@ -48,8 +48,6 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     private List<ItemStack> pattern;
 
-    private boolean twinkle;
-
     private JinglePlayer jinglePlayer = new JinglePlayer();
 
     private boolean wasPlaying = false;
@@ -130,7 +128,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         this.wasPlaying = playing;
         final boolean on = !this.isDynamic() && this.isOn;
         for (final Light light : this.features) {
-            light.tick(this, this.twinkle, on);
+            light.tick(this.world.rand);
         }
         if (on && this.isOrigin() && this.features.length > 0) {
             this.lightUpdateTime++;
@@ -158,7 +156,8 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     protected Light createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
         final boolean on = !this.isDynamic() && this.isOn;
         final ItemStack lightData = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
-        final Light light = new Light(index, point, yaw, pitch, lightData, on);
+        final Light light = new Light(index, point, yaw, pitch, lightData, LightVariant.get(lightData).map(lv -> lv.createBehavior(lightData)).orElse(ConstantBehavior.on()));
+        light.setOn(on);
         if (on && this.isOrigin()) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
@@ -260,7 +259,6 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             tagList.add(light.write(new CompoundNBT()));
         }
         compound.put("pattern", tagList);
-        compound.putBoolean("twinkle", this.twinkle);
         return compound;
     }
 
@@ -273,6 +271,5 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             final CompoundNBT lightCompound = patternList.getCompound(i);
             this.pattern.add(ItemStack.read(lightCompound));
         }
-        this.twinkle = compound.getBoolean("twinkle");
     }
 }

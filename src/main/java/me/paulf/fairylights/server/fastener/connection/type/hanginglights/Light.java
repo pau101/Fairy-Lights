@@ -6,7 +6,6 @@ import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.StandardLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CubicBezier;
-import me.paulf.fairylights.util.Mth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
@@ -14,6 +13,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public final class Light extends HangingFeature<Light> {
     private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
@@ -28,11 +29,9 @@ public final class Light extends HangingFeature<Light> {
 
     private final ItemStack item;
 
-    private int prevTwinkleTime;
+    private final LightBehavior behavior;
 
-    private int twinkleTime = NORMAL_LIGHT;
-
-    private boolean isTwinkling;
+    private boolean on;
 
     private int sway;
 
@@ -44,22 +43,14 @@ public final class Light extends HangingFeature<Light> {
 
     private int lastJingledTick = -1;
 
-    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final boolean isOn) {
+    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final LightBehavior behavior) {
         super(index, point, yaw, pitch, 0.0F);
         this.item = item;
-        this.isTwinkling = !isOn;
+        this.behavior = behavior;
     }
 
     public float getBrightness(final float delta) {
-        return this.twinkleTime == NORMAL_LIGHT ? this.isTwinkling ? 0 : 1 : this.brightnessFunc((this.prevTwinkleTime + (this.twinkleTime - this.prevTwinkleTime) * delta) / this.getVariant().getTickCycle());
-    }
-
-    public float getTwinkleTimePercent(final float delta) {
-        return this.twinkleTime == NORMAL_LIGHT ? 0 : (this.prevTwinkleTime + (this.twinkleTime - this.prevTwinkleTime) * delta) / this.getVariant().getTickCycle();
-    }
-
-    private float brightnessFunc(final float x) {
-        return x < 0.25F ? EASE_IN_OUT.eval(x / 0.25F) : 1 - EASE_IN_OUT.eval(Mth.transform(x, 0.25F, 1, 0, 1));
+        return this.on ? this.behavior.get(delta) : 0.0F;
     }
 
     public ItemStack getItem() {
@@ -73,7 +64,7 @@ public final class Light extends HangingFeature<Light> {
     @Override
     public void inherit(final Light parent) {
         super.inherit(parent);
-        this.twinkleTime = parent.twinkleTime;
+        this.behavior.inherit(parent.behavior);
         this.swayDirection = parent.swayDirection;
         this.swaying = parent.swaying;
         this.sway = parent.sway;
@@ -126,37 +117,19 @@ public final class Light extends HangingFeature<Light> {
     }
 
     public void setOn(final boolean on) {
-        this.twinkleTime = NORMAL_LIGHT;
-        this.isTwinkling = !on;
+        this.on = on;
     }
 
     public boolean isOn() {
-        return this.twinkleTime == NORMAL_LIGHT && !this.isTwinkling;
+        return this.on;
     }
 
-    public void tick(final HangingLightsConnection lights, final boolean twinkle, final boolean isOn) {
+    public void tick(final Random rng) {
         this.prevYaw = this.yaw;
         this.prevPitch = this.pitch;
         this.prevRoll = this.roll;
-        this.prevTwinkleTime = this.twinkleTime;
-        if (isOn) {
-            if (this.isTwinkling || this.getVariant().alwaysDoTwinkleLogic()) {
-                if (lights.getWorld().rand.nextFloat() < this.getVariant().getTwinkleChance() && this.twinkleTime == NORMAL_LIGHT) {
-                    this.twinkleTime = 0;
-                }
-                if (this.twinkleTime >= 0) {
-                    this.twinkleTime++;
-                }
-                if (this.twinkleTime == this.getVariant().getTickCycle()) {
-                    this.twinkleTime = NORMAL_LIGHT;
-                }
-            } else {
-                this.twinkleTime = NORMAL_LIGHT;
-            }
-            this.isTwinkling = twinkle;
-        } else {
-            this.twinkleTime = NORMAL_LIGHT;
-            this.isTwinkling = true;
+        if (this.on) {
+            this.behavior.tick(rng);
         }
         if (this.swaying) {
             if (this.sway >= SWAY_CYCLE) {
