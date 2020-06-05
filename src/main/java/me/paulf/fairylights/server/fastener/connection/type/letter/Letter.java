@@ -4,7 +4,7 @@ import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
 import me.paulf.fairylights.util.styledstring.Style;
 import net.minecraft.util.math.Vec3d;
 
-public final class Letter extends HangingFeature<Letter> {
+public final class Letter extends HangingFeature {
     private final SymbolSet symbols;
 
     private final char letter;
@@ -39,11 +39,5 @@ public final class Letter extends HangingFeature<Letter> {
     @Override
     public boolean parallelsCord() {
         return true;
-    }
-
-    public void tick() {
-        this.prevYaw = this.yaw;
-        this.prevPitch = this.pitch;
-        this.prevRoll = this.roll;
     }
 }

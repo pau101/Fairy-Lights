@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.model.light;
 
 import me.paulf.fairylights.util.Mth;
 
-public class OilLanternModel extends LightModel {
+public class OilLanternModel extends ColorLightModel {
     public OilLanternModel() {
         this.unlit.rotateAngleY = -Mth.PI / 2.0F;
         this.unlit.setTextureOffset(10, 6);

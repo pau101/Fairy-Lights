@@ -5,8 +5,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec3d;
 
-public class Pennant extends HangingFeature<Pennant> {
+public class Pennant extends HangingFeature {
     private int color;
+
     private Item item = Items.AIR;
 
     public Pennant(final int index, final Vec3d point, final float yaw, final float pitch) {

@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.model.light;
 
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class IcicleLightsModel extends LightModel {
+public class IcicleLightsModel extends ColorLightModel {
     public IcicleLightsModel(final int lights) {
         final ModelRenderer connector = new ModelRenderer(this, 77, 0);
         connector.setRotationPoint(0, 0, 0);

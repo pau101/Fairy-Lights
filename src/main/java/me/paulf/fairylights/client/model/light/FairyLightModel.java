@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-public class FairyLightModel extends LightModel {
+public class FairyLightModel extends ColorLightModel {
     public FairyLightModel() {
         final BulbBuilder bulb = this.createBulb();
         bulb.setUV(46, 0);

@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 
 import java.util.Random;
 
-public class SnowflakeLightModel extends LightModel {
+public class SnowflakeLightModel extends ColorLightModel {
     public SnowflakeLightModel() {
         final ModelRenderer connector = new ModelRenderer(this, 90, 40);
         connector.addBox(-1.0F, 0.2F, -1.0F, 2.0F, 1.0F, 2.0F, -0.05F);

@@ -16,7 +16,7 @@ public class BasicRegularIngredient implements RegularIngredient {
     }
 
     @Override
-    public final GenericRecipe.MatchResultRegular matches(final ItemStack input, final ItemStack output) {
+    public final GenericRecipe.MatchResultRegular matches(final ItemStack input) {
         return new GenericRecipe.MatchResultRegular(this, input, this.ingredient.test(input), Collections.emptyList());
     }
 

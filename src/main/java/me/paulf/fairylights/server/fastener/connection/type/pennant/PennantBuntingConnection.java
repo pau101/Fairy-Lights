@@ -86,6 +86,14 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     }
 
     @Override
+    protected void onUpdateLate() {
+        super.onUpdateLate();
+        for (final Pennant light : this.features) {
+            light.tick(this.world.rand);
+        }
+    }
+
+    @Override
     protected Pennant[] createFeatures(final int length) {
         return new Pennant[length];
     }

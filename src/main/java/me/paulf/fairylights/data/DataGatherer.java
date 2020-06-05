@@ -138,6 +138,8 @@ public final class DataGatherer {
                 .build(consumer, new ResourceLocation(FairyLights.ID, "icicle_lights"));
             this.lightRecipe(FLCraftingRecipes.METEOR_LIGHT.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "meteor_light"));
+            GenericRecipeBuilder.customRecipe(FLCraftingRecipes.LIGHT_TWINKLE.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "light_twinkle"));
         }
 
         GenericRecipeBuilder lightRecipe(final IRecipeSerializer<?> serializer) {

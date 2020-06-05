@@ -4,7 +4,7 @@ import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
 
-public class FlowerLightModel extends LightModel {
+public class FlowerLightModel extends ColorLightModel {
     public FlowerLightModel() {
         this.unlit.setTextureOffset(12, 0);
         this.unlit.addBox(-1.5F, -1.0F, -1.5F, 3.0F, 3.0F, 3.0F);

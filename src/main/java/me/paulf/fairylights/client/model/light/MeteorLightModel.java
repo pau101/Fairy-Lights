@@ -3,11 +3,12 @@ package me.paulf.fairylights.client.model.light;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.MeteorLightBehavior;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
-public class MeteorLightModel extends LightModel {
+public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
     private final BulbBuilder[] lights;
 
     private final ModelRenderer connector;
@@ -41,9 +42,12 @@ public class MeteorLightModel extends LightModel {
     }
 
     @Override
-    public void animate(final Light light, final float delta) {
+    public void animate(final Light<MeteorLightBehavior> light, final float delta) {
         super.animate(light, delta);
-        this.stage = light.getTwinkleTimePercent(delta) * 3.0F - 1.0F;
+        this.red = light.getBehavior().getRed(delta);
+        this.green = light.getBehavior().getGreen(delta);
+        this.blue = light.getBehavior().getBlue(delta);
+        this.stage = light.getBehavior().getProgress(delta) * 3.0F - 1.0F;
     }
 
     private float computeBrightness(final float t) {

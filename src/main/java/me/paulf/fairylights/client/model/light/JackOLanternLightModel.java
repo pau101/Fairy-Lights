@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class JackOLanternLightModel extends LightModel {
+public class JackOLanternLightModel extends ColorLightModel {
     public JackOLanternLightModel() {
         final BulbBuilder bulb = this.createBulb();
         final BulbBuilder pumpkin = bulb.createChild(28, 42);

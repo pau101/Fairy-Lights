@@ -7,8 +7,8 @@ import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
 import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.server.item.StandardLightVariant;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -48,20 +48,22 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
 
     @Override
     public void render(final LightBlockEntity entity, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
-        matrix.push();
+        this.render(entity, delta, matrix, source, packedLight, packedOverlay, entity.getLight());
+    }
 
-        final BlockState state = entity.getBlockState();
-        final AttachFace face = state.get(LightBlock.FACE);
-        final float rotation = state.get(LightBlock.HORIZONTAL_FACING).getHorizontalAngle();
-        final StandardLightVariant variant = ((LightBlock) state.getBlock()).getVariant();
-        final Light light = entity.getLight();
-        final LightModel model = this.lights.getModel(light, -1);
+    private <T extends LightBehavior> void render(final LightBlockEntity entity, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay, final Light<T> light) {
+        final LightModel<T> model = this.lights.getModel(light, -1);
         final AxisAlignedBB box = model.getBounds();
         final double h = -box.minY;
         final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+        matrix.push();
         matrix.translate(0.5D, 0.5D, 0.5D);
+        final BlockState state = entity.getBlockState();
+        final AttachFace face = state.get(LightBlock.FACE);
+        final float rotation = state.get(LightBlock.HORIZONTAL_FACING).getHorizontalAngle();
         matrix.rotate(Vector3f.YP.rotationDegrees(180.0F - rotation));
-        if (variant.getPlacement() == LightVariant.Placement.UPRIGHT) {
+        final LightVariant.Placement placement = light.getVariant().getPlacement();
+        if (placement == LightVariant.Placement.UPRIGHT) {
             if (face == AttachFace.CEILING) {
                 matrix.translate(0.0D, 0.25D, 0.0D);
                 matrix.push();
@@ -76,17 +78,17 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
             }
         } else {
             if (face == AttachFace.CEILING) {
-                if (variant.getPlacement() == LightVariant.Placement.ONWARD) {
+                if (placement == LightVariant.Placement.ONWARD) {
                     matrix.rotate(Vector3f.XP.rotationDegrees(-180.0F));
                 }
             } else if (face == AttachFace.WALL) {
-                matrix.rotate(Vector3f.XP.rotationDegrees(variant.getPlacement() == LightVariant.Placement.OUTWARD ? 90.0F : -90.0F));
+                matrix.rotate(Vector3f.XP.rotationDegrees(placement == LightVariant.Placement.OUTWARD ? 90.0F : -90.0F));
             } else {
-                if (variant.getPlacement() == LightVariant.Placement.OUTWARD) {
+                if (placement == LightVariant.Placement.OUTWARD) {
                     matrix.rotate(Vector3f.XP.rotationDegrees(-180.0F));
                 }
             }
-            matrix.translate(0.0D, variant.getPlacement() == LightVariant.Placement.OUTWARD ? 0.5D : h - 0.5D, 0.0D);
+            matrix.translate(0.0D, placement == LightVariant.Placement.OUTWARD ? 0.5D : h - 0.5D, 0.0D);
         }
         this.lights.render(matrix, this.lights.start(source), light, model, delta, packedLight, packedOverlay);
         matrix.pop();

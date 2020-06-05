@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
-public class GhostLightModel extends LightModel {
+public class GhostLightModel extends ColorLightModel {
     public GhostLightModel() {
         final ModelRenderer littleFace = new ModelRenderer(this, 40, 17);
         littleFace.setRotationPoint(0.0F, -1.0F, -2.25F);

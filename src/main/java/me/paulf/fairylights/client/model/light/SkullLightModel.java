@@ -3,7 +3,7 @@ package me.paulf.fairylights.client.model.light;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class SkullLightModel extends LightModel {
+public class SkullLightModel extends ColorLightModel {
     public SkullLightModel() {
         final ModelRenderer apertures = new ModelRenderer(this, 12, 10);
         apertures.setRotationPoint(0, -3, -2.75F);

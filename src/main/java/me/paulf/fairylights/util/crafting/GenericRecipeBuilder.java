@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.ListRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -14,7 +13,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +28,9 @@ public final class GenericRecipeBuilder {
 
     private final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer;
 
-    @Nullable
     private ItemStack output;
+
+    private char outputChar = 0;
 
     private char[] shape = new char[0];
 
@@ -43,6 +42,10 @@ public final class GenericRecipeBuilder {
 
     private final List<AuxiliaryIngredient<?>> auxiliaryIngredients = new ArrayList<>();
 
+    public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer) {
+        this(name, serializer, ItemStack.EMPTY);
+    }
+
     public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final Item item) {
         this(name, serializer, new ItemStack(item));
     }
@@ -52,13 +55,9 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output) {
-        this(name, serializer);
-        this.output = Objects.requireNonNull(output, "output");
-    }
-
-    public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer) {
         this.name = name;
         this.serializer = serializer;
+        this.output = Objects.requireNonNull(output, "output");
     }
 
     public GenericRecipeBuilder withShape(final String... shape) {
@@ -104,6 +103,11 @@ public final class GenericRecipeBuilder {
         return this;
     }
 
+    public GenericRecipeBuilder withOutput(final char key) {
+        this.outputChar = key;
+        return this;
+    }
+
     public GenericRecipeBuilder withIngredient(final char key, final Item item) {
         return this.withIngredient(key, new ItemStack(Objects.requireNonNull(item, "item"), 1));
     }
@@ -126,16 +130,6 @@ public final class GenericRecipeBuilder {
 
     public GenericRecipeBuilder withIngredient(final char key, final RegularIngredient ingredient) {
         this.ingredients.put(key, Objects.requireNonNull(ingredient, "ingredient"));
-        return this;
-    }
-
-    public GenericRecipeBuilder withAnyIngredient(final char key, final Object... objects) {
-        Objects.requireNonNull(objects, "objects");
-        final List<RegularIngredient> ingredients = new ArrayList<>(objects.length);
-        for (final Object object : objects) {
-            ingredients.add(asIngredient(object));
-        }
-        this.ingredients.put(key, new ListRegularIngredient(ingredients));
         return this;
     }
 
@@ -186,6 +180,7 @@ public final class GenericRecipeBuilder {
 
     public GenericRecipe build() {
         final RegularIngredient[] ingredients = new RegularIngredient[this.width * this.height];
+        int output = -1;
         for (int i = 0; i < this.shape.length; i++) {
             final char key = this.shape[i];
             RegularIngredient ingredient = this.ingredients.get(key);
@@ -196,11 +191,14 @@ public final class GenericRecipeBuilder {
                 ingredient = GenericRecipe.EMPTY;
             }
             ingredients[i] = ingredient;
+            if (output == -1 && key == this.outputChar) {
+                output = i;
+            }
         }
         final AuxiliaryIngredient<?>[] auxiliaryIngredients = this.auxiliaryIngredients.toArray(
             new AuxiliaryIngredient<?>[0]
         );
-        return new GenericRecipe(this.name, this.serializer, this.output, ingredients, auxiliaryIngredients, this.width, this.height);
+        return new GenericRecipe(this.name, this.serializer, this.output, ingredients, auxiliaryIngredients, this.width, this.height, output);
     }
 
     @SuppressWarnings("unchecked")

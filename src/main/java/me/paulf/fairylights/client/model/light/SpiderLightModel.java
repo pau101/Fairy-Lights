@@ -3,7 +3,7 @@ package me.paulf.fairylights.client.model.light;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class SpiderLightModel extends LightModel {
+public class SpiderLightModel extends ColorLightModel {
     public SpiderLightModel() {
         final ModelRenderer string = new ModelRenderer(this, 30, 6);
         string.addBox(-1, 0, -1, 2, 2, 2, -0.05F);

@@ -3,7 +3,6 @@ package me.paulf.fairylights.server.block;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.server.item.StandardLightVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -40,9 +39,9 @@ public class LightBlock extends HorizontalFaceBlock {
 
     private final VoxelShape floorShape, eastWallShape, westWallShape, northWallShape, southWallShape, ceilingShape;
 
-    private final StandardLightVariant variant;
+    private final LightVariant<?> variant;
 
-    public LightBlock(final Properties properties, final StandardLightVariant variant) {
+    public LightBlock(final Properties properties, final LightVariant<?> variant) {
         super(properties);
         this.variant = variant;
         final float w = this.variant.getWidth();
@@ -67,7 +66,7 @@ public class LightBlock extends HorizontalFaceBlock {
         this.setDefaultState(this.stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(FACE, AttachFace.WALL).with(LIT, true));
     }
 
-    public StandardLightVariant getVariant() {
+    public LightVariant<?> getVariant() {
         return this.variant;
     }
 

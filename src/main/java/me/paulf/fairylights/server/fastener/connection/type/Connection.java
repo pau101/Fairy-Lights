@@ -288,8 +288,6 @@ public abstract class Connection implements NBTSerializable {
 
     protected void onRemove() {}
 
-    protected void updatePrev() {}
-
     protected void onUpdateEarly() {}
 
     protected void onUpdateLate() {}
@@ -300,7 +298,6 @@ public abstract class Connection implements NBTSerializable {
 
     public final void update(final Vec3d from) {
         this.prevCatenary = this.catenary;
-        this.updatePrev();
         this.destination.update(this.world, this.fastener.getPos());
         this.destination.get(this.world, false).ifPresent(dest -> {
             this.onUpdateEarly();

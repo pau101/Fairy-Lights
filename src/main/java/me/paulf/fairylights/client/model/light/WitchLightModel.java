@@ -3,7 +3,7 @@ package me.paulf.fairylights.client.model.light;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class WitchLightModel extends LightModel {
+public class WitchLightModel extends ColorLightModel {
     public WitchLightModel() {
         final BulbBuilder bulb = this.createBulb();
         final BulbBuilder tip = bulb.createChild(15, 54);

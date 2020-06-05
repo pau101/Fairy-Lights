@@ -24,7 +24,7 @@ public abstract class BasicAuxiliaryIngredient<A> implements AuxiliaryIngredient
     }
 
     @Override
-    public final GenericRecipe.MatchResultAuxiliary matches(final ItemStack input, final ItemStack output) {
+    public final GenericRecipe.MatchResultAuxiliary matches(final ItemStack input) {
         return new GenericRecipe.MatchResultAuxiliary(this, input, this.ingredient.test(input), Collections.emptyList());
     }
 

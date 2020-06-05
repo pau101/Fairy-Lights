@@ -1,9 +1,9 @@
 package me.paulf.fairylights.server.block.entity;
 
 import me.paulf.fairylights.server.block.LightBlock;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.ConstantBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.item.LightVariant;
+import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,34 +19,39 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class LightBlockEntity extends TileEntity {
-    private Light light;
+    private Light<?> light;
+
+    private boolean on;
 
     public LightBlockEntity() {
         super(FLBlockEntities.LIGHT.get());
-        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, ConstantBehavior.on());
+        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, SimpleLightVariant.FAIRY);
     }
 
-    public Light getLight() {
+    public Light<?> getLight() {
         return this.light;
     }
 
     public void setItemStack(final ItemStack stack) {
-        this.light = new Light(0, Vec3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).map(lv -> lv.createBehavior(stack)).orElse(ConstantBehavior.on()));
+        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).orElse(SimpleLightVariant.FAIRY));
         this.markDirty();
     }
 
     private void setOn(final boolean on) {
-        this.light.setOn(on);
+        this.on = on;
+        this.light.tick(new Random(0), on); // FIXME
         this.markDirty();
     }
 
     public void interact(final World world, final BlockPos pos, final BlockState state, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
-        this.setOn(!this.light.isOn());
-        world.setBlockState(pos, state.with(LightBlock.LIT, this.light.isOn()));
+        this.setOn(!this.on);
+        world.setBlockState(pos, state.with(LightBlock.LIT, this.on));
         final SoundEvent lightSnd;
         final float pitch;
-        if (this.light.isOn()) {
+        if (this.on) {
             lightSnd = FLSounds.FEATURE_LIGHT_TURNON.get();
             pitch = 0.6F;
         } else {
@@ -70,7 +75,7 @@ public class LightBlockEntity extends TileEntity {
     public CompoundNBT write(final CompoundNBT compound) {
         super.write(compound);
         compound.put("item", this.light.getItem().write(new CompoundNBT()));
-        compound.putBoolean("on", this.light.isOn());
+        compound.putBoolean("on", this.on);
         return compound;
     }
 

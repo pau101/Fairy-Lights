@@ -3,7 +3,7 @@ package me.paulf.fairylights.client.model.light;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class OrnateLanternModel extends LightModel {
+public class OrnateLanternModel extends ColorLightModel {
     public OrnateLanternModel() {
         this.unlit.setTextureOffset(21, 0);
         this.unlit.addBox(-1, 0.5F, -1, 2, 1, 2, -0.05F);

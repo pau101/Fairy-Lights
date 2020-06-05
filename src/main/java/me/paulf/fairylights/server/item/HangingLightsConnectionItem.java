@@ -23,7 +23,7 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
     }
 
     @Override
-    public void addInformation(final ItemStack stack, @Nullable final World worldIn, final List<ITextComponent> tooltip, final ITooltipFlag flagIn) {
+    public void addInformation(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
         final CompoundNBT compound = stack.getTag();
         if (compound != null && compound.contains("pattern", NBT.TAG_LIST)) {
             final ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);

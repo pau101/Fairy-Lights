@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
-public interface LightVariant {
+public interface LightVariant<T extends LightBehavior> {
     enum Placement {
         UPRIGHT,
         OUTWARD,
@@ -18,7 +18,7 @@ public interface LightVariant {
 
     final class Holder {
         @CapabilityInject(LightVariant.class)
-        public static Capability<LightVariant> CAPABILITY;
+        public static Capability<LightVariant<?>> CAPABILITY;
     }
 
     boolean parallelsCord();
@@ -29,15 +29,15 @@ public interface LightVariant {
 
     float getHeight();
 
-    LightBehavior createBehavior(final ItemStack stack);
+    T createBehavior(final ItemStack stack);
 
     Placement getPlacement();
 
-    static LazyOptional<LightVariant> get(final ICapabilityProvider provider) {
+    static LazyOptional<LightVariant<?>> get(final ICapabilityProvider provider) {
         return provider.getCapability(Holder.CAPABILITY);
     }
 
-    static ICapabilityProvider provider(final LightVariant variant) {
+    static ICapabilityProvider provider(final LightVariant<?> variant) {
         return Holder.CAPABILITY == null ? new EmptyProvider() : new SimpleProvider<>(Holder.CAPABILITY, variant);
     }
 }

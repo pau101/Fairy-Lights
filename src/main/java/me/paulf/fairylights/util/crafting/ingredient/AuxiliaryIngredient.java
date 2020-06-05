@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import me.paulf.fairylights.util.Utils;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -19,9 +20,9 @@ public interface AuxiliaryIngredient<A> extends GenericIngredient<AuxiliaryIngre
 
     void consume(A accumulator, ItemStack ingredient);
 
-    boolean finish(A accumulator, ItemStack output);
+    boolean finish(A accumulator, CompoundNBT nbt);
 
-    default boolean process(final Multimap<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> map, final ItemStack output) {
+    default boolean process(final Multimap<AuxiliaryIngredient<?>, GenericRecipe.MatchResultAuxiliary> map, final CompoundNBT nbt) {
         final Collection<GenericRecipe.MatchResultAuxiliary> results = map.get(this);
         if (results.isEmpty() && this.isRequired()) {
             return true;
@@ -30,7 +31,7 @@ public interface AuxiliaryIngredient<A> extends GenericIngredient<AuxiliaryIngre
         for (final GenericRecipe.MatchResultAuxiliary result : results) {
             this.consume(ax, result.getInput());
         }
-        return this.finish(ax, output);
+        return this.finish(ax, nbt);
     }
 
     @Override

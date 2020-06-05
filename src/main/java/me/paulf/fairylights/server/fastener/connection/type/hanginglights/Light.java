@@ -3,9 +3,7 @@ package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
 import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.server.item.StandardLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
-import me.paulf.fairylights.util.CubicBezier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
@@ -16,11 +14,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public final class Light extends HangingFeature<Light> {
-    private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
-
-    private static final int NORMAL_LIGHT = -1;
-
+public final class Light<T extends LightBehavior> extends HangingFeature {
     private static final int SWAY_RATE = 10;
 
     private static final int SWAY_PEAK_COUNT = 5;
@@ -29,9 +23,9 @@ public final class Light extends HangingFeature<Light> {
 
     private final ItemStack item;
 
-    private final LightBehavior behavior;
+    private final LightVariant<T> variant;
 
-    private boolean on;
+    private final T behavior;
 
     private int sway;
 
@@ -43,33 +37,23 @@ public final class Light extends HangingFeature<Light> {
 
     private int lastJingledTick = -1;
 
-    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final LightBehavior behavior) {
+    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final LightVariant<T> variant) {
         super(index, point, yaw, pitch, 0.0F);
         this.item = item;
-        this.behavior = behavior;
+        this.variant = variant;
+        this.behavior = variant.createBehavior(item);
     }
 
-    public float getBrightness(final float delta) {
-        return this.on ? this.behavior.get(delta) : 0.0F;
+    public T getBehavior() {
+        return this.behavior;
     }
 
     public ItemStack getItem() {
         return this.item;
     }
 
-    public LightVariant getVariant() {
-        return LightVariant.get(this.item).orElse(StandardLightVariant.FAIRY);
-    }
-
-    @Override
-    public void inherit(final Light parent) {
-        super.inherit(parent);
-        this.behavior.inherit(parent.behavior);
-        this.swayDirection = parent.swayDirection;
-        this.swaying = parent.swaying;
-        this.sway = parent.sway;
-        this.tick = parent.tick;
-        this.lastJingledTick = parent.lastJingledTick;
+    public LightVariant<T> getVariant() {
+        return this.variant;
     }
 
     public void jingle(final World world, final Vec3d origin, final int note) {
@@ -116,21 +100,9 @@ public final class Light extends HangingFeature<Light> {
         this.swaying = false;
     }
 
-    public void setOn(final boolean on) {
-        this.on = on;
-    }
-
-    public boolean isOn() {
-        return this.on;
-    }
-
-    public void tick(final Random rng) {
-        this.prevYaw = this.yaw;
-        this.prevPitch = this.pitch;
-        this.prevRoll = this.roll;
-        if (this.on) {
-            this.behavior.tick(rng);
-        }
+    public void tick(final Random rng, final boolean powered) {
+        super.tick(rng);
+        this.behavior.tick(rng, powered);
         if (this.swaying) {
             if (this.sway >= SWAY_CYCLE) {
                 this.stopSwaying();

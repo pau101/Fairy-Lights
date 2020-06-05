@@ -5,10 +5,14 @@ import me.paulf.fairylights.server.fastener.connection.Feature;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.util.math.Vec3d;
 
-public abstract class HangingFeature<F extends HangingFeature<F>> implements Feature {
+import java.util.Random;
+
+public abstract class HangingFeature implements Feature {
     protected final int index;
 
-    protected final Vec3d point;
+    protected Vec3d point;
+
+    protected Vec3d prevPoint;
 
     protected float yaw, pitch, roll;
 
@@ -16,10 +20,17 @@ public abstract class HangingFeature<F extends HangingFeature<F>> implements Fea
 
     public HangingFeature(final int index, final Vec3d point, final float yaw, final float pitch, final float roll) {
         this.index = index;
-        this.point = point;
+        this.point = this.prevPoint = point;
         this.prevYaw = this.yaw = yaw;
         this.prevPitch = this.pitch = pitch;
         this.prevRoll = this.roll = roll;
+    }
+
+    public void set(final Vec3d point, final float yaw, final float pitch) {
+        this.prevPoint = this.point;
+        this.point = point;
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
     @Override
@@ -27,8 +38,8 @@ public abstract class HangingFeature<F extends HangingFeature<F>> implements Fea
         return this.index;
     }
 
-    public final Vec3d getPoint() {
-        return this.point;
+    public final Vec3d getPoint(final float delta) {
+        return this.point.subtract(this.prevPoint).scale(delta).add(this.prevPoint);
     }
 
     public final float getYaw() {
@@ -44,11 +55,11 @@ public abstract class HangingFeature<F extends HangingFeature<F>> implements Fea
     }
 
     public final float getYaw(final float t) {
-        return (float) Mth.lerpAngle(this.prevYaw, this.yaw, t);
+        return Mth.lerpAngle(this.prevYaw, this.yaw, t);
     }
 
     public final float getPitch(final float t) {
-        return (float) Mth.lerpAngle(this.prevPitch, this.pitch, t);
+        return Mth.lerpAngle(this.prevPitch, this.pitch, t);
     }
 
     public final float getRoll(final float t) {
@@ -59,10 +70,10 @@ public abstract class HangingFeature<F extends HangingFeature<F>> implements Fea
         return this.point.add(fastener.getConnectionPoint());
     }
 
-    public void inherit(final F feature) {
-        this.prevYaw = feature.yaw;
-        this.prevPitch = feature.pitch;
-        this.prevRoll = feature.roll;
+    public void tick(final Random rng) {
+        this.prevYaw = this.yaw;
+        this.prevPitch = this.pitch;
+        this.prevRoll = this.roll;
     }
 
     public abstract double getWidth();

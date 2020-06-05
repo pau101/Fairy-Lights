@@ -6,7 +6,7 @@ import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.FeatureType;
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
 import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.server.item.StandardLightVariant;
+import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public final class HangingLightsConnection extends HangingFeatureConnection<Light> {
+public final class HangingLightsConnection extends HangingFeatureConnection<Light<?>> {
     private static final int MAX_LIGHT = 15;
 
     private static final int LIGHT_UPDATE_WAIT = 400;
@@ -127,8 +127,8 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
         this.wasPlaying = playing;
         final boolean on = !this.isDynamic() && this.isOn;
-        for (final Light light : this.features) {
-            light.tick(this.world.rand);
+        for (final Light<?> light : this.features) {
+            light.tick(this.world.rand, on);
         }
         if (on && this.isOrigin() && this.features.length > 0) {
             this.lightUpdateTime++;
@@ -148,16 +148,16 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    protected Light[] createFeatures(final int length) {
-        return new Light[length];
+    protected Light<?>[] createFeatures(final int length) {
+        return new Light<?>[length];
     }
 
     @Override
-    protected Light createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
+    protected Light<?> createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
         final boolean on = !this.isDynamic() && this.isOn;
         final ItemStack lightData = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
-        final Light light = new Light(index, point, yaw, pitch, lightData, LightVariant.get(lightData).map(lv -> lv.createBehavior(lightData)).orElse(ConstantBehavior.on()));
-        light.setOn(on);
+        final Light<? extends LightBehavior> light = this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY));
+        light.tick(this.world.rand, on);
         if (on && this.isOrigin()) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
@@ -166,14 +166,18 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         return light;
     }
 
+    private <T extends LightBehavior> Light<T> createLight(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack stack, final LightVariant<T> variant) {
+        return new Light<>(index, point, yaw, pitch, stack, variant);
+    }
+
     @Override
     protected float getFeatureSpacing() {
         if (this.pattern.isEmpty()) {
-            return StandardLightVariant.FAIRY.getSpacing();
+            return SimpleLightVariant.FAIRY.getSpacing();
         }
         float spacing = 0;
         for (final ItemStack patternLightData : this.pattern) {
-            final float lightSpacing = LightVariant.get(patternLightData).orElse(StandardLightVariant.FAIRY).getSpacing();
+            final float lightSpacing = LightVariant.get(patternLightData).orElse(SimpleLightVariant.FAIRY).getSpacing();
             if (lightSpacing > spacing) {
                 spacing = lightSpacing;
             }

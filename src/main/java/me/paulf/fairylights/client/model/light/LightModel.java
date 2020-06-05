@@ -3,7 +3,7 @@ package me.paulf.fairylights.client.model.light;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.item.LightItem;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
 import me.paulf.fairylights.util.AABBBuilder;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
@@ -14,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
 
-public abstract class LightModel extends Model {
+public abstract class LightModel<T extends LightBehavior> extends Model {
     protected final ModelRenderer lit;
 
     protected final ModelRenderer litTint;
@@ -23,9 +23,13 @@ public abstract class LightModel extends Model {
 
     protected final ModelRenderer unlit;
 
-    private int color;
-
     protected float brightness;
+
+    protected float red;
+
+    protected float green;
+
+    protected float blue;
 
     @Nullable
     private AxisAlignedBB bounds;
@@ -41,7 +45,7 @@ public abstract class LightModel extends Model {
     }
 
     protected BulbBuilder createBulb() {
-        return new BulbBuilder(this.litTint, this.litTintGlow);
+        return new BulbBuilder(this, this.litTint, this.litTintGlow);
     }
 
     public AxisAlignedBB getBounds() {
@@ -56,9 +60,7 @@ public abstract class LightModel extends Model {
         return this.bounds;
     }
 
-    public void animate(final Light light, final float delta) {
-        this.brightness = light.getBrightness(delta);
-        this.color = LightItem.getColorValue(LightItem.getLightColor(light.getItem()));
+    public void animate(final Light<T> light, final float delta) {
     }
 
     @Override
@@ -66,18 +68,12 @@ public abstract class LightModel extends Model {
         this.unlit.render(matrix, builder, light, overlay, r, g, b, a);
         final int emissiveLight = (int) (this.brightness * 15.0F * 16.0F) | light & (255 << 16);
         this.lit.render(matrix, builder, emissiveLight, overlay, r, g, b, a);
-        final float lr = r * ((this.color >> 16 & 0xFF) / 255.0F);
-        final float lg = g * ((this.color >> 8 & 0xFF) / 255.0F);
-        final float lb = b * ((this.color & 0xFF) / 255.0F);
-        this.litTint.render(matrix, builder, emissiveLight, overlay, lr, lg, lb, a);
+        this.litTint.render(matrix, builder, emissiveLight, overlay, r * this.red, g * this.green, b * this.blue, a);
     }
 
     public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         final int emissiveLight = (int) (this.brightness * 15.0F * 16.0F) | light & (255 << 16);
-        final float lr = r * ((this.color >> 16 & 0xFF) / 255.0F);
-        final float lg = g * ((this.color >> 8 & 0xFF) / 255.0F);
-        final float lb = b * ((this.color & 0xFF) / 255.0F);
-        this.litTintGlow.render(matrix, builder, emissiveLight, overlay, lr, lg, lb, this.brightness * 0.15F + 0.1F);
+        this.litTintGlow.render(matrix, builder, emissiveLight, overlay, r * this.red, g * this.green, b * this.blue, this.brightness * 0.15F + 0.1F);
     }
 
     // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
@@ -137,11 +133,13 @@ public abstract class LightModel extends Model {
         }
     }
 
-    class BulbBuilder {
+    static class BulbBuilder {
+        final LightModel<?> model;
         ModelRenderer base;
         ModelRenderer glow;
 
-        public BulbBuilder(final ModelRenderer base, final ModelRenderer glow) {
+        public BulbBuilder(final LightModel<?> model, final ModelRenderer base, final ModelRenderer glow) {
+            this.model = model;
             this.base = base;
             this.glow = glow;
         }
@@ -169,11 +167,11 @@ public abstract class LightModel extends Model {
         }
 
         BulbBuilder createChild(final int u, final int v, final ModelRendererFactory factory) {
-            final ModelRenderer base = factory.create(LightModel.this, u, v);
-            final ModelRenderer glow = factory.create(LightModel.this, u, v);
+            final ModelRenderer base = factory.create(this.model, u, v);
+            final ModelRenderer glow = factory.create(this.model, u, v);
             this.base.addChild(base);
             this.glow.addChild(glow);
-            return new BulbBuilder(base, glow);
+            return new BulbBuilder(this.model, base, glow);
         }
 
         public void setPosition(final float x, final float y, final float z) {

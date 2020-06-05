@@ -9,7 +9,6 @@ import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.pennant.Pennant;
 import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.styledstring.Style;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
@@ -43,11 +42,10 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
     protected void render(final PennantBuntingConnection conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
         final Pennant[] currLights = conn.getFeatures();
-        final Pennant[] prevLights = conn.getPrevFeatures();
-        if (currLights != null && prevLights != null) {
+        if (currLights != null) {
             final FontRenderer font = Minecraft.getInstance().fontRenderer;
             final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
-            final int count = Math.min(currLights.length, prevLights.length);
+            final int count = currLights.length;
             if (count == 0) {
                 return;
             }
@@ -57,14 +55,13 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
             }
             final int offset = (count - text.length()) / 2;
             for (int i = 0; i < count; i++) {
-                final Pennant prevPennant = prevLights[i];
                 final Pennant currPennant = currLights[i];
                 final int color = currPennant.getColor();
                 final float r = ((color >> 16) & 0xFF) / 255.0F;
                 final float g = ((color >> 8) & 0xFF) / 255.0F;
                 final float b = (color & 0xFF) / 255.0F;
                 final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(MODELS.getOrDefault(currPennant.getItem(), DEFAULT_MODEL));
-                final Vec3d pos = Mth.lerp(prevPennant.getPoint(), currPennant.getPoint(), delta);
+                final Vec3d pos = currPennant.getPoint(delta);
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);
                 matrix.rotate(Vector3f.YP.rotation(-currPennant.getYaw(delta)));

@@ -8,7 +8,6 @@ import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.type.letter.Letter;
 import me.paulf.fairylights.server.fastener.connection.type.letter.LetterBuntingConnection;
-import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -33,34 +32,30 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
     @Override
     protected void render(final LetterBuntingConnection conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
-        final Letter[] currLetters = conn.getLetters();
-        final Letter[] prevLetters = conn.getPrevLetters();
-        if (currLetters == null || prevLetters == null) {
+        final Letter[] letters = conn.getLetters();
+        if (letters == null) {
             return;
         }
-        final int count = Math.min(currLetters.length, prevLetters.length);
-        ;
+        final int count = letters.length;
         if (count == 0) {
             return;
         }
         final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
-        for (int i = 0; i < count; i++) {
-            final Letter prevPennant = prevLetters[i];
-            final Letter currPennant = currLetters[i];
-            final ResourceLocation path = MODELS.get(currPennant.getLetter());
+        for (final Letter letter : letters) {
+            final ResourceLocation path = MODELS.get(letter.getLetter());
             if (path == null) {
                 continue;
             }
-            final int color = StyledString.getColor(currPennant.getStyle().getColor());
+            final int color = StyledString.getColor(letter.getStyle().getColor());
             final float r = ((color >> 16) & 0xFF) / 255.0F;
             final float g = ((color >> 8) & 0xFF) / 255.0F;
             final float b = (color & 0xFF) / 255.0F;
-            final Vec3d pos = Mth.lerp(prevPennant.getPoint(), currPennant.getPoint(), delta);
+            final Vec3d pos = letter.getPoint(delta);
             matrix.push();
             matrix.translate(pos.x, pos.y, pos.z);
-            matrix.rotate(Vector3f.YP.rotation(-currPennant.getYaw(delta)));
-            matrix.rotate(Vector3f.ZP.rotation(currPennant.getPitch(delta)));
-            matrix.rotate(Vector3f.XP.rotation(currPennant.getRoll(delta)));
+            matrix.rotate(Vector3f.YP.rotation(-letter.getYaw(delta)));
+            matrix.rotate(Vector3f.ZP.rotation(letter.getPitch(delta)));
+            matrix.rotate(Vector3f.XP.rotation(letter.getRoll(delta)));
             matrix.translate(-0.5F, -1.0F - 0.5F / 16.0F, -0.5F);
             FastenerRenderer.renderBakedModel(path, matrix, buf, r, g, b, packedLight, packedOverlay);
             matrix.pop();

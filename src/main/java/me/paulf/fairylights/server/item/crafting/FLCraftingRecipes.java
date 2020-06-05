@@ -11,7 +11,6 @@ import me.paulf.fairylights.util.crafting.GenericRecipeBuilder;
 import me.paulf.fairylights.util.crafting.ingredient.BasicAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.InertListAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.item.DyeColor;
@@ -32,7 +31,6 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.Arrays;
 import java.util.List;
@@ -92,7 +90,11 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> METEOR_LIGHT = REG.register("crafting_special_meteor_light", makeSerializer(FLCraftingRecipes::createMeteorLight));
 
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> LIGHT_TWINKLE = REG.register("crafting_special_light_twinkle", makeSerializer(FLCraftingRecipes::createLightTwinkle));
+
     public static final Tag<Item> LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights"));
+
+    public static final Tag<Item> TWINKLING_LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "twinkling_lights"));
 
     public static final Tag<Item> PENNANTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"));
 
@@ -112,8 +114,8 @@ public final class FLCraftingRecipes {
         }
 
         @Override
-        public void matched(final ItemStack ingredient, final ItemStack output) {
-            LightItem.setLightColor(output, OreDictUtils.getDyeMetadata(ingredient));
+        public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
+            LightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
         }
     };
 
@@ -121,26 +123,24 @@ public final class FLCraftingRecipes {
         return () -> new SpecialRecipeSerializer<>(factory);
     }
 
-    private static GenericRecipe createHangingLights(final ResourceLocation name) {
-        return new GenericRecipeBuilder(name, HANGING_LIGHTS, FLItems.HANGING_LIGHTS.get())
-            .withShape("I-I")
-            .withIngredient('I', Tags.Items.INGOTS_IRON)
-            .withIngredient('-', Tags.Items.STRING)
-            .withAuxiliaryIngredient(new LightIngredient(true))
-            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(Tags.Items.DUSTS_GLOWSTONE), false, 1) {
+    private static GenericRecipe createLightTwinkle(final ResourceLocation name) {
+        return new GenericRecipeBuilder(name, LIGHT_TWINKLE)
+            .withShape("L")
+            .withIngredient('L', TWINKLING_LIGHTS).withOutput('L')
+            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(Tags.Items.DUSTS_GLOWSTONE), true, 1) {
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
                     return useInputsForTagBool(output, "twinkle", true) ? super.getInput(output) : ImmutableList.of();
                 }
 
                 @Override
-                public void present(final ItemStack output) {
-                    output.getOrCreateTag().putBoolean("twinkle", true);
+                public void present(final CompoundNBT nbt) {
+                    nbt.putBoolean("twinkle", true);
                 }
 
                 @Override
-                public void absent(final ItemStack output) {
-                    output.getOrCreateTag().putBoolean("twinkle", false);
+                public void absent(final CompoundNBT nbt) {
+                    nbt.putBoolean("twinkle", false);
                 }
 
                 @Override
@@ -149,6 +149,15 @@ public final class FLCraftingRecipes {
                     tooltip.add(Utils.formatRecipeTooltip("recipe.hangingLights.glowstone"));
                 }
             })
+            .build();
+    }
+
+    private static GenericRecipe createHangingLights(final ResourceLocation name) {
+        return new GenericRecipeBuilder(name, HANGING_LIGHTS, FLItems.HANGING_LIGHTS.get())
+            .withShape("I-I")
+            .withIngredient('I', Tags.Items.INGOTS_IRON)
+            .withIngredient('-', Tags.Items.STRING)
+            .withAuxiliaryIngredient(new LightIngredient(true))
             .build();
     }
 
@@ -184,53 +193,28 @@ public final class FLCraftingRecipes {
                         return ImmutableList.of();
                     }
                     stack.setCount(1);
-                    compound.putBoolean("twinkle", false);
                     return ImmutableList.of(ImmutableList.of(stack));
                 }
 
                 @Override
-                public void matched(final ItemStack ingredient, final ItemStack output) {
+                public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
                     final CompoundNBT compound = ingredient.getTag();
                     if (compound != null) {
-                        output.setTag(compound.copy());
+                        nbt.merge(compound);
                     }
                 }
             })
-            .withAuxiliaryIngredient(new InertListAuxiliaryIngredient(true,
-                new LightIngredient(false) {
-                    @Override
-                    public ImmutableList<ItemStack> getInputs() {
-                        return ImmutableList.of();
-                    }
-
-                    @Override
-                    public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                        return ImmutableList.of();
-                    }
-                },
-                new BasicAuxiliaryIngredient<MutableInt>(Ingredient.fromTag(Tags.Items.DUSTS_GLOWSTONE), false, 1) {
-                    @Override
-                    public MutableInt accumulator() {
-                        return new MutableInt();
-                    }
-
-                    @Override
-                    public void consume(final MutableInt count, final ItemStack ingredient) {
-                        count.increment();
-                    }
-
-                    @Override
-                    public boolean finish(final MutableInt count, final ItemStack output) {
-                        if (count.intValue() > 0) {
-                            if (output.getOrCreateTag().getBoolean("twinkle")) {
-                                return true;
-                            }
-                            output.getOrCreateTag().putBoolean("twinkle", true);
-                        }
-                        return false;
-                    }
+            .withAuxiliaryIngredient(new LightIngredient(true) {
+                @Override
+                public ImmutableList<ItemStack> getInputs() {
+                    return ImmutableList.of();
                 }
-            ))
+
+                @Override
+                public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
+                    return ImmutableList.of();
+                }
+            })
             .build();
     }
 
@@ -256,7 +240,6 @@ public final class FLCraftingRecipes {
             stack.setTag(compound);
         }
         compound.put("pattern", lights);
-        compound.putBoolean("twinkle", false);
         return stack;
     }
 
@@ -282,8 +265,8 @@ public final class FLCraftingRecipes {
                 }
 
                 @Override
-                public void matched(final ItemStack ingredient, final ItemStack output) {
-                    LightItem.setLightColor(output, OreDictUtils.getDyeMetadata(ingredient));
+                public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
+                    LightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
                 }
             })
             .build();
@@ -322,10 +305,10 @@ public final class FLCraftingRecipes {
                 }
 
                 @Override
-                public void matched(final ItemStack ingredient, final ItemStack output) {
+                public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
                     final CompoundNBT compound = ingredient.getTag();
                     if (compound != null) {
-                        output.setTag(compound.copy());
+                        nbt.merge(compound);
                     }
                 }
             })
@@ -544,9 +527,9 @@ public final class FLCraftingRecipes {
         }
 
         @Override
-        public boolean finish(final ListNBT pattern, final ItemStack output) {
+        public boolean finish(final ListNBT pattern, final CompoundNBT nbt) {
             if (pattern.size() > 0) {
-                output.setTagInfo("pattern", pattern);
+                nbt.put("pattern", pattern);
             }
             return false;
         }
@@ -601,10 +584,10 @@ public final class FLCraftingRecipes {
         }
 
         @Override
-        public boolean finish(final ListNBT pattern, final ItemStack output) {
+        public boolean finish(final ListNBT pattern, final CompoundNBT nbt) {
             if (pattern.size() > 0) {
-                output.setTagInfo("pattern", pattern);
-                output.setTagInfo("text", StyledString.serialize(new StyledString()));
+                nbt.put("pattern", pattern);
+                nbt.put("text", StyledString.serialize(new StyledString()));
             }
             return false;
         }

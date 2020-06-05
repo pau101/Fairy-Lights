@@ -1,6 +1,5 @@
 package me.paulf.fairylights.server.fastener.connection.type.letter;
 
-import com.google.common.base.MoreObjects;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.server.fastener.Fastener;
@@ -45,8 +44,6 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     private Letter[] letters = new Letter[0];
 
-    private Letter[] prevLetters;
-
     public LetterBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
         super(world, fastener, uuid, destination, isOrigin, compound, drop);
     }
@@ -63,10 +60,6 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     public Letter[] getLetters() {
         return this.letters;
-    }
-
-    public Letter[] getPrevLetters() {
-        return MoreObjects.firstNonNull(this.prevLetters, this.letters);
     }
 
     @Override
@@ -89,10 +82,9 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    protected void onUpdateEarly() {
-        this.prevLetters = this.letters;
+    protected void onUpdateLate() {
         for (final Letter letter : this.letters) {
-            letter.tick();
+            letter.tick(this.world.rand);
         }
     }
 
@@ -103,7 +95,6 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     private void updateLetters() {
         if (this.text.isEmpty()) {
-            this.prevLetters = this.letters;
             this.letters = new Letter[0];
         } else {
             final Catenary catenary = this.getCatenary();
@@ -125,11 +116,11 @@ public final class LetterBuntingConnection extends Connection implements Lettere
                 pointOffsets[i] += offset;
             }
             int pointIdx = 0;
-            this.prevLetters = this.letters;
-            final boolean hasPrevLetters = this.prevLetters != null;
+            final Letter[] prevLetters = this.letters;
             final List<Letter> letters = new ArrayList<>(this.text.length());
             final Catenary.SegmentIterator it = catenary.iterator();
             float distance = 0;
+            // FIXME use visit function
             while (it.next()) {
                 final float length = it.getLength();
                 for (int n = pointIdx; n < textLen; n++) {
@@ -137,9 +128,11 @@ public final class LetterBuntingConnection extends Connection implements Lettere
                     if (pointOffset < distance + length) {
                         final float t = (pointOffset - distance) / length;
                         final Vec3d point = new Vec3d(it.getX(t), it.getY(t), it.getZ(t));
-                        final Letter letter = new Letter(pointIdx, point, it.getYaw(), it.getPitch(), SYMBOLS, this.text.charAt(pointIdx), this.text.styleAt(pointIdx));
-                        if (hasPrevLetters && pointIdx < this.prevLetters.length) {
-                            letter.inherit(this.prevLetters[pointIdx]);
+                        final Letter letter;
+                        if (prevLetters != null && pointIdx < prevLetters.length) {
+                            letter = prevLetters[pointIdx];
+                        } else {
+                            letter = new Letter(pointIdx, point, it.getYaw(), it.getPitch(), SYMBOLS, this.text.charAt(pointIdx), this.text.styleAt(pointIdx));
                         }
                         letters.add(letter);
                         pointIdx++;
