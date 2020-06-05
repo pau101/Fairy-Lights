@@ -8,8 +8,8 @@ import me.paulf.fairylights.server.fastener.connection.PlayerAction;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeatureConnection;
 import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.item.ColorLightItem;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.NBTSerializable;
 import me.paulf.fairylights.util.OreDictUtils;
@@ -89,7 +89,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     protected void onUpdateLate() {
         super.onUpdateLate();
         for (final Pennant light : this.features) {
-            light.tick(this.world.rand);
+            light.tick(this.world);
         }
     }
 
@@ -103,7 +103,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         final Pennant pennant = new Pennant(index, point, yaw, pitch);
         if (this.pattern.size() > 0) {
             final Entry e = this.pattern.get(index % this.pattern.size());
-            pennant.setColor(LightItem.getColorValue(e.getColor()));
+            pennant.setColor(ColorLightItem.getColorValue(e.getColor()));
             pennant.setItem(e.item);
         }
         return pennant;

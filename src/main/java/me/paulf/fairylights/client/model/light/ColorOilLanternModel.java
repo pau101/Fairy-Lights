@@ -1,11 +1,9 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.OilLanternBehavior;
 import me.paulf.fairylights.util.Mth;
 
-public class OilLanternModel extends LightModel<OilLanternBehavior> {
-    public OilLanternModel() {
+public class ColorOilLanternModel extends ColorLightModel {
+    public ColorOilLanternModel() {
         this.unlit.rotateAngleY = -Mth.PI / 2.0F;
         this.unlit.setTextureOffset(10, 6);
         this.unlit.addBox(-1, -0.5F, -1, 2, 2, 2, -0.05F);
@@ -21,21 +19,10 @@ public class OilLanternModel extends LightModel<OilLanternBehavior> {
         this.unlit.addBox(-0.5F, -9, 2.5F, 1, 9, 1);
         this.unlit.setTextureOffset(38, 0);
         this.unlit.addBox(-0.5F, -0.5F, -3, 1, 1, 6);
-
-        // glass
-        this.lit.setTextureOffset(63, 16);
-        this.lit.addBox(-2, -7.5F, -2, 4, 6, 4);
-        this.lit.setTextureOffset(79, 17);
-        this.lit.addBox(-1, -1.5F, -1, 2, 1, 2);
-
-        // torch
-        this.lit.setTextureOffset(79, 20);
-        this.lit.addBox(-1.0F, -7.5F, -1.0F, 2.0F, 4.0F, 2.0F);
-    }
-
-    @Override
-    public void animate(final Light<OilLanternBehavior> light, final float delta) {
-        super.animate(light, delta);
-        this.brightness = light.getBehavior().getBrightness(delta);
+        final BulbBuilder bulb = this.createBulb();
+        bulb.setUV(0, 17);
+        bulb.addBox(-2, -7.5F, -2, 4, 6, 4);
+        bulb.setUV(6, 0);
+        bulb.addBox(-1, -1.5F, -1, 2, 1, 2);
     }
 }

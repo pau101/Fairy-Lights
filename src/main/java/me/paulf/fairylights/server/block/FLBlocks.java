@@ -46,6 +46,8 @@ public final class FLBlocks {
 
     public static final RegistryObject<LightBlock> METEOR_LIGHT = REG.register("meteor_light", FLBlocks.createLight(SimpleLightVariant.METEOR));
 
+    public static final RegistryObject<LightBlock> TORCH_LANTERN = REG.register("torch_lantern", FLBlocks.createLight(SimpleLightVariant.TORCH_LANTERN));
+
     private static Supplier<LightBlock> createLight(final LightVariant<?> variant) {
         return () -> new LightBlock(Block.Properties.create(Material.MISCELLANEOUS).lightValue(15).notSolid(), variant);
     }

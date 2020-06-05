@@ -1,6 +1,7 @@
 package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 
-import java.util.Random;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class MeteorLightBehavior implements ColorLightBehavior {
     private final float red;
@@ -33,8 +34,8 @@ public class MeteorLightBehavior implements ColorLightBehavior {
     }
 
     @Override
-    public void tick(final Random rng, final boolean powered) {
-        this.logic.tick(rng, powered);
+    public void tick(final World world, final Vec3d origin, final Light<?> light, final boolean powered) {
+        this.logic.tick(world.rand, powered);
     }
 
     public float getProgress(final float delta) {

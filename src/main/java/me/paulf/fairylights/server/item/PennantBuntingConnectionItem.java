@@ -59,7 +59,7 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
         if (this.isInGroup(tab)) {
             for (final DyeColor color : DyeColor.values()) {
                 final ItemStack stack = new ItemStack(this);
-                LightItem.setLightColor(stack, color);
+                ColorLightItem.setLightColor(stack, color);
                 subItems.add(FLCraftingRecipes.makePennant(stack, color));
             }
         }

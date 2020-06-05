@@ -14,8 +14,8 @@ import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
 import me.paulf.fairylights.server.entity.FLEntities;
+import me.paulf.fairylights.server.item.ColorLightItem;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.server.net.clientbound.JingleMessage;
 import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
 import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
@@ -154,7 +154,7 @@ public final class ClientProxy extends ServerProxy {
                 final ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
                     final CompoundNBT tag = ItemStack.read(tagList.getCompound((index - 1) % tagList.size())).getTag();
-                    return LightItem.getColorValue(tag == null ? DyeColor.YELLOW : DyeColor.byId(tag.getByte("color")));
+                    return ColorLightItem.getColorValue(tag == null ? DyeColor.YELLOW : DyeColor.byId(tag.getByte("color")));
                 }
             }
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
@@ -163,7 +163,7 @@ public final class ClientProxy extends ServerProxy {
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());
         colors.register((stack, index) -> {
-            return LightItem.getColorValue(LightItem.getLightColor(stack));
+            return ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
         }, FLItems.TINSEL.get());
         colors.register((stack, index) -> {
             if (index == 0) {
@@ -172,7 +172,7 @@ public final class ClientProxy extends ServerProxy {
             if (stack.hasTag()) {
                 final ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return LightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
+                    return ColorLightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
                 }
             }
             return 0xFFFFFFFF;
@@ -216,6 +216,6 @@ public final class ClientProxy extends ServerProxy {
     }
 
     private static int secondLayerColor(final ItemStack stack, final int index) {
-        return index == 0 ? 0xFFFFFF : LightItem.getColorValue(LightItem.getLightColor(stack));
+        return index == 0 ? 0xFFFFFF : ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
     }
 }

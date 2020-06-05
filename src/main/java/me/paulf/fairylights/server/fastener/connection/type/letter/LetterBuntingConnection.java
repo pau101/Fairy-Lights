@@ -84,7 +84,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     @Override
     protected void onUpdateLate() {
         for (final Letter letter : this.letters) {
-            letter.tick(this.world.rand);
+            letter.tick(this.world);
         }
     }
 

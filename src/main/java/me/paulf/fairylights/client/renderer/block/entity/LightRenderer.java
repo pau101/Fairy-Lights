@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
+import me.paulf.fairylights.client.model.light.ColorOilLanternModel;
 import me.paulf.fairylights.client.model.light.FairyLightModel;
 import me.paulf.fairylights.client.model.light.FlowerLightModel;
 import me.paulf.fairylights.client.model.light.GhostLightModel;
@@ -29,6 +30,7 @@ import net.minecraft.client.renderer.RenderType;
 
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class LightRenderer {
@@ -43,7 +45,7 @@ public class LightRenderer {
         .put(SimpleLightVariant.ORB, LightModelProvider.of(new OrbLanternModel()))
         .put(SimpleLightVariant.FLOWER, LightModelProvider.of(new FlowerLightModel()))
         .put(SimpleLightVariant.ORNATE, LightModelProvider.of(new OrnateLanternModel()))
-        .put(SimpleLightVariant.OIL, LightModelProvider.of(new OilLanternModel()))
+        .put(SimpleLightVariant.OIL, LightModelProvider.of(new ColorOilLanternModel()))
         .put(SimpleLightVariant.JACK_O_LANTERN, LightModelProvider.of(new JackOLanternLightModel()))
         .put(SimpleLightVariant.SKULL, LightModelProvider.of(new SkullLightModel()))
         .put(SimpleLightVariant.GHOST, LightModelProvider.of(new GhostLightModel()))
@@ -55,6 +57,7 @@ public class LightRenderer {
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
         ))
         .put(SimpleLightVariant.METEOR, LightModelProvider.of(new MeteorLightModel()))
+        .put(SimpleLightVariant.TORCH_LANTERN, LightModelProvider.of(new OilLanternModel()))
         .build();
 
     public Data start(final IRenderTypeBuffer source) {
@@ -83,6 +86,10 @@ public class LightRenderer {
 
         static <T extends LightBehavior> LightModelProvider<T> of(final LightModel<T> model) {
             return i -> model;
+        }
+
+        static <T extends LightBehavior> LightModelProvider<T> of(final Supplier<LightModel<T>> model) {
+            return i -> model.get();
         }
 
         static <T extends LightBehavior, D> LightModelProvider<T> of(final D data, final BiFunction<? super D, Integer, LightModel<T>> function) {

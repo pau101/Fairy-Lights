@@ -4,8 +4,7 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.Feature;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.Random;
+import net.minecraft.world.World;
 
 public abstract class HangingFeature implements Feature {
     protected final int index;
@@ -67,10 +66,14 @@ public abstract class HangingFeature implements Feature {
     }
 
     public final Vec3d getAbsolutePoint(final Fastener<?> fastener) {
-        return this.point.add(fastener.getConnectionPoint());
+        return this.getAbsolutePoint(fastener.getConnectionPoint());
     }
 
-    public void tick(final Random rng) {
+    public final Vec3d getAbsolutePoint(final Vec3d origin) {
+        return this.point.add(origin);
+    }
+
+    public void tick(final World world) {
         this.prevYaw = this.yaw;
         this.prevPitch = this.pitch;
         this.prevRoll = this.roll;

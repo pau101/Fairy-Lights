@@ -15,7 +15,7 @@ public class PennantItem extends Item {
 
     @Override
     public ITextComponent getDisplayName(final ItemStack stack) {
-        return Utils.formatColored(LightItem.getLightColor(stack), super.getDisplayName(stack));
+        return Utils.formatColored(ColorLightItem.getLightColor(stack), super.getDisplayName(stack));
     }
 
     @Override
@@ -23,7 +23,7 @@ public class PennantItem extends Item {
         if (this.isInGroup(tab)) {
             for (final DyeColor dye : DyeColor.values()) {
                 final ItemStack stack = new ItemStack(this);
-                LightItem.setLightColor(stack, dye);
+                ColorLightItem.setLightColor(stack, dye);
                 subItems.add(stack);
             }
         }

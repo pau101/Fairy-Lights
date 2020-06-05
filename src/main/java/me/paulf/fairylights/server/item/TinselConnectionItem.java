@@ -15,7 +15,7 @@ public final class TinselConnectionItem extends ConnectionItem {
 
     @Override
     public ITextComponent getDisplayName(final ItemStack stack) {
-        return Utils.formatColored(LightItem.getLightColor(stack), super.getDisplayName(stack));
+        return Utils.formatColored(ColorLightItem.getLightColor(stack), super.getDisplayName(stack));
     }
 
     @Override
@@ -23,7 +23,7 @@ public final class TinselConnectionItem extends ConnectionItem {
         if (this.isInGroup(tab)) {
             for (final DyeColor color : DyeColor.values()) {
                 final ItemStack tinsel = new ItemStack(this);
-                LightItem.setLightColor(tinsel, color);
+                ColorLightItem.setLightColor(tinsel, color);
                 items.add(tinsel);
             }
         }

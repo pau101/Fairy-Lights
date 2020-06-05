@@ -2,8 +2,8 @@ package me.paulf.fairylights.server.item.crafting;
 
 import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
+import me.paulf.fairylights.server.item.ColorLightItem;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.item.LightItem;
 import me.paulf.fairylights.util.OreDictUtils;
 import me.paulf.fairylights.util.Utils;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
@@ -105,7 +105,7 @@ public final class FLCraftingRecipes {
     public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(dyeIngredient()) {
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-            return ImmutableList.of(OreDictUtils.getDyes(LightItem.getLightColor(output)));
+            return ImmutableList.of(OreDictUtils.getDyes(ColorLightItem.getLightColor(output)));
         }
 
         @Override
@@ -115,7 +115,7 @@ public final class FLCraftingRecipes {
 
         @Override
         public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
-            LightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
+            ColorLightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
         }
     };
 
@@ -233,7 +233,7 @@ public final class FLCraftingRecipes {
         CompoundNBT compound = stack.getTag();
         final ListNBT lights = new ListNBT();
         for (final DyeColor color : colors) {
-            lights.add(LightItem.setLightColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
+            lights.add(ColorLightItem.setLightColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
         }
         if (compound == null) {
             compound = new CompoundNBT();
@@ -256,7 +256,7 @@ public final class FLCraftingRecipes {
                     if (compound == null) {
                         return ImmutableList.of();
                     }
-                    return ImmutableList.of(OreDictUtils.getDyes(LightItem.getLightColor(output)));
+                    return ImmutableList.of(OreDictUtils.getDyes(ColorLightItem.getLightColor(output)));
                 }
 
                 @Override
@@ -266,7 +266,7 @@ public final class FLCraftingRecipes {
 
                 @Override
                 public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
-                    LightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
+                    ColorLightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
                 }
             })
             .build();
@@ -559,7 +559,7 @@ public final class FLCraftingRecipes {
             for (int i = 0; i < pattern.size(); i++) {
                 final CompoundNBT pennant = pattern.getCompound(i);
                 final ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(pennant.getString("item"))));
-                LightItem.setLightColor(stack, DyeColor.byId(pennant.getByte("color")));
+                ColorLightItem.setLightColor(stack, DyeColor.byId(pennant.getByte("color")));
                 pennants.add(ImmutableList.of(stack));
             }
             return pennants.build();
@@ -578,7 +578,7 @@ public final class FLCraftingRecipes {
         @Override
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
             final CompoundNBT pennant = new CompoundNBT();
-            pennant.putByte("color", (byte) LightItem.getLightColor(ingredient).getId());
+            pennant.putByte("color", (byte) ColorLightItem.getLightColor(ingredient).getId());
             pennant.putString("item", ingredient.getItem().getRegistryName().toString());
             patternList.add(pennant);
         }

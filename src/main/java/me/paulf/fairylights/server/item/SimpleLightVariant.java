@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.item;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.DefaultBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.MeteorLightBehavior;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.OilLanternBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.StandardLightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.TwinkleBehavior;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     public static final LightVariant<StandardLightBehavior> ORB = new SimpleLightVariant<>(false, 1.0F, 10, 11.5F, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
     public static final LightVariant<StandardLightBehavior> FLOWER = new SimpleLightVariant<>(true, 1.0F, 10, 6, SimpleLightVariant::standardBehavior, Placement.OUTWARD);
     public static final LightVariant<StandardLightBehavior> ORNATE = new SimpleLightVariant<>(false, 24, 8, 11, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
-    public static final LightVariant<StandardLightBehavior> OIL = new SimpleLightVariant<>(false, 32, 8, 13, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
+    public static final LightVariant<StandardLightBehavior> OIL = new SimpleLightVariant<>(false, 1.5F, 8, 13, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
     public static final LightVariant<StandardLightBehavior> JACK_O_LANTERN = new SimpleLightVariant<>(true, 1.0F, 7, 9, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
     public static final LightVariant<StandardLightBehavior> SKULL = new SimpleLightVariant<>(true, 1.0F, 6, 9, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
     public static final LightVariant<StandardLightBehavior> GHOST = new SimpleLightVariant<>(true, 1.0F, 6, 8, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
@@ -25,12 +26,13 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     public static final LightVariant<StandardLightBehavior> SNOWFLAKE = new SimpleLightVariant<>(true, 1.0F, 10.0F, 15.0F, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
     public static final LightVariant<StandardLightBehavior> ICICLE = new SimpleLightVariant<>(false, 0.625F, 7, 20, SimpleLightVariant::standardBehavior, Placement.UPRIGHT);
     public static final LightVariant<MeteorLightBehavior> METEOR = new SimpleLightVariant<>(false, 1.5F, 3, 28.5F, stack -> {
-        final int rgb = LightItem.getColorValue(LightItem.getLightColor(stack));
+        final int rgb = ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;
         final float blue = (rgb & 0xFF) / 255.0F;
         return new MeteorLightBehavior(red, green, blue);
     }, LightVariant.Placement.UPRIGHT);
+    public static final LightVariant<OilLanternBehavior> TORCH_LANTERN = new SimpleLightVariant<>(false, 1.5F, 8, 13, stack -> new OilLanternBehavior(), Placement.UPRIGHT);
 
     private final boolean parallelsCord;
 
@@ -85,7 +87,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
 
     private static StandardLightBehavior standardBehavior(final ItemStack stack) {
         final CompoundNBT tag = stack.getTag();
-        final int rgb = LightItem.getColorValue(LightItem.getLightColor(stack));
+        final int rgb = ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;
         final float blue = (rgb & 0xFF) / 255.0F;

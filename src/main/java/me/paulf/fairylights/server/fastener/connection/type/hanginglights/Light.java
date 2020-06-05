@@ -12,8 +12,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.Random;
-
 public final class Light<T extends LightBehavior> extends HangingFeature {
     private static final int SWAY_RATE = 10;
 
@@ -100,9 +98,9 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
         this.swaying = false;
     }
 
-    public void tick(final Random rng, final boolean powered) {
-        super.tick(rng);
-        this.behavior.tick(rng, powered);
+    public void tick(final World world, final Vec3d origin, final boolean powered) {
+        super.tick(world);
+        this.behavior.tick(world, origin, this, powered);
         if (this.swaying) {
             if (this.sway >= SWAY_CYCLE) {
                 this.stopSwaying();

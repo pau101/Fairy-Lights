@@ -19,8 +19,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.Random;
-
 public class LightBlockEntity extends TileEntity {
     private Light<?> light;
 
@@ -42,7 +40,7 @@ public class LightBlockEntity extends TileEntity {
 
     private void setOn(final boolean on) {
         this.on = on;
-        this.light.tick(new Random(0), on); // FIXME
+        if (this.world != null) this.light.tick(this.world, new Vec3d(this.getPos()), on); // FIXME
         this.markDirty();
     }
 

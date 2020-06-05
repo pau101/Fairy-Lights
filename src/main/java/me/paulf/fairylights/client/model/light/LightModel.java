@@ -23,13 +23,13 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
 
     protected final ModelRenderer unlit;
 
-    protected float brightness;
+    protected float brightness = 1.0F;
 
-    protected float red;
+    protected float red = 1.0F;
 
-    protected float green;
+    protected float green = 1.0F;
 
-    protected float blue;
+    protected float blue = 1.0F;
 
     @Nullable
     private AxisAlignedBB bounds;

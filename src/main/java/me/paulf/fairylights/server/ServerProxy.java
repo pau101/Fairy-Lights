@@ -15,6 +15,11 @@ import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
 import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.goal.GoalSelector;
+import net.minecraft.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
+import net.minecraft.entity.monster.SpiderEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.IResourceManagerReloadListener;
@@ -26,13 +31,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -59,6 +67,7 @@ public class ServerProxy {
         });
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void initHandlers() {
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         CapabilityHandler.register();

@@ -3,7 +3,7 @@ package me.paulf.fairylights.server.fastener.connection.type.garland;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.item.LightItem;
+import me.paulf.fairylights.server.item.ColorLightItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
@@ -23,7 +23,7 @@ public final class GarlandTinselConnection extends Connection {
     }
 
     public int getColor() {
-        return LightItem.getColorValue(this.color);
+        return ColorLightItem.getColorValue(this.color);
     }
 
     @Override

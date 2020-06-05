@@ -2,8 +2,8 @@ package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.Mth;
-
-import java.util.Random;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class TwinkleBehavior extends FixedColorBehavior implements StandardLightBehavior {
     private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
@@ -22,8 +22,8 @@ public class TwinkleBehavior extends FixedColorBehavior implements StandardLight
     }
 
     @Override
-    public void tick(final Random rng, final boolean powered) {
-        this.logic.tick(rng, powered);
+    public void tick(final World world, final Vec3d origin, final Light<?> light, final boolean powered) {
+        this.logic.tick(world.rand, powered);
     }
 
 }
