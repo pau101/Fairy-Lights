@@ -31,10 +31,13 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class LightBlock extends HorizontalFaceBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -133,7 +136,6 @@ public class LightBlock extends HorizontalFaceBlock {
         }
     }
 
-
     @Override
     public List<ItemStack> getDrops(final BlockState state, final LootContext.Builder builder) {
         final TileEntity entity = builder.get(LootParameters.BLOCK_ENTITY);
@@ -151,6 +153,16 @@ public class LightBlock extends HorizontalFaceBlock {
             return ActionResultType.SUCCESS;
         }
         return super.onBlockActivated(state, world, pos, player, hand, hit);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void animateTick(final BlockState state, final World world, final BlockPos pos, final Random rng) {
+        super.animateTick(state, world, pos, rng);
+        final TileEntity entity = world.getTileEntity(pos);
+        if (entity instanceof LightBlockEntity) {
+            ((LightBlockEntity) entity).animateTick();
+        }
     }
 
     @Override

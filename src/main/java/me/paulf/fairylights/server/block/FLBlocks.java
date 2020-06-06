@@ -9,6 +9,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public final class FLBlocks {
@@ -49,6 +50,10 @@ public final class FLBlocks {
     public static final RegistryObject<LightBlock> TORCH_LANTERN = REG.register("torch_lantern", FLBlocks.createLight(SimpleLightVariant.TORCH_LANTERN));
 
     private static Supplier<LightBlock> createLight(final LightVariant<?> variant) {
-        return () -> new LightBlock(Block.Properties.create(Material.MISCELLANEOUS).lightValue(15).notSolid(), variant);
+        return createLight(variant, LightBlock::new);
+    }
+
+    private static Supplier<LightBlock> createLight(final LightVariant<?> variant, final BiFunction<Block.Properties, LightVariant<?>, LightBlock> factory) {
+        return () -> factory.apply(Block.Properties.create(Material.MISCELLANEOUS).lightValue(15).notSolid(), variant);
     }
 }

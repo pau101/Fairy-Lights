@@ -7,15 +7,33 @@ import net.minecraft.world.World;
 public class OilLanternBehavior implements BrightLightBehavior {
     private float value = 1.0F;
 
+    private boolean powered = true;
+
     @Override
     public float getBrightness(final float delta) {
         return this.value;
     }
 
     @Override
-    public void tick(final World world, final Vec3d origin, final Light<?> light, final boolean powered) {
-        this.value = powered ? 1.0F : 0.0F;
-        if (powered && world.rand.nextFloat() < 0.08F) {
+    public void power(final boolean powered) {
+        this.powered = powered;
+        this.value = this.powered ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public void tick(final World world, final Vec3d origin, final Light<?> light) {
+        if (world.rand.nextFloat() < 0.08F) {
+            this.createParticles(world, origin, light);
+        }
+    }
+
+    @Override
+    public void animateTick(final World world, final Vec3d origin, final Light<?> light) {
+        this.createParticles(world, origin, light);
+    }
+
+    private void createParticles(final World world, final Vec3d origin, final Light<?> light) {
+        if (this.powered) {
             final Vec3d p = light.getAbsolutePoint(origin); // FIXME transformed pos
             final double x = p.getX();
             final double y = p.getY() - 0.28D;

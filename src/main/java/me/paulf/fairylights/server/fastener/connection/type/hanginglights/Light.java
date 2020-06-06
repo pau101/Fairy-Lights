@@ -98,9 +98,13 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
         this.swaying = false;
     }
 
-    public void tick(final World world, final Vec3d origin, final boolean powered) {
+    public void power(final boolean powered) {
+        this.behavior.power(powered);
+    }
+
+    public void tick(final World world, final Vec3d origin) {
         super.tick(world);
-        this.behavior.tick(world, origin, this, powered);
+        this.behavior.tick(world, origin, this);
         if (this.swaying) {
             if (this.sway >= SWAY_CYCLE) {
                 this.stopSwaying();

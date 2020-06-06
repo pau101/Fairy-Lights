@@ -10,6 +10,8 @@ public class TwinkleBehavior extends FixedColorBehavior implements StandardLight
 
     private final TwinkleLogic logic;
 
+    private boolean powered = true;
+
     public TwinkleBehavior(final float red, final float green, final float blue, final float chance, final int duration) {
         super(red, green, blue);
         this.logic = new TwinkleLogic(chance, duration);
@@ -22,8 +24,12 @@ public class TwinkleBehavior extends FixedColorBehavior implements StandardLight
     }
 
     @Override
-    public void tick(final World world, final Vec3d origin, final Light<?> light, final boolean powered) {
-        this.logic.tick(world.rand, powered);
+    public void power(final boolean powered) {
+        this.powered = powered;
     }
 
+    @Override
+    public void tick(final World world, final Vec3d origin, final Light<?> light) {
+        this.logic.tick(world.rand, this.powered);
+    }
 }

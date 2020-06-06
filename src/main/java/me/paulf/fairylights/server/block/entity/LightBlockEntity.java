@@ -40,7 +40,7 @@ public class LightBlockEntity extends TileEntity {
 
     private void setOn(final boolean on) {
         this.on = on;
-        if (this.world != null) this.light.tick(this.world, new Vec3d(this.getPos()), on); // FIXME
+        this.light.power(on);
         this.markDirty();
     }
 
@@ -57,6 +57,10 @@ public class LightBlockEntity extends TileEntity {
             pitch = 0.5F;
         }
         this.world.playSound(null, pos, lightSnd, SoundCategory.BLOCKS, 1.0F, pitch);
+    }
+
+    public void animateTick() {
+        this.light.getBehavior().animateTick(this.world, new Vec3d(this.getPos()), this.light);
     }
 
     @Override

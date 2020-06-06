@@ -16,7 +16,10 @@ public class DefaultBehavior extends FixedColorBehavior implements StandardLight
     }
 
     @Override
-    public void tick(final World world, final Vec3d origin, final Light<?> light, final boolean powered) {
+    public void power(final boolean powered) {
         this.value = powered ? 1.0F : 0.0F;
     }
+
+    @Override
+    public void tick(final World world, final Vec3d origin, final Light<?> light) {}
 }

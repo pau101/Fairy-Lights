@@ -72,7 +72,7 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     }
 
     public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-        final int emissiveLight = (int) Math.max((this.brightness * 15.0F * 16.0F), light & 255)  | light & (255 << 16);
+        final int emissiveLight = (int) Math.max((this.brightness * 15.0F * 16.0F), light & 255) | light & (255 << 16);
         this.litTintGlow.render(matrix, builder, emissiveLight, overlay, r * this.red, g * this.green, b * this.blue, this.brightness * 0.15F + 0.1F);
     }
 

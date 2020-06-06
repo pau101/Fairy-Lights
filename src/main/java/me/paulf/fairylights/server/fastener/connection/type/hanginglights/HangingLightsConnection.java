@@ -128,7 +128,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         this.wasPlaying = playing;
         final boolean on = !this.isDynamic() && this.isOn;
         for (final Light<?> light : this.features) {
-            light.tick(this.world, this.fastener.getConnectionPoint(), on);
+            light.tick(this.world, this.fastener.getConnectionPoint());
         }
         if (on && this.isOrigin() && this.features.length > 0) {
             this.lightUpdateTime++;
@@ -157,7 +157,6 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         final boolean on = !this.isDynamic() && this.isOn;
         final ItemStack lightData = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
         final Light<? extends LightBehavior> light = this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY));
-        light.tick(this.world, this.fastener.getConnectionPoint(), on);
         if (on && this.isOrigin()) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
@@ -196,6 +195,10 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     @Override
     protected void onAfterUpdateFeatures() {
+        final boolean on = !this.isDynamic() && this.isOn;
+        for (final Light<?> light : this.features) {
+            light.power(on);
+        }
         this.oldLitBlocks.removeAll(this.litBlocks);
         final Iterator<BlockPos> oldIter = this.oldLitBlocks.iterator();
         while (oldIter.hasNext()) {

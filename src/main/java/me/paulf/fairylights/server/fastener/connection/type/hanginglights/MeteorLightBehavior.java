@@ -12,6 +12,8 @@ public class MeteorLightBehavior implements ColorLightBehavior {
 
     private final TwinkleLogic logic = new TwinkleLogic(0.02F, 100);
 
+    private boolean powered = true;
+
     public MeteorLightBehavior(final float red, final float green, final float blue) {
         this.red = red;
         this.green = green;
@@ -34,8 +36,13 @@ public class MeteorLightBehavior implements ColorLightBehavior {
     }
 
     @Override
-    public void tick(final World world, final Vec3d origin, final Light<?> light, final boolean powered) {
-        this.logic.tick(world.rand, powered);
+    public void power(final boolean powered) {
+        this.powered = powered;
+    }
+
+    @Override
+    public void tick(final World world, final Vec3d origin, final Light<?> light) {
+        this.logic.tick(world.rand, this.powered);
     }
 
     public float getProgress(final float delta) {
