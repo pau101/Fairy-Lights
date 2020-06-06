@@ -29,8 +29,12 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameters;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 public class LightBlock extends HorizontalFaceBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -42,7 +46,7 @@ public class LightBlock extends HorizontalFaceBlock {
     private final LightVariant<?> variant;
 
     public LightBlock(final Properties properties, final LightVariant<?> variant) {
-        super(properties);
+        super(properties.noDrops());
         this.variant = variant;
         final float w = this.variant.getWidth();
         final float h = this.variant.getHeight();
@@ -127,6 +131,16 @@ public class LightBlock extends HorizontalFaceBlock {
             lightItem.setCount(1);
             ((LightBlockEntity) entity).setItemStack(lightItem);
         }
+    }
+
+
+    @Override
+    public List<ItemStack> getDrops(final BlockState state, final LootContext.Builder builder) {
+        final TileEntity entity = builder.get(LootParameters.BLOCK_ENTITY);
+        if (entity instanceof LightBlockEntity) {
+            return Collections.singletonList(((LightBlockEntity) entity).getLight().getItem().copy());
+        }
+        return Collections.emptyList();
     }
 
     @Override
