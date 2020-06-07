@@ -10,7 +10,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -29,10 +30,12 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
             final ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);
             final int tagCount = tagList.size();
             if (tagCount > 0) {
-                tooltip.add(new TranslationTextComponent("item.fairyLights.pattern"));
+                tooltip.add(new StringTextComponent(""));
             }
             for (int i = 0; i < tagCount; i++) {
-                tooltip.add(new TranslationTextComponent("format.pattern.entry", ItemStack.read(tagList.getCompound(i)).getDisplayName()));
+                final ItemStack lightStack = ItemStack.read(tagList.getCompound(i));
+                tooltip.add(lightStack.getDisplayName().applyTextStyle(TextFormatting.GRAY));
+                lightStack.getItem().addInformation(lightStack, world, tooltip, flag);
             }
         }
     }

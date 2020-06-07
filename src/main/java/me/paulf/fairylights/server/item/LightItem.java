@@ -6,6 +6,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -37,7 +38,7 @@ public class LightItem extends BlockItem {
         final CompoundNBT tag = stack.getTag();
         if (tag != null) {
             if (tag.getBoolean("twinkle")) {
-                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle"));
+                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").applyTextStyle(TextFormatting.GRAY));
             }
         }
     }
