@@ -55,18 +55,14 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
             final F feature;
             if (!relocated && prev != null && index < prev.length) {
                 feature = prev[index];
-                feature.set(this.getPosition(new Vec3d(x, y, z), yaw, pitch), yaw, pitch);
+                feature.set(new Vec3d(x, y, z), yaw, pitch);
             } else {
-                feature = this.createFeature(index, this.getPosition(new Vec3d(x, y, z), yaw, pitch), yaw, pitch);
+                feature = this.createFeature(index, new Vec3d(x, y, z), yaw, pitch);
             }
             features.add(feature);
         });
         this.features = features.toArray(this.createFeatures(features.size()));
         this.onAfterUpdateFeatures();
-    }
-
-    protected Vec3d getPosition(final Vec3d pos, final float yaw, final float pitch) {
-        return pos;
     }
 
     protected abstract F[] createFeatures(int length);
@@ -94,6 +90,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
                     matrix.rotate(-f.getYaw(), 0.0F, 1.0F, 0.0F);
                     matrix.rotate(f.getPitch(), 0.0F, 0.0F, 1.0F);
                 }
+                matrix.translate(0.0F, -f.getDescent(), 0.0F);
                 final AABBBuilder bounds = new AABBBuilder();
                 final AxisAlignedBB bb = f.getBounds().grow(0.025D);
                 final Vec3d[] verts = {

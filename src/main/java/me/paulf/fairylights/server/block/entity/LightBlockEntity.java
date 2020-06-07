@@ -29,7 +29,7 @@ public class LightBlockEntity extends TileEntity {
 
     public LightBlockEntity() {
         super(FLBlockEntities.LIGHT.get());
-        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, SimpleLightVariant.FAIRY);
+        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, SimpleLightVariant.FAIRY, 0.0F);
     }
 
     public Light<?> getLight() {
@@ -37,7 +37,7 @@ public class LightBlockEntity extends TileEntity {
     }
 
     public void setItemStack(final ItemStack stack) {
-        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).orElse(SimpleLightVariant.FAIRY));
+        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).orElse(SimpleLightVariant.FAIRY), 0.0F);
         this.markDirty();
     }
 

@@ -12,7 +12,7 @@ public class Pennant extends HangingFeature {
     private Item item = Items.AIR;
 
     public Pennant(final int index, final Vec3d point, final float yaw, final float pitch) {
-        super(index, point, yaw, pitch, 0.0F);
+        super(index, point, yaw, pitch, 0.0F, 0.0F);
     }
 
     public void setColor(final int color) {

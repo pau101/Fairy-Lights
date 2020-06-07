@@ -19,12 +19,15 @@ public abstract class HangingFeature implements Feature {
 
     protected float prevYaw, prevPitch, prevRoll;
 
-    public HangingFeature(final int index, final Vec3d point, final float yaw, final float pitch, final float roll) {
+    protected final float descent;
+
+    public HangingFeature(final int index, final Vec3d point, final float yaw, final float pitch, final float roll, final float descent) {
         this.index = index;
         this.point = this.prevPoint = point;
         this.prevYaw = this.yaw = yaw;
         this.prevPitch = this.pitch = pitch;
         this.prevRoll = this.roll = roll;
+        this.descent = descent;
     }
 
     public void set(final Vec3d point, final float yaw, final float pitch) {
@@ -67,6 +70,10 @@ public abstract class HangingFeature implements Feature {
         return Mth.lerpAngle(this.prevRoll, this.roll, t);
     }
 
+    public float getDescent() {
+        return this.descent;
+    }
+
     public final Vec3d getAbsolutePoint(final Fastener<?> fastener) {
         return this.getAbsolutePoint(fastener.getConnectionPoint());
     }
@@ -75,13 +82,14 @@ public abstract class HangingFeature implements Feature {
         return this.point.add(origin);
     }
 
-    public final Vec3d getTransformedPoint(final Vec3d origin, final Vec3d point) {
+    public Vec3d getTransformedPoint(final Vec3d origin, final Vec3d point) {
         final MatrixStack matrix = new MatrixStack();
         matrix.rotate(-this.getYaw(), 0.0F, 1.0F, 0.0F);
         if (this.parallelsCord()) {
             matrix.rotate(this.getPitch(), 0.0F, 0.0F, 1.0F);
         }
         matrix.rotate(this.getRoll(), 1.0F, 0.0F, 0.0F);
+        matrix.translate(0.0F, -this.getDescent(), 0.0F);
         return this.point.add(matrix.transform(point)).add(origin);
     }
 

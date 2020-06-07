@@ -38,8 +38,8 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
 
     private boolean powered;
 
-    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final LightVariant<T> variant) {
-        super(index, point, yaw, pitch, 0.0F);
+    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final LightVariant<T> variant, final float descent) {
+        super(index, point, yaw, pitch, 0.0F, descent);
         this.item = item;
         this.variant = variant;
         this.behavior = variant.createBehavior(item);
