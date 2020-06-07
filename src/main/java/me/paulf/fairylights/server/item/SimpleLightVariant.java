@@ -27,7 +27,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     public static final LightVariant<StandardLightBehavior> SNOWFLAKE = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.458D, -1.007D, -0.059D, 0.458D, 0.072D, 0.059D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> ICICLE = new SimpleLightVariant<>(false, 0.625F, new AxisAlignedBB(-0.205D, -1.020D, -0.206D, 0.207D, 0.091D, 0.200D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<MeteorLightBehavior> METEOR = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.063D, -1.588D, -0.063D, 0.063D, 0.091D, 0.063D), stack -> {
-        final int rgb = ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
+        final int rgb = ColorLightItem.getColor(stack);
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;
         final float blue = (rgb & 0xFF) / 255.0F;
@@ -83,7 +83,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
 
     private static StandardLightBehavior standardBehavior(final ItemStack stack) {
         final CompoundNBT tag = stack.getTag();
-        final int rgb = ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
+        final int rgb = ColorLightItem.getColor(stack);
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;
         final float blue = (rgb & 0xFF) / 255.0F;

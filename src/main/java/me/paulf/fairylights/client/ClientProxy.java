@@ -31,7 +31,6 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -159,8 +158,7 @@ public final class ClientProxy extends ServerProxy {
             if (stack.hasTag()) {
                 final ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    final CompoundNBT tag = ItemStack.read(tagList.getCompound((index - 1) % tagList.size())).getTag();
-                    return ColorLightItem.getColorValue(tag == null ? DyeColor.YELLOW : DyeColor.byId(tag.getByte("color")));
+                    return ColorLightItem.getColor(ItemStack.read(tagList.getCompound((index - 1) % tagList.size())));
                 }
             }
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
@@ -169,7 +167,7 @@ public final class ClientProxy extends ServerProxy {
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());
         colors.register((stack, index) -> {
-            return ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
+            return ColorLightItem.getColor(stack);
         }, FLItems.TINSEL.get());
         colors.register((stack, index) -> {
             if (index == 0) {
@@ -222,6 +220,6 @@ public final class ClientProxy extends ServerProxy {
     }
 
     private static int secondLayerColor(final ItemStack stack, final int index) {
-        return index == 0 ? 0xFFFFFF : ColorLightItem.getColorValue(ColorLightItem.getLightColor(stack));
+        return index == 0 ? 0xFFFFFF : ColorLightItem.getColor(stack);
     }
 }

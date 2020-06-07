@@ -47,6 +47,10 @@ public class ColorLightItem extends LightItem {
         nbt.putByte("color", (byte) color.getId());
     }
 
+    public static int getColor(final ItemStack stack) {
+        return getColorValue(getLightColor(stack));
+    }
+
     public static int getColorValue(final DyeColor color) {
         if (color == DyeColor.BLACK) {
             return 0x323232;
