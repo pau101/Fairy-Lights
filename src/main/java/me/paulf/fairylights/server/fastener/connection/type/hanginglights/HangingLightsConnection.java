@@ -128,8 +128,10 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
         this.wasPlaying = playing;
         final boolean on = !this.isDynamic() && this.isOn;
-        for (final Light<?> light : this.features) {
-            light.tick(this.world, this.fastener.getConnectionPoint());
+        if (this.isOrigin()) {
+            for (final Light<?> light : this.features) {
+                light.tick(this.world, this.fastener.getConnectionPoint());
+            }
         }
         if (on && this.isOrigin() && this.features.length > 0) {
             this.lightUpdateTime++;
