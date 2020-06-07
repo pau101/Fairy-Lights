@@ -102,7 +102,7 @@ public class LightBlock extends HorizontalFaceBlock {
         final BlockPos anchorPos = pos.offset(facing.getOpposite());
         final BlockState anchorState = world.getBlockState(anchorPos);
         final VoxelShape shape = anchorState.getCollisionShape(world, anchorPos);
-        if (state.get(FACE) == AttachFace.FLOOR) {
+        if (state.get(FACE) != AttachFace.WALL) {
             return !VoxelShapes.compare(shape.project(facing.getOpposite()), MIN_FLOOR_ANCHOR_SHAPE, IBooleanFunction.ONLY_SECOND);
         }
         return Block.doesSideFillSquare(shape, facing);
