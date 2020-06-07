@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.fastener.connection.type;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.Feature;
 import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -72,6 +73,16 @@ public abstract class HangingFeature implements Feature {
 
     public final Vec3d getAbsolutePoint(final Vec3d origin) {
         return this.point.add(origin);
+    }
+
+    public final Vec3d getTransformedPoint(final Vec3d origin, final Vec3d point) {
+        final MatrixStack matrix = new MatrixStack();
+        matrix.rotate(-this.getYaw(), 0.0F, 1.0F, 0.0F);
+        if (this.parallelsCord()) {
+            matrix.rotate(this.getPitch(), 0.0F, 0.0F, 1.0F);
+        }
+        matrix.rotate(this.getRoll(), 1.0F, 0.0F, 0.0F);
+        return this.point.add(matrix.transform(point)).add(origin);
     }
 
     public void tick(final World world) {

@@ -34,9 +34,9 @@ public class OilLanternBehavior implements BrightLightBehavior {
 
     private void createParticles(final World world, final Vec3d origin, final Light<?> light) {
         if (this.powered) {
-            final Vec3d p = light.getAbsolutePoint(origin); // FIXME transformed pos
+            final Vec3d p = light.getTransformedPoint(origin, new Vec3d(0.0D, -0.13D, 0.0D));
             final double x = p.getX();
-            final double y = p.getY() - 0.13D;
+            final double y = p.getY();
             final double z = p.getZ();
             world.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
             world.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.0D, 0.0D);
