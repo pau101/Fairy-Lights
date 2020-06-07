@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 public class LightBlockEntity extends TileEntity {
     private Light<?> light;
 
-    private boolean on;
+    private boolean on = true;
 
     public LightBlockEntity() {
         super(FLBlockEntities.LIGHT.get());
