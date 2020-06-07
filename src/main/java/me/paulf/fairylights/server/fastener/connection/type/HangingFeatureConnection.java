@@ -90,8 +90,8 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
                 final double y = origin.y + pos.y;
                 final double z = origin.z + pos.z;
                 matrix.push();
-                matrix.rotate(-f.getYaw(), 0.0F, 1.0F, 0.0F);
                 if (f.parallelsCord()) {
+                    matrix.rotate(-f.getYaw(), 0.0F, 1.0F, 0.0F);
                     matrix.rotate(f.getPitch(), 0.0F, 0.0F, 1.0F);
                 }
                 final AABBBuilder bounds = new AABBBuilder();
