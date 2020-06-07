@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.fastener.connection.type.pennant;
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 public class Pennant extends HangingFeature {
@@ -31,13 +32,8 @@ public class Pennant extends HangingFeature {
     }
 
     @Override
-    public double getWidth() {
-        return 0.4F;
-    }
-
-    @Override
-    public double getHeight() {
-        return 0.65F;
+    public AxisAlignedBB getBounds() {
+        return new AxisAlignedBB(-0.22D, -0.5D, -0.22D, 0.22D, 0.0D, 0.22D);
     }
 
     @Override

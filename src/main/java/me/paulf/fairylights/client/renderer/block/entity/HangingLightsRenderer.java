@@ -37,7 +37,6 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
             if (light.getVariant() != SimpleLightVariant.FAIRY) { // FIXME
                 matrix.rotate(Vector3f.YP.rotation(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
             }
-            matrix.translate(0.0D, -0.125D, 0.0D);
             this.lights.render(matrix, data, light, i, delta, packedLight, packedOverlay);
             matrix.pop();
         }

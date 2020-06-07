@@ -8,7 +8,6 @@ import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
-import me.paulf.fairylights.server.item.LightVariant;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -54,16 +53,21 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
     private <T extends LightBehavior> void render(final LightBlockEntity entity, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay, final Light<T> light) {
         final LightModel<T> model = this.lights.getModel(light, -1);
         final AxisAlignedBB box = model.getBounds();
-        final double h = -box.minY;
         final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
-        matrix.push();
-        matrix.translate(0.5D, 0.5D, 0.5D);
         final BlockState state = entity.getBlockState();
         final AttachFace face = state.get(LightBlock.FACE);
         final float rotation = state.get(LightBlock.HORIZONTAL_FACING).getHorizontalAngle();
+        matrix.push();
+        matrix.translate(0.5D, 0.5D, 0.5D);
         matrix.rotate(Vector3f.YP.rotationDegrees(180.0F - rotation));
-        final LightVariant.Placement placement = light.getVariant().getPlacement();
-        if (placement == LightVariant.Placement.UPRIGHT) {
+        if (light.getVariant().isOrientable()) {
+            if (face == AttachFace.WALL) {
+                matrix.rotate(Vector3f.XP.rotationDegrees(90.0F));
+            } else if (face == AttachFace.FLOOR) {
+                matrix.rotate(Vector3f.XP.rotationDegrees(-180.0F));
+            }
+            matrix.translate(0.0D, 0.5D, 0.0D);
+        } else {
             if (face == AttachFace.CEILING) {
                 matrix.translate(0.0D, 0.25D, 0.0D);
                 matrix.push();
@@ -74,21 +78,8 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
                 matrix.translate(0.0D, 0.15D, 0.125D);
                 this.fastener.render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0f, 1.0F, 1.0F);
             } else {
-                matrix.translate(0.0D, h - 0.5D, 0.0D);
+                matrix.translate(0.0D, -box.minY - 0.5D, 0.0D);
             }
-        } else {
-            if (face == AttachFace.CEILING) {
-                if (placement == LightVariant.Placement.ONWARD) {
-                    matrix.rotate(Vector3f.XP.rotationDegrees(-180.0F));
-                }
-            } else if (face == AttachFace.WALL) {
-                matrix.rotate(Vector3f.XP.rotationDegrees(placement == LightVariant.Placement.OUTWARD ? 90.0F : -90.0F));
-            } else {
-                if (placement == LightVariant.Placement.OUTWARD) {
-                    matrix.rotate(Vector3f.XP.rotationDegrees(-180.0F));
-                }
-            }
-            matrix.translate(0.0D, placement == LightVariant.Placement.OUTWARD ? 0.5D : h - 0.5D, 0.0D);
         }
         this.lights.render(matrix, this.lights.start(source), light, model, delta, packedLight, packedOverlay);
         matrix.pop();

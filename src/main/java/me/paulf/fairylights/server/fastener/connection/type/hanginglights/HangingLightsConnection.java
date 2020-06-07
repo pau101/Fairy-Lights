@@ -12,6 +12,7 @@ import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.jingle.JinglePlayer;
 import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -163,6 +164,14 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             this.setLight(pos);
         }
         return light;
+    }
+
+    @Override
+    protected Vec3d getPosition(final Vec3d pos, final float yaw, final float pitch) {
+        final MatrixStack s = new MatrixStack();
+        s.rotate(-yaw, 0.0F, 1.0F, 0.0F);
+        s.rotate(pitch, 0.0F, 0.0F, 1.0F);
+        return pos.add(s.transform(new Vec3d(0.0D, -0.125D, 0.0D)));
     }
 
     private <T extends LightBehavior> Light<T> createLight(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack stack, final LightVariant<T> variant) {

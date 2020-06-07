@@ -3,6 +3,7 @@ package me.paulf.fairylights.server.fastener.connection.type;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.Feature;
 import me.paulf.fairylights.util.Mth;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -79,9 +80,7 @@ public abstract class HangingFeature implements Feature {
         this.prevRoll = this.roll;
     }
 
-    public abstract double getWidth();
-
-    public abstract double getHeight();
+    public abstract AxisAlignedBB getBounds();
 
     public abstract boolean parallelsCord();
 }

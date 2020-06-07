@@ -51,23 +51,23 @@ public class LightBlock extends HorizontalFaceBlock {
     public LightBlock(final Properties properties, final LightVariant<?> variant) {
         super(properties.noDrops());
         this.variant = variant;
-        final float w = this.variant.getWidth();
-        final float h = this.variant.getHeight();
+        final double w = Math.max(this.variant.getBounds().getXSize(), this.variant.getBounds().getZSize());
+        final double h = this.variant.getBounds().getYSize();
         final double w0 = 0.5D - w * 0.5D;
         final double w1 = 0.5D + w * 0.5D;
         this.floorShape = VoxelShapes.create(w0, 0.0D, w0, w1, h, w1);
-        if (this.variant.getPlacement() == LightVariant.Placement.UPRIGHT) {
+        if (this.variant.isOrientable()) {
+            this.eastWallShape = VoxelShapes.create(0.0D, w0, w0, h, w1, w1);
+            this.westWallShape = VoxelShapes.create(1.0D - h, w0, w0, 1.0D, w1, w1);
+            this.southWallShape = VoxelShapes.create(w0, w0, 0.0D, w1, w1, h);
+            this.northWallShape = VoxelShapes.create(w0, w0, 1.0D - h, w1, w1, 1.0D);
+        } else {
             final double t = 0.125D;
             final double u = 0.775D;
             this.eastWallShape = VoxelShapes.create(w0 - t, u - h, w0, w1 - t, u, w1);
             this.westWallShape = VoxelShapes.create(w0 + t, u - h, w0, w1 + t, u, w1);
             this.southWallShape = VoxelShapes.create(w0, u - h, w0 - t, w1, u, w1 - t);
             this.northWallShape = VoxelShapes.create(w0, u - h, w0 + t, w1, u, w1 + t);
-        } else {
-            this.eastWallShape = VoxelShapes.create(0.0D, w0, w0, h, w1, w1);
-            this.westWallShape = VoxelShapes.create(1.0D - h, w0, w0, 1.0D, w1, w1);
-            this.southWallShape = VoxelShapes.create(w0, w0, 0.0D, w1, w1, h);
-            this.northWallShape = VoxelShapes.create(w0, w0, 1.0D - h, w1, w1, 1.0D);
         }
         this.ceilingShape = VoxelShapes.create(w0, 1.0D - h, w0, w1, 1.0D, w1);
         this.setDefaultState(this.stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(FACE, AttachFace.WALL).with(LIT, true));

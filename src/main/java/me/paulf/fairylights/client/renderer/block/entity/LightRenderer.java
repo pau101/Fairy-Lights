@@ -53,12 +53,15 @@ public class LightRenderer {
         .put(SimpleLightVariant.WITCH, LightModelProvider.of(new WitchLightModel()))
         .put(SimpleLightVariant.SNOWFLAKE, LightModelProvider.of(new SnowflakeLightModel()))
         .put(SimpleLightVariant.ICICLE, LightModelProvider.of(
-            IntStream.rangeClosed(1, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
+            IntStream.rangeClosed(0, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
         ))
         .put(SimpleLightVariant.METEOR, LightModelProvider.of(new MeteorLightModel()))
         .put(SimpleLightVariant.TORCH_LANTERN, LightModelProvider.of(new OilLanternModel()))
         .build();
+
+    public LightRenderer() {
+    }
 
     public Data start(final IRenderTypeBuffer source) {
         final IVertexBuilder solid = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
@@ -66,9 +69,13 @@ public class LightRenderer {
         return new Data(solid, translucent);
     }
 
-    @SuppressWarnings("unchecked")
     public <T extends LightBehavior> LightModel<T> getModel(final Light<?> light, final int index) {
-        return (LightModel<T>) this.lights.getOrDefault(light.getVariant(), this.defaultLight).get(index);
+        return this.getModel(light.getVariant(), index);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends LightBehavior> LightModel<T> getModel(final LightVariant<?> variant, final int index) {
+        return (LightModel<T>) this.lights.getOrDefault(variant, this.defaultLight).get(index);
     }
 
     public void render(final MatrixStack matrix, final Data data, final Light<?> light, final int index, final float delta, final int packedLight, final int packedOverlay) {

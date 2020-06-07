@@ -125,6 +125,12 @@ public final class ClientProxy extends ServerProxy {
                 }
             });
         });
+        /*final LightRenderer r = new LightRenderer();
+        System.out.printf("waldo%n");
+        FLItems.lights().forEach(l -> {
+            final AxisAlignedBB bb = r.getModel(l.getBlock().getVariant(), -1).getBounds();
+            System.out.printf("%s new AxisAlignedBB(%.3fD, %.3fD, %.3fD, %.3fD, %.3fD, %.3fD)%n", l.getRegistryName(), bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
+        });*/
     }
 
     @Override

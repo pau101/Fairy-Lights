@@ -2,6 +2,7 @@ package me.paulf.fairylights.server.fastener.connection.type.letter;
 
 import me.paulf.fairylights.server.fastener.connection.type.HangingFeature;
 import me.paulf.fairylights.util.styledstring.Style;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 public final class Letter extends HangingFeature {
@@ -27,13 +28,10 @@ public final class Letter extends HangingFeature {
     }
 
     @Override
-    public double getWidth() {
-        return this.symbols.getWidth(this.letter) / 16F;
-    }
-
-    @Override
-    public double getHeight() {
-        return this.symbols.getHeight() / 16F;
+    public AxisAlignedBB getBounds() {
+        final float w = this.symbols.getWidth(this.letter) / 16F;
+        final float h = this.symbols.getHeight() / 16F;
+        return new AxisAlignedBB(-w / 2.0D, -h, -w / 2.0D, w / 2.0D, 0.0D, w / 2.0D);
     }
 
     @Override

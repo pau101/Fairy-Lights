@@ -8,6 +8,7 @@ import me.paulf.fairylights.server.fastener.connection.collision.FeatureCollisio
 import me.paulf.fairylights.util.AABBBuilder;
 import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -54,14 +55,18 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
             final F feature;
             if (!relocated && prev != null && index < prev.length) {
                 feature = prev[index];
-                feature.set(new Vec3d(x, y, z), yaw, pitch);
+                feature.set(this.getPosition(new Vec3d(x, y, z), yaw, pitch), yaw, pitch);
             } else {
-                feature = this.createFeature(index, new Vec3d(x, y, z), yaw, pitch);
+                feature = this.createFeature(index, this.getPosition(new Vec3d(x, y, z), yaw, pitch), yaw, pitch);
             }
             features.add(feature);
         });
         this.features = features.toArray(this.createFeatures(features.size()));
         this.onAfterUpdateFeatures();
+    }
+
+    protected Vec3d getPosition(final Vec3d pos, final float yaw, final float pitch) {
+        return pos;
     }
 
     protected abstract F[] createFeatures(int length);
@@ -84,24 +89,22 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
                 final double x = origin.x + pos.x;
                 final double y = origin.y + pos.y;
                 final double z = origin.z + pos.z;
-                final double w = f.getWidth() / 2;
-                final double h = f.getHeight();
                 matrix.push();
                 if (f.parallelsCord()) {
-                    matrix.rotate(f.getYaw(), 0, 1, 0);
-                    matrix.rotate(f.getPitch(), 1, 0, 0);
+                    matrix.rotate(-f.getYaw(), 0, 1, 0);
+                    matrix.rotate(f.getPitch(), 0, 0, 1);
                 }
-                matrix.translate(0, 0.025F, 0);
                 final AABBBuilder bounds = new AABBBuilder();
+                final AxisAlignedBB bb = f.getBounds().grow(0.025D);
                 final Vec3d[] verts = {
-                    new Vec3d(-w, -h, -w),
-                    new Vec3d(w, -h, -w),
-                    new Vec3d(w, -h, w),
-                    new Vec3d(-w, -h, w),
-                    new Vec3d(-w, 0, -w),
-                    new Vec3d(w, 0, -w),
-                    new Vec3d(w, 0, w),
-                    new Vec3d(-w, 0, w)
+                    new Vec3d(bb.minX, bb.minY, bb.minZ),
+                    new Vec3d(bb.maxX, bb.minY, bb.minZ),
+                    new Vec3d(bb.maxX, bb.minY, bb.minZ),
+                    new Vec3d(bb.minX, bb.minY, bb.maxZ),
+                    new Vec3d(bb.minX, bb.maxY, bb.minZ),
+                    new Vec3d(bb.maxX, bb.maxY, bb.minZ),
+                    new Vec3d(bb.maxX, bb.maxY, bb.maxZ),
+                    new Vec3d(bb.minX, bb.maxY, bb.maxZ)
                 };
                 for (final Vec3d vert : verts) {
                     bounds.include(matrix.transform(vert));

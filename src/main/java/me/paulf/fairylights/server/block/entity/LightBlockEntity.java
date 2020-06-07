@@ -5,11 +5,14 @@ import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.state.properties.AttachFace;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -60,7 +63,29 @@ public class LightBlockEntity extends TileEntity {
     }
 
     public void animateTick() {
-        this.light.getBehavior().animateTick(this.world, new Vec3d(this.getPos()), this.light);
+        final BlockState state = this.getBlockState();
+        final AttachFace face = state.get(LightBlock.FACE);
+        final float rotation = state.get(LightBlock.HORIZONTAL_FACING).getHorizontalAngle();
+        final MatrixStack matrix = new MatrixStack();
+        matrix.translate(0.5F, 0.5F, 0.5F);
+        matrix.rotate((float) Math.toRadians(180.0F - rotation), 0.0F, 1.0F, 0.0F);
+        if (this.light.getVariant().isOrientable()) {
+            if (face == AttachFace.WALL) {
+                matrix.rotate(Mth.HALF_PI, 1.0F, 0.0F, 0.0F);
+            } else if (face == AttachFace.FLOOR) {
+                matrix.rotate(-Mth.PI, 1.0F, 0.0F, 0.0F);
+            }
+            matrix.translate(0.0F, 0.5F, 0.0F);
+        } else {
+            if (face == AttachFace.CEILING) {
+                matrix.translate(0.0F, 0.25F, 0.0F);
+            } else if (face == AttachFace.WALL) {
+                matrix.translate(0.0F, 0.15F, 0.125F);
+            } else {
+                matrix.translate(0.0F, -(float) this.light.getVariant().getBounds().minY - 0.5F, 0.0F);
+            }
+        }
+        this.light.getBehavior().animateTick(this.world, new Vec3d(this.getPos()).add(matrix.transform(Vec3d.ZERO)), this.light);
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -34,6 +35,8 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
     private int tick;
 
     private int lastJingledTick = -1;
+
+    private boolean powered;
 
     public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final LightVariant<T> variant) {
         super(index, point, yaw, pitch, 0.0F);
@@ -100,6 +103,11 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
 
     public void power(final boolean powered) {
         this.behavior.power(powered);
+        this.powered = powered;
+    }
+
+    public boolean isPowered() {
+        return this.powered;
     }
 
     public void tick(final World world, final Vec3d origin) {
@@ -117,13 +125,8 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
     }
 
     @Override
-    public double getWidth() {
-        return this.getVariant().getWidth();
-    }
-
-    @Override
-    public double getHeight() {
-        return this.getVariant().getHeight();
+    public AxisAlignedBB getBounds() {
+        return this.getVariant().getBounds();
     }
 
     @Override
