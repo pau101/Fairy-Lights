@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -336,7 +337,8 @@ public abstract class Connection implements NBTSerializable {
         if (this.updateCatenary || this.isDynamic()) {
             final Vec3d vec = point.subtract(from);
             if (vec.length() > 1e-6) {
-                this.catenary = Catenary.from(vec, SLACK_CURVE, this.slack);
+                final Direction facing = this.fastener.getFacing();
+                this.catenary = Catenary.from(vec, facing.getAxis() != Direction.Axis.Y ? (float) Math.toRadians(90.0F + facing.getHorizontalAngle()) : 0.0F, SLACK_CURVE, this.slack);
                 this.onCalculateCatenary(this.prevDestination != this.destination);
                 final CollidableList.Builder bob = new CollidableList.Builder();
                 this.addCollision(bob, from);

@@ -250,7 +250,7 @@ public final class Catenary {
         return this.length;
     }
 
-    public static Catenary from(final Vec3d direction, final CubicBezier bezier, final float slack) {
+    public static Catenary from(final Vec3d direction, final float verticalYaw, final CubicBezier bezier, final float slack) {
         final float dist = (float) direction.length();
         final float length;
         if (slack < 1e-2 || Math.abs(direction.x) < 1e-6 && Math.abs(direction.z) < 1e-6) {
@@ -258,17 +258,17 @@ public final class Catenary {
         } else {
             length = dist + (lengthFunc(bezier, dist) - dist) * slack;
         }
-        return from(direction, length);
+        return from(direction, verticalYaw, length);
     }
 
     private static float lengthFunc(final CubicBezier bezier, final double length) {
         return bezier.eval(MathHelper.clamp((float) length / Connection.MAX_LENGTH, 0, 1)) * Connection.MAX_LENGTH;
     }
 
-    public static Catenary from(final Vec3d dir, final float ropeLength) {
-        final float angle = (float) MathHelper.atan2(dir.z, dir.x);
+    public static Catenary from(final Vec3d dir, final float verticalYaw, final float ropeLength) {
         final float endX = MathHelper.sqrt(dir.x * dir.x + dir.z * dir.z);
         final float endY = (float) dir.y;
+        final float angle = endX < 1e-3F ? endY < 0.0F ? verticalYaw + Mth.PI : verticalYaw : (float) MathHelper.atan2(dir.z, dir.x);
         final float vx = MathHelper.cos(angle);
         final float vz = MathHelper.sin(angle);
         if (dir.length() > 2.0F * Connection.MAX_LENGTH) {

@@ -38,24 +38,8 @@ public final class CatenaryUtils {
         }
         final float d = x2 - x1;
         final float h = y2 - y1;
-        if (MathHelper.abs(d) < MIN_HORIZ) {
-            for (int i = 0, len = x.length; i < len; i++) {
-                x[i] = (x1 + x2) / 2;
-            }
-            if (length < MathHelper.abs(h)) {
-                linspace(y1, y2, pointCount, y, 0);
-            } else {
-                sag = (length - MathHelper.abs(h)) / 2;
-                final int nSag = MathHelper.ceil(pointCount * sag / length);
-                final float yMax = Math.max(y1, y2);
-                final float yMin = Math.min(y1, y2);
-                linspace(yMax, yMin - sag, pointCount - nSag, y, 0);
-                linspace(yMin - sag, yMin, nSag, y, pointCount - nSag);
-            }
-            return;
-        }
         linspace(x1, x2, pointCount, x, 0);
-        if (length <= MathHelper.sqrt(d * d + h * h)) {
+        if (MathHelper.abs(d) < MIN_HORIZ || length <= MathHelper.sqrt(d * d + h * h)) {
             linspace(y1, y2, pointCount, y, 0);
             return;
         }
