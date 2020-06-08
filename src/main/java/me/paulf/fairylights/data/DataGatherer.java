@@ -82,6 +82,17 @@ public final class DataGatherer {
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_vine", this.hasItem(Items.VINE))
                 .build(consumer);
+            ShapedRecipeBuilder.shapedRecipe(FLItems.TORCH_LANTERN.get(), 4)
+                .patternLine(" I ")
+                .patternLine("STS")
+                .patternLine("IGI")
+                .key('I', Tags.Items.INGOTS_IRON)
+                .key('S', Items.STICK)
+                .key('T', Items.TORCH)
+                .key('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_torch", this.hasItem(Items.TORCH))
+                .build(consumer);
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS.get())
                 .addCriterion("has_lights", this.hasItem(FLCraftingRecipes.LIGHTS))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights"));
