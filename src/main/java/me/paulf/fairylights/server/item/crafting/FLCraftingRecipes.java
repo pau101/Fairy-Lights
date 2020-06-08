@@ -155,8 +155,8 @@ public final class FLCraftingRecipes {
                     final int b = data.blue;
                     final int n = data.count;
                     final int num = data.brightness;
-                    final int br = Math.max(r, Math.max(g, b));
-                    ColorLightItem.setColor(nbt, (r * num / br / n) << 16 | (g * num / br / n) << 8 | (b * num / br / n));
+                    final int den = n * Math.max(r, Math.max(g, b));
+                    ColorLightItem.setColor(nbt, (r * num / den) << 16 | (g * num / den) << 8 | (b * num / den));
                     return false;
                 }
             })
