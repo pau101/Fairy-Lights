@@ -75,8 +75,9 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     }
 
     public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-        final int emissiveLight = (int) Math.max((this.brightness * 15.0F * 16.0F), this.powered ? 0 : light & 255) | light & (255 << 16);
-        this.litTintGlow.render(matrix, builder, emissiveLight, overlay, r * this.red, g * this.green, b * this.blue, this.brightness * 0.15F + 0.1F);
+        final float v = this.brightness;
+        final int emissiveLight = (int) Math.max((v * 15.0F * 16.0F), this.powered ? 0 : light & 255) | light & (255 << 16);
+        this.litTintGlow.render(matrix, builder, emissiveLight, overlay, r * this.red * v + (1.0F - v), g * this.green * v + (1.0F - v), b * this.blue * v + (1.0F - v), v * 0.15F + 0.1F);
     }
 
     // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
