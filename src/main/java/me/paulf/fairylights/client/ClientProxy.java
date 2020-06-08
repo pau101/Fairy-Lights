@@ -29,7 +29,6 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
@@ -176,7 +175,7 @@ public final class ClientProxy extends ServerProxy {
             if (stack.hasTag()) {
                 final ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return ColorLightItem.getColorValue(DyeColor.byId(tagList.getCompound((index - 1) % tagList.size()).getByte("color")));
+                    return ColorLightItem.getColor(tagList.getCompound((index - 1) % tagList.size()));
                 }
             }
             return 0xFFFFFFFF;

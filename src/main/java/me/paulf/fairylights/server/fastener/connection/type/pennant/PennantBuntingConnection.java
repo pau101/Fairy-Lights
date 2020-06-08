@@ -16,7 +16,6 @@ import me.paulf.fairylights.util.OreDictUtils;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -73,7 +72,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
             final int index = feature % this.pattern.size();
             final Entry patternEntry = this.pattern.get(index);
-            final DyeColor color = DyeColor.getColor(heldStack);
+            final int color = ColorLightItem.getColor(OreDictUtils.getDyeColor(heldStack));
             if (patternEntry.getColor() != color) {
                 patternEntry.color = color;
                 this.dataUpdateState = true;
@@ -103,7 +102,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         final Pennant pennant = new Pennant(index, point, yaw, pitch);
         if (this.pattern.size() > 0) {
             final Entry e = this.pattern.get(index % this.pattern.size());
-            pennant.setColor(ColorLightItem.getColorValue(e.getColor()));
+            pennant.setColor(e.getColor());
             pennant.setItem(e.item);
         }
         return pennant;
@@ -162,11 +161,11 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     static class Entry implements NBTSerializable {
         Item item;
 
-        DyeColor color;
+        int color;
 
         private Entry() {}
 
-        Entry(final Item item, final DyeColor color) {
+        Entry(final Item item, final int color) {
             this.item = item;
             this.color = color;
         }
@@ -175,7 +174,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
             return this.item;
         }
 
-        public DyeColor getColor() {
+        public int getColor() {
             return this.color;
         }
 
@@ -183,7 +182,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         public CompoundNBT serialize() {
             final CompoundNBT compound = new CompoundNBT();
             compound.putString("item", this.item.getRegistryName().toString());
-            compound.putByte("color", (byte) this.color.getId());
+            ColorLightItem.setColor(compound, this.color);
             return compound;
         }
 
@@ -195,7 +194,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
             } else {
                 this.item = FLItems.TRIANGLE_PENNANT.get();
             }
-            this.color = DyeColor.byId(compound.getByte("color"));
+            this.color = ColorLightItem.getColor(compound);
         }
 
         static Entry from(final CompoundNBT compound) {

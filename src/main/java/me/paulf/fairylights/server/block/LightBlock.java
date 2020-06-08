@@ -199,7 +199,7 @@ public class LightBlock extends HorizontalFaceBlock {
             return ((LightBlockEntity) entity).getLight().getItem().copy();
         }
         final ItemStack stack = new ItemStack(this);
-        ColorLightItem.setLightColor(stack, DyeColor.YELLOW);
+        ColorLightItem.setColor(stack, DyeColor.YELLOW);
         return stack;
     }
 

@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 public final class GarlandTinselConnection extends Connection {
-    private DyeColor color;
+    private int color;
 
     public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
         super(world, fastener, uuid, destination, isOrigin, compound, drop);
@@ -19,11 +19,11 @@ public final class GarlandTinselConnection extends Connection {
 
     public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
         super(world, fastener, uuid);
-        this.color = DyeColor.LIGHT_GRAY;
+        this.color = ColorLightItem.getColor(DyeColor.LIGHT_GRAY);
     }
 
     public int getColor() {
-        return ColorLightItem.getColorValue(this.color);
+        return this.color;
     }
 
     @Override
@@ -38,14 +38,12 @@ public final class GarlandTinselConnection extends Connection {
 
     @Override
     public CompoundNBT serializeLogic() {
-        final CompoundNBT compound = super.serializeLogic();
-        compound.putByte("color", (byte) this.color.getId());
-        return compound;
+        return ColorLightItem.setColor(super.serializeLogic(), this.color);
     }
 
     @Override
     public void deserializeLogic(final CompoundNBT compound) {
         super.deserializeLogic(compound);
-        this.color = DyeColor.byId(compound.getByte("color"));
+        this.color = ColorLightItem.getColor(compound);
     }
 }

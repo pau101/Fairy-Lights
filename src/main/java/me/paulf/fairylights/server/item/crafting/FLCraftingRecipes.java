@@ -92,20 +92,18 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> LIGHT_TWINKLE = REG.register("crafting_special_light_twinkle", makeSerializer(FLCraftingRecipes::createLightTwinkle));
 
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> EDIT_COLOR = REG.register("crafting_special_edit_color", makeSerializer(FLCraftingRecipes::createDyeColor));
+
     public static final Tag<Item> LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights"));
 
     public static final Tag<Item> TWINKLING_LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "twinkling_lights"));
 
     public static final Tag<Item> PENNANTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"));
 
-    private static Ingredient dyeIngredient() {
-        return Ingredient.fromTag(Tags.Items.DYES);
-    }
-
-    public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(dyeIngredient()) {
+    public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(Ingredient.fromTag(Tags.Items.DYES)) {
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-            return ImmutableList.of(OreDictUtils.getDyes(ColorLightItem.getLightColor(output)));
+            return ColorLightItem.getDyeColor(output).map(dye -> ImmutableList.of(OreDictUtils.getDyes(dye))).orElse(ImmutableList.of());
         }
 
         @Override
@@ -115,12 +113,54 @@ public final class FLCraftingRecipes {
 
         @Override
         public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
-            ColorLightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
+            ColorLightItem.setColor(nbt, OreDictUtils.getDyeColor(ingredient));
         }
     };
 
     private static Supplier<IRecipeSerializer<GenericRecipe>> makeSerializer(final Function<ResourceLocation, GenericRecipe> factory) {
         return () -> new SpecialRecipeSerializer<>(factory);
+    }
+
+
+    private static GenericRecipe createDyeColor(final ResourceLocation name) {
+        class BlendData {
+            int red, green, blue, brightness, count;
+        }
+        return new GenericRecipeBuilder(name, EDIT_COLOR)
+            .withShape("I")
+            .withIngredient('I', new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable"))).withOutput('I')
+            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<BlendData>(Ingredient.fromTag(Tags.Items.DYES), true, 8) {
+                @Override
+                public BlendData accumulator() {
+                    return new BlendData();
+                }
+
+                @Override
+                public void consume(final BlendData data, final ItemStack ingredient) {
+                    final int rgb = ColorLightItem.getColor(OreDictUtils.getDyeColor(ingredient));
+                    final int r = rgb >> 16 & 0xFF;
+                    final int g = rgb >> 8 & 0xFF;
+                    final int b = rgb & 0xFF;
+                    data.red += r;
+                    data.green += g;
+                    data.blue += b;
+                    data.brightness += Math.max(r, Math.max(g, b));
+                    data.count++;
+                }
+
+                @Override
+                public boolean finish(final BlendData data, final CompoundNBT nbt) {
+                    final int r = data.red;
+                    final int g = data.green;
+                    final int b = data.blue;
+                    final int n = data.count;
+                    final int num = data.brightness;
+                    final int br = Math.max(r, Math.max(g, b));
+                    ColorLightItem.setColor(nbt, (r * num / br / n) << 16 | (g * num / br / n) << 8 | (b * num / br / n));
+                    return false;
+                }
+            })
+            .build();
     }
 
     private static GenericRecipe createLightTwinkle(final ResourceLocation name) {
@@ -233,7 +273,7 @@ public final class FLCraftingRecipes {
         CompoundNBT compound = stack.getTag();
         final ListNBT lights = new ListNBT();
         for (final DyeColor color : colors) {
-            lights.add(ColorLightItem.setLightColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
+            lights.add(ColorLightItem.setColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
         }
         if (compound == null) {
             compound = new CompoundNBT();
@@ -249,26 +289,7 @@ public final class FLCraftingRecipes {
             .withIngredient('P', Items.PAPER)
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withIngredient('-', Tags.Items.STRING)
-            .withIngredient('D', new BasicRegularIngredient(dyeIngredient()) {
-                @Override
-                public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                    final CompoundNBT compound = output.getTag();
-                    if (compound == null) {
-                        return ImmutableList.of();
-                    }
-                    return ImmutableList.of(OreDictUtils.getDyes(ColorLightItem.getLightColor(output)));
-                }
-
-                @Override
-                public boolean dictatesOutputType() {
-                    return true;
-                }
-
-                @Override
-                public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
-                    ColorLightItem.setLightColor(nbt, OreDictUtils.getDyeMetadata(ingredient));
-                }
-            })
+            .withIngredient('D', DYE_SUBTYPE_INGREDIENT)
             .build();
     }
 
@@ -331,7 +352,7 @@ public final class FLCraftingRecipes {
         final ListNBT pennants = new ListNBT();
         for (final DyeColor color : colors) {
             final CompoundNBT pennant = new CompoundNBT();
-            pennant.putByte("color", (byte) color.getId());
+            ColorLightItem.setColor(pennant, color);
             pennant.putString("item", FLItems.TRIANGLE_PENNANT.get().getRegistryName().toString());
             pennants.add(pennant);
         }
@@ -559,7 +580,7 @@ public final class FLCraftingRecipes {
             for (int i = 0; i < pattern.size(); i++) {
                 final CompoundNBT pennant = pattern.getCompound(i);
                 final ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(pennant.getString("item"))));
-                ColorLightItem.setLightColor(stack, DyeColor.byId(pennant.getByte("color")));
+                ColorLightItem.setColor(stack, DyeColor.byId(pennant.getByte("color")));
                 pennants.add(ImmutableList.of(stack));
             }
             return pennants.build();
@@ -578,7 +599,7 @@ public final class FLCraftingRecipes {
         @Override
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
             final CompoundNBT pennant = new CompoundNBT();
-            pennant.putByte("color", (byte) ColorLightItem.getLightColor(ingredient).getId());
+            ColorLightItem.setColor(pennant, ColorLightItem.getColor(ingredient));
             pennant.putString("item", ingredient.getItem().getRegistryName().toString());
             patternList.add(pennant);
         }

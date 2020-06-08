@@ -1,6 +1,5 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.util.Utils;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -15,16 +14,14 @@ public class PennantItem extends Item {
 
     @Override
     public ITextComponent getDisplayName(final ItemStack stack) {
-        return Utils.formatColored(ColorLightItem.getLightColor(stack), super.getDisplayName(stack));
+        return super.getDisplayName(stack);
     }
 
     @Override
     public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
         if (this.isInGroup(tab)) {
             for (final DyeColor dye : DyeColor.values()) {
-                final ItemStack stack = new ItemStack(this);
-                ColorLightItem.setLightColor(stack, dye);
-                subItems.add(stack);
+                subItems.add(ColorLightItem.setColor(new ItemStack(this), dye));
             }
         }
     }

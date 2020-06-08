@@ -24,7 +24,7 @@ public final class OreDictUtils {
         return false;
     }
 
-    public static DyeColor getDyeMetadata(final ItemStack stack) {
+    public static DyeColor getDyeColor(final ItemStack stack) {
         if (!stack.isEmpty()) {
             if (stack.getItem() instanceof DyeItem) {
                 return ((DyeItem) stack.getItem()).getDyeColor();

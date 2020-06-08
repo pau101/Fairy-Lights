@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "values": [
+        "#fairylights:dyeable_lights",
+        "fairylights:tinsel",
+        "#fairylights:pennants"
+    ]
+}
