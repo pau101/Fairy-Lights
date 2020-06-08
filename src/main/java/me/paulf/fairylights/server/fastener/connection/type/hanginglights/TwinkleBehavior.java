@@ -19,8 +19,11 @@ public class TwinkleBehavior extends FixedColorBehavior implements StandardLight
 
     @Override
     public float getBrightness(final float delta) {
-        final float x = this.logic.get(delta);
-        return x < 0.25F ? EASE_IN_OUT.eval(x / 0.25F) : 1.0F - EASE_IN_OUT.eval(Mth.transform(x, 0.25F, 1.0F, 0.0F, 1.0F));
+        if (this.powered) {
+            final float x = this.logic.get(delta);
+            return x < 0.25F ? 1.0F - EASE_IN_OUT.eval(x / 0.25F) : EASE_IN_OUT.eval(Mth.transform(x, 0.25F, 1.0F, 0.0F, 1.0F));
+        }
+        return 0.0F;
     }
 
     @Override
