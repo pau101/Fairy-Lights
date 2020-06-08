@@ -69,15 +69,18 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     @Override
     public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         this.unlit.render(matrix, builder, light, overlay, r, g, b, a);
-        final int emissiveLight = (int) Math.max((this.brightness * 15.0F * 16.0F), this.powered ? 0 : light & 255) | light & (255 << 16);
+        final int emissiveLight = this.getLight(light);
         this.lit.render(matrix, builder, emissiveLight, overlay, r, g, b, a);
         this.litTint.render(matrix, builder, emissiveLight, overlay, r * this.red, g * this.green, b * this.blue, a);
     }
 
     public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         final float v = this.brightness;
-        final int emissiveLight = (int) Math.max((v * 15.0F * 16.0F), this.powered ? 0 : light & 255) | light & (255 << 16);
-        this.litTintGlow.render(matrix, builder, emissiveLight, overlay, r * this.red * v + (1.0F - v), g * this.green * v + (1.0F - v), b * this.blue * v + (1.0F - v), v * 0.15F + 0.1F);
+        this.litTintGlow.render(matrix, builder, this.getLight(light), overlay, r * this.red * v + (1.0F - v), g * this.green * v + (1.0F - v), b * this.blue * v + (1.0F - v), v * 0.15F + 0.1F);
+    }
+
+    private int getLight(final int packedLight) {
+        return (int) Math.max((this.brightness * 15.0F * 16.0F), this.powered ? 0 : packedLight & 255) | packedLight & (255 << 16);
     }
 
     // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
