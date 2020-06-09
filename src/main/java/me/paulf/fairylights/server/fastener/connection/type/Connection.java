@@ -210,7 +210,7 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public void processClientAction(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
-        FairyLights.network.sendToServer(new InteractionConnectionMessage(this, action, intersection));
+        FairyLights.NETWORK.sendToServer(new InteractionConnectionMessage(this, action, intersection));
     }
 
     public void disconnect(final PlayerEntity player, final Vec3d hit) {

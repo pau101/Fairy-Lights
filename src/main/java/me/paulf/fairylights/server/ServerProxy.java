@@ -77,11 +77,11 @@ public class ServerProxy {
     public void initRendersLate() {}
 
     public static void sendToPlayersWatchingChunk(final Object message, final World world, final BlockPos pos) {
-        FairyLights.network.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
+        FairyLights.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
     }
 
     public static void sendToPlayersWatchingEntity(final Object message, final World world, final Entity entity) {
-        FairyLights.network.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
+        FairyLights.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 
     public static BlockView buildBlockView() {

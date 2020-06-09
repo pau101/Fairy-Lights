@@ -54,7 +54,7 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
         final int pad = 4;
         final int buttonWidth = 150;
         this.doneBtn = this.addButton(new Button(this.width / 2 - pad - buttonWidth, this.height / 4 + 120 + 12, buttonWidth, 20, I18n.format("gui.done"), b -> {
-            FairyLights.network.sendToServer(new EditLetteredConnectionMessage<>(this.connection, this.textField.getValue()));
+            FairyLights.NETWORK.sendToServer(new EditLetteredConnectionMessage<>(this.connection, this.textField.getValue()));
             this.onClose();
         }));
         this.cancelBtn = this.addButton(new Button(this.width / 2 + pad, this.height / 4 + 120 + 12, buttonWidth, 20, I18n.format("gui.cancel"), b -> this.onClose()));

@@ -37,7 +37,7 @@ public final class FairyLights {
     public ServerProxy proxy;
 
     @SuppressWarnings("Convert2MethodRef")
-    public static final SimpleChannel network = new NetBuilder(new ResourceLocation(ID, "net"))
+    public static final SimpleChannel NETWORK = new NetBuilder(new ResourceLocation(ID, "net"))
         .version(1).optionalServer().requiredClient()
         .<JingleMessage>clientbound(JingleMessage::new).consumer(() -> new JingleMessage.Handler())
         .clientbound(UpdateEntityFastenerMessage::new).consumer(() -> new UpdateEntityFastenerMessage.Handler())

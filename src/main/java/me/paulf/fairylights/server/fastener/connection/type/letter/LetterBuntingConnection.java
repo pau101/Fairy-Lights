@@ -77,7 +77,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     @Override
     public void onConnect(final World world, final PlayerEntity user, final ItemStack heldStack) {
         if (this.text.isEmpty()) {
-            FairyLights.network.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) user), new OpenEditLetteredConnectionScreenMessage<>(this));
+            FairyLights.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) user), new OpenEditLetteredConnectionScreenMessage<>(this));
         }
     }
 
