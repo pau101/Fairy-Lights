@@ -19,38 +19,26 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 public class ServerProxy {
-    public ServerProxy() {
+    public void init(final IEventBus modBus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
-    }
-
-    /**
-     * <pre>
-     * |\   /|    __     __     __     __
-     *  \|_|/    /  \   /  \   /  \   /  \
-     *  /. .\   |%%%%| |@@@@| |####| |$$$$|
-     * =\_Y_/=   \__/   \__/   \__/   \__/
-     * </pre>
-     */
-    public void initEggs() {
         MinecraftForge.EVENT_BUS.<FMLServerAboutToStartEvent>addListener(e -> {
             final MinecraftServer server = e.getServer();
             server.getResourceManager().addReloadListener((IResourceManagerReloadListener) mgr -> JingleLibrary.loadAll(server));
         });
+        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
+        new ClippyController().init(modBus);
+        modBus.addListener(this::setup);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public void initHandlers() {
-        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
+    private void setup(final FMLCommonSetupEvent event) {
         CapabilityHandler.register();
         CapabilityManager.INSTANCE.register(LightVariant.class,  new Capability.IStorage<LightVariant>() {
             @Override
@@ -65,16 +53,7 @@ public class ServerProxy {
         }, () -> {
             throw new UnsupportedOperationException();
         });
-        new ClippyController().init();
     }
-
-    protected <M> BiConsumer<M, Supplier<NetworkEvent.Context>> clientConsumer(final Supplier<Supplier<BiConsumer<M, Supplier<NetworkEvent.Context>>>> consumer) {
-        return (msg, ctx) -> ctx.get().setPacketHandled(true);
-    }
-
-    public void initRenders() {}
-
-    public void initRendersLate() {}
 
     public static void sendToPlayersWatchingChunk(final Object message, final World world, final BlockPos pos) {
         FairyLights.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);

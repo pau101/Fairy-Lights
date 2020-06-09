@@ -18,8 +18,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,7 +34,7 @@ public class ClippyController {
 
     private State state = new NoProgressState();
 
-    public void init() {
+    public void init(final IEventBus modBus) {
         MinecraftForge.EVENT_BUS.addListener((final WorldEvent.Load event) -> {
             if (event.getWorld() instanceof ClientWorld) {
                 this.reload();
@@ -46,7 +46,7 @@ public class ClippyController {
                 this.state.tick(mc.player, this);
             }
         });
-        FMLJavaModLoadingContext.get().getModEventBus().<ModConfig.Loading>addListener(e -> {
+        modBus.<ModConfig.Loading>addListener(e -> {
             if (e.getConfig().getSpec() == FLClientConfig.SPEC) {
                 this.reload();
             }

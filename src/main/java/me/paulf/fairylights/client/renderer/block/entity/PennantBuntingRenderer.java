@@ -2,6 +2,7 @@ package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.FairyLights;
@@ -25,13 +26,21 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
 public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingConnection> {
-    public static final ResourceLocation DEFAULT_MODEL = new ResourceLocation(FairyLights.ID, "entity/triangle_pennant");
+    private static final ResourceLocation TRIANGLE_MODEL = new ResourceLocation(FairyLights.ID, "entity/triangle_pennant");
 
-    public static final ImmutableMap<Item, ResourceLocation> MODELS = ImmutableMap.of(
-        FLItems.TRIANGLE_PENNANT.get(), DEFAULT_MODEL,
-        FLItems.SPEARHEAD_PENNANT.get(), new ResourceLocation(FairyLights.ID, "entity/spearhead_pennant"),
-        FLItems.SWALLOWTAIL_PENNANT.get(), new ResourceLocation(FairyLights.ID, "entity/swallowtail_pennant"),
-        FLItems.SQUARE_PENNANT.get(), new ResourceLocation(FairyLights.ID, "entity/square_pennant")
+    private static final ResourceLocation SPEARHEAD_MODEL = new ResourceLocation(FairyLights.ID, "entity/spearhead_pennant");
+
+    private static final ResourceLocation SWALLOWTAIL_MODEl = new ResourceLocation(FairyLights.ID, "entity/swallowtail_pennant");
+
+    private static final ResourceLocation SQUARE_MODEL = new ResourceLocation(FairyLights.ID, "entity/square_pennant");
+
+    public static final ImmutableSet<ResourceLocation> MODELS = ImmutableSet.of(TRIANGLE_MODEL, SPEARHEAD_MODEL, SWALLOWTAIL_MODEl, SQUARE_MODEL);
+
+    private final ImmutableMap<Item, ResourceLocation> models = ImmutableMap.of(
+        FLItems.TRIANGLE_PENNANT.get(), TRIANGLE_MODEL,
+        FLItems.SPEARHEAD_PENNANT.get(), SPEARHEAD_MODEL,
+        FLItems.SWALLOWTAIL_PENNANT.get(), SWALLOWTAIL_MODEl,
+        FLItems.SQUARE_PENNANT.get(), SQUARE_MODEL
     );
 
     public PennantBuntingRenderer() {
@@ -60,7 +69,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 final float r = ((color >> 16) & 0xFF) / 255.0F;
                 final float g = ((color >> 8) & 0xFF) / 255.0F;
                 final float b = (color & 0xFF) / 255.0F;
-                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(MODELS.getOrDefault(currPennant.getItem(), DEFAULT_MODEL));
+                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(models.getOrDefault(currPennant.getItem(), TRIANGLE_MODEL));
                 final Vec3d pos = currPennant.getPoint(delta);
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);
@@ -111,4 +120,5 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         font.renderString(chr, -(w - 1.0F) / 2.0F, -4.0F, argb, false, matrix.getLast().getMatrix(), source, false, 0, packedLight);
         matrix.pop();
     }
+
 }

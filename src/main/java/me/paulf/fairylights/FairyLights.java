@@ -20,11 +20,9 @@ import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -51,7 +49,7 @@ public final class FairyLights {
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 
     public FairyLights() {
-        this.proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
+        this.proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         FLSounds.REG.register(bus);
         FLBlocks.REG.register(bus);
@@ -59,20 +57,7 @@ public final class FairyLights {
         FLItems.REG.register(bus);
         FLBlockEntities.REG.register(bus);
         FLCraftingRecipes.REG.register(bus);
-        bus.<FMLCommonSetupEvent>addListener(this::init);
-        bus.<ModelRegistryEvent>addListener(this::init);
-//        new DataGatherer().register(bus);
-    }
-
-    public void init(final FMLCommonSetupEvent event) {
-        this.proxy.initIntegration();
-        this.proxy.initRenders();
-        this.proxy.initEggs();
-        this.proxy.initHandlers();
-    }
-
-    public void init(final ModelRegistryEvent event) {
-        this.proxy.initRendersLate();
+        this.proxy.init(bus);
     }
 
     public static boolean ingredientMatches(final boolean equalsExact, final ItemStack ingredient, final ItemStack stack) {

@@ -30,69 +30,52 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.Random;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 public final class ClientProxy extends ServerProxy {
-    public ClientProxy() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, FLClientConfig.SPEC);
-    }
-
-    protected <M> BiConsumer<M, Supplier<NetworkEvent.Context>> clientConsumer(final Supplier<Supplier<BiConsumer<M, Supplier<NetworkEvent.Context>>>> consumer) {
-        return consumer.get().get();
-    }
-
     @SuppressWarnings("deprecation")
     public static final Material SOLID_TEXTURE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(FairyLights.ID, "entity/connections"));
 
     @SuppressWarnings("deprecation")
     public static final Material TRANSLUCENT_TEXTURE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(FairyLights.ID, "entity/connections"));
 
+    private final ImmutableList<ResourceLocation> entityModels = new ImmutableList.Builder<ResourceLocation>()
+        .addAll(PennantBuntingRenderer.MODELS)
+        .addAll(LetterBuntingRenderer.MODELS.values())
+        .build();
+
     @Override
-    public void initHandlers() {
-        super.initHandlers();
+    public void init(final IEventBus modBus) {
+        super.init(modBus);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, FLClientConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         new ClientCommandProvider.Builder()
             .add(JinglerCommand::register)
             .build()
             .register(MinecraftForge.EVENT_BUS);
         JinglerCommand.register(MinecraftForge.EVENT_BUS);
-    }
-
-    @Override
-    public void initRenders() {
-        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.get(), dispatcher -> new FastenerBlockEntityRenderer(dispatcher, ServerProxy.buildBlockView()));
-        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.get(), LightBlockEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.get(), FenceFastenerRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.get(), LadderRenderer::new);
-        FMLJavaModLoadingContext.get().getModEventBus().<TextureStitchEvent.Pre>addListener(e -> {
+        modBus.<TextureStitchEvent.Pre>addListener(e -> {
             if (SOLID_TEXTURE.getAtlasLocation().equals(e.getMap().getTextureLocation())) {
                 e.addSprite(SOLID_TEXTURE.getTextureLocation());
             }
         });
-        ModelLoader.addSpecialModel(FenceFastenerRenderer.MODEL);
-        final ImmutableList<ResourceLocation> entityModels = new ImmutableList.Builder<ResourceLocation>()
-            .addAll(PennantBuntingRenderer.MODELS.values())
-            .addAll(LetterBuntingRenderer.MODELS.values())
-            .build();
-        entityModels.forEach(ModelLoader::addSpecialModel);
         // Undo sprite uv contraction
-        FMLJavaModLoadingContext.get().getModEventBus().<ModelBakeEvent>addListener(e -> {
-            entityModels.forEach(path -> {
+        modBus.<ModelBakeEvent>addListener(e -> {
+            this.entityModels.forEach(path -> {
                 final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(path);
                 if (model == Minecraft.getInstance().getModelManager().getMissingModel()) {
                     return;
@@ -109,6 +92,18 @@ public final class ClientProxy extends ServerProxy {
                 }
             });
         });
+        modBus.addListener(this::setup);
+        modBus.addListener(this::setupColors);
+    }
+
+    private void setup(final FMLClientSetupEvent event) {
+        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.get(), dispatcher -> new FastenerBlockEntityRenderer(dispatcher, ServerProxy.buildBlockView()));
+        ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.get(), LightBlockEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.get(), FenceFastenerRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FLEntities.LADDER.get(), LadderRenderer::new);
+        ModelLoader.addSpecialModel(FenceFastenerRenderer.MODEL);
+        this.entityModels.forEach(ModelLoader::addSpecialModel);
+        RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
         /*final LightRenderer r = new LightRenderer();
         System.out.printf("waldo%n");
         FLItems.lights().forEach(l -> {
@@ -117,9 +112,8 @@ public final class ClientProxy extends ServerProxy {
         });*/
     }
 
-    @Override
-    public void initRendersLate() {
-        final ItemColors colors = Minecraft.getInstance().getItemColors();
+    private void setupColors(final ColorHandlerEvent.Item event) {
+        final ItemColors colors = event.getItemColors();
         colors.register(ClientProxy::secondLayerColor,
             FLItems.FAIRY_LIGHT.get(),
             FLItems.PAPER_LANTERN.get(),
@@ -187,21 +181,6 @@ public final class ClientProxy extends ServerProxy {
             }
             return 0xFFFFFFFF;
         }, FLItems.LETTER_BUNTING.get());
-        RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
-        /*RenderTypeLookup.setRenderLayer(FLBlocks.FAIRY_LIGHT.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.PAPER_LANTERN.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.ORB_LANTERN.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.FLOWER_LIGHT.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.ORNATE_LANTERN.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.OIL_LANTERN.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.JACK_O_LANTERN.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.SKULL_LIGHT.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.GHOST_LIGHT.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.SPIDER_LIGHT.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.WITCH_LIGHT.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.SNOWFLAKE_LIGHT.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.ICICLE_LIGHTS.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(FLBlocks.METEOR_LIGHT.get(), RenderType.getCutoutMipped());*/
     }
 
     private static int secondLayerColor(final ItemStack stack, final int index) {
