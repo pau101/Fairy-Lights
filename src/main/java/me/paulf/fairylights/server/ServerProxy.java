@@ -37,8 +37,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class ServerProxy {
-    private int nextMessageId;
-
     public ServerProxy() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
     }
