@@ -15,13 +15,7 @@ import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
 import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.LeapAtTargetGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
-import net.minecraft.entity.monster.SpiderEntity;
 import net.minecraft.nbt.INBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
@@ -31,18 +25,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ServerProxy {
@@ -89,40 +80,22 @@ public class ServerProxy {
 
     public void initNetwork() {
         final String version = "1";
-        FairyLights.network = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(FairyLights.ID, "net"))
+        final SimpleChannel net = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(FairyLights.ID, "net"))
             .networkProtocolVersion(() -> version)
             .clientAcceptedVersions(version::equals)
             .serverAcceptedVersions(version::equals)
             .simpleChannel();
-        this.registerMessage(JingleMessage.class, JingleMessage::serialize, JingleMessage::deserialize, this.createJingleHandler());
-        this.registerMessage(UpdateEntityFastenerMessage.class, UpdateEntityFastenerMessage::serialize, UpdateEntityFastenerMessage::deserialize, this.createUpdateFastenerEntityHandler());
-        this.registerMessage(OpenEditLetteredConnectionScreenMessage.class, OpenEditLetteredConnectionScreenMessage::serialize, OpenEditLetteredConnectionScreenMessage::deserialize, this.createOpenEditLetteredConnectionGUIHandler());
-        this.registerMessage(InteractionConnectionMessage.class, InteractionConnectionMessage::serialize, InteractionConnectionMessage::deserialize, this.createConnectionInteractionHandler());
-        this.registerMessage(EditLetteredConnectionMessage.class, EditLetteredConnectionMessage::serialize, EditLetteredConnectionMessage::deserialize, this.createEditLetteredConnectionHandler());
+        int id = 0;
+        net.registerMessage(id++, JingleMessage.class, JingleMessage::serialize, JingleMessage::deserialize, this.clientConsumer(() -> JingleMessage.Handler::new));
+        net.registerMessage(id++, UpdateEntityFastenerMessage.class, UpdateEntityFastenerMessage::serialize, UpdateEntityFastenerMessage::deserialize, this.clientConsumer(() -> UpdateEntityFastenerMessage.Handler::new));
+        net.registerMessage(id++, OpenEditLetteredConnectionScreenMessage.class, OpenEditLetteredConnectionScreenMessage::serialize, OpenEditLetteredConnectionScreenMessage::deserialize, this.clientConsumer(() -> OpenEditLetteredConnectionScreenMessage.Handler::new));
+        net.registerMessage(id++, InteractionConnectionMessage.class, InteractionConnectionMessage::serialize, InteractionConnectionMessage::deserialize, new InteractionConnectionMessage.Handler());
+        net.registerMessage(id, EditLetteredConnectionMessage.class, EditLetteredConnectionMessage::serialize, EditLetteredConnectionMessage::deserialize, new EditLetteredConnectionMessage.Handler());
+        FairyLights.network = net;
     }
 
-    private <T> BiConsumer<T, Supplier<NetworkEvent.Context>> noHandler() {
+    protected <M> BiConsumer<M, Supplier<NetworkEvent.Context>> clientConsumer(final Supplier<Supplier<BiConsumer<M, Supplier<NetworkEvent.Context>>>> consumer) {
         return (msg, ctx) -> ctx.get().setPacketHandled(true);
-    }
-
-    protected BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> createJingleHandler() {
-        return this.noHandler();
-    }
-
-    protected BiConsumer<UpdateEntityFastenerMessage, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
-        return this.noHandler();
-    }
-
-    protected BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
-        return this.noHandler();
-    }
-
-    protected BiConsumer<InteractionConnectionMessage, Supplier<NetworkEvent.Context>> createConnectionInteractionHandler() {
-        return new InteractionConnectionMessage.Handler();
-    }
-
-    protected BiConsumer<EditLetteredConnectionMessage, Supplier<NetworkEvent.Context>> createEditLetteredConnectionHandler() {
-        return new EditLetteredConnectionMessage.Handler();
     }
 
     public void initRenders() {}
@@ -141,13 +114,6 @@ public class ServerProxy {
         final CreateBlockViewEvent evt = new CreateBlockViewEvent(new RegularBlockView());
         MinecraftForge.EVENT_BUS.post(evt);
         return evt.getView();
-    }
-
-    private <MSG> void registerMessage(final Class<MSG> clazz, final BiConsumer<MSG, PacketBuffer> encoder, final Function<PacketBuffer, MSG> decoder, final BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
-        FairyLights.network.messageBuilder(clazz, this.nextMessageId++)
-            .encoder(encoder).decoder(decoder)
-            .consumer(consumer)
-            .add();
     }
 
     public void initIntegration() {

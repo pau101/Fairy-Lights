@@ -16,9 +16,6 @@ import me.paulf.fairylights.server.block.entity.FLBlockEntities;
 import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.item.ColorLightItem;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.server.net.clientbound.JingleMessage;
-import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
-import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -55,19 +52,8 @@ public final class ClientProxy extends ServerProxy {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, FLClientConfig.SPEC);
     }
 
-    @Override
-    protected BiConsumer<JingleMessage, Supplier<NetworkEvent.Context>> createJingleHandler() {
-        return new JingleMessage.Handler();
-    }
-
-    @Override
-    protected BiConsumer<UpdateEntityFastenerMessage, Supplier<NetworkEvent.Context>> createUpdateFastenerEntityHandler() {
-        return new UpdateEntityFastenerMessage.Handler();
-    }
-
-    @Override
-    protected BiConsumer<OpenEditLetteredConnectionScreenMessage, Supplier<NetworkEvent.Context>> createOpenEditLetteredConnectionGUIHandler() {
-        return new OpenEditLetteredConnectionScreenMessage.Handler();
+    protected <M> BiConsumer<M, Supplier<NetworkEvent.Context>> clientConsumer(final Supplier<Supplier<BiConsumer<M, Supplier<NetworkEvent.Context>>>> consumer) {
+        return consumer.get().get();
     }
 
     @SuppressWarnings("deprecation")
