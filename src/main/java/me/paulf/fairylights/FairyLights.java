@@ -10,6 +10,7 @@ import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CalendarEvent;
+import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -61,6 +62,6 @@ public final class FairyLights {
     }
 
     public static boolean ingredientMatches(final boolean equalsExact, final ItemStack ingredient, final ItemStack stack) {
-        return equalsExact || ingredient.getItem().isIn(FLCraftingRecipes.LIGHTS) && stack.getItem().isIn(FLCraftingRecipes.LIGHTS);
+        return equalsExact || RegistryObjects.namespaceEquals(ingredient.getItem(), FairyLights.ID) && RegistryObjects.namespaceEquals(stack.getItem(), FairyLights.ID);
     }
 }
