@@ -957,7 +957,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     private static int getMultiClickInterval() {
-        return 500;
+        return 250;
     }
 
     @FunctionalInterface
