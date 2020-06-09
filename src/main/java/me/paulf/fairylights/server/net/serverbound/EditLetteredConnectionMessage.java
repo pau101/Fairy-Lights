@@ -10,7 +10,7 @@ import net.minecraft.network.PacketBuffer;
 
 import java.util.function.BiConsumer;
 
-public class EditLetteredConnectionMessage<C extends Connection & Lettered> extends ConnectionMessage<C> {
+public class EditLetteredConnectionMessage<C extends Connection & Lettered> extends ConnectionMessage {
     private StyledString text;
 
     public EditLetteredConnectionMessage() {}
@@ -32,16 +32,16 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
         this.text = StyledString.deserialize(buf.readCompoundTag());
     }
 
-    public static final class Handler implements BiConsumer<EditLetteredConnectionMessage, ServerMessageContext> {
+    public static final class Handler implements BiConsumer<EditLetteredConnectionMessage<?>, ServerMessageContext> {
         @Override
-        public void accept(final EditLetteredConnectionMessage message, final ServerMessageContext context) {
+        public void accept(final EditLetteredConnectionMessage<?> message, final ServerMessageContext context) {
             final ServerPlayerEntity player = context.getPlayer();
-            this.accept((EditLetteredConnectionMessage<?>) message, player);
+            this.accept(message, player);
         }
 
         private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayerEntity player) {
             if (player != null) {
-                ConnectionMessage.getConnection(message, c -> c instanceof Lettered, player.world).ifPresent(connection -> {
+                ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, player.world).ifPresent(connection -> {
                     if (connection.isModifiable(player) && connection.isSupportedText(message.text)) {
                         connection.setText(message.text);
                     }

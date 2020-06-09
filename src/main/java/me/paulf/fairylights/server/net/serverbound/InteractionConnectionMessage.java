@@ -17,7 +17,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.function.BiConsumer;
 
-public final class InteractionConnectionMessage extends ConnectionMessage<Connection> {
+public final class InteractionConnectionMessage extends ConnectionMessage {
     private static final float RANGE = (Connection.MAX_LENGTH + 1) * (Connection.MAX_LENGTH + 1);
 
     private static final float REACH = 6 * 6;

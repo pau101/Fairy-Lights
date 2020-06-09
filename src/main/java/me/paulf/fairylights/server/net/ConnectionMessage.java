@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public abstract class ConnectionMessage<C extends Connection> implements Message {
+public abstract class ConnectionMessage implements Message {
     public BlockPos pos;
 
     public FastenerAccessor accessor;
@@ -21,7 +21,7 @@ public abstract class ConnectionMessage<C extends Connection> implements Message
 
     public ConnectionMessage() {}
 
-    public ConnectionMessage(final C connection) {
+    public ConnectionMessage(final Connection connection) {
         final Fastener<?> fastener = connection.getFastener();
         this.pos = fastener.getPos();
         this.accessor = fastener.createAccessor();
@@ -42,7 +42,7 @@ public abstract class ConnectionMessage<C extends Connection> implements Message
         this.uuid = buf.readUniqueId();
     }
 
-    public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage<C> message, final Predicate<? super Connection> typePredicate, final World world) {
+    public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage message, final Predicate<? super Connection> typePredicate, final World world) {
         message.accessor.update(world, message.pos);
         return message.accessor.get(world, false).map(Optional::of).orElse(Optional.empty()).flatMap(f -> {
             final Connection c = f.getConnections().get(message.uuid);

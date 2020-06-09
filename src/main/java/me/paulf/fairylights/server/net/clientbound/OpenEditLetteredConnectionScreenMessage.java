@@ -9,21 +9,21 @@ import net.minecraft.client.Minecraft;
 
 import java.util.function.BiConsumer;
 
-public class OpenEditLetteredConnectionScreenMessage<C extends Connection & Lettered> extends ConnectionMessage<C> {
+public class OpenEditLetteredConnectionScreenMessage<C extends Connection & Lettered> extends ConnectionMessage {
     public OpenEditLetteredConnectionScreenMessage() {}
 
     public OpenEditLetteredConnectionScreenMessage(final C connection) {
         super(connection);
     }
 
-    public static final class Handler implements BiConsumer<OpenEditLetteredConnectionScreenMessage, ServerMessageContext> {
+    public static final class Handler implements BiConsumer<OpenEditLetteredConnectionScreenMessage<?>, ServerMessageContext> {
         @Override
-        public void accept(final OpenEditLetteredConnectionScreenMessage message, final ServerMessageContext context) {
-            this.accept((OpenEditLetteredConnectionScreenMessage<?>) message);
+        public void accept(final OpenEditLetteredConnectionScreenMessage<?> message, final ServerMessageContext context) {
+            this.accept(message);
         }
 
         private <C extends Connection & Lettered> void accept(final OpenEditLetteredConnectionScreenMessage<C> message) {
-            ConnectionMessage.getConnection(message, c -> c instanceof Lettered, Minecraft.getInstance().world).ifPresent(connection -> {
+            ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, Minecraft.getInstance().world).ifPresent(connection -> {
                 Minecraft.getInstance().displayGuiScreen(new EditLetteredConnectionScreen<>(connection));
             });
         }

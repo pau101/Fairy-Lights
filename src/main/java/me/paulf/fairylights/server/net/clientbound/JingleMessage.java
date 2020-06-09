@@ -10,7 +10,7 @@ import net.minecraft.network.PacketBuffer;
 
 import java.util.function.BiConsumer;
 
-public final class JingleMessage extends ConnectionMessage<HangingLightsConnection> {
+public final class JingleMessage extends ConnectionMessage {
     private int lightOffset;
 
     private JingleLibrary library;
@@ -47,7 +47,7 @@ public final class JingleMessage extends ConnectionMessage<HangingLightsConnecti
         public void accept(final JingleMessage message, final ClientMessageContext context) {
             final Jingle jingle = message.jingle;
             if (jingle != null) {
-                ConnectionMessage.getConnection(message, c -> true, Minecraft.getInstance().world).ifPresent(connection ->
+                ConnectionMessage.<HangingLightsConnection>getConnection(message, c -> c instanceof HangingLightsConnection, Minecraft.getInstance().world).ifPresent(connection ->
                     connection.play(message.library, jingle, message.lightOffset));
             }
         }
