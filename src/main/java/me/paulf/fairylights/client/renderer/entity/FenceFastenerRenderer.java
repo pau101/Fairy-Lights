@@ -40,6 +40,7 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
         super.render(entity, yaw, delta, matrix, source, packedLight);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public ResourceLocation getEntityTexture(final FenceFastenerEntity entity) {
         return AtlasTexture.LOCATION_BLOCKS_TEXTURE;

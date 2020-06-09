@@ -84,10 +84,11 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
         return 1;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public float getBrightness() {
         final BlockPos pos = new BlockPos(this);
-        if (this.world.isBlockLoaded(pos)) {
+        if (this.world.isBlockPresent(pos)) {
             return this.world.getBrightness(pos);
         }
         return 0;
@@ -179,7 +180,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
                 this.remove();
             } else if (fastener.update() && !this.world.isRemote) {
                 final UpdateEntityFastenerMessage msg = new UpdateEntityFastenerMessage(this, fastener.serializeNBT());
-                ServerProxy.sendToPlayersWatchingEntity(msg, this.world, this);
+                ServerProxy.sendToPlayersWatchingEntity(msg, this);
             }
         });
     }

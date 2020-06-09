@@ -11,6 +11,8 @@ import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.INBT;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
@@ -26,16 +28,23 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.util.function.Consumer;
+
 public class ServerProxy {
     public void init(final IEventBus modBus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
         MinecraftForge.EVENT_BUS.<FMLServerAboutToStartEvent>addListener(e -> {
             final MinecraftServer server = e.getServer();
-            server.getResourceManager().addReloadListener((IResourceManagerReloadListener) mgr -> JingleLibrary.loadAll(server));
+            this.addListener(server.getResourceManager(), mgr -> JingleLibrary.loadAll(server));
         });
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         new ClippyController().init(modBus);
         modBus.addListener(this::setup);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void addListener(final IReloadableResourceManager manager, final Consumer<IResourceManager> listener) {
+        manager.addReloadListener((IResourceManagerReloadListener) listener::accept);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -59,7 +68,7 @@ public class ServerProxy {
         FairyLights.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
     }
 
-    public static void sendToPlayersWatchingEntity(final Object message, final World world, final Entity entity) {
+    public static void sendToPlayersWatchingEntity(final Object message, final Entity entity) {
         FairyLights.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 

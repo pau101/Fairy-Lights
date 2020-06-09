@@ -81,6 +81,7 @@ public class LightBlock extends HorizontalFaceBlock {
         return this.variant;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getLightValue(final BlockState state) {
         return state.get(LIT) ? super.getLightValue(state) : 0;
@@ -139,6 +140,7 @@ public class LightBlock extends HorizontalFaceBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<ItemStack> getDrops(final BlockState state, final LootContext.Builder builder) {
         final TileEntity entity = builder.get(LootParameters.BLOCK_ENTITY);
@@ -148,6 +150,7 @@ public class LightBlock extends HorizontalFaceBlock {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public ActionResultType onBlockActivated(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
         final TileEntity entity = world.getTileEntity(pos);
@@ -168,6 +171,7 @@ public class LightBlock extends HorizontalFaceBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(final BlockState state, final IBlockReader world, final BlockPos pos, final ISelectionContext context) {
         switch (state.get(FACE)) {
@@ -191,6 +195,7 @@ public class LightBlock extends HorizontalFaceBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public ItemStack getItem(final IBlockReader world, final BlockPos pos, final BlockState state) {
         final TileEntity entity = world.getTileEntity(pos);
@@ -202,6 +207,7 @@ public class LightBlock extends HorizontalFaceBlock {
         return stack;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public BlockRenderType getRenderType(final BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;

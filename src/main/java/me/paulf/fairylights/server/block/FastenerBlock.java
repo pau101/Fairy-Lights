@@ -68,16 +68,19 @@ public final class FastenerBlock extends DirectionalBlock {
         builder.add(FACING, TRIGGERED);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public BlockState rotate(final BlockState state, final Rotation rot) {
         return state.with(FACING, rot.rotate(state.get(FACING)));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public BlockState mirror(final BlockState state, final Mirror mirrorIn) {
         return state.with(FACING, mirrorIn.mirror(state.get(FACING)));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(final BlockState state, final IBlockReader worldIn, final BlockPos pos, final ISelectionContext context) {
         switch (state.get(FACING)) {
@@ -107,6 +110,7 @@ public final class FastenerBlock extends DirectionalBlock {
         return new FastenerBlockEntity();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
@@ -118,6 +122,7 @@ public final class FastenerBlock extends DirectionalBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
         final Direction facing = state.get(FACING);
@@ -141,6 +146,7 @@ public final class FastenerBlock extends DirectionalBlock {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public BlockState updatePostPlacement(final BlockState state, final Direction facing, final BlockState facingState, final IWorld world, final BlockPos currentPos, final BlockPos facingPos) {
         if (facing.getOpposite() == state.get(FACING) && !state.isValidPosition(world, currentPos)) {
@@ -149,6 +155,7 @@ public final class FastenerBlock extends DirectionalBlock {
         return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onBlockAdded(final BlockState state, final World world, final BlockPos pos, final BlockState oldState, final boolean isMoving) {
         if (oldState.getBlock() != state.getBlock()) {
@@ -158,6 +165,7 @@ public final class FastenerBlock extends DirectionalBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block blockIn, final BlockPos fromPos, final boolean isMoving) {
         if (state.isValidPosition(world, pos)) {
@@ -176,11 +184,13 @@ public final class FastenerBlock extends DirectionalBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean hasComparatorInputOverride(final BlockState state) {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getComparatorInputOverride(final BlockState state, final World world, final BlockPos pos) {
         final TileEntity entity = world.getTileEntity(pos);
@@ -218,17 +228,19 @@ public final class FastenerBlock extends DirectionalBlock {
         return 2;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void tick(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
         this.jingle(world, pos);
     }
 
-    private boolean jingle(final World world, final BlockPos pos) {
+    private void jingle(final World world, final BlockPos pos) {
         final TileEntity entity = world.getTileEntity(pos);
         if (!(entity instanceof FastenerBlockEntity)) {
-            return false;
+            return;
         }
-        return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
+        //noinspection ResultOfMethodCallIgnored
+        entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
             .flatMap(e -> {
                 final Connection connection = e.getValue();
                 if (connection.getType() == ConnectionType.HANGING_LIGHTS) {

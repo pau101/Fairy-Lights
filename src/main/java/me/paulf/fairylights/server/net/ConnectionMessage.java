@@ -8,6 +8,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -38,16 +39,16 @@ public abstract class ConnectionMessage implements Message {
     @Override
     public void decode(final PacketBuffer buf) {
         this.pos = buf.readBlockPos();
-        this.accessor = FastenerType.deserialize(buf.readCompoundTag());
+        this.accessor = FastenerType.deserialize(Objects.requireNonNull(buf.readCompoundTag(), "tag"));
         this.uuid = buf.readUniqueId();
     }
 
+    @SuppressWarnings("unchecked")
     public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage message, final Predicate<? super Connection> typePredicate, final World world) {
         message.accessor.update(world, message.pos);
         return message.accessor.get(world, false).map(Optional::of).orElse(Optional.empty()).flatMap(f -> {
             final Connection c = f.getConnections().get(message.uuid);
             if (typePredicate.test(c)) {
-                //noinspection unchecked
                 return Optional.of((C) c);
             }
             return Optional.empty();

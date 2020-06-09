@@ -20,6 +20,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -136,7 +137,7 @@ public final class GenericRecipe implements ICraftingRecipe {
     }
 
     @Override
-    public boolean matches(final CraftingInventory inventory, final World world) {
+    public boolean matches(final CraftingInventory inventory, @Nullable final World world) {
         if (!this.canFit(inventory.getWidth(), inventory.getHeight())) {
             return false;
         }

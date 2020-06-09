@@ -113,7 +113,7 @@ public final class ServerEventHandler {
         if (event.phase == TickEvent.Phase.END) {
             event.player.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
                 if (fastener.update() && !event.player.world.isRemote) {
-                    ServerProxy.sendToPlayersWatchingEntity(new UpdateEntityFastenerMessage(event.player, fastener.serializeNBT()), event.player.world, event.player);
+                    ServerProxy.sendToPlayersWatchingEntity(new UpdateEntityFastenerMessage(event.player, fastener.serializeNBT()), event.player);
                 }
             });
         }
@@ -235,7 +235,7 @@ public final class ServerEventHandler {
             final Connection connection = connectionEntry.getValue();
             if (connection.isOrigin() && connection.getDestination().get(world, false).isPresent() && connection instanceof HangingLightsConnection) {
                 final HangingLightsConnection connectionLogic = (HangingLightsConnection) connection;
-                final Light[] lightPoints = connectionLogic.getFeatures();
+                final Light<?>[] lightPoints = connectionLogic.getFeatures();
                 if (connectionLogic.canCurrentlyPlayAJingle()) {
                     if (arePlayersNear) {
                         if (feasibleConnections.containsKey(fastener)) {
@@ -247,7 +247,7 @@ public final class ServerEventHandler {
                         }
                     }
                 } else {
-                    for (final Light light : lightPoints) {
+                    for (final Light<?> light : lightPoints) {
                         points.add(light.getAbsolutePoint(fastener));
                     }
                 }
@@ -256,8 +256,8 @@ public final class ServerEventHandler {
         return points;
     }
 
-    public boolean isTooCloseTo(final Fastener<?> fastener, final Light[] lights, final List<Vec3d> playingSources) {
-        for (final Light light : lights) {
+    public boolean isTooCloseTo(final Fastener<?> fastener, final Light<?>[] lights, final List<Vec3d> playingSources) {
+        for (final Light<?> light : lights) {
             for (final Vec3d point : playingSources) {
                 if (light.getAbsolutePoint(fastener).distanceTo(point) <= FLConfig.getJingleAmplitude()) {
                     return true;
@@ -268,7 +268,7 @@ public final class ServerEventHandler {
     }
 
     public static boolean tryJingle(final World world, final HangingLightsConnection hangingLights, final JingleLibrary library) {
-        final Light[] lights = hangingLights.getFeatures();
+        final Light<?>[] lights = hangingLights.getFeatures();
         final Jingle jingle = library.getRandom(world.rand, lights.length);
         if (jingle != null) {
             final int lightOffset = lights.length / 2 - jingle.getRange() / 2;

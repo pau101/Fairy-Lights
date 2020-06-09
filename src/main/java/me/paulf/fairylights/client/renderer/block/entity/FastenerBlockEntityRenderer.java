@@ -1,7 +1,7 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.BlockView;
@@ -44,12 +44,12 @@ public final class FastenerBlockEntityRenderer extends TileEntityRenderer<Fasten
 
         @Override
         public void translate(final float x, final float y, final float z) {
-            GlStateManager.translatef(x, y, z);
+            RenderSystem.translatef(x, y, z);
         }
 
         @Override
         public void rotate(final float angle, final float x, final float y, final float z) {
-            GlStateManager.rotatef(angle, x, y, z);
+            RenderSystem.rotatef(angle, x, y, z);
         }
     }
 }

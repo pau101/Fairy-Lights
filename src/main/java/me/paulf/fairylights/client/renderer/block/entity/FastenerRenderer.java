@@ -67,6 +67,7 @@ public class FastenerRenderer {
         renderBakedModel(Minecraft.getInstance().getModelManager().getModel(path), matrix, buf, r, g, b, packedLight, packedOverlay);
     }
 
+    @SuppressWarnings("deprecation")
     public static void renderBakedModel(final IBakedModel model, final MatrixStack matrix, final IVertexBuilder buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
         renderBakedModel(model, ItemCameraTransforms.TransformType.FIXED, matrix, buf, r, g, b, packedLight, packedOverlay);
     }

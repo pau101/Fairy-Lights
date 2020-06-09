@@ -173,7 +173,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
                             break;
                         }
                     }
-                    if (auxInputs != null && auxInputs.size() > 0) {
+                    if (auxInputs.size() > 0) {
                         inputs.add(auxInputs.get(auxIdx++));
                         ingredientMat[i] = ingredientAux;
                         if (auxIdx == auxInputs.size()) {
@@ -269,6 +269,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         return Collections.singletonList(outputs);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void setIngredients(final IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, (List<List<ItemStack>>) (List<?>) this.allInputs);
@@ -298,7 +299,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         group.set(ingredients);
     }
 
-    private final class Input {
+    private static final class Input {
         List<List<ItemStack>> inputs;
 
         GenericIngredient<?, ?>[] ingredients;
@@ -309,7 +310,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         }
     }
 
-    private final class Tooltips implements ITooltipCallback<ItemStack> {
+    private static final class Tooltips implements ITooltipCallback<ItemStack> {
         GenericIngredient<?, ?>[] ingredients;
 
         public Tooltips(final GenericIngredient<?, ?>[] ingredients) {
