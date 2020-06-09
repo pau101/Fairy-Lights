@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public abstract class ConnectionMessage<C extends Connection> {
+public abstract class ConnectionMessage<C extends Connection> implements Message {
     public BlockPos pos;
 
     public FastenerAccessor accessor;
@@ -28,16 +28,18 @@ public abstract class ConnectionMessage<C extends Connection> {
         this.uuid = connection.getUUID();
     }
 
-    public static void serialize(final ConnectionMessage message, final PacketBuffer buf) {
-        buf.writeBlockPos(message.pos);
-        buf.writeCompoundTag(FastenerType.serialize(message.accessor));
-        buf.writeUniqueId(message.uuid);
+    @Override
+    public void encode(final PacketBuffer buf) {
+        buf.writeBlockPos(this.pos);
+        buf.writeCompoundTag(FastenerType.serialize(this.accessor));
+        buf.writeUniqueId(this.uuid);
     }
 
-    public static void deserialize(final ConnectionMessage message, final PacketBuffer buf) {
-        message.pos = buf.readBlockPos();
-        message.accessor = FastenerType.deserialize(buf.readCompoundTag());
-        message.uuid = buf.readUniqueId();
+    @Override
+    public void decode(final PacketBuffer buf) {
+        this.pos = buf.readBlockPos();
+        this.accessor = FastenerType.deserialize(buf.readCompoundTag());
+        this.uuid = buf.readUniqueId();
     }
 
     public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage<C> message, final Predicate<? super Connection> typePredicate, final World world) {

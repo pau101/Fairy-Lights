@@ -9,17 +9,11 @@ import me.paulf.fairylights.server.fastener.CreateBlockViewEvent;
 import me.paulf.fairylights.server.fastener.RegularBlockView;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
-import me.paulf.fairylights.server.net.clientbound.JingleMessage;
-import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
-import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
-import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
-import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,9 +23,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -74,22 +66,6 @@ public class ServerProxy {
             throw new UnsupportedOperationException();
         });
         new ClippyController().init();
-    }
-
-    public void initNetwork() {
-        final String version = "1";
-        final SimpleChannel net = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(FairyLights.ID, "net"))
-            .networkProtocolVersion(() -> version)
-            .clientAcceptedVersions(version::equals)
-            .serverAcceptedVersions(version::equals)
-            .simpleChannel();
-        int id = 0;
-        net.registerMessage(id++, JingleMessage.class, JingleMessage::serialize, JingleMessage::deserialize, this.clientConsumer(() -> JingleMessage.Handler::new));
-        net.registerMessage(id++, UpdateEntityFastenerMessage.class, UpdateEntityFastenerMessage::serialize, UpdateEntityFastenerMessage::deserialize, this.clientConsumer(() -> UpdateEntityFastenerMessage.Handler::new));
-        net.registerMessage(id++, OpenEditLetteredConnectionScreenMessage.class, OpenEditLetteredConnectionScreenMessage::serialize, OpenEditLetteredConnectionScreenMessage::deserialize, this.clientConsumer(() -> OpenEditLetteredConnectionScreenMessage.Handler::new));
-        net.registerMessage(id++, InteractionConnectionMessage.class, InteractionConnectionMessage::serialize, InteractionConnectionMessage::deserialize, new InteractionConnectionMessage.Handler());
-        net.registerMessage(id, EditLetteredConnectionMessage.class, EditLetteredConnectionMessage::serialize, EditLetteredConnectionMessage::deserialize, new EditLetteredConnectionMessage.Handler());
-        FairyLights.network = net;
     }
 
     protected <M> BiConsumer<M, Supplier<NetworkEvent.Context>> clientConsumer(final Supplier<Supplier<BiConsumer<M, Supplier<NetworkEvent.Context>>>> consumer) {

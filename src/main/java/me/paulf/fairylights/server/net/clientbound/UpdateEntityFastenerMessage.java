@@ -1,16 +1,15 @@
 package me.paulf.fairylights.server.net.clientbound;
 
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import net.minecraft.client.Minecraft;
+import me.paulf.fairylights.server.net.ClientMessageContext;
+import me.paulf.fairylights.server.net.Message;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
-public final class UpdateEntityFastenerMessage {
+public final class UpdateEntityFastenerMessage implements Message {
     private int entityId;
 
     private CompoundNBT compound;
@@ -22,32 +21,25 @@ public final class UpdateEntityFastenerMessage {
         this.compound = compound;
     }
 
-    public static void serialize(final UpdateEntityFastenerMessage message, final PacketBuffer buf) {
-        buf.writeVarInt(message.entityId);
-        buf.writeCompoundTag(message.compound);
+    @Override
+    public void encode(final PacketBuffer buf) {
+        buf.writeVarInt(this.entityId);
+        buf.writeCompoundTag(this.compound);
     }
 
-    public static UpdateEntityFastenerMessage deserialize(final PacketBuffer buf) {
-        final UpdateEntityFastenerMessage message = new UpdateEntityFastenerMessage();
-        message.entityId = buf.readVarInt();
-        message.compound = buf.readCompoundTag();
-        return message;
+    @Override
+    public void decode(final PacketBuffer buf) {
+        this.entityId = buf.readVarInt();
+        this.compound = buf.readCompoundTag();
     }
 
-    public static final class Handler implements BiConsumer<UpdateEntityFastenerMessage, Supplier<NetworkEvent.Context>> {
+    public static final class Handler implements BiConsumer<UpdateEntityFastenerMessage, ClientMessageContext> {
         @Override
-        public void accept(final UpdateEntityFastenerMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            final NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> {
-                final Minecraft mc = Minecraft.getInstance();
-                if (mc.world != null) {
-                    final Entity entity = mc.world.getEntityByID(message.entityId);
-                    if (entity != null) {
-                        entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.deserializeNBT(message.compound));
-                    }
-                }
-            });
-            context.setPacketHandled(true);
+        public void accept(final UpdateEntityFastenerMessage message, final ClientMessageContext context) {
+            final Entity entity = context.getWorld().getEntityByID(message.entityId);
+            if (entity != null) {
+                entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.deserializeNBT(message.compound));
+            }
         }
     }
 }

@@ -3,13 +3,12 @@ package me.paulf.fairylights.server.net.serverbound;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.Lettered;
 import me.paulf.fairylights.server.net.ConnectionMessage;
+import me.paulf.fairylights.server.net.ServerMessageContext;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 public class EditLetteredConnectionMessage<C extends Connection & Lettered> extends ConnectionMessage<C> {
     private StyledString text;
@@ -21,25 +20,23 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
         this.text = text;
     }
 
-    public static void serialize(final EditLetteredConnectionMessage<?> message, final PacketBuffer buf) {
-        ConnectionMessage.serialize(message, buf);
-        buf.writeCompoundTag(StyledString.serialize(message.text));
+    @Override
+    public void encode(final PacketBuffer buf) {
+        super.encode(buf);
+        buf.writeCompoundTag(StyledString.serialize(this.text));
     }
 
-    public static <C extends Connection & Lettered> EditLetteredConnectionMessage<C> deserialize(final PacketBuffer buf) {
-        final EditLetteredConnectionMessage<C> message = new EditLetteredConnectionMessage<>();
-        ConnectionMessage.deserialize(message, buf);
-        message.text = StyledString.deserialize(buf.readCompoundTag());
-        return message;
+    @Override
+    public void decode(final PacketBuffer buf) {
+        super.decode(buf);
+        this.text = StyledString.deserialize(buf.readCompoundTag());
     }
 
-    public static final class Handler implements BiConsumer<EditLetteredConnectionMessage, Supplier<NetworkEvent.Context>> {
+    public static final class Handler implements BiConsumer<EditLetteredConnectionMessage, ServerMessageContext> {
         @Override
-        public void accept(final EditLetteredConnectionMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
-            context.enqueueWork(() -> this.accept((EditLetteredConnectionMessage<?>) message, player));
-            context.setPacketHandled(true);
+        public void accept(final EditLetteredConnectionMessage message, final ServerMessageContext context) {
+            final ServerPlayerEntity player = context.getPlayer();
+            this.accept((EditLetteredConnectionMessage<?>) message, player);
         }
 
         private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayerEntity player) {

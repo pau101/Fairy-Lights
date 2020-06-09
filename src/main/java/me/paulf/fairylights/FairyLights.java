@@ -8,11 +8,18 @@ import me.paulf.fairylights.server.creativetabs.FairyLightsItemGroup;
 import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
+import me.paulf.fairylights.server.net.NetBuilder;
+import me.paulf.fairylights.server.net.clientbound.JingleMessage;
+import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
+import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
+import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
+import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.CalendarEvent;
 import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -29,7 +36,15 @@ public final class FairyLights {
 
     public ServerProxy proxy;
 
-    public static SimpleChannel network;
+    @SuppressWarnings("Convert2MethodRef")
+    public static final SimpleChannel network = new NetBuilder(new ResourceLocation(ID, "net"))
+        .version(1).optionalServer().requiredClient()
+        .<JingleMessage>clientbound(JingleMessage::new).consumer(() -> new JingleMessage.Handler())
+        .clientbound(UpdateEntityFastenerMessage::new).consumer(() -> new UpdateEntityFastenerMessage.Handler())
+        .serverbound(OpenEditLetteredConnectionScreenMessage::new).consumer(() -> new OpenEditLetteredConnectionScreenMessage.Handler())
+        .serverbound(InteractionConnectionMessage::new).consumer(() -> new InteractionConnectionMessage.Handler())
+        .serverbound(EditLetteredConnectionMessage::new).consumer(() -> new EditLetteredConnectionMessage.Handler())
+        .build();
 
     public static final ItemGroup ITEM_GROUP = new FairyLightsItemGroup();
 
@@ -52,7 +67,6 @@ public final class FairyLights {
     public void init(final FMLCommonSetupEvent event) {
         this.proxy.initIntegration();
         this.proxy.initRenders();
-        this.proxy.initNetwork();
         this.proxy.initEggs();
         this.proxy.initHandlers();
     }

@@ -5,6 +5,7 @@ import me.paulf.fairylights.server.fastener.connection.PlayerAction;
 import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.net.ConnectionMessage;
+import me.paulf.fairylights.server.net.ServerMessageContext;
 import me.paulf.fairylights.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -13,10 +14,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 public final class InteractionConnectionMessage extends ConnectionMessage<Connection> {
     private static final float RANGE = (Connection.MAX_LENGTH + 1) * (Connection.MAX_LENGTH + 1);
@@ -41,38 +40,30 @@ public final class InteractionConnectionMessage extends ConnectionMessage<Connec
         this.featureId = intersection.getFeature().getId();
     }
 
-    public static void serialize(final InteractionConnectionMessage message, final PacketBuffer buf) {
-        ConnectionMessage.serialize(message, buf);
-        buf.writeByte(message.type.ordinal());
-        buf.writeDouble(message.hit.x);
-        buf.writeDouble(message.hit.y);
-        buf.writeDouble(message.hit.z);
-        buf.writeVarInt(message.featureType.getId());
-        buf.writeVarInt(message.featureId);
+    @Override
+    public void encode(final PacketBuffer buf) {
+        super.encode(buf);
+        buf.writeByte(this.type.ordinal());
+        buf.writeDouble(this.hit.x);
+        buf.writeDouble(this.hit.y);
+        buf.writeDouble(this.hit.z);
+        buf.writeVarInt(this.featureType.getId());
+        buf.writeVarInt(this.featureId);
     }
 
-    public static InteractionConnectionMessage deserialize(final PacketBuffer buf) {
-        final InteractionConnectionMessage message = new InteractionConnectionMessage();
-        ConnectionMessage.deserialize(message, buf);
-        message.type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
-        message.hit = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        message.featureType = FeatureType.fromId(buf.readVarInt());
-        message.featureId = buf.readVarInt();
-        return message;
+    @Override
+    public void decode(final PacketBuffer buf) {
+        super.decode(buf);
+        this.type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
+        this.hit = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        this.featureType = FeatureType.fromId(buf.readVarInt());
+        this.featureId = buf.readVarInt();
     }
 
-    public static final class Handler implements BiConsumer<InteractionConnectionMessage, Supplier<NetworkEvent.Context>> {
+    public static final class Handler implements BiConsumer<InteractionConnectionMessage, ServerMessageContext> {
         @Override
-        public void accept(final InteractionConnectionMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
-            if (player != null) {
-                context.enqueueWork(() -> this.handle(message, player));
-            }
-            context.setPacketHandled(true);
-        }
-
-        private void handle(final InteractionConnectionMessage message, final PlayerEntity player) {
+        public void accept(final InteractionConnectionMessage message, final ServerMessageContext context) {
+            final ServerPlayerEntity player = context.getPlayer();
             getConnection(message, c -> true, player.world).ifPresent(connection -> {
                 if (connection.isModifiable(player) &&
                     player.getPositionVec().squareDistanceTo(new Vec3d(connection.getFastener().getPos())) < RANGE &&
