@@ -38,7 +38,7 @@ public class LightItem extends BlockItem {
         final CompoundNBT tag = stack.getTag();
         if (tag != null) {
             if (tag.getBoolean("twinkle")) {
-                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").applyTextStyle(TextFormatting.GRAY));
+                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").applyTextStyles(TextFormatting.GRAY, TextFormatting.ITALIC));
             }
         }
     }

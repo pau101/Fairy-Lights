@@ -2,7 +2,6 @@ package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
-import me.paulf.fairylights.util.Utils;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.DyeColor;
@@ -14,6 +13,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -44,12 +44,12 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
             final ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);
             final int tagCount = tagList.size();
             if (tagCount > 0) {
-                tooltip.add(new TranslationTextComponent("item.pennantBunting.pattern"));
+                tooltip.add(new StringTextComponent(""));
             }
             for (int i = 0; i < tagCount; i++) {
                 final CompoundNBT lightCompound = tagList.getCompound(i);
                 final Item item = Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(lightCompound.getString("item"))), "item");
-                tooltip.add(new TranslationTextComponent("format.pattern.entry", Utils.formatColored(DyeColor.byId(lightCompound.getByte("color")), item.getName())));
+                tooltip.add(item.getName());
             }
         }
     }

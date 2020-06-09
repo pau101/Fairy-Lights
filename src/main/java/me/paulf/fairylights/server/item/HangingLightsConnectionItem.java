@@ -11,7 +11,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -34,7 +33,7 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
             }
             for (int i = 0; i < tagCount; i++) {
                 final ItemStack lightStack = ItemStack.read(tagList.getCompound(i));
-                tooltip.add(lightStack.getDisplayName().applyTextStyle(TextFormatting.GRAY));
+                tooltip.add(lightStack.getDisplayName());
                 lightStack.getItem().addInformation(lightStack, world, tooltip, flag);
             }
         }

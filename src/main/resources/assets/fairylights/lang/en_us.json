@@ -9,11 +9,9 @@
     "item.fairylights.garland": "Vine Garland",
     "item.fairylights.tinsel": "Tinsel Garland",
 
-    "item.fairyLights.twinkle": "Twinkle",
-    "item.fairyLights.tight": "Uncurved",
+    "item.fairyLights.twinkle": "Twinkles",
 
     "item.fairylights.pennant_bunting": "Pennant Bunting",
-    "item.pennantBunting.pattern": "Pattern:",
 
     "item.fairylights.letter_bunting": "Letter Bunting",
 
@@ -54,7 +52,6 @@
     "recipe.hangingLights.light": "Add multiple lights to customize pattern",
     "recipe.pennantBunting.pennant": "Add multiple pennants to customize pattern",
 
-    "format.pattern.entry": "  %1$s",
     "format.colored": "%1$s %2$s",
     "format.text": "Text: %1$s",
 
