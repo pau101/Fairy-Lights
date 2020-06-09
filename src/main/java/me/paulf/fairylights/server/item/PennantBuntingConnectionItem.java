@@ -29,10 +29,10 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
 
     @Override
     public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-        if (!stack.hasTag()) {
+        final CompoundNBT compound = stack.getTag();
+        if (compound == null) {
             return;
         }
-        final CompoundNBT compound = stack.getTag();
         if (compound.contains("text", NBT.TAG_COMPOUND)) {
             final CompoundNBT text = compound.getCompound("text");
             final StyledString s = StyledString.deserialize(text);
