@@ -39,7 +39,7 @@ public final class FairyLights {
     @SuppressWarnings("Convert2MethodRef")
     public static final SimpleChannel NETWORK = new NetBuilder(new ResourceLocation(ID, "net"))
         .version(1).optionalServer().requiredClient()
-        .<JingleMessage>clientbound(JingleMessage::new).consumer(() -> new JingleMessage.Handler())
+        .clientbound(JingleMessage::new).consumer(() -> new JingleMessage.Handler())
         .clientbound(UpdateEntityFastenerMessage::new).consumer(() -> new UpdateEntityFastenerMessage.Handler())
         .serverbound(OpenEditLetteredConnectionScreenMessage::new).consumer(() -> new OpenEditLetteredConnectionScreenMessage.Handler())
         .serverbound(InteractionConnectionMessage::new).consumer(() -> new InteractionConnectionMessage.Handler())
