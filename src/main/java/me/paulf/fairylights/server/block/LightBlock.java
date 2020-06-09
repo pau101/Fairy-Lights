@@ -44,7 +44,7 @@ import java.util.Random;
 public class LightBlock extends HorizontalFaceBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    private static final VoxelShape MIN_FLOOR_ANCHOR_SHAPE = Block.makeCuboidShape(7.0D, 0.0D, 7.0D, 9.0D, 16.0D, 9.0D);
+    private static final VoxelShape MIN_ANCHOR_SHAPE = Block.makeCuboidShape(7.0D, 0.0D, 7.0D, 9.0D, 16.0D, 9.0D);
 
     private final VoxelShape floorShape, eastWallShape, westWallShape, northWallShape, southWallShape, ceilingShape;
 
@@ -102,7 +102,7 @@ public class LightBlock extends HorizontalFaceBlock {
         final BlockPos anchorPos = pos.offset(facing.getOpposite());
         final VoxelShape shape = world.getBlockState(anchorPos).getCollisionShape(world, anchorPos);
         if (state.get(FACE) != AttachFace.WALL) {
-            return !VoxelShapes.compare(shape.project(facing), MIN_FLOOR_ANCHOR_SHAPE, IBooleanFunction.ONLY_SECOND);
+            return !VoxelShapes.compare(shape.project(facing), MIN_ANCHOR_SHAPE, IBooleanFunction.ONLY_SECOND);
         }
         return Block.doesSideFillSquare(shape, facing);
     }
