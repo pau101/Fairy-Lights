@@ -26,6 +26,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -190,11 +191,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     @Override
     public Function<String, String> getInputTransformer() {
-        return str -> Normalizer.normalize(str, Normalizer.Form.NFKD).chars()
-            .map(Character::toUpperCase)
-            .filter(this::isSupportedCharacter)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
+        return str -> Normalizer.normalize(str, Normalizer.Form.NFKD).replaceAll("[\\p{Mn}\\p{Sk}]", "").toUpperCase(Locale.ROOT);
     }
 
     @Override

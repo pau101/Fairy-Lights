@@ -16,7 +16,7 @@ public interface Lettered {
     }
 
     default boolean isSupportedCharacter(final int chr) {
-        return Character.isValidCodePoint(chr) && !Character.isISOControl(chr);
+        return Character.isValidCodePoint(chr) && ((((1 << Character.NON_SPACING_MARK | 1 << Character.MODIFIER_SYMBOL) >> Character.getType(chr)) & 1) == 0);
     }
 
     default boolean isSupportedText(final StyledString text) {
