@@ -42,6 +42,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     private final float spacing;
 
     private final AxisAlignedBB bounds;
+
     private final Function<ItemStack, T> behaviorFactory;
 
     private final boolean orientable;

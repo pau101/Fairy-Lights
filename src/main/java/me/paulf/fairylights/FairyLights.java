@@ -32,8 +32,6 @@ import java.time.Month;
 public final class FairyLights {
     public static final String ID = "fairylights";
 
-    public ServerProxy proxy;
-
     @SuppressWarnings("Convert2MethodRef")
     public static final SimpleChannel NETWORK = new NetBuilder(new ResourceLocation(ID, "net"))
         .version(1).optionalServer().requiredClient()
@@ -49,7 +47,6 @@ public final class FairyLights {
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 
     public FairyLights() {
-        this.proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         FLSounds.REG.register(bus);
         FLBlocks.REG.register(bus);
@@ -57,7 +54,8 @@ public final class FairyLights {
         FLItems.REG.register(bus);
         FLBlockEntities.REG.register(bus);
         FLCraftingRecipes.REG.register(bus);
-        this.proxy.init(bus);
+        final ServerProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+        proxy.init(bus);
     }
 
     public static boolean ingredientMatches(final boolean equalsExact, final ItemStack ingredient, final ItemStack stack) {
