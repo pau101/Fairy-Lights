@@ -17,8 +17,8 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     public static final LightVariant<StandardLightBehavior> PAPER_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.250D, -0.906D, -0.250D, 0.250D, 0.091D, 0.250D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> ORB_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.219D, -0.469D, -0.219D, 0.219D, 0.091D, 0.219D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> FLOWER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.409D, -0.158D, -0.409D, 0.369D, 0.125D, 0.369D), SimpleLightVariant::standardBehavior, true);
-    public static final LightVariant<StandardLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> CANDLE_LANTERN_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> OIL_LANTERN_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> JACK_O_LANTERN = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.188D, -0.375D, -0.203D, 0.188D, 0.122D, 0.188D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> SKULL_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.156D, -0.360D, -0.172D, 0.156D, 0.122D, 0.156D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> GHOST_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.201D, -0.314D, -0.201D, 0.201D, 0.125D, 0.201D), SimpleLightVariant::standardBehavior);
@@ -33,7 +33,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
         final float blue = (rgb & 0xFF) / 255.0F;
         return new MeteorLightBehavior(red, green, blue);
     });
-    public static final LightVariant<OilLanternBehavior> TORCH_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), stack -> new OilLanternBehavior());
+    public static final LightVariant<OilLanternBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), stack -> new OilLanternBehavior());
 
     private final boolean parallelsCord;
 

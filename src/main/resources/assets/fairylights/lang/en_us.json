@@ -25,9 +25,8 @@
     "block.fairylights.paper_lantern": "Paper Lantern",
     "block.fairylights.orb_lantern": "Orb Lantern",
     "block.fairylights.flower_light": "Flower Light",
-    "block.fairylights.candle_lantern": "Candle Lantern",
-    "block.fairylights.oil_lantern": "Oil Lantern",
-    "item.light.luxoBall.name": "Luxo Ball",
+    "block.fairylights.candle_lantern_light": "Candle Lantern Light",
+    "block.fairylights.oil_lantern_light": "Oil Lantern Light",
     "block.fairylights.jack_o_lantern": "Jack o'Lantern",
     "block.fairylights.skull_light": "Skull Light",
     "block.fairylights.ghost_light": "Ghost Light",
@@ -36,7 +35,7 @@
     "block.fairylights.snowflake_light": "Snowflake Light",
     "block.fairylights.icicle_lights": "Icicle Lights",
     "block.fairylights.meteor_light": "Meteor Light",
-    "block.fairylights.torch_lantern": "Torch Lantern",
+    "block.fairylights.oil_lantern": "Oil Lantern",
 
     "item.fairylights.ladder": "Stepladder",
 

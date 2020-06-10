@@ -35,9 +35,9 @@ public final class FLItems {
 
     public static final RegistryObject<LightItem> FLOWER_LIGHT = REG.register("flower_light", FLItems.createColorLight(FLBlocks.FLOWER_LIGHT));
 
-    public static final RegistryObject<LightItem> CANDLE_LANTERN = REG.register("candle_lantern", FLItems.createColorLight(FLBlocks.CANDLE_LANTERN));
+    public static final RegistryObject<LightItem> CANDLE_LANTERN_LIGHT = REG.register("candle_lantern_light", FLItems.createColorLight(FLBlocks.CANDLE_LANTERN_LIGHT));
 
-    public static final RegistryObject<LightItem> OIL_LANTERN = REG.register("oil_lantern", FLItems.createColorLight(FLBlocks.OIL_LANTERN));
+    public static final RegistryObject<LightItem> OIL_LANTERN_LIGHT = REG.register("oil_lantern_light", FLItems.createColorLight(FLBlocks.OIL_LANTERN_LIGHT));
 
     public static final RegistryObject<LightItem> JACK_O_LANTERN = REG.register("jack_o_lantern", FLItems.createColorLight(FLBlocks.JACK_O_LANTERN));
 
@@ -55,7 +55,7 @@ public final class FLItems {
 
     public static final RegistryObject<LightItem> METEOR_LIGHT = REG.register("meteor_light", FLItems.createColorLight(FLBlocks.METEOR_LIGHT));
 
-    public static final RegistryObject<LightItem> TORCH_LANTERN = REG.register("torch_lantern", FLItems.createLight(FLBlocks.TORCH_LANTERN, LightItem::new));
+    public static final RegistryObject<LightItem> OIL_LANTERN = REG.register("oil_lantern", FLItems.createLight(FLBlocks.OIL_LANTERN, LightItem::new));
 
     public static final RegistryObject<Item> TRIANGLE_PENNANT = REG.register("triangle_pennant", () -> new PennantItem(defaultProperties()));
 

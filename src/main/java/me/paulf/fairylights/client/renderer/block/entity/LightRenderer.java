@@ -44,8 +44,8 @@ public class LightRenderer {
         .put(SimpleLightVariant.PAPER_LANTERN, LightModelProvider.of(new PaperLanternModel()))
         .put(SimpleLightVariant.ORB_LANTERN, LightModelProvider.of(new OrbLanternModel()))
         .put(SimpleLightVariant.FLOWER_LIGHT, LightModelProvider.of(new FlowerLightModel()))
-        .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(new CandleLanternModel()))
-        .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new ColorOilLanternModel()))
+        .put(SimpleLightVariant.CANDLE_LANTERN_LIGHT, LightModelProvider.of(new CandleLanternModel()))
+        .put(SimpleLightVariant.OIL_LANTERN_LIGHT, LightModelProvider.of(new ColorOilLanternModel()))
         .put(SimpleLightVariant.JACK_O_LANTERN, LightModelProvider.of(new JackOLanternLightModel()))
         .put(SimpleLightVariant.SKULL_LIGHT, LightModelProvider.of(new SkullLightModel()))
         .put(SimpleLightVariant.GHOST_LIGHT, LightModelProvider.of(new GhostLightModel()))
@@ -57,7 +57,7 @@ public class LightRenderer {
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
         ))
         .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel()))
-        .put(SimpleLightVariant.TORCH_LANTERN, LightModelProvider.of(new OilLanternModel()))
+        .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new OilLanternModel()))
         .build();
 
     public LightRenderer() {

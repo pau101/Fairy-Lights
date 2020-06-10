@@ -1,7 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "fairylights:item/candle_0",
-        "layer1": "fairylights:item/candle_1"
-    }
-}

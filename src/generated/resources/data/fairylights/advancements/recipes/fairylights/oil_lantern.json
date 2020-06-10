@@ -16,12 +16,12 @@
         ]
       }
     },
-    "has_dye": {
+    "has_torch": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:dyes"
+            "item": "minecraft:torch"
           }
         ]
       }
@@ -36,7 +36,7 @@
   "requirements": [
     [
       "has_iron",
-      "has_dye",
+      "has_torch",
       "has_the_recipe"
     ]
   ]

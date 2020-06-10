@@ -70,9 +70,9 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> FLOWER_LIGHT = REG.register("crafting_special_flower_light", makeSerializer(FLCraftingRecipes::createFlowerLight));
 
-    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> CANDLE_LANTERN = REG.register("crafting_special_candle_lantern", makeSerializer(FLCraftingRecipes::createCandleLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> CANDLE_LANTERN_LIGHT = REG.register("crafting_special_candle_lantern_light", makeSerializer(FLCraftingRecipes::createCandleLanternLight));
 
-    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> OIL_LANTERN = REG.register("crafting_special_oil_lantern", makeSerializer(FLCraftingRecipes::createOilLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> OIL_LANTERN_LIGHT = REG.register("crafting_special_oil_lantern_light", makeSerializer(FLCraftingRecipes::createOilLanternLight));
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> JACK_O_LANTERN = REG.register("crafting_special_jack_o_lantern", makeSerializer(FLCraftingRecipes::createJackOLantern));
 
@@ -421,15 +421,15 @@ public final class FLCraftingRecipes {
         );
     }
 
-    private static GenericRecipe createCandleLantern(final ResourceLocation name) {
-        return createLight(name, CANDLE_LANTERN, FLItems.CANDLE_LANTERN, b -> b
+    private static GenericRecipe createCandleLanternLight(final ResourceLocation name) {
+        return createLight(name, CANDLE_LANTERN_LIGHT, FLItems.CANDLE_LANTERN_LIGHT, b -> b
             .withShape(" I ", "GDG", "IGI")
             .withIngredient('G', Tags.Items.NUGGETS_GOLD)
         );
     }
 
-    private static GenericRecipe createOilLantern(final ResourceLocation name) {
-        return createLight(name, OIL_LANTERN, FLItems.OIL_LANTERN, b -> b
+    private static GenericRecipe createOilLanternLight(final ResourceLocation name) {
+        return createLight(name, OIL_LANTERN_LIGHT, FLItems.OIL_LANTERN_LIGHT, b -> b
             .withShape(" I ", "SDS", "IGI")
             .withIngredient('S', Items.STICK)
             .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS)

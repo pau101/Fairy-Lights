@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "fairylights:torch_lantern"
+      "fairylights:candle_lantern_light"
     ]
   },
   "criteria": {
@@ -16,12 +16,12 @@
         ]
       }
     },
-    "has_torch": {
+    "has_dye": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:torch"
+            "tag": "forge:dyes"
           }
         ]
       }
@@ -29,14 +29,14 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fairylights:torch_lantern"
+        "recipe": "fairylights:candle_lantern_light"
       }
     }
   },
   "requirements": [
     [
       "has_iron",
-      "has_torch",
+      "has_dye",
       "has_the_recipe"
     ]
   ]

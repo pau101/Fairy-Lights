@@ -1,3 +1,26 @@
 {
-  "type": "fairylights:crafting_special_oil_lantern"
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "STS",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "T": {
+      "item": "minecraft:torch"
+    },
+    "G": {
+      "tag": "forge:glass_panes/colorless"
+    }
+  },
+  "result": {
+    "item": "fairylights:oil_lantern",
+    "count": 4
+  }
 }

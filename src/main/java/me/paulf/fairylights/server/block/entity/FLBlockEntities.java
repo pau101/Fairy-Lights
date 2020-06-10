@@ -19,8 +19,8 @@ public final class FLBlockEntities {
         FLBlocks.PAPER_LANTERN.get(),
         FLBlocks.ORB_LANTERN.get(),
         FLBlocks.FLOWER_LIGHT.get(),
-        FLBlocks.CANDLE_LANTERN.get(),
-        FLBlocks.OIL_LANTERN.get(),
+        FLBlocks.CANDLE_LANTERN_LIGHT.get(),
+        FLBlocks.OIL_LANTERN_LIGHT.get(),
         FLBlocks.JACK_O_LANTERN.get(),
         FLBlocks.SKULL_LIGHT.get(),
         FLBlocks.GHOST_LIGHT.get(),
@@ -29,6 +29,6 @@ public final class FLBlockEntities {
         FLBlocks.SNOWFLAKE_LIGHT.get(),
         FLBlocks.ICICLE_LIGHTS.get(),
         FLBlocks.METEOR_LIGHT.get(),
-        FLBlocks.TORCH_LANTERN.get()
+        FLBlocks.OIL_LANTERN.get()
     ).build(null));
 }

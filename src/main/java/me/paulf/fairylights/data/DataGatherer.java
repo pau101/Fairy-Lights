@@ -82,7 +82,7 @@ public final class DataGatherer {
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_vine", this.hasItem(Items.VINE))
                 .build(consumer);
-            ShapedRecipeBuilder.shapedRecipe(FLItems.TORCH_LANTERN.get(), 4)
+            ShapedRecipeBuilder.shapedRecipe(FLItems.OIL_LANTERN.get(), 4)
                 .patternLine(" I ")
                 .patternLine("STS")
                 .patternLine("IGI")
@@ -125,10 +125,10 @@ public final class DataGatherer {
                 .build(consumer, new ResourceLocation(FairyLights.ID, "orb_lantern"));
             this.lightRecipe(FLCraftingRecipes.FLOWER_LIGHT.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "flower_light"));
-            this.lightRecipe(FLCraftingRecipes.CANDLE_LANTERN.get())
-                .build(consumer, new ResourceLocation(FairyLights.ID, "candle_lantern"));
-            this.lightRecipe(FLCraftingRecipes.OIL_LANTERN.get())
-                .build(consumer, new ResourceLocation(FairyLights.ID, "oil_lantern"));
+            this.lightRecipe(FLCraftingRecipes.CANDLE_LANTERN_LIGHT.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "candle_lantern_light"));
+            this.lightRecipe(FLCraftingRecipes.OIL_LANTERN_LIGHT.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "oil_lantern_light"));
             this.lightRecipe(FLCraftingRecipes.JACK_O_LANTERN.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "jack_o_lantern"));
             this.lightRecipe(FLCraftingRecipes.SKULL_LIGHT.get())

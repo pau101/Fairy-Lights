@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "fairylights:fairy_light"
+      "fairylights:oil_lantern_light"
     ]
   },
   "criteria": {
@@ -29,7 +29,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fairylights:fairy_light"
+        "recipe": "fairylights:oil_lantern_light"
       }
     }
   },
