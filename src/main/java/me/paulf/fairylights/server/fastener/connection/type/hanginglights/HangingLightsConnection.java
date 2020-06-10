@@ -158,7 +158,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     protected Light<?> createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
         final boolean on = !this.isDynamic() && this.isOn;
         final ItemStack lightData = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
-        final Light<? extends LightBehavior> light = this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY));
+        final Light<? extends LightBehavior> light = this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY_LIGHT));
         if (on && this.isOrigin()) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
@@ -174,11 +174,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     protected float getFeatureSpacing() {
         if (this.pattern.isEmpty()) {
-            return SimpleLightVariant.FAIRY.getSpacing();
+            return SimpleLightVariant.FAIRY_LIGHT.getSpacing();
         }
         float spacing = 0;
         for (final ItemStack patternLightData : this.pattern) {
-            final float lightSpacing = LightVariant.get(patternLightData).orElse(SimpleLightVariant.FAIRY).getSpacing();
+            final float lightSpacing = LightVariant.get(patternLightData).orElse(SimpleLightVariant.FAIRY_LIGHT).getSpacing();
             if (lightSpacing > spacing) {
                 spacing = lightSpacing;
             }

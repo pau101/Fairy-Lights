@@ -40,23 +40,23 @@ public class LightRenderer {
     private final LightModelProvider<LightBehavior> defaultLight = LightModelProvider.of(new DefaultModel());
 
     private final Map<LightVariant<?>, LightModelProvider<?>> lights = new ImmutableMap.Builder<LightVariant<?>, LightModelProvider<?>>()
-        .put(SimpleLightVariant.FAIRY, LightModelProvider.of(new FairyLightModel()))
-        .put(SimpleLightVariant.PAPER, LightModelProvider.of(new PaperLanternModel()))
-        .put(SimpleLightVariant.ORB, LightModelProvider.of(new OrbLanternModel()))
-        .put(SimpleLightVariant.FLOWER, LightModelProvider.of(new FlowerLightModel()))
-        .put(SimpleLightVariant.CANDLE, LightModelProvider.of(new CandleLanternModel()))
-        .put(SimpleLightVariant.OIL, LightModelProvider.of(new ColorOilLanternModel()))
+        .put(SimpleLightVariant.FAIRY_LIGHT, LightModelProvider.of(new FairyLightModel()))
+        .put(SimpleLightVariant.PAPER_LANTERN, LightModelProvider.of(new PaperLanternModel()))
+        .put(SimpleLightVariant.ORB_LANTERN, LightModelProvider.of(new OrbLanternModel()))
+        .put(SimpleLightVariant.FLOWER_LIGHT, LightModelProvider.of(new FlowerLightModel()))
+        .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(new CandleLanternModel()))
+        .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new ColorOilLanternModel()))
         .put(SimpleLightVariant.JACK_O_LANTERN, LightModelProvider.of(new JackOLanternLightModel()))
-        .put(SimpleLightVariant.SKULL, LightModelProvider.of(new SkullLightModel()))
-        .put(SimpleLightVariant.GHOST, LightModelProvider.of(new GhostLightModel()))
-        .put(SimpleLightVariant.SPIDER, LightModelProvider.of(new SpiderLightModel()))
-        .put(SimpleLightVariant.WITCH, LightModelProvider.of(new WitchLightModel()))
-        .put(SimpleLightVariant.SNOWFLAKE, LightModelProvider.of(new SnowflakeLightModel()))
-        .put(SimpleLightVariant.ICICLE, LightModelProvider.of(
+        .put(SimpleLightVariant.SKULL_LIGHT, LightModelProvider.of(new SkullLightModel()))
+        .put(SimpleLightVariant.GHOST_LIGHT, LightModelProvider.of(new GhostLightModel()))
+        .put(SimpleLightVariant.SPIDER_LIGHT, LightModelProvider.of(new SpiderLightModel()))
+        .put(SimpleLightVariant.WITCH_LIGHT, LightModelProvider.of(new WitchLightModel()))
+        .put(SimpleLightVariant.SNOWFLAKE_LIGHT, LightModelProvider.of(new SnowflakeLightModel()))
+        .put(SimpleLightVariant.ICICLE_LIGHTS, LightModelProvider.of(
             IntStream.rangeClosed(0, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
         ))
-        .put(SimpleLightVariant.METEOR, LightModelProvider.of(new MeteorLightModel()))
+        .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel()))
         .put(SimpleLightVariant.TORCH_LANTERN, LightModelProvider.of(new OilLanternModel()))
         .build();
 
