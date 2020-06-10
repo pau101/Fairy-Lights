@@ -49,6 +49,8 @@ public final class FLBlocks {
 
     public static final RegistryObject<LightBlock> OIL_LANTERN = REG.register("oil_lantern", FLBlocks.createLight(SimpleLightVariant.OIL_LANTERN));
 
+    public static final RegistryObject<LightBlock> CANDLE_LANTERN = REG.register("candle_lantern", FLBlocks.createLight(SimpleLightVariant.CANDLE_LANTERN));
+
     private static Supplier<LightBlock> createLight(final LightVariant<?> variant) {
         return createLight(variant, LightBlock::new);
     }

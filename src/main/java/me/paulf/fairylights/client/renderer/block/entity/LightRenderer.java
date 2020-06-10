@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
+import me.paulf.fairylights.client.model.light.CandleLanternModel;
 import me.paulf.fairylights.client.model.light.ColorOilLanternModel;
 import me.paulf.fairylights.client.model.light.FairyLightModel;
 import me.paulf.fairylights.client.model.light.FlowerLightModel;
@@ -14,7 +15,7 @@ import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.client.model.light.MeteorLightModel;
 import me.paulf.fairylights.client.model.light.OilLanternModel;
 import me.paulf.fairylights.client.model.light.OrbLanternModel;
-import me.paulf.fairylights.client.model.light.CandleLanternModel;
+import me.paulf.fairylights.client.model.light.ColorCandleLanternModel;
 import me.paulf.fairylights.client.model.light.PaperLanternModel;
 import me.paulf.fairylights.client.model.light.SkullLightModel;
 import me.paulf.fairylights.client.model.light.SnowflakeLightModel;
@@ -44,7 +45,7 @@ public class LightRenderer {
         .put(SimpleLightVariant.PAPER_LANTERN, LightModelProvider.of(new PaperLanternModel()))
         .put(SimpleLightVariant.ORB_LANTERN, LightModelProvider.of(new OrbLanternModel()))
         .put(SimpleLightVariant.FLOWER_LIGHT, LightModelProvider.of(new FlowerLightModel()))
-        .put(SimpleLightVariant.CANDLE_LANTERN_LIGHT, LightModelProvider.of(new CandleLanternModel()))
+        .put(SimpleLightVariant.CANDLE_LANTERN_LIGHT, LightModelProvider.of(new ColorCandleLanternModel()))
         .put(SimpleLightVariant.OIL_LANTERN_LIGHT, LightModelProvider.of(new ColorOilLanternModel()))
         .put(SimpleLightVariant.JACK_O_LANTERN, LightModelProvider.of(new JackOLanternLightModel()))
         .put(SimpleLightVariant.SKULL_LIGHT, LightModelProvider.of(new SkullLightModel()))
@@ -58,6 +59,7 @@ public class LightRenderer {
         ))
         .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel()))
         .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new OilLanternModel()))
+        .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(() -> new CandleLanternModel()))
         .build();
 
     public LightRenderer() {

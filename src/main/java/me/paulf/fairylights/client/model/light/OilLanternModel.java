@@ -1,10 +1,10 @@
 package me.paulf.fairylights.client.model.light;
 
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.BrightLightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.OilLanternBehavior;
 import me.paulf.fairylights.util.Mth;
 
-public class OilLanternModel extends LightModel<OilLanternBehavior> {
+public class OilLanternModel extends LightModel<BrightLightBehavior> {
     public OilLanternModel() {
         this.unlit.rotateAngleY = -Mth.PI / 2.0F;
         this.unlit.setTextureOffset(10, 6);
@@ -34,7 +34,7 @@ public class OilLanternModel extends LightModel<OilLanternBehavior> {
     }
 
     @Override
-    public void animate(final Light<OilLanternBehavior> light, final float delta) {
+    public void animate(final Light<BrightLightBehavior> light, final float delta) {
         super.animate(light, delta);
         this.brightness = light.getBehavior().getBrightness(delta);
     }

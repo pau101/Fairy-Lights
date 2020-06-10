@@ -29,6 +29,7 @@ public final class FLBlockEntities {
         FLBlocks.SNOWFLAKE_LIGHT.get(),
         FLBlocks.ICICLE_LIGHTS.get(),
         FLBlocks.METEOR_LIGHT.get(),
-        FLBlocks.OIL_LANTERN.get()
+        FLBlocks.OIL_LANTERN.get(),
+        FLBlocks.CANDLE_LANTERN.get()
     ).build(null));
 }

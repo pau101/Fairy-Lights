@@ -1,12 +1,10 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.BrightLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class CandleLanternModel extends LightModel<BrightLightBehavior> {
-    public CandleLanternModel() {
+public class ColorCandleLanternModel extends ColorLightModel {
+    public ColorCandleLanternModel() {
         this.unlit.setTextureOffset(21, 0);
         this.unlit.addBox(-1, 0.5F, -1, 2, 1, 2, -0.05F);
         this.unlit.setTextureOffset(0, 3);
@@ -25,17 +23,8 @@ public class CandleLanternModel extends LightModel<BrightLightBehavior> {
             frame.rotateAngleY = (90 * i + 45) * Mth.DEG_TO_RAD;
             this.unlit.addChild(frame);
         }
-        this.lit.setTextureOffset(63, 26);
-        this.lit.addBox(-2, -7.5F, -2, 4, 5, 4);
-        this.lit.setTextureOffset(79, 28);
-        this.lit.addBox(-1, -7.5F, -1, 2, 2, 2);
-        this.lit.setTextureOffset(81, 26);
-        this.lit.addBox(-1, -5.5F, 0, 2, 2, 0);
-    }
-
-    @Override
-    public void animate(final Light<BrightLightBehavior> light, final float delta) {
-        super.animate(light, delta);
-        this.brightness = light.getBehavior().getBrightness(delta);
+        final BulbBuilder bulb = this.createBulb();
+        bulb.setUV(48, 6);
+        bulb.addBox(-2, -7.5F, -2, 4, 5, 4, 0.0F, 0.2F);
     }
 }

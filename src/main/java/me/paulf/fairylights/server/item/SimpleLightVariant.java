@@ -1,10 +1,11 @@
 package me.paulf.fairylights.server.item;
 
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.BrightLightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.DefaultBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.MeteorLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.OilLanternBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.StandardLightBehavior;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.TorchLightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.TwinkleBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,7 +34,8 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
         final float blue = (rgb & 0xFF) / 255.0F;
         return new MeteorLightBehavior(red, green, blue);
     });
-    public static final LightVariant<OilLanternBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), stack -> new OilLanternBehavior());
+    public static final LightVariant<BrightLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), stack -> new TorchLightBehavior(0.13D));
+    public static final LightVariant<BrightLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), stack -> new TorchLightBehavior(0.2D));
 
     private final boolean parallelsCord;
 
