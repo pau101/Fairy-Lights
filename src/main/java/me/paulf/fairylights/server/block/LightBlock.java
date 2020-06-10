@@ -53,7 +53,7 @@ public class LightBlock extends HorizontalFaceBlock {
     public LightBlock(final Properties properties, final LightVariant<?> variant) {
         super(properties.noDrops());
         this.variant = variant;
-        final AxisAlignedBB bb = variant == SimpleLightVariant.FAIRY ? this.variant.getBounds().grow(0.044D) : this.variant.getBounds();
+        final AxisAlignedBB bb = variant == SimpleLightVariant.FAIRY_LIGHT ? this.variant.getBounds().grow(0.044D) : this.variant.getBounds();
         final double w = Math.max(bb.getXSize(), bb.getZSize());
         final double w0 = 0.5D - w * 0.5D;
         final double w1 = 0.5D + w * 0.5D;

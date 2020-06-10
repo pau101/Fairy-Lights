@@ -13,20 +13,20 @@ import net.minecraft.util.math.AxisAlignedBB;
 import java.util.function.Function;
 
 public class SimpleLightVariant<T extends LightBehavior> implements LightVariant<T> {
-    public static final LightVariant<StandardLightBehavior> FAIRY = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.094D, -0.094D, -0.094D, 0.094D, 0.094D, 0.094D), SimpleLightVariant::standardBehavior, true);
-    public static final LightVariant<StandardLightBehavior> PAPER = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.250D, -0.906D, -0.250D, 0.250D, 0.091D, 0.250D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> ORB = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.219D, -0.469D, -0.219D, 0.219D, 0.091D, 0.219D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> FLOWER = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.409D, -0.158D, -0.409D, 0.369D, 0.125D, 0.369D), SimpleLightVariant::standardBehavior, true);
-    public static final LightVariant<StandardLightBehavior> CANDLE = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> OIL = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> FAIRY_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.094D, -0.094D, -0.094D, 0.094D, 0.094D, 0.094D), SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<StandardLightBehavior> PAPER_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.250D, -0.906D, -0.250D, 0.250D, 0.091D, 0.250D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> ORB_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.219D, -0.469D, -0.219D, 0.219D, 0.091D, 0.219D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> FLOWER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.409D, -0.158D, -0.409D, 0.369D, 0.125D, 0.369D), SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<StandardLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> JACK_O_LANTERN = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.188D, -0.375D, -0.203D, 0.188D, 0.122D, 0.188D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> SKULL = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.156D, -0.360D, -0.172D, 0.156D, 0.122D, 0.156D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> GHOST = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.201D, -0.314D, -0.201D, 0.201D, 0.125D, 0.201D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> SPIDER = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.515D, -0.774D, -0.156D, 0.515D, 0.122D, 0.156D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> WITCH = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.250D, -0.375D, -0.250D, 0.250D, 0.130D, 0.250D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> SNOWFLAKE = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.458D, -1.007D, -0.059D, 0.458D, 0.072D, 0.059D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> ICICLE = new SimpleLightVariant<>(false, 0.625F, new AxisAlignedBB(-0.205D, -1.020D, -0.206D, 0.207D, 0.091D, 0.200D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<MeteorLightBehavior> METEOR = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.063D, -1.588D, -0.063D, 0.063D, 0.091D, 0.063D), stack -> {
+    public static final LightVariant<StandardLightBehavior> SKULL_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.156D, -0.360D, -0.172D, 0.156D, 0.122D, 0.156D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> GHOST_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.201D, -0.314D, -0.201D, 0.201D, 0.125D, 0.201D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> SPIDER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.515D, -0.774D, -0.156D, 0.515D, 0.122D, 0.156D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> WITCH_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.250D, -0.375D, -0.250D, 0.250D, 0.130D, 0.250D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> SNOWFLAKE_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.458D, -1.007D, -0.059D, 0.458D, 0.072D, 0.059D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> ICICLE_LIGHTS = new SimpleLightVariant<>(false, 0.625F, new AxisAlignedBB(-0.205D, -1.020D, -0.206D, 0.207D, 0.091D, 0.200D), SimpleLightVariant::standardBehavior);
+    public static final LightVariant<MeteorLightBehavior> METEOR_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.063D, -1.588D, -0.063D, 0.063D, 0.091D, 0.063D), stack -> {
         final int rgb = ColorLightItem.getColor(stack);
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;
