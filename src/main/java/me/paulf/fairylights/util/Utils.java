@@ -16,7 +16,7 @@ public final class Utils {
     }
 
     public static ITextComponent formatColored(final DyeColor color, final ITextComponent name) {
-        return new TranslationTextComponent("format.colored", new TranslationTextComponent("color." + color.getTranslationKey() + ".name"), name);
+        return new TranslationTextComponent("format.fairylights.colored", new TranslationTextComponent("color.fairylights." + color.getTranslationKey()), name);
     }
 
     public static String formatRecipeTooltip(final String key) {

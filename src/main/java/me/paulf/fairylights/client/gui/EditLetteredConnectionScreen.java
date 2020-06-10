@@ -154,13 +154,13 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     @Override
     public void render(final int mouseX, final int mouseY, final float delta) {
         this.renderBackground();
-        this.drawCenteredString(this.font, I18n.format("gui.editLetteredConnection.name"), this.width / 2, 20, 0xFFFFFF);
+        this.drawCenteredString(this.font, I18n.format("fairylights.editLetteredConnection"), this.width / 2, 20, 0xFFFFFF);
         super.render(mouseX, mouseY, delta);
         this.textField.render(mouseX, mouseY, delta);
         final String allowed = this.connection.getAllowedDescription();
         if (!allowed.isEmpty()) {
             this.drawString(this.font,
-                new TranslationTextComponent("gui.editLetteredConnection.allowed_characters", allowed)
+                new TranslationTextComponent("fairylights.editLetteredConnection.allowed_characters", allowed)
                     .applyTextStyle(TextFormatting.GRAY).getFormattedText(),
                 this.textField.x,
                 this.textField.y + this.textField.getHeight() + 4,

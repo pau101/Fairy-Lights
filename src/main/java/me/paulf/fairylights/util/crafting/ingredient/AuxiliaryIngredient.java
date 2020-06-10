@@ -37,7 +37,7 @@ public interface AuxiliaryIngredient<A> extends GenericIngredient<AuxiliaryIngre
     @Override
     default void addTooltip(final List<String> tooltip) {
         if (!this.isRequired()) {
-            tooltip.add(Utils.formatRecipeTooltip("recipe.ingredient.auxiliary.optional"));
+            tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.ingredient.auxiliary.optional"));
         }
     }
 }

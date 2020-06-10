@@ -186,7 +186,7 @@ public final class FLCraftingRecipes {
                 @Override
                 public void addTooltip(final List<String> tooltip) {
                     super.addTooltip(tooltip);
-                    tooltip.add(Utils.formatRecipeTooltip("recipe.hangingLights.glowstone"));
+                    tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.twinkling_lights.glowstone"));
                 }
             })
             .build();
@@ -557,7 +557,7 @@ public final class FLCraftingRecipes {
 
         @Override
         public void addTooltip(final List<String> tooltip) {
-            tooltip.add(Utils.formatRecipeTooltip("recipe.hangingLights.light"));
+            tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.hangingLights.light"));
         }
     }
 
@@ -615,7 +615,7 @@ public final class FLCraftingRecipes {
 
         @Override
         public void addTooltip(final List<String> tooltip) {
-            tooltip.add(Utils.formatRecipeTooltip("recipe.pennantBunting.pennant"));
+            tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.pennantBunting.pennant"));
         }
     }
 }

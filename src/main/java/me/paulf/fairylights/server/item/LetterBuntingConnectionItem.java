@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -30,7 +31,7 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
             final CompoundNBT text = compound.getCompound("text");
             final StyledString s = StyledString.deserialize(text);
             if (s.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.text", s.toTextComponent()));
+                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).applyTextStyle(TextFormatting.GRAY));
             }
         }
     }
