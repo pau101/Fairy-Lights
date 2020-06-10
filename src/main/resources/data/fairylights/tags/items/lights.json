@@ -5,8 +5,8 @@
         "fairylights:paper_lantern",
         "fairylights:orb_lantern",
         "fairylights:flower_light",
-        "fairylights:candle_lantern",
-        "fairylights:oil_lantern",
+        "fairylights:candle_lantern_light",
+        "fairylights:oil_lantern_light",
         "fairylights:jack_o_lantern",
         "fairylights:skull_light",
         "fairylights:ghost_light",
@@ -15,6 +15,6 @@
         "fairylights:snowflake_light",
         "fairylights:icicle_lights",
         "fairylights:meteor_light",
-        "fairylights:torch_lantern"
+        "fairylights:oil_lantern"
     ]
 }
