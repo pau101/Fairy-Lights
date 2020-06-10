@@ -103,7 +103,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
             final float[] pointOffsets = new float[this.text.length()];
             final float catLength = catenary.getLength();
             for (int i = 0; i < this.text.length(); i++) {
-                final float w = SYMBOLS.getWidth(this.text.charAt(i)) / 16.0F;
+                final float w = SYMBOLS.getWidth(this.text.charAt(i));
                 pointOffsets[i] = textWidth + w / 2.0F;
                 textWidth += w + TRACKING;
                 if (textWidth > catLength) {
@@ -165,7 +165,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
         float len = 0;
         final float available = this.getCatenary().getLength();
         for (int i = 0; i < text.length(); i++) {
-            final float w = SYMBOLS.getWidth(text.charAt(i)) / 16.0F;
+            final float w = SYMBOLS.getWidth(text.charAt(i));
             len += w + TRACKING;
             if (len > available) {
                 return false;

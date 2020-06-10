@@ -34,8 +34,8 @@ public final class Letter extends HangingFeature {
 
     @Override
     public AxisAlignedBB getBounds() {
-        final float w = this.symbols.getWidth(this.letter) / 16F;
-        final float h = this.symbols.getHeight() / 16F;
+        final float w = this.symbols.getWidth(this.letter);
+        final float h = this.symbols.getHeight();
         return new AxisAlignedBB(-w / 2.0D, -h, -w / 2.0D, w / 2.0D, 0.0D, w / 2.0D);
     }
 

@@ -5,6 +5,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public final class SymbolSet {
+    private static final float SCALE = 1.0F / 16.0F;
+
     private final int height;
 
     private final String description;
@@ -17,8 +19,8 @@ public final class SymbolSet {
         this.chars = Int2ObjectMaps.unmodifiable(new Int2ObjectOpenHashMap<>(builder.symbols));
     }
 
-    public int getHeight() {
-        return this.height;
+    public float getHeight() {
+        return this.height * SCALE;
     }
 
     public String getDescription() {
@@ -29,8 +31,8 @@ public final class SymbolSet {
         return this.chars.containsKey(character);
     }
 
-    public int getWidth(final char character) {
-        return this.chars.getOrDefault(character, Symbol.UNKNOWN).width;
+    public float getWidth(final char character) {
+        return this.chars.getOrDefault(character, Symbol.UNKNOWN).width * SCALE;
     }
 
     private static class Symbol {
