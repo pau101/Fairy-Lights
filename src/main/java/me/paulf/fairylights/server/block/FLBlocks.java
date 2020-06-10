@@ -27,7 +27,7 @@ public final class FLBlocks {
 
     public static final RegistryObject<LightBlock> FLOWER_LIGHT = REG.register("flower_light", FLBlocks.createLight(SimpleLightVariant.FLOWER));
 
-    public static final RegistryObject<LightBlock> ORNATE_LANTERN = REG.register("ornate_lantern", FLBlocks.createLight(SimpleLightVariant.ORNATE));
+    public static final RegistryObject<LightBlock> CANDLE_LANTERN = REG.register("candle_lantern", FLBlocks.createLight(SimpleLightVariant.CANDLE));
 
     public static final RegistryObject<LightBlock> OIL_LANTERN = REG.register("oil_lantern", FLBlocks.createLight(SimpleLightVariant.OIL));
 

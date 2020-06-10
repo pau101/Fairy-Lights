@@ -70,7 +70,7 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> FLOWER_LIGHT = REG.register("crafting_special_flower_light", makeSerializer(FLCraftingRecipes::createFlowerLight));
 
-    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> ORNATE_LANTERN = REG.register("crafting_special_ornate_lantern", makeSerializer(FLCraftingRecipes::createOrnateLantern));
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> CANDLE_LANTERN = REG.register("crafting_special_candle_lantern", makeSerializer(FLCraftingRecipes::createCandleLantern));
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> OIL_LANTERN = REG.register("crafting_special_oil_lantern", makeSerializer(FLCraftingRecipes::createOilLantern));
 
@@ -421,8 +421,8 @@ public final class FLCraftingRecipes {
         );
     }
 
-    private static GenericRecipe createOrnateLantern(final ResourceLocation name) {
-        return createLight(name, ORNATE_LANTERN, FLItems.ORNATE_LANTERN, b -> b
+    private static GenericRecipe createCandleLantern(final ResourceLocation name) {
+        return createLight(name, CANDLE_LANTERN, FLItems.CANDLE_LANTERN, b -> b
             .withShape(" I ", "GDG", "IGI")
             .withIngredient('G', Tags.Items.NUGGETS_GOLD)
         );

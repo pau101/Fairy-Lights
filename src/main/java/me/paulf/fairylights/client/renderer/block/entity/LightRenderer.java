@@ -14,7 +14,7 @@ import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.client.model.light.MeteorLightModel;
 import me.paulf.fairylights.client.model.light.OilLanternModel;
 import me.paulf.fairylights.client.model.light.OrbLanternModel;
-import me.paulf.fairylights.client.model.light.OrnateLanternModel;
+import me.paulf.fairylights.client.model.light.CandleLanternModel;
 import me.paulf.fairylights.client.model.light.PaperLanternModel;
 import me.paulf.fairylights.client.model.light.SkullLightModel;
 import me.paulf.fairylights.client.model.light.SnowflakeLightModel;
@@ -44,7 +44,7 @@ public class LightRenderer {
         .put(SimpleLightVariant.PAPER, LightModelProvider.of(new PaperLanternModel()))
         .put(SimpleLightVariant.ORB, LightModelProvider.of(new OrbLanternModel()))
         .put(SimpleLightVariant.FLOWER, LightModelProvider.of(new FlowerLightModel()))
-        .put(SimpleLightVariant.ORNATE, LightModelProvider.of(new OrnateLanternModel()))
+        .put(SimpleLightVariant.CANDLE, LightModelProvider.of(new CandleLanternModel()))
         .put(SimpleLightVariant.OIL, LightModelProvider.of(new ColorOilLanternModel()))
         .put(SimpleLightVariant.JACK_O_LANTERN, LightModelProvider.of(new JackOLanternLightModel()))
         .put(SimpleLightVariant.SKULL, LightModelProvider.of(new SkullLightModel()))

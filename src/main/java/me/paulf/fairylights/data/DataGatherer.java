@@ -125,8 +125,8 @@ public final class DataGatherer {
                 .build(consumer, new ResourceLocation(FairyLights.ID, "orb_lantern"));
             this.lightRecipe(FLCraftingRecipes.FLOWER_LIGHT.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "flower_light"));
-            this.lightRecipe(FLCraftingRecipes.ORNATE_LANTERN.get())
-                .build(consumer, new ResourceLocation(FairyLights.ID, "ornate_lantern"));
+            this.lightRecipe(FLCraftingRecipes.CANDLE_LANTERN.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "candle_lantern"));
             this.lightRecipe(FLCraftingRecipes.OIL_LANTERN.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "oil_lantern"));
             this.lightRecipe(FLCraftingRecipes.JACK_O_LANTERN.get())

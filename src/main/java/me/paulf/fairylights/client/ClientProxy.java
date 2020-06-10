@@ -119,7 +119,7 @@ public final class ClientProxy extends ServerProxy {
             FLItems.PAPER_LANTERN.get(),
             FLItems.ORB_LANTERN.get(),
             FLItems.FLOWER_LIGHT.get(),
-            FLItems.ORNATE_LANTERN.get(),
+            FLItems.CANDLE_LANTERN.get(),
             FLItems.OIL_LANTERN.get(),
             FLItems.JACK_O_LANTERN.get(),
             FLItems.SKULL_LIGHT.get(),
