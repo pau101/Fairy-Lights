@@ -120,7 +120,6 @@ public final class LetterBuntingConnection extends Connection implements Lettere
             final List<Letter> letters = new ArrayList<>(this.text.length());
             final Catenary.SegmentIterator it = catenary.iterator();
             float distance = 0;
-            // FIXME use visit function
             while (it.next()) {
                 final float length = it.getLength();
                 for (int n = pointIdx; n < textLen; n++) {
