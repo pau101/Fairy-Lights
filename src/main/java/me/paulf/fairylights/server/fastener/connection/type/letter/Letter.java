@@ -8,13 +8,18 @@ import net.minecraft.util.math.Vec3d;
 public final class Letter extends HangingFeature {
     private final SymbolSet symbols;
 
-    private final char letter;
+    private char letter;
 
-    private final Style style;
+    private Style style;
 
     public Letter(final int index, final Vec3d point, final float yaw, final float pitch, final SymbolSet symbols, final char letter, final Style style) {
         super(index, point, yaw, pitch, 0.0F, 0.0F);
         this.symbols = symbols;
+        this.letter = letter;
+        this.style = style;
+    }
+
+    public void set(final char letter, final Style style) {
         this.letter = letter;
         this.style = style;
     }

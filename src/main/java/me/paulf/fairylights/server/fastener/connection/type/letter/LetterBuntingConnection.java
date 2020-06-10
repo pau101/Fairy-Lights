@@ -131,6 +131,8 @@ public final class LetterBuntingConnection extends Connection implements Lettere
                         final Letter letter;
                         if (prevLetters != null && pointIdx < prevLetters.length) {
                             letter = prevLetters[pointIdx];
+                            letter.set(point, it.getYaw(), it.getPitch());
+                            letter.set(this.text.charAt(pointIdx), this.text.styleAt(pointIdx));
                         } else {
                             letter = new Letter(pointIdx, point, it.getYaw(), it.getPitch(), SYMBOLS, this.text.charAt(pointIdx), this.text.styleAt(pointIdx));
                         }
