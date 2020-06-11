@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -143,7 +144,7 @@ public final class ClientProxy extends ServerProxy {
                 }
             }
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
-                return (index + System.currentTimeMillis() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
+                return (index + Util.milliTime() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
             }
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());

@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.SharedConstants;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
@@ -525,7 +526,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 relativeX -= 2;
             }
             final int idx = this.getIndexInTextByX(relativeX);
-            final long now = System.currentTimeMillis();
+            final long now = Util.milliTime();
             if (now - this.lastClickTime <= this.multiClickInterval) {
                 this.multiClicks++;
                 if (this.multiClicks > 3) {
