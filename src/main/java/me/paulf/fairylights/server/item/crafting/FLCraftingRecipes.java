@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.item.ColorLightItem;
 import me.paulf.fairylights.server.item.FLItems;
+import me.paulf.fairylights.util.Blender;
 import me.paulf.fairylights.util.OreDictUtils;
 import me.paulf.fairylights.util.Utils;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
@@ -121,42 +122,24 @@ public final class FLCraftingRecipes {
         return () -> new SpecialRecipeSerializer<>(factory);
     }
 
-
     private static GenericRecipe createDyeColor(final ResourceLocation name) {
-        class BlendData {
-            int red, green, blue, brightness, count;
-        }
         return new GenericRecipeBuilder(name, EDIT_COLOR)
             .withShape("I")
             .withIngredient('I', new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable"))).withOutput('I')
-            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<BlendData>(Ingredient.fromTag(Tags.Items.DYES), true, 8) {
+            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<Blender>(Ingredient.fromTag(Tags.Items.DYES), true, 8) {
                 @Override
-                public BlendData accumulator() {
-                    return new BlendData();
+                public Blender accumulator() {
+                    return new Blender();
                 }
 
                 @Override
-                public void consume(final BlendData data, final ItemStack ingredient) {
-                    final int rgb = ColorLightItem.getColor(OreDictUtils.getDyeColor(ingredient));
-                    final int r = rgb >> 16 & 0xFF;
-                    final int g = rgb >> 8 & 0xFF;
-                    final int b = rgb & 0xFF;
-                    data.red += r;
-                    data.green += g;
-                    data.blue += b;
-                    data.brightness += Math.max(r, Math.max(g, b));
-                    data.count++;
+                public void consume(final Blender data, final ItemStack ingredient) {
+                    data.add(ColorLightItem.getColor(OreDictUtils.getDyeColor(ingredient)));
                 }
 
                 @Override
-                public boolean finish(final BlendData data, final CompoundNBT nbt) {
-                    final int r = data.red;
-                    final int g = data.green;
-                    final int b = data.blue;
-                    final int n = data.count;
-                    final int num = data.brightness;
-                    final int den = n * Math.max(r, Math.max(g, b));
-                    ColorLightItem.setColor(nbt, (r * num / den) << 16 | (g * num / den) << 8 | (b * num / den));
+                public boolean finish(final Blender data, final CompoundNBT nbt) {
+                    ColorLightItem.setColor(nbt, data.blend());
                     return false;
                 }
             })

@@ -20,6 +20,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.Size2i;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -259,11 +260,13 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
             if (this.recipe.matches(crafting, null)) {
                 outputs.add(this.recipe.getCraftingResult(crafting));
             } else {
-                throw new IllegalStateException("Recipe generation didn't give output for: " +
+                LogManager.getLogger().debug("No recipe match for {} using inputs {}",
+                    this.recipe.getRecipeOutput().getItem().getRegistryName(),
                     IntStream.range(0, crafting.getWidth() * crafting.getHeight())
                         .mapToObj(crafting::getStackInSlot)
                         .map(s -> Objects.toString(s.getItem().getRegistryName()))
-                        .collect(Collectors.joining(", ")));
+                        .collect(Collectors.joining(", "))
+                );
             }
         }
         return Collections.singletonList(outputs);

@@ -43,7 +43,7 @@ public class ColorLightItem extends LightItem {
 
     public static Optional<DyeColor> getDyeColor(final ItemStack stack) {
         final int color = getColor(stack);
-        return Arrays.stream(DyeColor.values()).filter(dye -> dye.getColorValue() == color).findFirst();
+        return Arrays.stream(DyeColor.values()).filter(dye -> getColor(dye) == color).findFirst();
     }
 
     public static ItemStack setColor(final ItemStack stack, final DyeColor dye) {
