@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -134,8 +135,9 @@ public final class ClientProxy extends ServerProxy {
             if (index == 0) {
                 return 0xFFFFFFFF;
             }
-            if (stack.hasTag()) {
-                final ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
+            final CompoundNBT tag = stack.getTag();
+            if (tag != null) {
+                final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
                     return ColorLightItem.getColor(ItemStack.read(tagList.getCompound((index - 1) % tagList.size())));
                 }
@@ -145,15 +147,14 @@ public final class ClientProxy extends ServerProxy {
             }
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());
-        colors.register((stack, index) -> {
-            return ColorLightItem.getColor(stack);
-        }, FLItems.TINSEL.get());
+        colors.register((stack, index) -> index == 0 ? ColorLightItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());
         colors.register((stack, index) -> {
             if (index == 0) {
                 return 0xFFFFFFFF;
             }
-            if (stack.hasTag()) {
-                final ListNBT tagList = stack.getTag().getList("pattern", NBT.TAG_COMPOUND);
+            final CompoundNBT tag = stack.getTag();
+            if (tag != null) {
+                final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
                     return ColorLightItem.getColor(tagList.getCompound((index - 1) % tagList.size()));
                 }
@@ -165,8 +166,9 @@ public final class ClientProxy extends ServerProxy {
         colors.register(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.get());
         colors.register(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.get());
         colors.register((stack, index) -> {
-            if (index > 0 && stack.hasTag()) {
-                final StyledString str = StyledString.deserialize(stack.getTag().getCompound("text"));
+            final CompoundNBT tag = stack.getTag();
+            if (index > 0 && tag != null) {
+                final StyledString str = StyledString.deserialize(tag.getCompound("text"));
                 if (str.length() > 0) {
                     TextFormatting lastColor = null, color = null;
                     int n = (index - 1) % str.length();
