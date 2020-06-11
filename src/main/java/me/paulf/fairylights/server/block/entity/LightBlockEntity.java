@@ -80,7 +80,7 @@ public class LightBlockEntity extends TileEntity {
             if (face == AttachFace.CEILING) {
                 matrix.translate(0.0F, 0.25F, 0.0F);
             } else if (face == AttachFace.WALL) {
-                matrix.translate(0.0F, 0.15F, 0.125F);
+                matrix.translate(0.0F, 3.0F / 16.0F, 0.125F);
             } else {
                 matrix.translate(0.0F, -(float) this.light.getVariant().getBounds().minY - 0.5F, 0.0F);
             }

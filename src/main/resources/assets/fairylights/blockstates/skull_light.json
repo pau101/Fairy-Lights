@@ -1,5 +1,16 @@
 {
     "variants": {
-        "": { "model": "fairylights:block/skull_light" }
+        "face=floor,facing=east":  { "model": "fairylights:block/floor_light_fastener" },
+        "face=floor,facing=west":  { "model": "fairylights:block/floor_light_fastener" },
+        "face=floor,facing=south": { "model": "fairylights:block/floor_light_fastener" },
+        "face=floor,facing=north": { "model": "fairylights:block/floor_light_fastener" },
+        "face=wall,facing=east":  { "model": "fairylights:block/wall_light_fastener", "uvlock": true, "x": 90, "y": 90 },
+        "face=wall,facing=west":  { "model": "fairylights:block/wall_light_fastener", "uvlock": true, "x": 90, "y": 270 },
+        "face=wall,facing=south": { "model": "fairylights:block/wall_light_fastener", "uvlock": true, "x": 90, "y": 180 },
+        "face=wall,facing=north": { "model": "fairylights:block/wall_light_fastener", "uvlock": true, "x": 90 },
+        "face=ceiling,facing=east":  { "model": "fairylights:block/ceiling_light_fastener", "x": 180 },
+        "face=ceiling,facing=west":  { "model": "fairylights:block/ceiling_light_fastener", "x": 180 },
+        "face=ceiling,facing=south": { "model": "fairylights:block/ceiling_light_fastener", "x": 180 },
+        "face=ceiling,facing=north": { "model": "fairylights:block/ceiling_light_fastener", "x": 180 }
     }
 }

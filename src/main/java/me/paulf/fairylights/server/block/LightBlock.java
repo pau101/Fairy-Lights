@@ -5,7 +5,6 @@ import me.paulf.fairylights.server.item.ColorLightItem;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFaceBlock;
 import net.minecraft.entity.LivingEntity;
@@ -66,13 +65,13 @@ public class LightBlock extends HorizontalFaceBlock {
             this.ceilingShape = VoxelShapes.create(w0, 1.0D + bb.minY, w0, w1, 1.0D, w1);
         } else {
             final double t = 0.125D;
-            final double u = 0.65D;
+            final double u = 11.0D / 16.0D;
             this.floorShape = VoxelShapes.create(w0, 0.0D, w0, w1, bb.getYSize(), w1);
             this.eastWallShape = VoxelShapes.create(w0 - t, u + bb.minY, w0, w1 - t, u + bb.maxY, w1);
             this.westWallShape = VoxelShapes.create(w0 + t, u + bb.minY, w0, w1 + t, u + bb.maxY, w1);
             this.southWallShape = VoxelShapes.create(w0, u + bb.minY, w0 - t, w1, u + bb.maxY, w1 - t);
             this.northWallShape = VoxelShapes.create(w0, u  + bb.minY, w0 + t, w1, u + bb.maxY, w1 + t);
-            this.ceilingShape = VoxelShapes.create(w0, 1.0D + bb.minY - 0.25D, w0, w1, 1.0D, w1);
+            this.ceilingShape = VoxelShapes.create(w0, 1.0D + bb.minY - 4.0D / 16.0D, w0, w1, 1.0D, w1);
         }
         this.setDefaultState(this.stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(FACE, AttachFace.WALL).with(LIT, true));
     }
@@ -205,12 +204,6 @@ public class LightBlock extends HorizontalFaceBlock {
         final ItemStack stack = new ItemStack(this);
         ColorLightItem.setColor(stack, DyeColor.YELLOW);
         return stack;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public BlockRenderType getRenderType(final BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
