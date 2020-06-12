@@ -44,8 +44,8 @@ public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
         final float bi = this.brightness;
         final int emissiveLight = this.getLight(light);
         final float br = 1.0F, bg = 0.94F, bb = 0.79F;
-        this.bulb.render(matrix, builder, emissiveLight, overlay, r * (br * bi + (1.0F - bi)), g * (bg * bi + (1.0F - bi)), b * (bb * bi + (1.0F - bi)), bi * 0.8F + 0.2F);
-        final float cr = 1.0F, cg = 0.86F, cb = 0.54F;
+        this.bulb.render(matrix, builder, emissiveLight, overlay, r * (br * bi + (1.0F - bi)), g * (bg * bi + (1.0F - bi)), b * (bb * bi + (1.0F - bi)), bi * 0.75F + 0.2F);
+        final float cr = 1.0F, cg = 0.77F, cb = 0.25F;
         this.bulbGlow.render(matrix, builder, emissiveLight, overlay, r * cr, g * cg, b * cb, bi * 0.3F);
         super.renderTranslucent(matrix, builder, light, overlay, r, g, b, a);
     }
