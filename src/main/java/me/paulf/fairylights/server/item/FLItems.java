@@ -59,6 +59,8 @@ public final class FLItems {
 
     public static final RegistryObject<LightItem> CANDLE_LANTERN = REG.register("candle_lantern", FLItems.createLight(FLBlocks.CANDLE_LANTERN, LightItem::new));
 
+    public static final RegistryObject<LightItem> INCANDESCENT_LIGHT = REG.register("incandescent_light", FLItems.createLight(FLBlocks.INCANDESCENT_LIGHT, LightItem::new));
+
     public static final RegistryObject<Item> TRIANGLE_PENNANT = REG.register("triangle_pennant", () -> new PennantItem(defaultProperties()));
 
     public static final RegistryObject<Item> SPEARHEAD_PENNANT = REG.register("spearhead_pennant", () -> new PennantItem(defaultProperties()));

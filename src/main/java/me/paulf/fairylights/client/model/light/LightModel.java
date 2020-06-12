@@ -79,7 +79,7 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
         this.litTintGlow.render(matrix, builder, this.getLight(light), overlay, r * this.red * v + (1.0F - v), g * this.green * v + (1.0F - v), b * this.blue * v + (1.0F - v), v * 0.15F + 0.1F);
     }
 
-    private int getLight(final int packedLight) {
+    protected int getLight(final int packedLight) {
         return (int) Math.max((this.brightness * 15.0F * 16.0F), this.powered ? 0 : packedLight & 255) | packedLight & (255 << 16);
     }
 

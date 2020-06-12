@@ -10,6 +10,7 @@ import me.paulf.fairylights.client.model.light.FairyLightModel;
 import me.paulf.fairylights.client.model.light.FlowerLightModel;
 import me.paulf.fairylights.client.model.light.GhostLightModel;
 import me.paulf.fairylights.client.model.light.IcicleLightsModel;
+import me.paulf.fairylights.client.model.light.IncandescentLightModel;
 import me.paulf.fairylights.client.model.light.JackOLanternLightModel;
 import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.client.model.light.MeteorLightModel;
@@ -59,7 +60,8 @@ public class LightRenderer {
         ))
         .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel()))
         .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new OilLanternModel()))
-        .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(() -> new CandleLanternModel()))
+        .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(CandleLanternModel::new))
+        .put(SimpleLightVariant.INCANDESCENT_LIGHT, LightModelProvider.of(() -> new IncandescentLightModel()))
         .build();
 
     public LightRenderer() {
