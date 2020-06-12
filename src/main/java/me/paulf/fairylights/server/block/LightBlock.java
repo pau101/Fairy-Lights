@@ -3,7 +3,6 @@ package me.paulf.fairylights.server.block;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
 import me.paulf.fairylights.server.item.ColorLightItem;
 import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.server.item.SimpleLightVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFaceBlock;
@@ -52,7 +51,7 @@ public class LightBlock extends HorizontalFaceBlock {
     public LightBlock(final Properties properties, final LightVariant<?> variant) {
         super(properties.noDrops());
         this.variant = variant;
-        final AxisAlignedBB bb = variant == SimpleLightVariant.FAIRY_LIGHT ? this.variant.getBounds().grow(0.044D) : this.variant.getBounds();
+        final AxisAlignedBB bb = this.variant.getBounds();
         final double w = Math.max(bb.getXSize(), bb.getZSize());
         final double w0 = 0.5D - w * 0.5D;
         final double w1 = 0.5D + w * 0.5D;

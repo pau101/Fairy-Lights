@@ -36,7 +36,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     });
     public static final LightVariant<BrightLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), stack -> new TorchLightBehavior(0.13D));
     public static final LightVariant<BrightLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), stack -> new TorchLightBehavior(0.2D));
-    public static final LightVariant<StandardLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.094D, -0.094D, -0.094D, 0.094D, 0.094D, 0.094D), SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<StandardLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.063D, -0.001D, -0.063D, 0.063D, 0.062D, 0.063D), SimpleLightVariant::standardBehavior, true);
 
     private final boolean parallelsCord;
 

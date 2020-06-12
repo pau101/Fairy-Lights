@@ -15,7 +15,7 @@ public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
 
     public IncandescentLightModel() {
         this.unlit.setTextureOffset(90, 10);
-        this.unlit.addBox(-1.0F, 0.0F, -1.0F, 2.0F, 1.0F, 2.0F);
+        this.unlit.addBox(-1.0F, -0.01F, -1.0F, 2.0F, 1.0F, 2.0F);
         this.bulb = new ModelRenderer(this, 98, 10);
         this.bulb.addBox(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F);
         this.bulbGlow = new ModelRenderer(this, 98, 10);
