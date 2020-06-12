@@ -156,15 +156,18 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     @Override
     protected Light<?> createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
-        final boolean on = !this.isDynamic() && this.isOn;
         final ItemStack lightData = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
-        final Light<? extends LightBehavior> light = this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY_LIGHT));
-        if (on && this.isOrigin()) {
+        return this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY_LIGHT));
+    }
+
+    @Override
+    protected void updateFeature(final Light<?> light) {
+        super.updateFeature(light);
+        if (this.isOrigin() && !this.isDynamic() && this.isOn) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
             this.setLight(pos);
         }
-        return light;
     }
 
     private <T extends LightBehavior> Light<T> createLight(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack stack, final LightVariant<T> variant) {

@@ -59,6 +59,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
             } else {
                 feature = this.createFeature(index, new Vec3d(x, y, z), yaw, pitch);
             }
+            this.updateFeature(feature);
             features.add(feature);
         });
         this.features = features.toArray(this.createFeatures(features.size()));
@@ -72,6 +73,8 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
     protected abstract float getFeatureSpacing();
 
     protected void onBeforeUpdateFeatures() {}
+
+    protected void updateFeature(final F feature) {}
 
     protected void onAfterUpdateFeatures() {}
 
