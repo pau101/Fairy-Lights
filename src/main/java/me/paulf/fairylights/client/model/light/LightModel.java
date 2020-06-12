@@ -51,12 +51,15 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     }
 
     public AxisAlignedBB getBounds() {
+        return this.getBounds(false);
+    }
+
+    protected AxisAlignedBB getBounds(final boolean translucent) {
         if (this.bounds == null) {
             final MatrixStack matrix = new MatrixStack();
             final AABBVertexBuilder builder = new AABBVertexBuilder();
-            this.unlit.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
-            this.lit.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
-            this.litTint.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            if (translucent) this.renderTranslucent(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
             this.bounds = builder.build();
         }
         return this.bounds;

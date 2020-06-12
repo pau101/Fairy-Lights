@@ -2,6 +2,7 @@ package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.BrightLightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.DefaultBehavior;
+import me.paulf.fairylights.server.fastener.connection.type.hanginglights.IncandescentBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.MeteorLightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.StandardLightBehavior;
@@ -14,7 +15,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import java.util.function.Function;
 
 public class SimpleLightVariant<T extends LightBehavior> implements LightVariant<T> {
-    public static final LightVariant<StandardLightBehavior> FAIRY_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.094D, -0.094D, -0.094D, 0.094D, 0.094D, 0.094D), SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<StandardLightBehavior> FAIRY_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.138D, -0.138D, -0.138D, 0.138D, 0.138D, 0.138D), SimpleLightVariant::standardBehavior, true);
     public static final LightVariant<StandardLightBehavior> PAPER_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.250D, -0.906D, -0.250D, 0.250D, 0.091D, 0.250D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> ORB_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.219D, -0.469D, -0.219D, 0.219D, 0.091D, 0.219D), SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> FLOWER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.409D, -0.158D, -0.409D, 0.369D, 0.125D, 0.369D), SimpleLightVariant::standardBehavior, true);
@@ -36,7 +37,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     });
     public static final LightVariant<BrightLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), stack -> new TorchLightBehavior(0.13D));
     public static final LightVariant<BrightLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), stack -> new TorchLightBehavior(0.2D));
-    public static final LightVariant<StandardLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.063D, -0.001D, -0.063D, 0.063D, 0.062D, 0.063D), SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<BrightLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.166D, -0.291D, -0.166D, 0.166D, 0.062D, 0.166D), stack -> new IncandescentBehavior(), true);
 
     private final boolean parallelsCord;
 
