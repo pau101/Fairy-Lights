@@ -65,7 +65,7 @@ public class LightBlock extends HorizontalFaceBlock {
         } else {
             final double t = 0.125D;
             final double u = 11.0D / 16.0D;
-            this.floorShape = VoxelShapes.create(w0, 0.0D, w0, w1, bb.getYSize(), w1);
+            this.floorShape = VoxelShapes.create(w0, 0.0D, w0, w1, bb.getYSize() - this.variant.getFloorOffset(), w1);
             this.eastWallShape = VoxelShapes.create(w0 - t, u + bb.minY, w0, w1 - t, u + bb.maxY, w1);
             this.westWallShape = VoxelShapes.create(w0 + t, u + bb.minY, w0, w1 + t, u + bb.maxY, w1);
             this.southWallShape = VoxelShapes.create(w0, u + bb.minY, w0 - t, w1, u + bb.maxY, w1 - t);

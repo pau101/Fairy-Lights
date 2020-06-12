@@ -34,6 +34,8 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     @Nullable
     private AxisAlignedBB bounds;
 
+    private double floorOffset = Double.NaN;
+
     private boolean powered;
 
     public LightModel() {
@@ -51,18 +53,23 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     }
 
     public AxisAlignedBB getBounds() {
-        return this.getBounds(false);
-    }
-
-    protected AxisAlignedBB getBounds(final boolean translucent) {
         if (this.bounds == null) {
             final MatrixStack matrix = new MatrixStack();
             final AABBVertexBuilder builder = new AABBVertexBuilder();
             this.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
-            if (translucent) this.renderTranslucent(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.renderTranslucent(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
             this.bounds = builder.build();
         }
         return this.bounds;
+    }
+
+    public double getFloorOffset() {
+        if (Double.isNaN(this.floorOffset)) {
+            final AABBVertexBuilder builder = new AABBVertexBuilder();
+            this.render(new MatrixStack(), builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.floorOffset = builder.build().minY-this.getBounds().minY;
+        }
+        return this.floorOffset;
     }
 
     public void animate(final Light<T> light, final float delta) {

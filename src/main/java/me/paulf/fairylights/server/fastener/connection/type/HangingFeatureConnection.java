@@ -92,7 +92,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
                 }
                 matrix.translate(0.0F, -f.getDescent(), 0.0F);
                 final AABBBuilder bounds = new AABBBuilder();
-                final AxisAlignedBB bb = f.getBounds().grow(0.025D);
+                final AxisAlignedBB bb = f.getBounds().grow(0.01D);
                 final Vec3d[] verts = {
                     new Vec3d(bb.minX, bb.minY, bb.minZ),
                     new Vec3d(bb.maxX, bb.minY, bb.minZ),

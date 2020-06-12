@@ -22,6 +22,8 @@ public interface LightVariant<T extends LightBehavior> {
 
     AxisAlignedBB getBounds();
 
+    double getFloorOffset();
+
     T createBehavior(final ItemStack stack);
 
     boolean isOrientable();

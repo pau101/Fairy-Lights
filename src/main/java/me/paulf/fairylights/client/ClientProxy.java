@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.command.ClientCommandProvider;
 import me.paulf.fairylights.client.command.JinglerCommand;
+import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.client.renderer.block.entity.FastenerBlockEntityRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.LetterBuntingRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.LightBlockEntityRenderer;
+import me.paulf.fairylights.client.renderer.block.entity.LightRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.PennantBuntingRenderer;
 import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
 import me.paulf.fairylights.client.renderer.entity.LadderRenderer;
@@ -31,6 +33,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -106,12 +109,13 @@ public final class ClientProxy extends ServerProxy {
         ModelLoader.addSpecialModel(FenceFastenerRenderer.MODEL);
         this.entityModels.forEach(ModelLoader::addSpecialModel);
         RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
-        /*final LightRenderer r = new LightRenderer();
+        final LightRenderer r = new LightRenderer();
         System.out.printf("waldo%n");
         FLItems.lights().forEach(l -> {
-            final AxisAlignedBB bb = r.getModel(l.getBlock().getVariant(), -1).getBounds();
-            System.out.printf("%s new AxisAlignedBB(%.3fD, %.3fD, %.3fD, %.3fD, %.3fD, %.3fD)%n", l.getRegistryName(), bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
-        });*/
+            final LightModel<?> model = r.getModel(l.getBlock().getVariant(), -1);
+            final AxisAlignedBB bb = model.getBounds();
+            System.out.printf("%s new AxisAlignedBB(%.3fD, %.3fD, %.3fD, %.3fD, %.3fD, %.3fD), %.3fD%n", l.getRegistryName(), bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ, model.getFloorOffset());
+        });
     }
 
     private void setupColors(final ColorHandlerEvent.Item event) {

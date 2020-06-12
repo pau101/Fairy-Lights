@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.BrightLightBehavior;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.AxisAlignedBB;
 
 public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
     final ModelRenderer bulb;
@@ -23,11 +22,6 @@ public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
         this.bulbGlow.addBox(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.65F);
         this.filament = new ModelRenderer(this, 90, 13);
         this.filament.addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F);
-    }
-
-    @Override
-    public AxisAlignedBB getBounds() {
-        return super.getBounds(true);
     }
 
     @Override

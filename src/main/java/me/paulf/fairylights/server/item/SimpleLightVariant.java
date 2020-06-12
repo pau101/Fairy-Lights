@@ -15,29 +15,29 @@ import net.minecraft.util.math.AxisAlignedBB;
 import java.util.function.Function;
 
 public class SimpleLightVariant<T extends LightBehavior> implements LightVariant<T> {
-    public static final LightVariant<StandardLightBehavior> FAIRY_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.138D, -0.138D, -0.138D, 0.138D, 0.138D, 0.138D), SimpleLightVariant::standardBehavior, true);
-    public static final LightVariant<StandardLightBehavior> PAPER_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.250D, -0.906D, -0.250D, 0.250D, 0.091D, 0.250D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> ORB_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.219D, -0.469D, -0.219D, 0.219D, 0.091D, 0.219D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> FLOWER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.409D, -0.158D, -0.409D, 0.369D, 0.125D, 0.369D), SimpleLightVariant::standardBehavior, true);
-    public static final LightVariant<StandardLightBehavior> CANDLE_LANTERN_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> OIL_LANTERN_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> JACK_O_LANTERN = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.188D, -0.375D, -0.203D, 0.188D, 0.122D, 0.188D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> SKULL_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.156D, -0.360D, -0.172D, 0.156D, 0.122D, 0.156D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> GHOST_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.201D, -0.314D, -0.201D, 0.201D, 0.125D, 0.201D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> SPIDER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.515D, -0.774D, -0.156D, 0.515D, 0.122D, 0.156D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> WITCH_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.250D, -0.375D, -0.250D, 0.250D, 0.130D, 0.250D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> SNOWFLAKE_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.458D, -1.007D, -0.059D, 0.458D, 0.072D, 0.059D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<StandardLightBehavior> ICICLE_LIGHTS = new SimpleLightVariant<>(false, 0.625F, new AxisAlignedBB(-0.205D, -1.020D, -0.206D, 0.207D, 0.091D, 0.200D), SimpleLightVariant::standardBehavior);
-    public static final LightVariant<MeteorLightBehavior> METEOR_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.063D, -1.588D, -0.063D, 0.063D, 0.091D, 0.063D), stack -> {
+    public static final LightVariant<StandardLightBehavior> FAIRY_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.138D, -0.138D, -0.138D, 0.138D, 0.138D, 0.138D), 0.044D, SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<StandardLightBehavior> PAPER_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.250D, -0.906D, -0.250D, 0.250D, 0.091D, 0.250D), 0.000D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> ORB_LANTERN = new SimpleLightVariant<>(false, 1.0F, new AxisAlignedBB(-0.262D, -0.512D, -0.262D, 0.262D, 0.091D, 0.262D), 0.044D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> FLOWER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.483D, -0.227D, -0.483D, 0.436D, 0.185D, 0.436D), 0.069D, SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<StandardLightBehavior> CANDLE_LANTERN_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), 0.000D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> OIL_LANTERN_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), 0.000D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> JACK_O_LANTERN = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.231D, -0.419D, -0.231D, 0.231D, 0.122D, 0.231D), 0.044D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> SKULL_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.200D, -0.404D, -0.200D, 0.200D, 0.122D, 0.200D), 0.044D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> GHOST_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.270D, -0.390D, -0.270D, 0.270D, 0.169D, 0.270D), 0.075D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> SPIDER_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.575D, -0.834D, -0.200D, 0.575D, 0.122D, 0.200D), 0.060D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> WITCH_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.294D, -0.419D, -0.294D, 0.294D, 0.173D, 0.294D), 0.044D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> SNOWFLAKE_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.518D, -1.050D, -0.082D, 0.517D, 0.072D, 0.082D), 0.044D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<StandardLightBehavior> ICICLE_LIGHTS = new SimpleLightVariant<>(false, 0.625F, new AxisAlignedBB(-0.264D, -1.032D, -0.253D, 0.276D, 0.091D, 0.266D), 0.012D, SimpleLightVariant::standardBehavior);
+    public static final LightVariant<MeteorLightBehavior> METEOR_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.090D, -1.588D, -0.090D, 0.090D, 0.091D, 0.090D), 0.000D, stack -> {
         final int rgb = ColorLightItem.getColor(stack);
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;
         final float blue = (rgb & 0xFF) / 255.0F;
         return new MeteorLightBehavior(red, green, blue);
     });
-    public static final LightVariant<BrightLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), stack -> new TorchLightBehavior(0.13D));
-    public static final LightVariant<BrightLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), stack -> new TorchLightBehavior(0.2D));
-    public static final LightVariant<BrightLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.166D, -0.291D, -0.166D, 0.166D, 0.062D, 0.166D), stack -> new IncandescentBehavior(), true);
+    public static final LightVariant<BrightLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), 0.000D, stack -> new TorchLightBehavior(0.13D));
+    public static final LightVariant<BrightLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), 0.000D, stack -> new TorchLightBehavior(0.2D));
+    public static final LightVariant<BrightLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.166D, -0.291D, -0.166D, 0.166D, 0.062D, 0.166D), 0.103D, stack -> new IncandescentBehavior(), true);
 
     private final boolean parallelsCord;
 
@@ -45,18 +45,21 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
 
     private final AxisAlignedBB bounds;
 
+    private final double floorOffset;
+
     private final Function<ItemStack, T> behaviorFactory;
 
     private final boolean orientable;
 
-    SimpleLightVariant(final boolean parallelsCord, final float spacing, final AxisAlignedBB bounds, final Function<ItemStack, T> behaviorFactory) {
-        this(parallelsCord, spacing, bounds, behaviorFactory, false);
+    SimpleLightVariant(final boolean parallelsCord, final float spacing, final AxisAlignedBB bounds, final double floorOffset, final Function<ItemStack, T> behaviorFactory) {
+        this(parallelsCord, spacing, bounds, floorOffset, behaviorFactory, false);
     }
 
-    SimpleLightVariant(final boolean parallelsCord, final float spacing, final AxisAlignedBB bounds, final Function<ItemStack, T> behaviorFactory, final boolean orientable) {
+    SimpleLightVariant(final boolean parallelsCord, final float spacing, final AxisAlignedBB bounds, final double floorOffset, final Function<ItemStack, T> behaviorFactory, final boolean orientable) {
         this.parallelsCord = parallelsCord;
         this.spacing = spacing;
         this.bounds = bounds;
+        this.floorOffset = floorOffset;
         this.behaviorFactory = behaviorFactory;
         this.orientable = orientable;
     }
@@ -74,6 +77,11 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     @Override
     public AxisAlignedBB getBounds() {
         return this.bounds;
+    }
+
+    @Override
+    public double getFloorOffset() {
+        return this.floorOffset;
     }
 
     @Override

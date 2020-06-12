@@ -48,7 +48,7 @@ public class LightBlockEntityRenderer extends TileEntityRenderer<LightBlockEntit
             } else if (face == AttachFace.WALL) {
                 matrix.translate(0.0D, 3.0D / 16.0D, 0.125D);
             } else {
-                matrix.translate(0.0D, -box.minY - 0.5D, 0.0D);
+                matrix.translate(0.0D, -box.minY - model.getFloorOffset() - 0.5D, 0.0D);
             }
         }
         this.lights.render(matrix, this.lights.start(source), light, model, delta, packedLight, packedOverlay);
