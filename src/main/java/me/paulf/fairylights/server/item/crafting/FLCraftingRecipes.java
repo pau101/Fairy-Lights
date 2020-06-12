@@ -18,6 +18,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
@@ -95,11 +96,15 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> EDIT_COLOR = REG.register("crafting_special_edit_color", makeSerializer(FLCraftingRecipes::createDyeColor));
 
+    public static final RegistryObject<IRecipeSerializer<CopyColorRecipe>> COPY_COLOR = REG.register("crafting_special_copy_color", makeSerializer(CopyColorRecipe::new));
+
     public static final Tag<Item> LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights"));
 
     public static final Tag<Item> TWINKLING_LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "twinkling_lights"));
 
     public static final Tag<Item> PENNANTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"));
+
+    public static final Tag<Item> DYEABLE = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable"));
 
     public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(Ingredient.fromTag(Tags.Items.DYES)) {
         @Override
@@ -118,14 +123,14 @@ public final class FLCraftingRecipes {
         }
     };
 
-    private static Supplier<IRecipeSerializer<GenericRecipe>> makeSerializer(final Function<ResourceLocation, GenericRecipe> factory) {
+    private static <T extends ICraftingRecipe> Supplier<IRecipeSerializer<T>> makeSerializer(final Function<ResourceLocation, T> factory) {
         return () -> new SpecialRecipeSerializer<>(factory);
     }
 
     private static GenericRecipe createDyeColor(final ResourceLocation name) {
         return new GenericRecipeBuilder(name, EDIT_COLOR)
             .withShape("I")
-            .withIngredient('I', new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable"))).withOutput('I')
+            .withIngredient('I', DYEABLE).withOutput('I')
             .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<Blender>(Ingredient.fromTag(Tags.Items.DYES), true, 8) {
                 @Override
                 public Blender accumulator() {

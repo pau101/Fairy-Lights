@@ -166,7 +166,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         final List<MatchResultAuxiliary> auxResults = new ArrayList<>();
         Item item = this.output.getItem();
         final CompoundNBT tag = new CompoundNBT();
-        for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight();  i < size; i++) {
+        for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight(); i < size; i++) {
             final int x = i % w;
             final int y = i / w;
             final int ingX = x - originX;

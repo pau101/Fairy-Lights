@@ -119,6 +119,8 @@ public final class DataGatherer {
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting_augmentation"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.EDIT_COLOR.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "edit_color"));
+            GenericRecipeBuilder.customRecipe(FLCraftingRecipes.COPY_COLOR.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "copy_color"));
             this.pennantRecipe(FLCraftingRecipes.TRIANGLE_PENNANT.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "triangle_pennant"));
             this.pennantRecipe(FLCraftingRecipes.SPEARHEAD_PENNANT.get())
