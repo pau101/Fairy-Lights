@@ -21,14 +21,10 @@ public class OilLanternModel extends LightModel<BrightLightBehavior> {
         this.unlit.addBox(-0.5F, -9, 2.5F, 1, 9, 1);
         this.unlit.setTextureOffset(38, 0);
         this.unlit.addBox(-0.5F, -0.5F, -3, 1, 1, 6);
-
-        // glass
         this.lit.setTextureOffset(63, 16);
         this.lit.addBox(-2, -7.5F, -2, 4, 6, 4);
         this.lit.setTextureOffset(79, 17);
         this.lit.addBox(-1, -1.5F, -1, 2, 1, 2);
-
-        // torch
         this.lit.setTextureOffset(79, 20);
         this.lit.addBox(-1.0F, -7.5F, -1.0F, 2.0F, 4.0F, 2.0F);
     }
