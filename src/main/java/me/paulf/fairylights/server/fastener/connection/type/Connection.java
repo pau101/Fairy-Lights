@@ -339,7 +339,7 @@ public abstract class Connection implements NBTSerializable {
             if (vec.length() > 1e-6) {
                 final Direction facing = this.fastener.getFacing();
                 this.catenary = Catenary.from(vec, facing.getAxis() != Direction.Axis.Y ? (float) Math.toRadians(90.0F + facing.getHorizontalAngle()) : 0.0F, SLACK_CURVE, this.slack);
-                this.onCalculateCatenary(this.prevDestination != this.destination);
+                this.onCalculateCatenary(!this.destination.equals(this.prevDestination));
                 final CollidableList.Builder bob = new CollidableList.Builder();
                 this.addCollision(bob, from);
                 this.collision = bob.build();
