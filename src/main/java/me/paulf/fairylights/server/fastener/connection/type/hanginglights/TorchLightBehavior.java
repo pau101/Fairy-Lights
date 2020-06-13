@@ -21,7 +21,7 @@ public class TorchLightBehavior implements BrightLightBehavior {
     }
 
     @Override
-    public void power(final boolean powered) {
+    public void power(final boolean powered, final boolean now) {
         this.powered = powered;
         this.value = this.powered ? 1.0F : 0.0F;
     }

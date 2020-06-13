@@ -43,7 +43,7 @@ public class LightBlockEntity extends TileEntity {
 
     private void setOn(final boolean on) {
         this.on = on;
-        this.light.power(on);
+        this.light.power(on, true);
         this.markDirty();
     }
 

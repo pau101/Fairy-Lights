@@ -16,7 +16,7 @@ public class DefaultBehavior extends FixedColorBehavior implements StandardLight
     }
 
     @Override
-    public void power(final boolean powered) {
+    public void power(final boolean powered, final boolean now) {
         this.value = powered ? 1.0F : 0.0F;
     }
 

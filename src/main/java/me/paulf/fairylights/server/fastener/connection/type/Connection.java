@@ -69,7 +69,7 @@ public abstract class Connection implements NBTSerializable {
     private Catenary catenary;
 
     @Nullable
-    private Catenary prevCatenary;
+    protected Catenary prevCatenary;
 
     protected float slack = 1;
 

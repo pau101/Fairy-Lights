@@ -202,7 +202,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     protected void onAfterUpdateFeatures() {
         final boolean on = !this.isDynamic() && this.isOn;
         for (final Light<?> light : this.features) {
-            light.power(on);
+            light.power(on, this.isDynamic() || this.prevCatenary == null);
         }
         this.oldLitBlocks.removeAll(this.litBlocks);
         final Iterator<BlockPos> oldIter = this.oldLitBlocks.iterator();

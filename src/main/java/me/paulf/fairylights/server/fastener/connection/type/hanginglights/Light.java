@@ -101,8 +101,8 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
         this.swaying = false;
     }
 
-    public void power(final boolean powered) {
-        this.behavior.power(powered);
+    public void power(final boolean powered, final boolean now) {
+        this.behavior.power(powered, now);
         this.powered = powered;
     }
 

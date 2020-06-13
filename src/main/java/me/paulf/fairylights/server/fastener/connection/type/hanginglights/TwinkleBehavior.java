@@ -27,7 +27,7 @@ public class TwinkleBehavior extends FixedColorBehavior implements StandardLight
     }
 
     @Override
-    public void power(final boolean powered) {
+    public void power(final boolean powered, final boolean now) {
         this.powered = powered;
     }
 
