@@ -31,6 +31,11 @@ public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
     }
 
     @Override
+    protected int getLight(final int packedLight) {
+        return (int) Math.max((this.brightness * 15.0F * 16.0F), packedLight & 255) | packedLight & (255 << 16);
+    }
+
+    @Override
     public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         super.render(matrix, builder, light, overlay, r, g, b, a);
         final int emissiveLight = this.getLight(light);
@@ -44,7 +49,7 @@ public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
         final float bi = this.brightness;
         final int emissiveLight = this.getLight(light);
         final float br = 1.0F, bg = 0.94F, bb = 0.79F;
-        this.bulb.render(matrix, builder, emissiveLight, overlay, r * (br * bi + (1.0F - bi)), g * (bg * bi + (1.0F - bi)), b * (bb * bi + (1.0F - bi)), bi * 0.75F + 0.2F);
+        this.bulb.render(matrix, builder, emissiveLight, overlay, r * (br * bi + (1.0F - bi)), g * (bg * bi + (1.0F - bi)), b * (bb * bi + (1.0F - bi)), bi * 0.55F + 0.25F);
         final float cr = 1.0F, cg = 0.77F, cb = 0.25F;
         this.bulbGlow.render(matrix, builder, emissiveLight, overlay, r * cr, g * cg, b * cb, bi * 0.3F);
         super.renderTranslucent(matrix, builder, light, overlay, r, g, b, a);

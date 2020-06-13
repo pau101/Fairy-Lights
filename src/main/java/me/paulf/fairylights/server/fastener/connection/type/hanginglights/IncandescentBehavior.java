@@ -24,9 +24,12 @@ public class IncandescentBehavior implements BrightLightBehavior {
     @Override
     public void tick(final World world, final Vec3d origin, final Light<?> light) {
         this.prevBrightness = this.brightness;
-        if (this.powered) this.brighten(1.0F, 0.3F);
-        else this.brighten(0.0F, 0.1F);
-        if (this.brightness > 0.8F && world.rand.nextFloat() < 0.7F) {
+        if (this.powered) {
+            this.brighten(1.0F, 0.2F);
+        } else {
+            this.brighten(0.0F, 0.1F);
+        }
+        if (this.brightness > 0.85F && world.rand.nextFloat() < 0.25F) {
             this.brightness -= world.rand.nextFloat() * 0.05F;
         }
     }
