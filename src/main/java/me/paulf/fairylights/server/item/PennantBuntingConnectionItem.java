@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.util.ITooltipFlag;
@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class PennantBuntingConnectionItem extends ConnectionItem {
     public PennantBuntingConnectionItem(final Item.Properties properties) {
-        super(properties);
+        super(properties, ConnectionTypes.PENNANT_BUNTING);
     }
 
     @Override
@@ -64,10 +64,5 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
                 subItems.add(FLCraftingRecipes.makePennant(stack, color));
             }
         }
-    }
-
-    @Override
-    public ConnectionType getConnectionType() {
-        return ConnectionType.PENNANT_BUNTING;
     }
 }

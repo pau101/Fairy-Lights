@@ -6,7 +6,7 @@ import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
@@ -198,9 +198,9 @@ public final class FastenerBlock extends DirectionalBlock {
             return super.getComparatorInputOverride(state, world, pos);
         }
         return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
-            .flatMap(e -> {
+            .<Pair<Map.Entry<UUID, Connection>, Fastener<?>>>flatMap(e -> {
                 final Connection connection = e.getValue();
-                if (connection.getType() == ConnectionType.HANGING_LIGHTS) {
+                if (connection.getType() == ConnectionTypes.HANGING_LIGHTS.get()) {
                     return connection.getDestination().get(world, false).<Pair<Map.Entry<UUID, Connection>, Fastener<?>>>map(fd -> Pair.of(e, fd)).map(Stream::of).orElse(Stream.empty());
                 }
                 return Stream.empty();
@@ -241,9 +241,9 @@ public final class FastenerBlock extends DirectionalBlock {
         }
         //noinspection ResultOfMethodCallIgnored
         entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getConnections().entrySet().stream()).orElse(Stream.empty())
-            .flatMap(e -> {
+            .<Pair<Map.Entry<UUID, Connection>, Fastener<?>>>flatMap(e -> {
                 final Connection connection = e.getValue();
-                if (connection.getType() == ConnectionType.HANGING_LIGHTS) {
+                if (connection.getType() == ConnectionTypes.HANGING_LIGHTS.get()) {
                     return connection.getDestination().get(world, false).<Pair<Map.Entry<UUID, Connection>, Fastener<?>>>map(fd -> Pair.of(e, fd)).map(Stream::of).orElse(Stream.empty());
                 }
                 return Stream.empty();

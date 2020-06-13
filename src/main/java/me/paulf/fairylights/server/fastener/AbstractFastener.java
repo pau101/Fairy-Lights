@@ -1,18 +1,20 @@
 package me.paulf.fairylights.server.fastener;
 
+import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.util.AABBBuilder;
+import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -210,7 +212,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public Connection connectWith(final World world, final Fastener<?> destination, final ConnectionType type, final CompoundNBT compound, final boolean drop) {
+    public Connection connectWith(final World world, final Fastener<?> destination, final ConnectionType<?> type, final CompoundNBT compound, final boolean drop) {
         final UUID uuid = MathHelper.getRandomUUID();
         this.connections.put(uuid, this.createConnection(world, uuid, destination, type, true, compound, drop));
         final Connection c = destination.createConnection(world, uuid, this, type, false, compound, drop);
@@ -219,8 +221,10 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public Connection createConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType type, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-        return type.createConnection(world, this, uuid, destination, isOrigin, compound, drop);
+    public Connection createConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType<?> type, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        final Connection c = type.create(world, this, uuid);
+        c.deserialize(destination, isOrigin, compound, drop);
+        return c;
     }
 
     @Override
@@ -232,8 +236,8 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             final Connection connection = connectionEntry.getValue();
             final CompoundNBT connectionCompound = new CompoundNBT();
             connectionCompound.put("connection", connection.serialize());
-            connectionCompound.putByte("type", (byte) connection.getType().ordinal());
-            connectionCompound.put("uuid", NBTUtil.writeUniqueId(uuid));
+            connectionCompound.putString("type", RegistryObjects.getName(connection.getType()).toString());
+            connectionCompound.putUniqueId("uuid", uuid);
             listConnections.add(connectionCompound);
         }
         compound.put("connections", listConnections);
@@ -250,21 +254,24 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
         for (int i = 0; i < listConnections.size(); i++) {
             final CompoundNBT connectionCompound = listConnections.getCompound(i);
             final UUID uuid;
-            if (connectionCompound.contains("uuid", NBT.TAG_COMPOUND)) {
-                uuid = NBTUtil.readUniqueId(connectionCompound.getCompound("uuid"));
+            if (connectionCompound.hasUniqueId("uuid")) {
+                uuid = connectionCompound.getUniqueId("uuid");
             } else {
                 uuid = MathHelper.getRandomUUID();
             }
             nbtUUIDs.add(uuid);
-            final Connection connection;
             if (this.connections.containsKey(uuid)) {
-                connection = this.connections.get(uuid);
+                final Connection connection = this.connections.get(uuid);
+                connection.deserialize(connectionCompound.getCompound("connection"));
             } else {
-                final ConnectionType type = ConnectionType.from(connectionCompound.getByte("type"));
-                connection = type.createConnection(this.world, this, uuid);
-                this.connections.put(uuid, connection);
+                final String stype = connectionCompound.getString("type");
+                final ConnectionType<?> type = FairyLights.CONNECTION_TYPES.getValue(ResourceLocation.tryCreate(stype));
+                if (type != null) {
+                    final Connection connection = type.create(this.world, this, uuid);
+                    connection.deserialize(connectionCompound.getCompound("connection"));
+                    this.connections.put(uuid, connection);
+                }
             }
-            connection.deserialize(connectionCompound.getCompound("connection"));
         }
         final Iterator<Entry<UUID, Connection>> connectionsIter = this.connections.entrySet().iterator();
         while (connectionsIter.hasNext()) {

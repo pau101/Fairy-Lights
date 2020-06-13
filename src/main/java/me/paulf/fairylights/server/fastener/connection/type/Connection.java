@@ -1,6 +1,5 @@
 package me.paulf.fairylights.server.fastener.connection.type;
 
-import com.google.common.base.MoreObjects;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
@@ -52,6 +51,8 @@ public abstract class Connection implements NBTSerializable {
 
     private static final float MAX_SLACK = 3;
 
+    private final ConnectionType<?> type;
+
     protected final Fastener<?> fastener;
 
     private final UUID uuid;
@@ -92,19 +93,16 @@ public abstract class Connection implements NBTSerializable {
 
     private boolean drop;
 
-    public Connection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-        this(world, fastener, uuid);
-        this.destination = destination.createAccessor();
-        this.isOrigin = isOrigin;
-        this.drop = drop;
-        this.deserializeLogic(compound);
-    }
-
-    public Connection(final World world, final Fastener<?> fastener, final UUID uuid) {
+    public Connection(final ConnectionType<?> type, final World world, final Fastener<?> fastener, final UUID uuid) {
+        this.type = type;
         this.world = world;
         this.fastener = fastener;
         this.uuid = uuid;
         this.computeCatenary();
+    }
+
+    public ConnectionType<?> getType() {
+        return this.type;
     }
 
     @Nullable
@@ -247,13 +245,11 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public boolean matches(final ItemStack stack) {
-        if (!(stack.getItem() instanceof ConnectionItem)) {
-            return false;
+        if (this.getType().getItem().equals(stack.getItem())) {
+            final CompoundNBT tag = stack.getTag();
+            return tag == null || NBTUtil.areNBTEquals(this.serializeLogic(), tag, true);
         }
-        if (!((ConnectionItem) stack.getItem()).getConnectionType().isInstance(this)) {
-            return false;
-        }
-        return !stack.hasTag() || NBTUtil.areNBTEquals(this.serializeLogic(), stack.getTag(), true);
+        return false;
     }
 
     private boolean replace(final PlayerEntity player, final Vec3d hit, final ItemStack heldStack) {
@@ -263,9 +259,9 @@ public abstract class Connection implements NBTSerializable {
             if (this.shouldDrop()) {
                 player.inventory.addItemStackToInventory(this.getItemStack());
             }
-            final CompoundNBT data = MoreObjects.firstNonNull(heldStack.getTag(), new CompoundNBT());
-            final ConnectionType type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
-            this.fastener.connectWith(this.world, dest, type, data, true).onConnect(player.world, player, heldStack);
+            final CompoundNBT data = heldStack.getTag();
+            final ConnectionType<? extends Connection> type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
+            this.fastener.connectWith(this.world, dest, type, data == null ? new CompoundNBT() : data, true).onConnect(player.world, player, heldStack);
             heldStack.shrink(1);
             this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
             return true;
@@ -294,8 +290,6 @@ public abstract class Connection implements NBTSerializable {
     protected void onUpdateLate() {}
 
     protected void onCalculateCatenary(final boolean relocated) {}
-
-    public abstract ConnectionType getType();
 
     public final void update(final Vec3d from) {
         this.prevCatenary = this.catenary;
@@ -387,6 +381,13 @@ public abstract class Connection implements NBTSerializable {
             ).grow(r);
         }
         collision.add(FeatureCollisionTree.build(CORD_FEATURE, i -> Segment.INSTANCE, i -> bounds[i], 1, bounds.length - 2));
+    }
+
+    public void deserialize(final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+        this.destination = destination.createAccessor();
+        this.isOrigin = isOrigin;
+        this.drop = drop;
+        this.deserializeLogic(compound);
     }
 
     @Override

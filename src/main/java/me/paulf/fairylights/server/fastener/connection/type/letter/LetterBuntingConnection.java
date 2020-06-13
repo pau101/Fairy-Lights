@@ -45,12 +45,8 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     private Letter[] letters = new Letter[0];
 
-    public LetterBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-        super(world, fastener, uuid, destination, isOrigin, compound, drop);
-    }
-
-    public LetterBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-        super(world, fastener, uuid);
+    public LetterBuntingConnection(final ConnectionType<? extends LetterBuntingConnection> type, final World world, final Fastener<?> fastener, final UUID uuid) {
+        super(type, world, fastener, uuid);
         this.text = new StyledString();
     }
 
@@ -61,11 +57,6 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     public Letter[] getLetters() {
         return this.letters;
-    }
-
-    @Override
-    public ConnectionType getType() {
-        return ConnectionType.LETTER_BUNTING;
     }
 
     @Override

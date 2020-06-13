@@ -27,13 +27,19 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.RegistryObject;
 
 public abstract class ConnectionItem extends Item {
-    public ConnectionItem(final Properties properties) {
+    private final RegistryObject<? extends ConnectionType<?>> type;
+
+    public ConnectionItem(final Properties properties, final RegistryObject<? extends ConnectionType<?>> type) {
         super(properties);
+        this.type = type;
     }
 
-    public abstract ConnectionType getConnectionType();
+    public final ConnectionType<?> getConnectionType() {
+        return (ConnectionType<?>) this.type.get();
+    }
 
     @Override
     public ActionResultType onItemUse(final ItemUseContext context) {

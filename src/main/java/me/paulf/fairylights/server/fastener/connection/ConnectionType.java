@@ -2,136 +2,56 @@ package me.paulf.fairylights.server.fastener.connection;
 
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandTinselConnection;
-import me.paulf.fairylights.server.fastener.connection.type.garland.GarlandVineConnection;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
-import me.paulf.fairylights.server.fastener.connection.type.letter.LetterBuntingConnection;
-import me.paulf.fairylights.server.fastener.connection.type.pennant.PennantBuntingConnection;
-import me.paulf.fairylights.server.item.ConnectionItem;
-import me.paulf.fairylights.server.item.FLItems;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public enum ConnectionType {
-    HANGING_LIGHTS {
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-            return new HangingLightsConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
+public class ConnectionType<T extends Connection> extends ForgeRegistryEntry<ConnectionType<?>> {
+    private final Factory<T> factory;
+
+    private final Supplier<? extends Item> item;
+
+    public ConnectionType(final Builder<T> builder) {
+        this.factory = builder.factory;
+        this.item = builder.item;
+    }
+
+    public T create(final World world, final Fastener<?> fastener, final UUID uuid) {
+        return this.factory.create(this, world, fastener, uuid);
+    }
+
+    public Item getItem() {
+        return this.item.get();
+    }
+
+    public static final class Builder<T extends Connection> {
+        final Factory<T> factory;
+
+        Supplier<? extends Item> item = () -> Items.AIR;
+
+        private Builder(final Factory<T> factory) {
+            this.factory = factory;
         }
 
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-            return new HangingLightsConnection(world, fastener, uuid);
+        public Builder<T> item(final Supplier<? extends Item> item) {
+            this.item = item;
+            return this;
         }
 
-        @Override
-        public ConnectionItem getItem() {
-            return FLItems.HANGING_LIGHTS.get();
+        public ConnectionType<T> build() {
+            return new ConnectionType<>(this);
         }
 
-        @Override
-        public boolean isInstance(final Connection connection) {
-            return connection instanceof HangingLightsConnection;
+        public static <T extends Connection> Builder<T> create(final Factory<T> factory) {
+            return new Builder<>(factory);
         }
-    },
-    GARLAND {
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-            return new GarlandVineConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
-        }
+    }
 
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-            return new GarlandVineConnection(world, fastener, uuid);
-        }
-
-        @Override
-        public ConnectionItem getItem() {
-            return FLItems.GARLAND.get();
-        }
-
-        @Override
-        public boolean isInstance(final Connection connection) {
-            return connection instanceof GarlandVineConnection;
-        }
-    },
-    TINSEL {
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-            return new GarlandTinselConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
-        }
-
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-            return new GarlandTinselConnection(world, fastener, uuid);
-        }
-
-        @Override
-        public ConnectionItem getItem() {
-            return FLItems.TINSEL.get();
-        }
-
-        @Override
-        public boolean isInstance(final Connection connection) {
-            return connection instanceof GarlandTinselConnection;
-        }
-    },
-    PENNANT_BUNTING {
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-            return new PennantBuntingConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
-        }
-
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-            return new PennantBuntingConnection(world, fastener, uuid);
-        }
-
-        @Override
-        public ConnectionItem getItem() {
-            return FLItems.PENNANT_BUNTING.get();
-        }
-
-        @Override
-        public boolean isInstance(final Connection connection) {
-            return connection instanceof PennantBuntingConnection;
-        }
-    },
-    LETTER_BUNTING {
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-            return new LetterBuntingConnection(world, fastener, uuid, destination, isOrigin, compound, drop);
-        }
-
-        @Override
-        public Connection createConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-            return new LetterBuntingConnection(world, fastener, uuid);
-        }
-
-        @Override
-        public ConnectionItem getItem() {
-            return FLItems.LETTER_BUNTING.get();
-        }
-
-        @Override
-        public boolean isInstance(final Connection connection) {
-            return connection instanceof LetterBuntingConnection;
-        }
-    };
-
-    public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid, Fastener<?> fastenerDestination, boolean isOrigin, CompoundNBT compound, final boolean drop);
-
-    public abstract Connection createConnection(World world, Fastener<?> fastenerOrigin, UUID uuid);
-
-    public abstract ConnectionItem getItem();
-
-    public abstract boolean isInstance(Connection connection);
-
-    public static ConnectionType from(final int ordinal) {
-        final ConnectionType[] values = values();
-        return values[MathHelper.clamp(ordinal, 0, values.length - 1)];
+    public interface Factory<T extends Connection> {
+        T create(final ConnectionType<T> type, final World world, final Fastener<?> fastener, final UUID uuid);
     }
 }

@@ -13,12 +13,8 @@ import java.util.UUID;
 public final class GarlandTinselConnection extends Connection {
     private int color;
 
-    public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-        super(world, fastener, uuid, destination, isOrigin, compound, drop);
-    }
-
-    public GarlandTinselConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-        super(world, fastener, uuid);
+    public GarlandTinselConnection(final ConnectionType<? extends GarlandTinselConnection> type, final World world, final Fastener<?> fastener, final UUID uuid) {
+        super(type, world, fastener, uuid);
         this.color = ColorLightItem.getColor(DyeColor.LIGHT_GRAY);
     }
 
@@ -29,11 +25,6 @@ public final class GarlandTinselConnection extends Connection {
     @Override
     public float getRadius() {
         return 0.125F;
-    }
-
-    @Override
-    public ConnectionType getType() {
-        return ConnectionType.TINSEL;
     }
 
     @Override

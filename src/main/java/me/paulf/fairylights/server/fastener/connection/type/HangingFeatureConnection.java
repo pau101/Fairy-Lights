@@ -2,12 +2,12 @@ package me.paulf.fairylights.server.fastener.connection.type;
 
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.Catenary;
+import me.paulf.fairylights.server.fastener.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.connection.FeatureType;
 import me.paulf.fairylights.server.fastener.connection.collision.CollidableList;
 import me.paulf.fairylights.server.fastener.connection.collision.FeatureCollisionTree;
 import me.paulf.fairylights.util.AABBBuilder;
 import me.paulf.fairylights.util.matrix.MatrixStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -21,12 +21,8 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
 
     protected F[] features = this.createFeatures(0);
 
-    public HangingFeatureConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-        super(world, fastener, uuid, destination, isOrigin, compound, drop);
-    }
-
-    public HangingFeatureConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-        super(world, fastener, uuid);
+    public HangingFeatureConnection(final ConnectionType<? extends HangingFeatureConnection<F>> type, final World world, final Fastener<?> fastener, final UUID uuid) {
+        super(type, world, fastener, uuid);
     }
 
     public final F[] getFeatures() {

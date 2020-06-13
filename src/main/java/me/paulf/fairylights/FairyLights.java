@@ -6,6 +6,8 @@ import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
 import me.paulf.fairylights.server.creativetabs.FairyLightsItemGroup;
 import me.paulf.fairylights.server.entity.FLEntities;
+import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.net.NetBuilder;
@@ -25,6 +27,8 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
 
 import java.time.Month;
 
@@ -46,6 +50,13 @@ public final class FairyLights {
 
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 
+    @SuppressWarnings("unchecked")
+    public static final IForgeRegistry<ConnectionType<?>> CONNECTION_TYPES = new RegistryBuilder<ConnectionType<?>>()
+        .setType((Class<ConnectionType<?>>) (Class<?>) ConnectionType.class)
+        .setName(new ResourceLocation(ID, "connection_type"))
+        .disableSaving()
+        .create();
+
     public FairyLights() {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         FLSounds.REG.register(bus);
@@ -54,6 +65,7 @@ public final class FairyLights {
         FLItems.REG.register(bus);
         FLBlockEntities.REG.register(bus);
         FLCraftingRecipes.REG.register(bus);
+        ConnectionTypes.REG.register(bus);
         final ServerProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         proxy.init(bus);
     }

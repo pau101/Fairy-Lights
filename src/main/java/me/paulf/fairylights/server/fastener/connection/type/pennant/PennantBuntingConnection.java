@@ -40,12 +40,8 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
 
     private StyledString text;
 
-    public PennantBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-        super(world, fastener, uuid, destination, isOrigin, compound, drop);
-    }
-
-    public PennantBuntingConnection(final World world, final Fastener<?> fastener, final UUID uuid) {
-        super(world, fastener, uuid);
+    public PennantBuntingConnection(final ConnectionType<? extends PennantBuntingConnection> type, final World world, final Fastener<?> fastener, final UUID uuid) {
+        super(type, world, fastener, uuid);
         this.pattern = new ArrayList<>();
         this.text = new StyledString();
     }
@@ -53,11 +49,6 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     @Override
     public float getRadius() {
         return 0.045F;
-    }
-
-    @Override
-    public ConnectionType getType() {
-        return ConnectionType.PENNANT_BUNTING;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -9,7 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public final class TinselConnectionItem extends ConnectionItem {
     public TinselConnectionItem(final Properties properties) {
-        super(properties);
+        super(properties, ConnectionTypes.TINSEL_GARLAND);
     }
 
     @Override
@@ -24,10 +25,5 @@ public final class TinselConnectionItem extends ConnectionItem {
                 items.add(ColorLightItem.setColor(new ItemStack(this), color));
             }
         }
-    }
-
-    @Override
-    public ConnectionType getConnectionType() {
-        return ConnectionType.TINSEL;
     }
 }

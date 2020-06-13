@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class LetterBuntingConnectionItem extends ConnectionItem {
     public LetterBuntingConnectionItem(final Item.Properties properties) {
-        super(properties);
+        super(properties, ConnectionTypes.LETTER_BUNTING);
     }
 
     @Override
@@ -43,10 +43,5 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
             bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
             items.add(bunting);
         }
-    }
-
-    @Override
-    public ConnectionType getConnectionType() {
-        return ConnectionType.LETTER_BUNTING;
     }
 }

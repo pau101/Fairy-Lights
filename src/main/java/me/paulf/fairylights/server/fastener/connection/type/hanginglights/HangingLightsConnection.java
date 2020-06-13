@@ -62,18 +62,9 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     private int lightUpdateIndex;
 
-    public HangingLightsConnection(final World world, final Fastener<?> fastener, final UUID uuid, final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
-        super(world, fastener, uuid, destination, isOrigin, compound, drop);
-    }
-
-    public HangingLightsConnection(final World world, final Fastener<?> fastenerOrigin, final UUID uuid) {
-        super(world, fastenerOrigin, uuid);
+    public HangingLightsConnection(final ConnectionType<? extends HangingLightsConnection> type, final World world, final Fastener<?> fastenerOrigin, final UUID uuid) {
+        super(type, world, fastenerOrigin, uuid);
         this.pattern = new ArrayList<>();
-    }
-
-    @Override
-    public ConnectionType getType() {
-        return ConnectionType.HANGING_LIGHTS;
     }
 
     @Nullable

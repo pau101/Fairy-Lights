@@ -14,4 +14,12 @@ public final class RegistryObjects {
         final ResourceLocation name = entry.getRegistryName();
         return name != null && namespace.equals(name.getNamespace());
     }
+
+    public static ResourceLocation getName(final IForgeRegistryEntry<?> type) {
+        final ResourceLocation name = type.getRegistryName();
+        if (name == null) {
+            throw new NullPointerException("Missing registry name: " + type);
+        }
+        return name;
+    }
 }

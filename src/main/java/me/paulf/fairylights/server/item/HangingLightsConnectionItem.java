@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.DyeColor;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public final class HangingLightsConnectionItem extends ConnectionItem {
     public HangingLightsConnectionItem(final Properties properties) {
-        super(properties);
+        super(properties, ConnectionTypes.HANGING_LIGHTS);
     }
 
     @Override
@@ -46,10 +46,5 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
                 subItems.add(FLCraftingRecipes.makeHangingLights(new ItemStack(this), color));
             }
         }
-    }
-
-    @Override
-    public ConnectionType getConnectionType() {
-        return ConnectionType.HANGING_LIGHTS;
     }
 }
