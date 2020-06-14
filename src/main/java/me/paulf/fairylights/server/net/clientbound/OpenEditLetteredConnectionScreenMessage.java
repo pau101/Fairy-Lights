@@ -3,8 +3,8 @@ package me.paulf.fairylights.server.net.clientbound;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.server.fastener.connection.type.Connection;
 import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.net.ClientMessageContext;
 import me.paulf.fairylights.server.net.ConnectionMessage;
-import me.paulf.fairylights.server.net.ServerMessageContext;
 import net.minecraft.client.Minecraft;
 
 import java.util.function.BiConsumer;
@@ -16,9 +16,9 @@ public class OpenEditLetteredConnectionScreenMessage<C extends Connection & Lett
         super(connection);
     }
 
-    public static final class Handler implements BiConsumer<OpenEditLetteredConnectionScreenMessage<?>, ServerMessageContext> {
+    public static final class Handler implements BiConsumer<OpenEditLetteredConnectionScreenMessage<?>, ClientMessageContext> {
         @Override
-        public void accept(final OpenEditLetteredConnectionScreenMessage<?> message, final ServerMessageContext context) {
+        public void accept(final OpenEditLetteredConnectionScreenMessage<?> message, final ClientMessageContext context) {
             this.accept(message);
         }
 
