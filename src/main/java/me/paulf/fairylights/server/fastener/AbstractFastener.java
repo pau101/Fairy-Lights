@@ -41,7 +41,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     @Nullable
     private World world;
 
-    private boolean isDirty;
+    private boolean dirty;
 
     @Override
     public Map<UUID, Connection> getConnections() {
@@ -70,30 +70,29 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     @Override
     public boolean update() {
-        final Iterator<Connection> connectionIterator = this.connections.values().iterator();
+        final Iterator<Connection> it = this.connections.values().iterator();
         final Vec3d fromOffset = this.getConnectionPoint();
-        boolean catenaryChange = false, dataChange = this.isDirty;
-        this.isDirty = false;
-        while (connectionIterator.hasNext()) {
-            final Connection connection = connectionIterator.next();
-            connection.update(fromOffset);
-            catenaryChange |= connection.pollCateneryUpdate();
-            dataChange |= connection.pollDataUpdate();
-            if (connection.shouldDisconnect()) {
-                catenaryChange = dataChange = true;
-                connection.remove();
-                connectionIterator.remove();
+        boolean dirty = this.dirty;
+        this.dirty = false;
+        while (it.hasNext()) {
+            final Connection connection = it.next();
+            if (connection.update(fromOffset)) {
+                dirty = true;
+            }
+            if (connection.isRemoved()) {
+                dirty = true;
+                it.remove();
             }
         }
-        if (catenaryChange) {
+        if (dirty) {
             this.calculateBoundingBox();
         }
-        return dataChange;
+        return dirty;
     }
 
     @Override
     public void setDirty() {
-        this.isDirty = true;
+        this.dirty = true;
     }
 
     protected void calculateBoundingBox() {
@@ -162,20 +161,6 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     @Override
     public boolean removeConnection(final UUID uuid) {
-        return this.removeConnection(this.connections.get(uuid));
-    }
-
-    @Override
-    public boolean removeConnection(final Connection connection) {
-        if (connection != null) {
-            connection.forceRemove = true;
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean removeConnectionImmediately(final UUID uuid) {
         final Connection connection = this.connections.remove(uuid);
         if (connection == null) {
             return false;
@@ -187,8 +172,8 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public boolean removeConnectionImmediately(final Connection connection) {
-        return this.removeConnectionImmediately(connection.getUUID());
+    public boolean removeConnection(final Connection connection) {
+        return this.removeConnection(connection.getUUID());
     }
 
     @Override
@@ -199,7 +184,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
                 return null;
             }
             final UUID uuid = connection.getUUID();
-            oldDestination.removeConnectionImmediately(uuid);
+            oldDestination.removeConnection(uuid);
             connection.setDestination(newDestination);
             connection.setDrop();
             newDestination.createConnection(this.world, uuid, this, connection.getType(), !connection.isOrigin(), connection.serializeLogic(), true);

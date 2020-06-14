@@ -36,8 +36,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public abstract class Connection implements NBTSerializable {
@@ -78,18 +76,9 @@ public abstract class Connection implements NBTSerializable {
 
     private boolean updateCatenary;
 
-    private boolean catenaryUpdateState;
-
-    protected boolean dataUpdateState;
-
-    public boolean forceRemove;
-
     private int prevStretchStage;
 
     private boolean removed;
-
-    @Nullable
-    private List<Runnable> removeListeners;
 
     private boolean drop;
 
@@ -161,10 +150,6 @@ public abstract class Connection implements NBTSerializable {
         return this.drop;
     }
 
-    public boolean shouldDisconnect() {
-        return !this.destination.exists(this.world) || this.forceRemove;
-    }
-
     public ItemStack getItemStack() {
         final ItemStack stack = new ItemStack(this.getType().getItem());
         final CompoundNBT tagCompound = this.serializeLogic();
@@ -186,25 +171,19 @@ public abstract class Connection implements NBTSerializable {
         return this.world.isBlockModifiable(player, this.fastener.getPos());
     }
 
-    public final void addRemoveListener(final Runnable listener) {
-        if (this.removeListeners == null) {
-            this.removeListeners = new ArrayList<>();
-        }
-        this.removeListeners.add(listener);
-    }
-
     public final void remove() {
         if (!this.removed) {
             this.removed = true;
             this.onRemove();
-            if (this.removeListeners != null) {
-                this.removeListeners.forEach(Runnable::run);
-            }
         }
     }
 
+    public final boolean isRemoved() {
+        return this.removed;
+    }
+
     public void computeCatenary() {
-        this.updateCatenary = this.dataUpdateState = true;
+        this.updateCatenary = true;
     }
 
     public void processClientAction(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
@@ -254,8 +233,8 @@ public abstract class Connection implements NBTSerializable {
 
     private boolean replace(final PlayerEntity player, final Vec3d hit, final ItemStack heldStack) {
         return this.destination.get(this.world).map(dest -> {
-            this.fastener.removeConnectionImmediately(this);
-            dest.removeConnectionImmediately(this.uuid);
+            this.fastener.removeConnection(this);
+            dest.removeConnection(this.uuid);
             if (this.shouldDrop()) {
                 player.inventory.addItemStackToInventory(this.getItemStack());
             }
@@ -276,7 +255,7 @@ public abstract class Connection implements NBTSerializable {
         if (this.slack < 1e-2F) {
             this.slack = 0;
         }
-        this.dataUpdateState = true;
+        this.computeCatenary();
         this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_STRETCH.get(), SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - this.slack) * 0.4F);
         return true;
     }
@@ -285,19 +264,16 @@ public abstract class Connection implements NBTSerializable {
 
     protected void onRemove() {}
 
-    protected void onUpdateEarly() {}
-
-    protected void onUpdateLate() {}
+    protected void onUpdate() {}
 
     protected void onCalculateCatenary(final boolean relocated) {}
 
-    public final void update(final Vec3d from) {
+    public final boolean update(final Vec3d from) {
         this.prevCatenary = this.catenary;
-        this.destination.update(this.world, this.fastener.getPos());
-        this.destination.get(this.world, false).ifPresent(dest -> {
-            this.onUpdateEarly();
+        final boolean changed = this.destination.get(this.world, false).map(dest -> {
             final Vec3d point = dest.getConnectionPoint();
-            this.updateCatenary(from, dest, point);
+            final boolean c = this.updateCatenary(from, dest, point);
+            this.onUpdate();
             final double dist = point.distanceTo(from);
             final double pull = dist - MAX_LENGTH + PULL_RANGE;
             if (pull > 0) {
@@ -309,25 +285,19 @@ public abstract class Connection implements NBTSerializable {
             }
             if (dist > MAX_LENGTH + PULL_RANGE) {
                 this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP.get(), SoundCategory.BLOCKS, 0.75F, 0.8F + this.world.rand.nextFloat() * 0.3F);
-                this.forceRemove = true;
+                this.remove();
             } else if (dest.isMoving()) {
                 dest.resistSnap(from);
             }
-            this.onUpdateLate();
-        });
-    }
-
-    public void updateCatenary(final Vec3d from) {
-        if (this.world.isBlockPresent(this.fastener.getPos())) {
-            this.destination.update(this.world, this.fastener.getPos());
-            this.destination.get(this.world).ifPresent(dest -> {
-                this.updateCatenary(from, dest, dest.getConnectionPoint());
-                this.updateCatenary = false;
-            });
+            return c;
+        }).orElse(false);
+        if (!this.destination.exists(this.world)) {
+            this.remove();
         }
+        return changed;
     }
 
-    private void updateCatenary(final Vec3d from, final Fastener<?> dest, final Vec3d point) {
+    private boolean updateCatenary(final Vec3d from, final Fastener<?> dest, final Vec3d point) {
         if (this.updateCatenary || this.isDynamic()) {
             final Vec3d vec = point.subtract(from);
             if (vec.length() > 1e-6) {
@@ -338,22 +308,11 @@ public abstract class Connection implements NBTSerializable {
                 this.addCollision(bob, from);
                 this.collision = bob.build();
             }
-            this.catenaryUpdateState = true;
             this.updateCatenary = false;
             this.prevDestination = this.destination;
+            return true;
         }
-    }
-
-    public final boolean pollCateneryUpdate() {
-        final boolean state = this.catenaryUpdateState;
-        this.catenaryUpdateState = false;
-        return state;
-    }
-
-    public final boolean pollDataUpdate() {
-        final boolean state = this.dataUpdateState;
-        this.dataUpdateState = false;
-        return state;
+        return false;
     }
 
     public void addCollision(final CollidableList.Builder collision, final Vec3d origin) {

@@ -80,7 +80,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
         if (this.features.length > 0) {
             final MatrixStack matrix = new MatrixStack();
             collision.add(FeatureCollisionTree.build(FEATURE, this.features, f -> {
-                final Vec3d pos = f.getPoint(1.0F);
+                final Vec3d pos = f.getPoint();
                 final double x = origin.x + pos.x;
                 final double y = origin.y + pos.y;
                 final double z = origin.z + pos.z;

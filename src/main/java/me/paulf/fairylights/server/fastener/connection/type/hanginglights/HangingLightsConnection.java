@@ -85,7 +85,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
                 final ItemStack placed = heldStack.split(1);
                 this.pattern.set(index, placed);
                 ItemHandlerHelper.giveItemToPlayer(player, light);
-                this.dataUpdateState = true;
+                this.computeCatenary();
                 this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
                 return true;
             }
@@ -109,7 +109,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    public void onUpdateLate() {
+    public void onUpdate() {
         this.jinglePlayer.tick(this.world, this.fastener.getConnectionPoint(), this.features, this.world.isRemote);
         final boolean playing = this.jinglePlayer.isPlaying();
         if (playing || this.wasPlaying) {

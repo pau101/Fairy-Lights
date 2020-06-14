@@ -15,31 +15,38 @@ public abstract class HangingFeature implements Feature {
 
     protected Vec3d prevPoint;
 
+    private Vec3d targetPoint;
+
     protected float yaw, pitch, roll;
 
     protected float prevYaw, prevPitch, prevRoll;
+
+    protected float targetYaw, targetPitch;
 
     protected final float descent;
 
     public HangingFeature(final int index, final Vec3d point, final float yaw, final float pitch, final float roll, final float descent) {
         this.index = index;
-        this.point = this.prevPoint = point;
-        this.prevYaw = this.yaw = yaw;
-        this.prevPitch = this.pitch = pitch;
+        this.point = this.prevPoint = this.targetPoint = point;
+        this.prevYaw = this.yaw = this.targetYaw = yaw;
+        this.prevPitch = this.pitch = this.targetPitch = pitch;
         this.prevRoll = this.roll = roll;
         this.descent = descent;
     }
 
     public void set(final Vec3d point, final float yaw, final float pitch) {
-        this.prevPoint = this.point;
-        this.point = point;
-        this.yaw = yaw;
-        this.pitch = pitch;
+        this.targetPoint = point;
+        this.targetYaw = yaw;
+        this.targetPitch = pitch;
     }
 
     @Override
     public final int getId() {
         return this.index;
+    }
+
+    public final Vec3d getPoint() {
+        return this.targetPoint;
     }
 
     public final Vec3d getPoint(final float delta) {
@@ -94,9 +101,13 @@ public abstract class HangingFeature implements Feature {
     }
 
     public void tick(final World world) {
+        this.prevPoint = this.point;
         this.prevYaw = this.yaw;
         this.prevPitch = this.pitch;
         this.prevRoll = this.roll;
+        this.point = this.targetPoint;
+        this.yaw = this.targetYaw;
+        this.pitch = this.targetPitch;
     }
 
     public abstract AxisAlignedBB getBounds();

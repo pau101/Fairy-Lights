@@ -74,7 +74,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    protected void onUpdateLate() {
+    protected void onUpdate() {
         for (final Letter letter : this.letters) {
             letter.tick(this.world);
         }
@@ -172,7 +172,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     @Override
     public void setText(final StyledString text) {
         this.text = text;
-        this.dataUpdateState = true;
+        this.computeCatenary();
     }
 
     @Override

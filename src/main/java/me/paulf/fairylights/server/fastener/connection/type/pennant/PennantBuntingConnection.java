@@ -66,7 +66,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
             final int color = ColorLightItem.getColor(OreDictUtils.getDyeColor(heldStack));
             if (patternEntry.getColor() != color) {
                 patternEntry.color = color;
-                this.dataUpdateState = true;
+                this.computeCatenary();
                 heldStack.shrink(1);
                 this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
                 return true;
@@ -76,8 +76,8 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     }
 
     @Override
-    protected void onUpdateLate() {
-        super.onUpdateLate();
+    protected void onUpdate() {
+        super.onUpdate();
         for (final Pennant light : this.features) {
             light.tick(this.world);
         }
@@ -112,7 +112,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     @Override
     public void setText(final StyledString text) {
         this.text = text;
-        this.dataUpdateState = true;
+        this.computeCatenary();
     }
 
     @Override

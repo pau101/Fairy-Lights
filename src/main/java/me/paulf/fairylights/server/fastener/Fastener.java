@@ -63,10 +63,6 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
     boolean removeConnection(Connection connection);
 
-    boolean removeConnectionImmediately(UUID uuid);
-
-    boolean removeConnectionImmediately(Connection connection);
-
     @Nullable
     Connection reconnect(Fastener<?> oldDestination, Fastener<?> newDestination);
 
