@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 public abstract class AbstractFastener<F extends FastenerAccessor> implements Fastener<F> {
-    protected Map<UUID, Connection> connections = new HashMap<>();
+    private final Map<UUID, Connection> connections = new HashMap<>();
 
     protected AxisAlignedBB bounds = TileEntity.INFINITE_EXTENT_AABB;
 
@@ -193,20 +193,17 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     @Override
     public Connection reconnect(final Fastener<?> oldDestination, final Fastener<?> newDestination) {
-        for (final Entry<UUID, Connection> entry : this.connections.entrySet()) {
-            final Connection connection = entry.getValue();
-            if (connection.getDestination().get(this.world).filter(oldDestination::equals).isPresent()) {
-                if (connection.getFastener().equals(newDestination) || newDestination.hasConnectionWith(connection.getFastener())) {
-                    return null;
-                }
-                final UUID uuid = entry.getKey();
-                oldDestination.removeConnectionImmediately(uuid);
-                connection.setDestination(newDestination);
-                connection.setDrop();
-                final Connection other = newDestination.createConnection(this.world, uuid, this, connection.getType(), !connection.isOrigin(), connection.serializeLogic(), true);
-                newDestination.getConnections().put(uuid, other);
-                return connection;
+        final Connection connection = this.getConnectionTo(oldDestination.createAccessor());
+        if (connection != null) {
+            if (connection.getFastener().equals(newDestination) || newDestination.hasConnectionWith(connection.getFastener())) {
+                return null;
             }
+            final UUID uuid = connection.getUUID();
+            oldDestination.removeConnectionImmediately(uuid);
+            connection.setDestination(newDestination);
+            connection.setDrop();
+            newDestination.createConnection(this.world, uuid, this, connection.getType(), !connection.isOrigin(), connection.serializeLogic(), true);
+            return connection;
         }
         return null;
     }
@@ -214,16 +211,16 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     @Override
     public Connection connectWith(final World world, final Fastener<?> destination, final ConnectionType<?> type, final CompoundNBT compound, final boolean drop) {
         final UUID uuid = MathHelper.getRandomUUID();
-        this.connections.put(uuid, this.createConnection(world, uuid, destination, type, true, compound, drop));
-        final Connection c = destination.createConnection(world, uuid, this, type, false, compound, drop);
-        destination.getConnections().put(uuid, c);
-        return c;
+        final Connection connection = this.createConnection(world, uuid, destination, type, true, compound, drop);
+        destination.createConnection(world, uuid, this, type, false, compound, drop);
+        return connection;
     }
 
     @Override
     public Connection createConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType<?> type, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
         final Connection c = type.create(world, this, uuid);
         c.deserialize(destination, isOrigin, compound, drop);
+        this.connections.put(uuid, c);
         return c;
     }
 
@@ -264,8 +261,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
                 final Connection connection = this.connections.get(uuid);
                 connection.deserialize(connectionCompound.getCompound("connection"));
             } else {
-                final String stype = connectionCompound.getString("type");
-                final ConnectionType<?> type = FairyLights.CONNECTION_TYPES.getValue(ResourceLocation.tryCreate(stype));
+                final ConnectionType<?> type = FairyLights.CONNECTION_TYPES.getValue(ResourceLocation.tryCreate(connectionCompound.getString("type")));
                 if (type != null) {
                     final Connection connection = type.create(this.world, this, uuid);
                     connection.deserialize(connectionCompound.getCompound("connection"));

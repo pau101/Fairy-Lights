@@ -51,7 +51,7 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     @Override
     public boolean update() {
         if (!this.hasNoConnections() && !this.matchesStack(this.entity.getHeldItemMainhand()) && !this.matchesStack(this.entity.getHeldItemOffhand())) {
-            final Iterator<Entry<UUID, Connection>> entries = this.connections.entrySet().iterator();
+            final Iterator<Entry<UUID, Connection>> entries = this.getConnections().entrySet().iterator();
             while (entries.hasNext()) {
                 final Entry<UUID, Connection> entry = entries.next();
                 final Connection connection = entry.getValue();
@@ -86,7 +86,7 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
             final double swing = Math.abs(speed) < 1e-6 ? 0 : (1 - Math.abs(motion.y / speed - tangent)) * 0.1;
             final double mag = Math.sqrt(motion.x * motion.x + tangent * tangent + motion.z * motion.z);
             final double arcX;
-            double arcY;
+            final double arcY;
             final double arcZ;
             if (dy > 0 || Math.abs(mag) < 1e-6) {
                 arcX = arcY = arcZ = 0;

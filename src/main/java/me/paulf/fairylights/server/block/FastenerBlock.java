@@ -216,7 +216,7 @@ public final class FastenerBlock extends DirectionalBlock {
                     return Stream.empty();
                 }
                 return toEntity.getCapability(CapabilityHandler.FASTENER_CAP)
-                    .map(toFastener -> Stream.of(toFastener.getConnections().get(e.getFirst().getKey())))
+                        .map(toFastener -> Stream.of(toFastener.getConnections().get(e.getFirst().getKey())))
                     .orElse(Stream.empty());
             })
             .mapToInt(c -> (int) Math.ceil(((HangingLightsConnection) c).getJingleProgress() * 15))
