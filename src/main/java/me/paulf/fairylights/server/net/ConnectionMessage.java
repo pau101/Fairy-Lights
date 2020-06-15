@@ -45,12 +45,6 @@ public abstract class ConnectionMessage implements Message {
 
     @SuppressWarnings("unchecked")
     public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage message, final Predicate<? super Connection> typePredicate, final World world) {
-        return message.accessor.get(world, false).map(Optional::of).orElse(Optional.empty()).flatMap(f -> {
-            final Connection c = f.getConnections().get(message.uuid);
-            if (typePredicate.test(c)) {
-                return Optional.of((C) c);
-            }
-            return Optional.empty();
-        });
+        return message.accessor.get(world, false).map(Optional::of).orElse(Optional.empty()).flatMap(f -> (Optional<C>) f.get(message.uuid).filter(typePredicate));
     }
 }

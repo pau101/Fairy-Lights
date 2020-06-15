@@ -58,9 +58,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.UUID;
 
 public final class ServerEventHandler {
     private final Random rng = new Random();
@@ -231,9 +229,8 @@ public final class ServerEventHandler {
         final AxisAlignedBB listenerRegion = fastener.getBounds().expand(expandAmount, expandAmount, expandAmount);
         final List<PlayerEntity> nearPlayers = world.getEntitiesWithinAABB(PlayerEntity.class, listenerRegion);
         final boolean arePlayersNear = nearPlayers.size() > 0;
-        for (final Entry<UUID, Connection> connectionEntry : fastener.getConnections().entrySet()) {
-            final Connection connection = connectionEntry.getValue();
-            if (connection.isOrigin() && connection.getDestination().get(world, false).isPresent() && connection instanceof HangingLightsConnection) {
+        for (final Connection connection : fastener.getOwnConnections()) {
+            if (connection.getDestination().get(world, false).isPresent() && connection instanceof HangingLightsConnection) {
                 final HangingLightsConnection connectionLogic = (HangingLightsConnection) connection;
                 final Light<?>[] lightPoints = connectionLogic.getFeatures();
                 if (connectionLogic.canCurrentlyPlayAJingle()) {

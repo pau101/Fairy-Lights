@@ -62,8 +62,6 @@ public abstract class Connection implements NBTSerializable {
 
     protected World world;
 
-    private boolean isOrigin;
-
     @Nullable
     private Catenary catenary;
 
@@ -110,10 +108,6 @@ public abstract class Connection implements NBTSerializable {
 
     public final World getWorld() {
         return this.world;
-    }
-
-    public final boolean isOrigin() {
-        return this.isOrigin;
     }
 
     public final Collidable getCollision() {
@@ -211,6 +205,10 @@ public abstract class Connection implements NBTSerializable {
         this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_DISCONNECT.get(), SoundCategory.BLOCKS, 1, 1);
     }
 
+    public boolean reconnect(final Fastener<?> destination) {
+        return this.fastener.reconnect(this.world, this, destination);
+    }
+
     public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
         final Item item = heldStack.getItem();
         if (item instanceof ConnectionItem && !this.matches(heldStack)) {
@@ -240,7 +238,7 @@ public abstract class Connection implements NBTSerializable {
             }
             final CompoundNBT data = heldStack.getTag();
             final ConnectionType<? extends Connection> type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
-            this.fastener.connectWith(this.world, dest, type, data == null ? new CompoundNBT() : data, true).onConnect(player.world, player, heldStack);
+            this.fastener.connect(this.world, dest, type, data == null ? new CompoundNBT() : data, true).onConnect(player.world, player, heldStack);
             heldStack.shrink(1);
             this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
             return true;
@@ -342,9 +340,8 @@ public abstract class Connection implements NBTSerializable {
         collision.add(FeatureCollisionTree.build(CORD_FEATURE, i -> Segment.INSTANCE, i -> bounds[i], 1, bounds.length - 2));
     }
 
-    public void deserialize(final Fastener<?> destination, final boolean isOrigin, final CompoundNBT compound, final boolean drop) {
+    public void deserialize(final Fastener<?> destination, final CompoundNBT compound, final boolean drop) {
         this.destination = destination.createAccessor();
-        this.isOrigin = isOrigin;
         this.drop = drop;
         this.deserializeLogic(compound);
     }
@@ -352,7 +349,6 @@ public abstract class Connection implements NBTSerializable {
     @Override
     public CompoundNBT serialize() {
         final CompoundNBT compound = new CompoundNBT();
-        compound.putBoolean("isOrigin", this.isOrigin);
         compound.put("destination", FastenerType.serialize(this.destination));
         compound.put("logic", this.serializeLogic());
         compound.putFloat("slack", this.slack);
@@ -362,7 +358,6 @@ public abstract class Connection implements NBTSerializable {
 
     @Override
     public void deserialize(final CompoundNBT compound) {
-        this.isOrigin = compound.getBoolean("isOrigin");
         this.destination = FastenerType.deserialize(compound.getCompound("destination"));
         this.deserializeLogic(compound.getCompound("logic"));
         this.slack = compound.contains("slack", NBT.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;

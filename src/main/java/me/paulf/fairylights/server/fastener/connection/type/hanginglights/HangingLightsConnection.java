@@ -118,12 +118,10 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
         this.wasPlaying = playing;
         final boolean on = !this.isDynamic() && this.isOn;
-        if (this.isOrigin()) {
-            for (final Light<?> light : this.features) {
-                light.tick(this.world, this.fastener.getConnectionPoint());
-            }
+        for (final Light<?> light : this.features) {
+            light.tick(this.world, this.fastener.getConnectionPoint());
         }
-        if (on && this.isOrigin() && this.features.length > 0) {
+        if (on && this.features.length > 0) {
             this.lightUpdateTime++;
             if (this.lightUpdateTime > LIGHT_UPDATE_WAIT && this.lightUpdateTime % LIGHT_UPDATE_RATE == 0) {
                 if (this.lightUpdateIndex >= this.features.length) {
@@ -154,7 +152,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     protected void updateFeature(final Light<?> light) {
         super.updateFeature(light);
-        if (this.isOrigin() && !this.isDynamic() && this.isOn) {
+        if (!this.isDynamic() && this.isOn) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
             this.setLight(pos);

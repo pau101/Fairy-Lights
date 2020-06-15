@@ -10,10 +10,6 @@ import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.UUID;
-
 public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     public PlayerFastener(final PlayerEntity entity) {
         super(entity);
@@ -51,13 +47,9 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     @Override
     public boolean update() {
         if (!this.hasNoConnections() && !this.matchesStack(this.entity.getHeldItemMainhand()) && !this.matchesStack(this.entity.getHeldItemOffhand())) {
-            final Iterator<Entry<UUID, Connection>> entries = this.getConnections().entrySet().iterator();
-            while (entries.hasNext()) {
-                final Entry<UUID, Connection> entry = entries.next();
-                final Connection connection = entry.getValue();
+            for (final Connection connection : this.getAllConnections()) {
                 if (!connection.shouldDrop()) {
-                    entries.remove();
-                    connection.getDestination().get(this.getWorld()).ifPresent(f -> f.removeConnection(entry.getKey()));
+                    connection.remove();
                 }
             }
         }
@@ -65,8 +57,7 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     }
 
     private boolean matchesStack(final ItemStack stack) {
-        final Connection connection = this.getFirstConnection();
-        return connection != null && connection.matches(stack);
+        return this.getFirstConnection().filter(connection -> connection.matches(stack)).isPresent();
     }
 
     @Override

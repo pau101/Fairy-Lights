@@ -12,17 +12,22 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 import javax.annotation.Nullable;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<CompoundNBT> {
     @Override
     CompoundNBT serializeNBT();
 
-    Map<UUID, Connection> getConnections();
+    Optional<Connection> get(final UUID id);
 
-    default Connection getFirstConnection() {
-        return this.getConnections().values().stream().findFirst().orElse(null);
+    List<Connection> getOwnConnections();
+
+    List<Connection> getAllConnections();
+
+    default Optional<Connection> getFirstConnection() {
+        return this.getAllConnections().stream().findFirst();
     }
 
     AxisAlignedBB getBounds();
@@ -63,10 +68,11 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
     boolean removeConnection(Connection connection);
 
-    @Nullable
-    Connection reconnect(Fastener<?> oldDestination, Fastener<?> newDestination);
+    boolean reconnect(final World world, Connection connection, Fastener<?> newDestination);
 
-    Connection connectWith(World world, Fastener<?> destination, ConnectionType<?> type, CompoundNBT compound, final boolean drop);
+    Connection connect(World world, Fastener<?> destination, ConnectionType<?> type, CompoundNBT compound, final boolean drop);
 
-    Connection createConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType<?> type, boolean isOrigin, CompoundNBT compound, final boolean drop);
+    Connection createOutgoingConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType<?> type, CompoundNBT compound, final boolean drop);
+
+    void createIncomingConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType<?> type);
 }

@@ -34,8 +34,8 @@ public class FastenerRenderer {
 
     public void render(final Fastener<?> fastener, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         boolean renderBow = true;
-        for (final Connection conn : fastener.getConnections().values()) {
-            if (conn.isOrigin()) {
+        for (final Connection conn : fastener.getAllConnections()) {
+            if (conn.getFastener() == fastener) {
                 this.renderConnection(delta, matrix, source, packedLight, packedOverlay, conn);
             }
             if (renderBow && conn instanceof GarlandVineConnection && fastener.getFacing().getAxis() != Direction.Axis.Y) {

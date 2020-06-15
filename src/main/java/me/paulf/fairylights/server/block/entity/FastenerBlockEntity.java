@@ -79,11 +79,6 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
         super.remove();
     }
 
-    @Override
-    public void onChunkUnloaded() {
-        this.getFastener().ifPresent(Fastener::remove);
-    }
-
     private LazyOptional<Fastener<?>> getFastener() {
         return this.getCapability(CapabilityHandler.FASTENER_CAP);
     }

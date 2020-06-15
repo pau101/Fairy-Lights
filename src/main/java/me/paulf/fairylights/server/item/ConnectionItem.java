@@ -29,6 +29,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Optional;
+
 public abstract class ConnectionItem extends Item {
     private final RegistryObject<? extends ConnectionType<?>> type;
 
@@ -83,15 +85,10 @@ public abstract class ConnectionItem extends Item {
 
     private boolean isConnectionInOtherHand(final World world, final PlayerEntity user, final ItemStack stack) {
         final Fastener<?> attacher = user.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
-        final Connection connection = attacher.getFirstConnection();
-        if (connection != null) {
+        return attacher.getFirstConnection().filter(connection -> {
             final CompoundNBT nbt = connection.serializeLogic();
-            if (nbt.isEmpty()) {
-                return stack.hasTag();
-            }
-            return !NBTUtil.areNBTEquals(nbt, stack.getTag(), true);
-        }
-        return false;
+            return nbt.isEmpty() ? stack.hasTag() : !NBTUtil.areNBTEquals(nbt, stack.getTag(), true);
+        }).isPresent();
     }
 
     private void connect(final ItemStack stack, final PlayerEntity user, final World world, final BlockPos pos) {
@@ -124,25 +121,21 @@ public abstract class ConnectionItem extends Item {
 
     public void connect(final ItemStack stack, final PlayerEntity user, final World world, final Fastener<?> fastener, final boolean playConnectSound) {
         user.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(attacher -> {
-            final boolean[] playSound = { playConnectSound };
-            final Connection conn = attacher.getFirstConnection();
-            if (conn == null) {
-                final CompoundNBT data = stack.getTag();
-                fastener.connectWith(world, attacher, this.getConnectionType(), data == null ? new CompoundNBT() : data, false);
+            boolean playSound = playConnectSound;
+            final Optional<Connection> conn = attacher.getFirstConnection();
+            if (conn.isPresent()) {
+                if (conn.get().reconnect(fastener)) {
+                    stack.shrink(1);
+                } else {
+                    playSound = false;
+                }
             } else {
-                conn.getDestination().get(world).ifPresent(dest -> {
-                    final Connection c = dest.reconnect(attacher, fastener);
-                    if (c == null) {
-                        playSound[0] = false;
-                    } else {
-                        c.onConnect(world, user, stack);
-                        stack.shrink(1);
-                    }
-                });
+                final CompoundNBT data = stack.getTag();
+                fastener.connect(world, attacher, this.getConnectionType(), data == null ? new CompoundNBT() : data, false);
             }
-            if (playSound[0]) {
+            if (playSound) {
                 final Vec3d pos = fastener.getConnectionPoint();
-                world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
+                world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         });
     }

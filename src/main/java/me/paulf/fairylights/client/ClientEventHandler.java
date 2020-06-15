@@ -166,10 +166,7 @@ public final class ClientEventHandler {
         Intersection rayTrace = null;
         double distance = Double.MAX_VALUE;
         for (final Fastener<?> fastener : fasteners) {
-            for (final Connection connection : fastener.getConnections().values()) {
-                if (!connection.isOrigin()) {
-                    continue;
-                }
+            for (final Connection connection : fastener.getOwnConnections()) {
                 if (connection.getDestination().getType() == FastenerType.PLAYER) {
                     continue;
                 }

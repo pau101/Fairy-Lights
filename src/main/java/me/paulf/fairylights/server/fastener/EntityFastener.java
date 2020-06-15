@@ -12,7 +12,6 @@ public abstract class EntityFastener<E extends Entity> extends AbstractFastener<
 
     public EntityFastener(final E entity) {
         this.entity = entity;
-        this.bounds = new AxisAlignedBB(entity.getPosition());
         this.setWorld(entity.world);
     }
 
