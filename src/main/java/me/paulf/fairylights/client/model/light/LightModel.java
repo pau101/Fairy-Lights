@@ -72,7 +72,7 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
         return this.floorOffset;
     }
 
-    public void animate(final Light<T> light, final float delta) {
+    public void animate(final Light<?> light, final T behavior, final float delta) {
         this.powered = light.isPowered();
     }
 
@@ -208,6 +208,14 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
         public void setVisible(final boolean value) {
             this.base.showModel = value;
             this.glow.showModel = value;
+        }
+
+        public void renderTint(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+            this.base.render(matrix, builder, light, overlay, r, g, b, a);
+        }
+
+        public void renderGlow(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+            this.glow.render(matrix, builder, light, overlay, r, g, b, a);
         }
     }
 

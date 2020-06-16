@@ -42,12 +42,12 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
     }
 
     @Override
-    public void animate(final Light<MeteorLightBehavior> light, final float delta) {
-        super.animate(light, delta);
-        this.red = light.getBehavior().getRed(delta);
-        this.green = light.getBehavior().getGreen(delta);
-        this.blue = light.getBehavior().getBlue(delta);
-        this.stage = light.getBehavior().getProgress(delta) * 3.0F - 1.0F;
+    public void animate(final Light<?> light, final MeteorLightBehavior behavior, final float delta) {
+        super.animate(light, behavior, delta);
+        this.red = behavior.getRed(delta);
+        this.green = behavior.getGreen(delta);
+        this.blue = behavior.getBlue(delta);
+        this.stage = behavior.getProgress(delta) * 3.0F - 1.0F;
     }
 
     private float computeBrightness(final float t) {

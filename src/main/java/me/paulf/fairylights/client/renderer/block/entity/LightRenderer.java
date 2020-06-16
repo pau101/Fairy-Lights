@@ -61,7 +61,7 @@ public class LightRenderer {
         .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel()))
         .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new OilLanternModel()))
         .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(CandleLanternModel::new))
-        .put(SimpleLightVariant.INCANDESCENT_LIGHT, LightModelProvider.of(() -> new IncandescentLightModel()))
+        .put(SimpleLightVariant.INCANDESCENT_LIGHT, LightModelProvider.of(IncandescentLightModel::new))
         .build();
 
     public LightRenderer() {
@@ -87,7 +87,7 @@ public class LightRenderer {
     }
 
     public <T extends LightBehavior> void render(final MatrixStack matrix, final Data data, final Light<T> light, final LightModel<T> model, final float delta, final int packedLight, final int packedOverlay) {
-        model.animate(light, delta);
+        model.animate(light, light.getBehavior(), delta);
         model.render(matrix, data.solid, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
         model.renderTranslucent(matrix, data.translucent, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
     }

@@ -34,8 +34,8 @@ public class CandleLanternModel extends LightModel<BrightLightBehavior> {
     }
 
     @Override
-    public void animate(final Light<BrightLightBehavior> light, final float delta) {
-        super.animate(light, delta);
-        this.brightness = light.getBehavior().getBrightness(delta);
+    public void animate(final Light<?> light, final BrightLightBehavior behavior, final float delta) {
+        super.animate(light, behavior, delta);
+        this.brightness = behavior.getBrightness(delta);
     }
 }

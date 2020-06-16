@@ -5,11 +5,11 @@ import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Standa
 
 public class ColorLightModel extends LightModel<StandardLightBehavior> {
     @Override
-    public void animate(final Light<StandardLightBehavior> light, final float delta) {
-        super.animate(light, delta);
-        this.brightness = light.getBehavior().getBrightness(delta);
-        this.red = light.getBehavior().getRed(delta);
-        this.green = light.getBehavior().getGreen(delta);
-        this.blue = light.getBehavior().getBlue(delta);
+    public void animate(final Light<?> light, final StandardLightBehavior behavior, final float delta) {
+        super.animate(light, behavior, delta);
+        this.brightness = behavior.getBrightness(delta);
+        this.red = behavior.getRed(delta);
+        this.green = behavior.getGreen(delta);
+        this.blue = behavior.getBlue(delta);
     }
 }
