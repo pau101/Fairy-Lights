@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.item.crafting;
 
-import me.paulf.fairylights.server.item.ColorLightItem;
+import me.paulf.fairylights.server.item.DyeableItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -37,7 +37,7 @@ public class CopyColorRecipe extends SpecialRecipe {
                         original = stack;
                     } else {
                         final ItemStack copy = stack.copy();
-                        ColorLightItem.setColor(copy, ColorLightItem.getColor(original));
+                        DyeableItem.setColor(copy, DyeableItem.getColor(original));
                         return copy;
                     }
                 } else {

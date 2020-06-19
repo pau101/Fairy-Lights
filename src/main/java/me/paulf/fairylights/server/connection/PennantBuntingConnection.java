@@ -5,7 +5,7 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.feature.FeatureType;
 import me.paulf.fairylights.server.collision.Intersection;
 import me.paulf.fairylights.server.feature.Pennant;
-import me.paulf.fairylights.server.item.ColorLightItem;
+import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.NBTSerializable;
@@ -60,7 +60,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
             final int index = feature % this.pattern.size();
             final Entry patternEntry = this.pattern.get(index);
-            final int color = ColorLightItem.getColor(OreDictUtils.getDyeColor(heldStack));
+            final int color = DyeableItem.getColor(OreDictUtils.getDyeColor(heldStack));
             if (patternEntry.getColor() != color) {
                 patternEntry.color = color;
                 this.computeCatenary();
@@ -170,7 +170,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         public CompoundNBT serialize() {
             final CompoundNBT compound = new CompoundNBT();
             compound.putString("item", this.item.getRegistryName().toString());
-            ColorLightItem.setColor(compound, this.color);
+            DyeableItem.setColor(compound, this.color);
             return compound;
         }
 
@@ -182,7 +182,7 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
             } else {
                 this.item = FLItems.TRIANGLE_PENNANT.get();
             }
-            this.color = ColorLightItem.getColor(compound);
+            this.color = DyeableItem.getColor(compound);
         }
 
         static Entry from(final CompoundNBT compound) {

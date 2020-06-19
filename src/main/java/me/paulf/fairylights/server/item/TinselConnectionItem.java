@@ -21,7 +21,7 @@ public final class TinselConnectionItem extends ConnectionItem {
     public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> items) {
         if (this.isInGroup(tab)) {
             for (final DyeColor color : DyeColor.values()) {
-                items.add(ColorLightItem.setColor(new ItemStack(this), color));
+                items.add(DyeableItem.setColor(new ItemStack(this), color));
             }
         }
     }

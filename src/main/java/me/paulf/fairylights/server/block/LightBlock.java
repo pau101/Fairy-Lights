@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.block;
 
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
-import me.paulf.fairylights.server.item.ColorLightItem;
+import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.LightVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -201,7 +201,7 @@ public class LightBlock extends HorizontalFaceBlock {
             return ((LightBlockEntity) entity).getLight().getItem().copy();
         }
         final ItemStack stack = new ItemStack(this);
-        ColorLightItem.setColor(stack, DyeColor.YELLOW);
+        DyeableItem.setColor(stack, DyeColor.YELLOW);
         return stack;
     }
 

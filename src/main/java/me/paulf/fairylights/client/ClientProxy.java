@@ -16,7 +16,7 @@ import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
 import me.paulf.fairylights.server.entity.FLEntities;
-import me.paulf.fairylights.server.item.ColorLightItem;
+import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
@@ -145,7 +145,7 @@ public final class ClientProxy extends ServerProxy {
             if (tag != null) {
                 final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return ColorLightItem.getColor(ItemStack.read(tagList.getCompound((index - 1) % tagList.size())));
+                    return DyeableItem.getColor(ItemStack.read(tagList.getCompound((index - 1) % tagList.size())));
                 }
             }
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
@@ -153,7 +153,7 @@ public final class ClientProxy extends ServerProxy {
             }
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());
-        colors.register((stack, index) -> index == 0 ? ColorLightItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());
+        colors.register((stack, index) -> index == 0 ? DyeableItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());
         colors.register((stack, index) -> {
             if (index == 0) {
                 return 0xFFFFFFFF;
@@ -162,7 +162,7 @@ public final class ClientProxy extends ServerProxy {
             if (tag != null) {
                 final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return ColorLightItem.getColor(tagList.getCompound((index - 1) % tagList.size()));
+                    return DyeableItem.getColor(tagList.getCompound((index - 1) % tagList.size()));
                 }
             }
             return 0xFFFFFFFF;
@@ -192,6 +192,6 @@ public final class ClientProxy extends ServerProxy {
     }
 
     private static int secondLayerColor(final ItemStack stack, final int index) {
-        return index == 0 ? 0xFFFFFF : ColorLightItem.getColor(stack);
+        return index == 0 ? 0xFFFFFF : DyeableItem.getColor(stack);
     }
 }

@@ -21,7 +21,7 @@ public class PennantItem extends Item {
     public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
         if (this.isInGroup(tab)) {
             for (final DyeColor dye : DyeColor.values()) {
-                subItems.add(ColorLightItem.setColor(new ItemStack(this), dye));
+                subItems.add(DyeableItem.setColor(new ItemStack(this), dye));
             }
         }
     }

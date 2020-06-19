@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.connection;
 
 import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.item.ColorLightItem;
+import me.paulf.fairylights.server.item.DyeableItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
@@ -13,7 +13,7 @@ public final class GarlandTinselConnection extends Connection {
 
     public GarlandTinselConnection(final ConnectionType<? extends GarlandTinselConnection> type, final World world, final Fastener<?> fastener, final UUID uuid) {
         super(type, world, fastener, uuid);
-        this.color = ColorLightItem.getColor(DyeColor.LIGHT_GRAY);
+        this.color = DyeableItem.getColor(DyeColor.LIGHT_GRAY);
     }
 
     public int getColor() {
@@ -27,12 +27,12 @@ public final class GarlandTinselConnection extends Connection {
 
     @Override
     public CompoundNBT serializeLogic() {
-        return ColorLightItem.setColor(super.serializeLogic(), this.color);
+        return DyeableItem.setColor(super.serializeLogic(), this.color);
     }
 
     @Override
     public void deserializeLogic(final CompoundNBT compound) {
         super.deserializeLogic(compound);
-        this.color = ColorLightItem.getColor(compound);
+        this.color = DyeableItem.getColor(compound);
     }
 }

@@ -2,7 +2,7 @@ package me.paulf.fairylights.server.item.crafting;
 
 import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.server.item.ColorLightItem;
+import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.util.Blender;
 import me.paulf.fairylights.util.OreDictUtils;
@@ -111,7 +111,7 @@ public final class FLCraftingRecipes {
     public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(Ingredient.fromTag(Tags.Items.DYES)) {
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-            return ColorLightItem.getDyeColor(output).map(dye -> ImmutableList.of(OreDictUtils.getDyes(dye))).orElse(ImmutableList.of());
+            return DyeableItem.getDyeColor(output).map(dye -> ImmutableList.of(OreDictUtils.getDyes(dye))).orElse(ImmutableList.of());
         }
 
         @Override
@@ -121,7 +121,7 @@ public final class FLCraftingRecipes {
 
         @Override
         public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
-            ColorLightItem.setColor(nbt, OreDictUtils.getDyeColor(ingredient));
+            DyeableItem.setColor(nbt, OreDictUtils.getDyeColor(ingredient));
         }
     };
 
@@ -141,12 +141,12 @@ public final class FLCraftingRecipes {
 
                 @Override
                 public void consume(final Blender data, final ItemStack ingredient) {
-                    data.add(ColorLightItem.getColor(OreDictUtils.getDyeColor(ingredient)));
+                    data.add(DyeableItem.getColor(OreDictUtils.getDyeColor(ingredient)));
                 }
 
                 @Override
                 public boolean finish(final Blender data, final CompoundNBT nbt) {
-                    ColorLightItem.setColor(nbt, data.blend());
+                    DyeableItem.setColor(nbt, data.blend());
                     return false;
                 }
             })
@@ -263,7 +263,7 @@ public final class FLCraftingRecipes {
         CompoundNBT compound = stack.getTag();
         final ListNBT lights = new ListNBT();
         for (final DyeColor color : colors) {
-            lights.add(ColorLightItem.setColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
+            lights.add(DyeableItem.setColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
         }
         if (compound == null) {
             compound = new CompoundNBT();
@@ -342,7 +342,7 @@ public final class FLCraftingRecipes {
         final ListNBT pennants = new ListNBT();
         for (final DyeColor color : colors) {
             final CompoundNBT pennant = new CompoundNBT();
-            ColorLightItem.setColor(pennant, color);
+            DyeableItem.setColor(pennant, color);
             pennant.putString("item", FLItems.TRIANGLE_PENNANT.get().getRegistryName().toString());
             pennants.add(pennant);
         }
@@ -577,7 +577,7 @@ public final class FLCraftingRecipes {
             for (int i = 0; i < pattern.size(); i++) {
                 final CompoundNBT pennant = pattern.getCompound(i);
                 final ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(pennant.getString("item"))));
-                ColorLightItem.setColor(stack, DyeColor.byId(pennant.getByte("color")));
+                DyeableItem.setColor(stack, DyeColor.byId(pennant.getByte("color")));
                 pennants.add(ImmutableList.of(stack));
             }
             return pennants.build();
@@ -596,7 +596,7 @@ public final class FLCraftingRecipes {
         @Override
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
             final CompoundNBT pennant = new CompoundNBT();
-            ColorLightItem.setColor(pennant, ColorLightItem.getColor(ingredient));
+            DyeableItem.setColor(pennant, DyeableItem.getColor(ingredient));
             pennant.putString("item", ingredient.getItem().getRegistryName().toString());
             patternList.add(pennant);
         }
