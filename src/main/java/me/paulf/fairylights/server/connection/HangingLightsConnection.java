@@ -285,5 +285,4 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             this.pattern.add(ItemStack.read(lightCompound));
         }
     }
-
 }
