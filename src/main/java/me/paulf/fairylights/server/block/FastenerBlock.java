@@ -4,7 +4,7 @@ import me.paulf.fairylights.server.ServerEventHandler;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

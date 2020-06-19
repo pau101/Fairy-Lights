@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.block.entity;
 
 import me.paulf.fairylights.server.block.LightBlock;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;

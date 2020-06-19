@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
+import me.paulf.fairylights.server.feature.light.LightBehavior;
 import me.paulf.fairylights.util.EmptyProvider;
 import me.paulf.fairylights.util.SimpleProvider;
 import net.minecraft.item.ItemStack;

@@ -2,8 +2,8 @@ package me.paulf.fairylights.client.model.light;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.MeteorLightBehavior;
+import me.paulf.fairylights.server.feature.light.Light;
+import me.paulf.fairylights.server.feature.light.MeteorLightBehavior;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;

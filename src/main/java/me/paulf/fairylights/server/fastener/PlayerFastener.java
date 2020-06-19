@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.fastener;
 
 import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

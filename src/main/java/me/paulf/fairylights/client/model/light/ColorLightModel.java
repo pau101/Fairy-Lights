@@ -1,7 +1,7 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.StandardLightBehavior;
+import me.paulf.fairylights.server.feature.light.Light;
+import me.paulf.fairylights.server.feature.light.StandardLightBehavior;
 
 public class ColorLightModel extends LightModel<StandardLightBehavior> {
     @Override

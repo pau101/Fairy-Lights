@@ -3,7 +3,7 @@ package me.paulf.fairylights.server.net;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.connection.Connection;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

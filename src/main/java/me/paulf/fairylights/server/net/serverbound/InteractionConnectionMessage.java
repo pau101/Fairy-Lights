@@ -1,9 +1,9 @@
 package me.paulf.fairylights.server.net.serverbound;
 
-import me.paulf.fairylights.server.fastener.connection.FeatureType;
-import me.paulf.fairylights.server.fastener.connection.PlayerAction;
-import me.paulf.fairylights.server.fastener.connection.collision.Intersection;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.feature.FeatureType;
+import me.paulf.fairylights.server.connection.PlayerAction;
+import me.paulf.fairylights.server.collision.Intersection;
+import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.net.ConnectionMessage;
 import me.paulf.fairylights.server.net.ServerMessageContext;
 import me.paulf.fairylights.util.Utils;

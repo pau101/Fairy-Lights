@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.jingle;
 
 import com.google.common.collect.Sets;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BasicParticleType;

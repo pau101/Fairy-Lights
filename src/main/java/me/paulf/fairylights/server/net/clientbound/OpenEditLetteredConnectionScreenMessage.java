@@ -1,8 +1,8 @@
 package me.paulf.fairylights.server.net.clientbound;
 
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.connection.Lettered;
 import me.paulf.fairylights.server.net.ClientMessageContext;
 import me.paulf.fairylights.server.net.ConnectionMessage;
 import net.minecraft.client.Minecraft;

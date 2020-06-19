@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
+import me.paulf.fairylights.server.connection.ConnectionTypes;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.util.ITooltipFlag;

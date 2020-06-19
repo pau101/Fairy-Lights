@@ -1,7 +1,7 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.BrightLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.Light;
+import me.paulf.fairylights.server.feature.light.BrightLightBehavior;
+import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.util.Mth;
 
 public class OilLanternModel extends LightModel<BrightLightBehavior> {

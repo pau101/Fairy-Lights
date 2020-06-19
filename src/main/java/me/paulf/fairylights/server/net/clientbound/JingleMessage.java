@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.net.clientbound;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.HangingLightsConnection;
+import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.net.ClientMessageContext;

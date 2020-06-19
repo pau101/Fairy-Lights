@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.net.serverbound;
 
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
-import me.paulf.fairylights.server.fastener.connection.type.Lettered;
+import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.connection.Lettered;
 import me.paulf.fairylights.server.net.ConnectionMessage;
 import me.paulf.fairylights.server.net.ServerMessageContext;
 import me.paulf.fairylights.util.styledstring.StyledString;

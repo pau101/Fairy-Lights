@@ -1,7 +1,6 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.server.fastener.connection.ConnectionTypes;
+import me.paulf.fairylights.server.connection.ConnectionTypes;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

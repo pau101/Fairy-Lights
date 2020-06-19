@@ -1,14 +1,14 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.BrightLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.DefaultBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.IncandescentBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.LightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.MeteorLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.MultiLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.StandardLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.TorchLightBehavior;
-import me.paulf.fairylights.server.fastener.connection.type.hanginglights.TwinkleBehavior;
+import me.paulf.fairylights.server.feature.light.BrightLightBehavior;
+import me.paulf.fairylights.server.feature.light.DefaultBehavior;
+import me.paulf.fairylights.server.feature.light.IncandescentBehavior;
+import me.paulf.fairylights.server.feature.light.LightBehavior;
+import me.paulf.fairylights.server.feature.light.MeteorLightBehavior;
+import me.paulf.fairylights.server.feature.light.MultiLightBehavior;
+import me.paulf.fairylights.server.feature.light.StandardLightBehavior;
+import me.paulf.fairylights.server.feature.light.TorchLightBehavior;
+import me.paulf.fairylights.server.feature.light.TwinkleBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;

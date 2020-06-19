@@ -1,8 +1,8 @@
 package me.paulf.fairylights.server.fastener;
 
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.fastener.connection.ConnectionType;
-import me.paulf.fairylights.server.fastener.connection.type.Connection;
+import me.paulf.fairylights.server.connection.ConnectionType;
+import me.paulf.fairylights.server.connection.Connection;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
