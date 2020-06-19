@@ -43,6 +43,8 @@ public final class FLBlocks {
 
     public static final RegistryObject<LightBlock> SNOWFLAKE_LIGHT = REG.register("snowflake_light", FLBlocks.createLight(SimpleLightVariant.SNOWFLAKE_LIGHT));
 
+    public static final RegistryObject<LightBlock> HEART_LIGHT = REG.register("heart_light", FLBlocks.createLight(SimpleLightVariant.HEART_LIGHT));
+
     public static final RegistryObject<LightBlock> ICICLE_LIGHTS = REG.register("icicle_lights", FLBlocks.createLight(SimpleLightVariant.ICICLE_LIGHTS));
 
     public static final RegistryObject<LightBlock> METEOR_LIGHT = REG.register("meteor_light", FLBlocks.createLight(SimpleLightVariant.METEOR_LIGHT));

@@ -161,9 +161,10 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
             this.glow = glow;
         }
 
-        public void setUV(final int u, final int v) {
+        public BulbBuilder setUV(final int u, final int v) {
             this.base.setTextureOffset(u, v);
             this.glow.setTextureOffset(u, v);
+            return this;
         }
 
         void addBox(final float x, final float y, final float z, final float width, final float height, final float depth) {

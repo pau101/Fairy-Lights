@@ -88,6 +88,8 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> SNOWFLAKE_LIGHT = REG.register("crafting_special_snowflake_light", makeSerializer(FLCraftingRecipes::createSnowflakeLight));
 
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> HEART_LIGHT = REG.register("crafting_special_heart_light", makeSerializer(FLCraftingRecipes::createHeartLight));
+
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> ICICLE_LIGHTS = REG.register("crafting_special_icicle_lights", makeSerializer(FLCraftingRecipes::createIcicleLights));
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> METEOR_LIGHT = REG.register("crafting_special_meteor_light", makeSerializer(FLCraftingRecipes::createMeteorLight));
@@ -471,6 +473,13 @@ public final class FLCraftingRecipes {
             .withShape(" I ", "SDS", " G ")
             .withIngredient('S', Items.SNOWBALL)
             .withIngredient('G', Tags.Items.GLASS_PANES_WHITE)
+        );
+    }
+
+    private static GenericRecipe createHeartLight(final ResourceLocation name) {
+        return createLight(name, HEART_LIGHT, FLItems.HEART_LIGHT, b -> b
+            .withShape(" I ", "IDI", " G ")
+            .withIngredient('G', Tags.Items.GLASS_PANES_RED)
         );
     }
 

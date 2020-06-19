@@ -133,6 +133,7 @@ public final class ClientProxy extends ServerProxy {
             FLItems.SPIDER_LIGHT.get(),
             FLItems.WITCH_LIGHT.get(),
             FLItems.SNOWFLAKE_LIGHT.get(),
+            FLItems.HEART_LIGHT.get(),
             FLItems.ICICLE_LIGHTS.get(),
             FLItems.METEOR_LIGHT.get()
         );

@@ -5,10 +5,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.client.model.light.CandleLanternModel;
+import me.paulf.fairylights.client.model.light.ColorCandleLanternModel;
 import me.paulf.fairylights.client.model.light.ColorOilLanternModel;
 import me.paulf.fairylights.client.model.light.FairyLightModel;
 import me.paulf.fairylights.client.model.light.FlowerLightModel;
 import me.paulf.fairylights.client.model.light.GhostLightModel;
+import me.paulf.fairylights.client.model.light.HeartLightModel;
 import me.paulf.fairylights.client.model.light.IcicleLightsModel;
 import me.paulf.fairylights.client.model.light.IncandescentLightModel;
 import me.paulf.fairylights.client.model.light.JackOLanternLightModel;
@@ -16,7 +18,6 @@ import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.client.model.light.MeteorLightModel;
 import me.paulf.fairylights.client.model.light.OilLanternModel;
 import me.paulf.fairylights.client.model.light.OrbLanternModel;
-import me.paulf.fairylights.client.model.light.ColorCandleLanternModel;
 import me.paulf.fairylights.client.model.light.PaperLanternModel;
 import me.paulf.fairylights.client.model.light.SkullLightModel;
 import me.paulf.fairylights.client.model.light.SnowflakeLightModel;
@@ -54,14 +55,15 @@ public class LightRenderer {
         .put(SimpleLightVariant.SPIDER_LIGHT, LightModelProvider.of(new SpiderLightModel()))
         .put(SimpleLightVariant.WITCH_LIGHT, LightModelProvider.of(new WitchLightModel()))
         .put(SimpleLightVariant.SNOWFLAKE_LIGHT, LightModelProvider.of(new SnowflakeLightModel()))
+        .put(SimpleLightVariant.HEART_LIGHT, LightModelProvider.of(HeartLightModel::new))
         .put(SimpleLightVariant.ICICLE_LIGHTS, LightModelProvider.of(
             IntStream.rangeClosed(0, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
         ))
         .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel()))
         .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new OilLanternModel()))
-        .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(CandleLanternModel::new))
-        .put(SimpleLightVariant.INCANDESCENT_LIGHT, LightModelProvider.of(IncandescentLightModel::new))
+        .put(SimpleLightVariant.CANDLE_LANTERN, LightModelProvider.of(new CandleLanternModel()))
+        .put(SimpleLightVariant.INCANDESCENT_LIGHT, LightModelProvider.of(new IncandescentLightModel()))
         .build();
 
     public LightRenderer() {
