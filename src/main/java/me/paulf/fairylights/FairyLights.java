@@ -4,10 +4,10 @@ import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
-import me.paulf.fairylights.server.creativetabs.FairyLightsItemGroup;
-import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.connection.ConnectionType;
 import me.paulf.fairylights.server.connection.ConnectionTypes;
+import me.paulf.fairylights.server.creativetabs.FairyLightsItemGroup;
+import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.net.NetBuilder;
@@ -17,6 +17,8 @@ import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
 import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.server.string.StringType;
+import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.CalendarEvent;
 import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.item.ItemGroup;
@@ -57,6 +59,13 @@ public final class FairyLights {
         .disableSaving()
         .create();
 
+    public static final IForgeRegistry<StringType> STRING_TYPES = new RegistryBuilder<StringType>()
+        .setType(StringType.class)
+        .setName(new ResourceLocation(ID, "string_type"))
+        .setDefaultKey(new ResourceLocation(ID, "black_string"))
+        .disableSaving()
+        .create();
+
     public FairyLights() {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         FLSounds.REG.register(bus);
@@ -66,6 +75,7 @@ public final class FairyLights {
         FLBlockEntities.REG.register(bus);
         FLCraftingRecipes.REG.register(bus);
         ConnectionTypes.REG.register(bus);
+        StringTypes.REG.register(bus);
         final ServerProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         proxy.init(bus);
     }

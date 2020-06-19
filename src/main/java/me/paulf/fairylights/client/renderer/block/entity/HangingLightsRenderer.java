@@ -17,6 +17,11 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
     }
 
     @Override
+    protected int getWireColor(final HangingLightsConnection conn) {
+        return conn.getString().getColor();
+    }
+
+    @Override
     public void render(final HangingLightsConnection conn, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         super.render(conn, delta, matrix, source, packedLight, packedOverlay);
         final Light<?>[] lights = conn.getFeatures();

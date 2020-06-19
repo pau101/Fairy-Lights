@@ -9,6 +9,8 @@
     "item.fairylights.garland": "Vine Garland",
     "item.fairylights.tinsel": "Tinsel Garland",
 
+    "item.fairylights.black_string": "Black String",
+    "item.fairylights.white_string": "White String",
     "item.fairyLights.twinkle": "Twinkles",
 
     "item.fairylights.pennant_bunting": "Pennant Bunting",
@@ -52,6 +54,7 @@
     "recipe.fairylights.twinkling_lights.glowstone": "Causes lights to twinkle",
     "recipe.fairylights.hangingLights.light": "Add multiple lights to customize pattern",
     "recipe.fairylights.pennantBunting.pennant": "Add multiple pennants to customize pattern",
+    "recipe.fairylights.hangingLights.string": "Add white dye to create white string",
 
     "format.fairylights.colored": "%1$s %2$s",
     "format.fairylights.text": "Text: %1$s",

@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.FLItems;
+import me.paulf.fairylights.server.item.HangingLightsConnectionItem;
+import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.Blender;
 import me.paulf.fairylights.util.OreDictUtils;
 import me.paulf.fairylights.util.Utils;
@@ -188,6 +190,29 @@ public final class FLCraftingRecipes {
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withIngredient('-', Tags.Items.STRING)
             .withAuxiliaryIngredient(new LightIngredient(true))
+            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(Tags.Items.DYES_WHITE), false, 1) {
+                @Override
+                public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
+                    final CompoundNBT tag = output.getTag();
+                    return tag != null && HangingLightsConnectionItem.getString(tag) == StringTypes.WHITE_STRING.get() ? super.getInput(output) : ImmutableList.of();
+                }
+
+                @Override
+                public void present(final CompoundNBT nbt) {
+                    HangingLightsConnectionItem.setString(nbt, StringTypes.WHITE_STRING.get());
+                }
+
+                @Override
+                public void absent(final CompoundNBT nbt) {
+                    HangingLightsConnectionItem.setString(nbt, StringTypes.BLACK_STRING.get());
+                }
+
+                @Override
+                public void addTooltip(final List<String> tooltip) {
+                    super.addTooltip(tooltip);
+                    tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.hangingLights.string"));
+                }
+            })
             .build();
     }
 
@@ -270,6 +295,7 @@ public final class FLCraftingRecipes {
             stack.setTag(compound);
         }
         compound.put("pattern", lights);
+        HangingLightsConnectionItem.setString(compound, StringTypes.BLACK_STRING.get());
         return stack;
     }
 

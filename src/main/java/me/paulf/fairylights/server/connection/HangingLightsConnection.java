@@ -5,6 +5,7 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.feature.FeatureType;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.LightBehavior;
+import me.paulf.fairylights.server.item.HangingLightsConnectionItem;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
@@ -12,6 +13,8 @@ import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.jingle.JinglePlayer;
 import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.server.string.StringType;
+import me.paulf.fairylights.server.string.StringTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -46,6 +49,8 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     private static final int LIGHT_UPDATE_RATE = 10;
 
+    private StringType string;
+
     private List<ItemStack> pattern;
 
     private JinglePlayer jinglePlayer = new JinglePlayer();
@@ -64,7 +69,12 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     public HangingLightsConnection(final ConnectionType<? extends HangingLightsConnection> type, final World world, final Fastener<?> fastenerOrigin, final UUID uuid) {
         super(type, world, fastenerOrigin, uuid);
+        this.string = StringTypes.BLACK_STRING.get();
         this.pattern = new ArrayList<>();
+    }
+
+    public StringType getString() {
+        return this.string;
     }
 
     @Nullable
@@ -255,6 +265,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     public CompoundNBT serializeLogic() {
         final CompoundNBT compound = super.serializeLogic();
+        HangingLightsConnectionItem.setString(compound, this.string);
         final ListNBT tagList = new ListNBT();
         for (final ItemStack light : this.pattern) {
             tagList.add(light.write(new CompoundNBT()));
@@ -266,6 +277,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     public void deserializeLogic(final CompoundNBT compound) {
         super.deserializeLogic(compound);
+        this.string = HangingLightsConnectionItem.getString(compound);
         final ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
         this.pattern = new ArrayList<>();
         for (int i = 0; i < patternList.size(); i++) {
@@ -273,4 +285,5 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             this.pattern.add(ItemStack.read(lightCompound));
         }
     }
+
 }

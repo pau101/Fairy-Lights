@@ -15,9 +15,12 @@ import me.paulf.fairylights.client.renderer.entity.LadderRenderer;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
+import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.FLItems;
+import me.paulf.fairylights.server.item.HangingLightsConnectionItem;
+import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -49,6 +52,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import java.util.Objects;
 import java.util.Random;
 
 public final class ClientProxy extends ServerProxy {
@@ -138,10 +142,13 @@ public final class ClientProxy extends ServerProxy {
             FLItems.METEOR_LIGHT.get()
         );
         colors.register((stack, index) -> {
-            if (index == 0) {
-                return 0xFFFFFFFF;
-            }
             final CompoundNBT tag = stack.getTag();
+            if (index == 0) {
+                if (tag != null) {
+                    return HangingLightsConnectionItem.getString(tag).getColor();
+                }
+                return StringTypes.BLACK_STRING.get().getColor();
+            }
             if (tag != null) {
                 final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
