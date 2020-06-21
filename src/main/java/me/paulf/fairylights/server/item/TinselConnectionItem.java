@@ -14,7 +14,7 @@ public final class TinselConnectionItem extends ConnectionItem {
 
     @Override
     public ITextComponent getDisplayName(final ItemStack stack) {
-        return super.getDisplayName(stack);
+        return DyeableItem.getDisplayName(stack, super.getDisplayName(stack));
     }
 
     @Override

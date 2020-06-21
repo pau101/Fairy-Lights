@@ -14,7 +14,7 @@ public class PennantItem extends Item {
 
     @Override
     public ITextComponent getDisplayName(final ItemStack stack) {
-        return super.getDisplayName(stack);
+        return DyeableItem.getDisplayName(stack, super.getDisplayName(stack));
     }
 
     @Override

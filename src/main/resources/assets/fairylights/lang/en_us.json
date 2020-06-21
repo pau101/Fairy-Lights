@@ -57,6 +57,7 @@
     "recipe.fairylights.hangingLights.string": "Add white dye to create white string",
 
     "format.fairylights.colored": "%1$s %2$s",
+    "format.fairylights.dyed_colored": "Dyed %1$s %2$s",
     "format.fairylights.text": "Text: %1$s",
 
     "color.fairylights.black": "Black",

@@ -21,7 +21,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
-import java.util.Objects;
 
 public class PennantBuntingConnectionItem extends ConnectionItem {
     public PennantBuntingConnectionItem(final Item.Properties properties) {
@@ -49,8 +48,9 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
             }
             for (int i = 0; i < tagCount; i++) {
                 final CompoundNBT lightCompound = tagList.getCompound(i);
-                final Item item = Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(lightCompound.getString("item"))), "item");
-                tooltip.add(item.getName());
+                final ItemStack item = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(lightCompound.getString("item"))));
+                DyeableItem.setColor(item, DyeableItem.getColor(lightCompound));
+                tooltip.add(item.getDisplayName());
             }
         }
     }

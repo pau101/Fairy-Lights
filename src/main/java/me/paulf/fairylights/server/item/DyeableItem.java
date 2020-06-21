@@ -3,6 +3,8 @@ package me.paulf.fairylights.server.item;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Arrays;
@@ -10,6 +12,33 @@ import java.util.Optional;
 
 public final class DyeableItem {
     private DyeableItem() {}
+
+    public static ITextComponent getDisplayName(final ItemStack stack, final ITextComponent name) {
+        final int color = getColor(stack);
+        final int r = color >> 16 & 0xFF;
+        final int g = color >> 8 & 0xFF;
+        final int b = color & 0xFF;
+        DyeColor closest = DyeColor.WHITE;
+        int closestDist = Integer.MAX_VALUE;
+        for (final DyeColor dye : DyeColor.values()) {
+            final int dyeColor = getColor(dye);
+            if (dyeColor == color) {
+                closest = dye;
+                closestDist = 0;
+                break;
+            }
+            final int dr = dyeColor >> 16 & 0xFF;
+            final int dg = dyeColor >> 8 & 0xFF;
+            final int db = dyeColor & 0xFF;
+            final int dist = (dr - r) * (dr - r) + (dg - g) * (dg - g) + (db - b) * (db - b);
+            if (dist < closestDist) {
+                closest = dye;
+                closestDist = dist;
+            }
+        }
+        final String key = closestDist == 0 ? "format.fairylights.colored" : "format.fairylights.dyed_colored";
+        return new TranslationTextComponent(key, new TranslationTextComponent("color.fairylights." + closest.getTranslationKey()), name);
+    }
 
     public static int getColor(final DyeColor color) {
         if (color == DyeColor.BLACK) {
