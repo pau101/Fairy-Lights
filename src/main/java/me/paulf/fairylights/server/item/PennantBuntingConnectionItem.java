@@ -11,14 +11,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -47,9 +45,7 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
                 tooltip.add(new StringTextComponent(""));
             }
             for (int i = 0; i < tagCount; i++) {
-                final CompoundNBT lightCompound = tagList.getCompound(i);
-                final ItemStack item = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(lightCompound.getString("item"))));
-                DyeableItem.setColor(item, DyeableItem.getColor(lightCompound));
+                final ItemStack item = ItemStack.read(tagList.getCompound(i));
                 tooltip.add(item.getDisplayName());
             }
         }

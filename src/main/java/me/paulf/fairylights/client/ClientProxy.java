@@ -165,7 +165,7 @@ public final class ClientProxy extends ServerProxy {
             if (tag != null) {
                 final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return DyeableItem.getColor(tagList.getCompound((index - 1) % tagList.size()));
+                    return DyeableItem.getColor(ItemStack.read(tagList.getCompound((index - 1) % tagList.size())));
                 }
             }
             return 0xFFFFFFFF;

@@ -69,7 +69,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 final float r = ((color >> 16) & 0xFF) / 255.0F;
                 final float g = ((color >> 8) & 0xFF) / 255.0F;
                 final float b = (color & 0xFF) / 255.0F;
-                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(models.getOrDefault(currPennant.getItem(), TRIANGLE_MODEL));
+                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(this.models.getOrDefault(currPennant.getItem(), TRIANGLE_MODEL));
                 final Vec3d pos = currPennant.getPoint(delta);
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);

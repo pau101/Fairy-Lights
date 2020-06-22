@@ -367,10 +367,9 @@ public final class FLCraftingRecipes {
         CompoundNBT compound = stack.getTag();
         final ListNBT pennants = new ListNBT();
         for (final DyeColor color : colors) {
-            final CompoundNBT pennant = new CompoundNBT();
+            final ItemStack pennant = new ItemStack(FLItems.TRIANGLE_PENNANT.get());
             DyeableItem.setColor(pennant, color);
-            pennant.putString("item", FLItems.TRIANGLE_PENNANT.get().getRegistryName().toString());
-            pennants.add(pennant);
+            pennants.add(pennant.write(new CompoundNBT()));
         }
         if (compound == null) {
             compound = new CompoundNBT();
@@ -602,9 +601,7 @@ public final class FLCraftingRecipes {
             final ImmutableList.Builder<ImmutableList<ItemStack>> pennants = ImmutableList.builder();
             for (int i = 0; i < pattern.size(); i++) {
                 final CompoundNBT pennant = pattern.getCompound(i);
-                final ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(pennant.getString("item"))));
-                DyeableItem.setColor(stack, DyeColor.byId(pennant.getByte("color")));
-                pennants.add(ImmutableList.of(stack));
+                pennants.add(ImmutableList.of(ItemStack.read(pennant)));
             }
             return pennants.build();
         }
@@ -621,10 +618,7 @@ public final class FLCraftingRecipes {
 
         @Override
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
-            final CompoundNBT pennant = new CompoundNBT();
-            DyeableItem.setColor(pennant, DyeableItem.getColor(ingredient));
-            pennant.putString("item", ingredient.getItem().getRegistryName().toString());
-            patternList.add(pennant);
+            patternList.add(ingredient.write(new CompoundNBT()));
         }
 
         @Override
