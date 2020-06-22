@@ -6,14 +6,13 @@ import me.paulf.fairylights.server.block.FastenerBlock;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.config.FLConfig;
+import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
-import me.paulf.fairylights.server.entity.LadderEntity;
 import me.paulf.fairylights.server.fastener.BlockFastener;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FenceFastener;
 import me.paulf.fairylights.server.fastener.PlayerFastener;
-import me.paulf.fairylights.server.connection.Connection;
-import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.ConnectionItem;
 import me.paulf.fairylights.server.jingle.Jingle;
@@ -47,7 +46,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -65,28 +63,6 @@ public final class ServerEventHandler {
 
     // Every 5 minutes on average a jingle will attempt to play
     private final float jingleProbability = 1F / (5 * 60 * 20);
-
-    // TODO: ladder collision
-    @SubscribeEvent
-    public void onGetCollisionBoxes(final GetCollisionBoxesEvent event) {
-        final Entity entity = event.getEntity();
-        if (entity instanceof PlayerEntity) {
-            final AxisAlignedBB bounds = event.getAabb();
-            final List<LadderEntity> ladders = event.getWorld().getEntitiesWithinAABB(LadderEntity.class, bounds.grow(1));
-            final List<AxisAlignedBB> boxes = event.getCollisionBoxesList();
-            for (final LadderEntity ladder : ladders) {
-                if (entity == ladder) {
-                    continue;
-                }
-                final List<AxisAlignedBB> surfaces = ladder.getCollisionSurfaces();
-                for (final AxisAlignedBB surface : surfaces) {
-                    if (surface.intersects(bounds)) {
-                        boxes.add(surface);
-                    }
-                }
-            }
-        }
-    }
 
     @SubscribeEvent
     public void onAttachEntityCapability(final AttachCapabilitiesEvent<Entity> event) {

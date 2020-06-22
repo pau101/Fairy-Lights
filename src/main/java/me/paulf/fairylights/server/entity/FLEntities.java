@@ -21,13 +21,4 @@ public final class FLEntities {
             .setCustomClientFactory((message, world) -> new FenceFastenerEntity(world))
             .build(FairyLights.ID + ":fastener")
     );
-
-    public static final RegistryObject<EntityType<LadderEntity>> LADDER = REG.register("ladder", () ->
-        EntityType.Builder.<LadderEntity>create(LadderEntity::new, EntityClassification.MISC)
-            .size(1.15F, 2.8F)
-            .setTrackingRange(10)
-            .setUpdateInterval(3)
-            .setCustomClientFactory((message, world) -> new LadderEntity(world))
-            .build(FairyLights.ID + ":ladder")
-    );
 }

@@ -41,10 +41,7 @@
     "block.fairylights.candle_lantern": "Candle Lantern",
     "block.fairylights.incandescent_light": "Incandescent Light",
 
-    "item.fairylights.ladder": "Stepladder",
-
     "entity.fairylights.fastener": "Fastener",
-    "entity.fairylights.ladder": "Stepladder",
 
     "fairylights.editLetteredConnection": "Set Bunting Text",
     "fairylights.editLetteredConnection.allowed_characters": "Allowed characters: %1$s",

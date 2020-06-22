@@ -71,8 +71,6 @@ public final class FLItems {
 
     public static final RegistryObject<Item> SQUARE_PENNANT = REG.register("square_pennant", () -> new PennantItem(defaultProperties()));
 
-    public static final RegistryObject<Item> LADDER = REG.register("ladder", () -> new LadderItem(defaultProperties()));
-
     private static Item.Properties defaultProperties() {
         return new Item.Properties().group(FairyLights.ITEM_GROUP);
     }

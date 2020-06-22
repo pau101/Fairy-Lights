@@ -67,14 +67,6 @@ public final class DataGatherer {
                 .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
                 .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
                 .build(addNbt(consumer, nbt));
-            ShapedRecipeBuilder.shapedRecipe(FLItems.LADDER.get())
-                .patternLine("#/")
-                .patternLine("#/")
-                .patternLine("#/")
-                .key('#', Items.LADDER)
-                .key('/', Items.STICK)
-                .addCriterion("has_stick", this.hasItem(Items.STICK))
-                .build(consumer);
             ShapedRecipeBuilder.shapedRecipe(FLItems.GARLAND.get(), 2)
                 .patternLine("I-I")
                 .key('I', Tags.Items.INGOTS_IRON)

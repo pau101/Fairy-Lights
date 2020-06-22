@@ -28,14 +28,6 @@ public final class FLSounds {
 
     public static final RegistryObject<SoundEvent> FEATURE_LIGHT_TURNOFF = create("feature.light_turnoff");
 
-    public static final RegistryObject<SoundEvent> LADDER_BREAK = create("entity.ladder.break");
-
-    public static final RegistryObject<SoundEvent> LADDER_FALL = create("entity.ladder.fall");
-
-    public static final RegistryObject<SoundEvent> LADDER_HIT = create("entity.ladder.hit");
-
-    public static final RegistryObject<SoundEvent> LADDER_PLACE = create("entity.ladder.place");
-
     private static RegistryObject<SoundEvent> create(final String name) {
         return REG.register(name, () -> new SoundEvent(new ResourceLocation(FairyLights.ID, name)));
     }

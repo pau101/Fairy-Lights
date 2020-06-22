@@ -38,41 +38,5 @@
 	"feature.light_turnoff": {
 		"sounds": [ "minecraft:random/click" ],
 		"subtitle": "subtitles.block.fairylights.feature.lightTurnOff"
-	},
-	"entity.ladder.break": {
-		"sounds": [
-			"entity/armorstand/break1",
-			"entity/armorstand/break2",
-			"entity/armorstand/break3",
-			"entity/armorstand/break4"
-		],
-		"subtitle": "subtitles.block.generic.break"
-	},
-	"entity.ladder.fall": {
-		"sounds": [
-			"dig/wood1",
-			"dig/wood2",
-			"dig/wood3",
-			"dig/wood4"
-		],
-		"subtitle": "subtitles.entity.generic.big_fall"
-	},
-	"entity.ladder.hit": {
-		"sounds": [
-			"entity/armorstand/hit1",
-			"entity/armorstand/hit2",
-			"entity/armorstand/hit3",
-			"entity/armorstand/hit4"
-		],
-		"subtitle": "subtitles.block.generic.hit"
-	},
-	"entity.ladder.place": {
-		"sounds": [
-			"dig/stone1",
-			"dig/stone2",
-			"dig/stone3",
-			"dig/stone4"
-		],
-		"subtitle": "subtitles.block.generic.place"
 	}
 }
