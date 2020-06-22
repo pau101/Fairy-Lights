@@ -1,16 +1,16 @@
 package com.pau101.fairylights.server.fastener.accessor;
 
-import javax.annotation.Nullable;
-
 import com.pau101.fairylights.server.capability.CapabilityHandler;
 import com.pau101.fairylights.server.fastener.Fastener;
 import com.pau101.fairylights.server.fastener.FastenerBlock;
 import com.pau101.fairylights.server.fastener.FastenerType;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public final class FastenerAccessorBlock implements FastenerAccessor {
 	private BlockPos pos = BlockPos.ORIGIN;
@@ -32,12 +32,19 @@ public final class FastenerAccessorBlock implements FastenerAccessor {
 
 	@Override
 	public boolean isLoaded(World world) {
-		return world.isBlockLoaded(pos, false) && world.getTileEntity(pos) != null;
+		if (world.isBlockLoaded(pos, false)) {
+			TileEntity entity = world.getTileEntity(pos);
+			if (entity != null && entity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) return true;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean exists(World world) {
-		return !world.isBlockLoaded(pos, false) || world.getTileEntity(pos) != null;
+		if (!world.isBlockLoaded(pos, false)) return true;
+		TileEntity entity = world.getTileEntity(pos);
+		if (entity != null && entity.hasCapability(CapabilityHandler.FASTENER_CAP, null)) return true;
+		return false;
 	}
 
 	@Override
