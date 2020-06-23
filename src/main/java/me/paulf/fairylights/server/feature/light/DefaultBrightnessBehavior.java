@@ -3,12 +3,8 @@ package me.paulf.fairylights.server.feature.light;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class DefaultBehavior extends FixedColorBehavior implements StandardLightBehavior {
+public class DefaultBrightnessBehavior implements BrightLightBehavior {
     private float value = 1.0F;
-
-    public DefaultBehavior(final float red, final float green, final float blue) {
-        super(red, green, blue);
-    }
 
     @Override
     public float getBrightness(final float delta) {
@@ -21,5 +17,6 @@ public class DefaultBehavior extends FixedColorBehavior implements StandardLight
     }
 
     @Override
-    public void tick(final World world, final Vec3d origin, final Light<?> light) {}
+    public void tick(final World world, final Vec3d origin, final Light<?> light) {
+    }
 }

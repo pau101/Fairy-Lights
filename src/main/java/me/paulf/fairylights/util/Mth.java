@@ -70,6 +70,14 @@ public final class Mth {
         return a + t * angleDifference(a, b);
     }
 
+    public static float lerpMod(final float a, final float b, final float t, final float n) {
+        return a + t * modularDifference(a, b, n);
+    }
+
+    public static float modularDifference(final float a, final float b, final float n) {
+        return mod(b - a + n * 0.5F, n) - n * 0.5F;
+    }
+
     public static float angleDifference(final float a, final float b) {
         return mod(b - a + Mth.PI, Mth.TAU) - Mth.PI;
     }

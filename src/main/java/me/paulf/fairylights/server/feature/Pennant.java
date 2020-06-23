@@ -25,7 +25,7 @@ public class Pennant extends HangingFeature {
 
     @Override
     public AxisAlignedBB getBounds() {
-        return new AxisAlignedBB(-0.22D, -0.5D, -0.01D, 0.22D, 0.0D, 0.01D);
+        return new AxisAlignedBB(-0.22D, -0.5D, -0.02D, 0.22D, 0.0D, 0.02D);
     }
 
     @Override

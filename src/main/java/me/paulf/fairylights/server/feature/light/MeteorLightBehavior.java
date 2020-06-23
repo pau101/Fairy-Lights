@@ -36,7 +36,7 @@ public class MeteorLightBehavior implements ColorLightBehavior {
     }
 
     @Override
-    public void power(final boolean powered, final boolean now) {
+    public void power(final boolean powered, final boolean now, final Light<?> light) {
         this.powered = powered;
     }
 

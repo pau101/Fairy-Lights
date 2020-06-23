@@ -17,7 +17,7 @@ public class IncandescentBehavior implements BrightLightBehavior {
     }
 
     @Override
-    public void power(final boolean powered, final boolean now) {
+    public void power(final boolean powered, final boolean now, final Light<?> light) {
         this.powered = powered;
         if (now) this.prevBrightness = this.brightness = this.powered ? 1.0F : 0.0F;
     }

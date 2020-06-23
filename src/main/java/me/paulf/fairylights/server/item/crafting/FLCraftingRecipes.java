@@ -25,6 +25,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -98,6 +99,8 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> LIGHT_TWINKLE = REG.register("crafting_special_light_twinkle", makeSerializer(FLCraftingRecipes::createLightTwinkle));
 
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> COLOR_CHANGING_LIGHT = REG.register("crafting_special_color_changing_light", makeSerializer(FLCraftingRecipes::createColorChangingLight));
+
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> EDIT_COLOR = REG.register("crafting_special_edit_color", makeSerializer(FLCraftingRecipes::createDyeColor));
 
     public static final RegistryObject<IRecipeSerializer<CopyColorRecipe>> COPY_COLOR = REG.register("crafting_special_copy_color", makeSerializer(CopyColorRecipe::new));
@@ -109,6 +112,8 @@ public final class FLCraftingRecipes {
     public static final Tag<Item> PENNANTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"));
 
     public static final Tag<Item> DYEABLE = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable"));
+
+    public static final Tag<Item> DYEABLE_LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable_lights"));
 
     public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(Ingredient.fromTag(Tags.Items.DYES)) {
         @Override
@@ -179,6 +184,37 @@ public final class FLCraftingRecipes {
                 public void addTooltip(final List<String> tooltip) {
                     super.addTooltip(tooltip);
                     tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.twinkling_lights.glowstone"));
+                }
+            })
+            .build();
+    }
+
+    private static GenericRecipe createColorChangingLight(final ResourceLocation name) {
+        return new GenericRecipeBuilder(name, COLOR_CHANGING_LIGHT)
+            .withShape("IG")
+            .withIngredient('I', DYEABLE_LIGHTS).withOutput('I')
+            .withIngredient('G', Tags.Items.NUGGETS_GOLD)
+            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<ListNBT>(Ingredient.fromTag(Tags.Items.DYES), true, 8) {
+                @Override
+                public ListNBT accumulator() {
+                    return new ListNBT();
+                }
+
+                @Override
+                public void consume(final ListNBT data, final ItemStack ingredient) {
+                    data.add(IntNBT.valueOf(DyeableItem.getColor(OreDictUtils.getDyeColor(ingredient))));
+                }
+
+                @Override
+                public boolean finish(final ListNBT data, final CompoundNBT nbt) {
+                    if (!data.isEmpty()) {
+                        if (nbt.contains("color", Constants.NBT.TAG_INT)) {
+                            data.add(0, IntNBT.valueOf(nbt.getInt("color")));
+                            nbt.remove("color");
+                        }
+                        nbt.put("colors", data);
+                    }
+                    return false;
                 }
             })
             .build();

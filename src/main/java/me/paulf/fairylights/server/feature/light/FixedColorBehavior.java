@@ -1,13 +1,16 @@
 package me.paulf.fairylights.server.feature.light;
 
-public abstract class FixedColorBehavior implements ColorLightBehavior {
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
+public class FixedColorBehavior implements ColorLightBehavior {
     private final float red;
 
     private final float green;
 
     private final float blue;
 
-    protected FixedColorBehavior(final float red, final float green, final float blue) {
+    public FixedColorBehavior(final float red, final float green, final float blue) {
         this.red = red;
         this.green = green;
         this.blue = blue;
@@ -26,5 +29,13 @@ public abstract class FixedColorBehavior implements ColorLightBehavior {
     @Override
     public float getBlue(final float delta) {
         return this.blue;
+    }
+
+    @Override
+    public void power(final boolean powered, final boolean now, final Light<?> light) {
+    }
+
+    @Override
+    public void tick(final World world, final Vec3d origin, final Light<?> light) {
     }
 }

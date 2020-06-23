@@ -102,7 +102,7 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
     }
 
     public void power(final boolean powered, final boolean now) {
-        this.behavior.power(powered, now);
+        this.behavior.power(powered, now, this);
         this.powered = powered;
     }
 

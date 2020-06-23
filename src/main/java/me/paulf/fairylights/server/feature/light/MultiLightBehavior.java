@@ -24,11 +24,11 @@ public class MultiLightBehavior implements LightBehavior {
     }
 
     @Override
-    public void power(final boolean powered, final boolean now) {
+    public void power(final boolean powered, final boolean now, final Light<?> light) {
         for (final StandardLightBehavior behvior : this.lights) {
-            behvior.power(powered, now);
+            behvior.power(powered, now, light);
         }
-        this.fallback.power(powered, now);
+        this.fallback.power(powered, now, light);
     }
 
     @Override

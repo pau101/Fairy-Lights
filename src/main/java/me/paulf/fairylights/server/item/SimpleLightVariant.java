@@ -1,7 +1,12 @@
 package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.server.feature.light.BrightLightBehavior;
+import me.paulf.fairylights.server.feature.light.ColorChangingBehavior;
+import me.paulf.fairylights.server.feature.light.ColorLightBehavior;
+import me.paulf.fairylights.server.feature.light.CompositeBehavior;
 import me.paulf.fairylights.server.feature.light.DefaultBehavior;
+import me.paulf.fairylights.server.feature.light.DefaultBrightnessBehavior;
+import me.paulf.fairylights.server.feature.light.FixedColorBehavior;
 import me.paulf.fairylights.server.feature.light.IncandescentBehavior;
 import me.paulf.fairylights.server.feature.light.LightBehavior;
 import me.paulf.fairylights.server.feature.light.MeteorLightBehavior;
@@ -11,7 +16,9 @@ import me.paulf.fairylights.server.feature.light.TorchLightBehavior;
 import me.paulf.fairylights.server.feature.light.TwinkleBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.function.Function;
 
@@ -105,6 +112,19 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
 
     private static StandardLightBehavior standardBehavior(final ItemStack stack) {
         final CompoundNBT tag = stack.getTag();
+        if (tag != null && tag.contains("colors", Constants.NBT.TAG_LIST)) {
+            final ListNBT list = tag.getList("colors", Constants.NBT.TAG_INT);
+            final float[] red = new float[list.size()];
+            final float[] green = new float[list.size()];
+            final float[] blue = new float[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                final int color = list.getInt(i);
+                red[i] = (color >> 16 & 0xFF) / 255.0F;
+                green[i] = (color >> 8 & 0xFF) / 255.0F;
+                blue[i] = (color & 0xFF) / 255.0F;
+            }
+            return new CompositeBehavior(new DefaultBrightnessBehavior(), new ColorChangingBehavior(red, green, blue, list.size() / 960.0F));
+        }
         final int rgb = DyeableItem.getColor(stack);
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;
@@ -112,6 +132,6 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
         if (tag != null && tag.getBoolean("twinkle")) {
             return new TwinkleBehavior(red, green, blue, 0.05F, 40);
         }
-        return new DefaultBehavior(red, green, blue);
+        return new CompositeBehavior(new DefaultBrightnessBehavior(), new FixedColorBehavior(red, green, blue));
     }
 }
