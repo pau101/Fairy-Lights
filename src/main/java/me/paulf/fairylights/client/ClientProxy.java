@@ -15,6 +15,7 @@ import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
 import me.paulf.fairylights.server.entity.FLEntities;
+import me.paulf.fairylights.server.feature.light.ColorChangingBehavior;
 import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.HangingLightsConnectionItem;
@@ -42,6 +43,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -120,7 +122,15 @@ public final class ClientProxy extends ServerProxy {
 
     private void setupColors(final ColorHandlerEvent.Item event) {
         final ItemColors colors = event.getItemColors();
-        colors.register(ClientProxy::secondLayerColor,
+        colors.register((stack, index) -> {
+            if (index == 1) {
+                final CompoundNBT tag = stack.getTag();
+                if (tag != null && tag.contains("colors", Constants.NBT.TAG_LIST)) {
+                    return ColorChangingBehavior.animate(tag);
+                }
+            }
+            return 0xFFFFFF;
+        },
             FLItems.FAIRY_LIGHT.get(),
             FLItems.PAPER_LANTERN.get(),
             FLItems.ORB_LANTERN.get(),
@@ -148,7 +158,12 @@ public final class ClientProxy extends ServerProxy {
             if (tag != null) {
                 final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return DyeableItem.getColor(ItemStack.read(tagList.getCompound((index - 1) % tagList.size())));
+                    final ItemStack item = ItemStack.read(tagList.getCompound((index - 1) % tagList.size()));
+                    final CompoundNBT lightTag = item.getTag();
+                    if (lightTag != null && lightTag.contains("colors", Constants.NBT.TAG_LIST)) {
+                        return ColorChangingBehavior.animate(lightTag);
+                    }
+                    return DyeableItem.getColor(item);
                 }
             }
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
@@ -165,7 +180,8 @@ public final class ClientProxy extends ServerProxy {
             if (tag != null) {
                 final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    return DyeableItem.getColor(ItemStack.read(tagList.getCompound((index - 1) % tagList.size())));
+                    final ItemStack light = ItemStack.read(tagList.getCompound((index - 1) % tagList.size()));
+                    return DyeableItem.getColor(light);
                 }
             }
             return 0xFFFFFFFF;
