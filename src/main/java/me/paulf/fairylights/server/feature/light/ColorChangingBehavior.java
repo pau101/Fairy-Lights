@@ -20,10 +20,6 @@ public class ColorChangingBehavior implements ColorLightBehavior {
 
     private boolean powered;
 
-    private float position;
-
-    private float prevPosition;
-
     public ColorChangingBehavior(final float[] red, final float[] green, final float[] blue, final float rate) {
         this.red = red;
         this.green = green;
@@ -47,7 +43,7 @@ public class ColorChangingBehavior implements ColorLightBehavior {
     }
 
     private float get(final float[] values, final float delta) {
-        final float p = Mth.lerpMod(this.prevPosition, this.position, delta, 1.0F) * values.length;
+        final float p = this.powered ? Mth.mod(Util.milliTime() * (20.0F / 1000.0F) * this.rate, values.length) : 0.0F;
         final int i = (int) p;
         return MathHelper.lerp(p - i, values[i % values.length], values[(i + 1) % values.length]);
     }
@@ -59,10 +55,6 @@ public class ColorChangingBehavior implements ColorLightBehavior {
 
     @Override
     public void tick(final World world, final Vec3d origin, final Light<?> light) {
-        this.prevPosition = this.position;
-        if (this.powered) {
-            this.position = Mth.mod(this.position + this.rate, 1.0F);
-        }
     }
 
     public static ColorChangingBehavior create(final CompoundNBT tag) {
