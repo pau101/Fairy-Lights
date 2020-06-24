@@ -5,9 +5,16 @@ import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public final class FairyLightsJEIPlugin implements IModPlugin {
@@ -19,6 +26,20 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
     @Override
     public void registerVanillaCategoryExtensions(final IVanillaCategoryExtensionRegistration registration) {
         registration.getCraftingCategory().addCategoryExtension(GenericRecipe.class, GenericRecipeWrapper::new);
+    }
+
+    @Override
+    public void registerRecipes(final IRecipeRegistration registration) {
+        final ClientWorld world = Minecraft.getInstance().world;
+        final RecipeManager recipeManager = world.getRecipeManager();
+        registration.addRecipes(
+            recipeManager.getRecipes().stream()
+                .filter(GenericRecipe.class::isInstance)
+                .map(GenericRecipe.class::cast)
+                .filter(GenericRecipe::isDynamic)
+                .collect(Collectors.toList()),
+            VanillaRecipeCategoryUid.CRAFTING
+        );
     }
 
     @Override
