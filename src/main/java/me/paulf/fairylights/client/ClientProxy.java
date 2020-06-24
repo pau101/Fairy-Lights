@@ -43,7 +43,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -124,10 +123,10 @@ public final class ClientProxy extends ServerProxy {
         final ItemColors colors = event.getItemColors();
         colors.register((stack, index) -> {
             if (index == 1) {
-                final CompoundNBT tag = stack.getTag();
-                if (tag != null && tag.contains("colors", Constants.NBT.TAG_LIST)) {
-                    return ColorChangingBehavior.animate(tag);
+                if (ColorChangingBehavior.exists(stack)) {
+                    return ColorChangingBehavior.animate(stack);
                 }
+                return DyeableItem.getColor(stack);
             }
             return 0xFFFFFF;
         },
@@ -159,9 +158,8 @@ public final class ClientProxy extends ServerProxy {
                 final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
                     final ItemStack item = ItemStack.read(tagList.getCompound((index - 1) % tagList.size()));
-                    final CompoundNBT lightTag = item.getTag();
-                    if (lightTag != null && lightTag.contains("colors", Constants.NBT.TAG_LIST)) {
-                        return ColorChangingBehavior.animate(lightTag);
+                    if (ColorChangingBehavior.exists(item)) {
+                        return ColorChangingBehavior.animate(item);
                     }
                     return DyeableItem.getColor(item);
                 }

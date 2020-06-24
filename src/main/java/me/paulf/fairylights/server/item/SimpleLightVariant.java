@@ -16,7 +16,6 @@ import me.paulf.fairylights.server.feature.light.TwinkleBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.function.Function;
 
@@ -109,10 +108,10 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     }
 
     private static StandardLightBehavior standardBehavior(final ItemStack stack) {
-        final CompoundNBT tag = stack.getTag();
-        if (tag != null && tag.contains("colors", Constants.NBT.TAG_LIST)) {
-            return new CompositeBehavior(new DefaultBrightnessBehavior(), ColorChangingBehavior.create(tag));
+        if (ColorChangingBehavior.exists(stack)) {
+            return new CompositeBehavior(new DefaultBrightnessBehavior(), ColorChangingBehavior.create(stack));
         }
+        final CompoundNBT tag = stack.getTag();
         final int rgb = DyeableItem.getColor(stack);
         final float red = (rgb >> 16 & 0xFF) / 255.0F;
         final float green = (rgb >> 8 & 0xFF) / 255.0F;

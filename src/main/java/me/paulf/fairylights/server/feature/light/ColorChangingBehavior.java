@@ -1,6 +1,7 @@
 package me.paulf.fairylights.server.feature.light;
 
 import me.paulf.fairylights.util.Mth;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Util;
@@ -57,7 +58,11 @@ public class ColorChangingBehavior implements ColorLightBehavior {
     public void tick(final World world, final Vec3d origin, final Light<?> light) {
     }
 
-    public static ColorChangingBehavior create(final CompoundNBT tag) {
+    public static ColorLightBehavior create(final ItemStack stack) {
+        final CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            return new FixedColorBehavior(1.0F, 1.0F, 1.0F);
+        }
         final ListNBT list = tag.getList("colors", Constants.NBT.TAG_INT);
         final float[] red = new float[list.size()];
         final float[] green = new float[list.size()];
@@ -71,7 +76,11 @@ public class ColorChangingBehavior implements ColorLightBehavior {
         return new ColorChangingBehavior(red, green, blue, list.size() / 960.0F);
     }
 
-    public static int animate(final CompoundNBT tag) {
+    public static int animate(final ItemStack stack) {
+        final CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            return 0xFFFFFF;
+        }
         final ListNBT list = tag.getList("colors", Constants.NBT.TAG_INT);
         if (list.isEmpty()) {
             return 0xFFFFFF;
@@ -92,5 +101,10 @@ public class ColorChangingBehavior implements ColorLightBehavior {
         return (int) (MathHelper.lerp(p - i, r0, r1) * 255.0F) << 16 |
             (int) (MathHelper.lerp(p - i, g0, g1) * 255.0F) << 8 |
             (int) (MathHelper.lerp(p - i, b0, b1) * 255.0F);
+    }
+
+    public static boolean exists(final ItemStack stack) {
+        final CompoundNBT tag = stack.getTag();
+        return tag != null && tag.contains("colors", Constants.NBT.TAG_LIST);
     }
 }

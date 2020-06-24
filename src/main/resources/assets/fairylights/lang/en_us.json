@@ -55,6 +55,7 @@
 
     "format.fairylights.colored": "%1$s %2$s",
     "format.fairylights.dyed_colored": "Dyed %1$s %2$s",
+    "format.fairylights.color_changing": "Color Changing %1$s",
     "format.fairylights.text": "Text: %1$s",
 
     "color.fairylights.black": "Black",
