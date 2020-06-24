@@ -236,7 +236,9 @@ public abstract class Connection implements NBTSerializable {
             }
             final CompoundNBT data = heldStack.getTag();
             final ConnectionType<? extends Connection> type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
-            this.fastener.connect(this.world, dest, type, data == null ? new CompoundNBT() : data, true).onConnect(player.world, player, heldStack);
+            final Connection conn = this.fastener.connect(this.world, dest, type, data == null ? new CompoundNBT() : data, true);
+            conn.slack = this.slack;
+            conn.onConnect(player.world, player, heldStack);
             heldStack.shrink(1);
             this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
             return true;
