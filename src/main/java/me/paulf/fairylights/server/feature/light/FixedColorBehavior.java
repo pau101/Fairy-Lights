@@ -1,5 +1,7 @@
 package me.paulf.fairylights.server.feature.light;
 
+import me.paulf.fairylights.server.item.DyeableItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -37,5 +39,13 @@ public class FixedColorBehavior implements ColorLightBehavior {
 
     @Override
     public void tick(final World world, final Vec3d origin, final Light<?> light) {
+    }
+
+    public static ColorLightBehavior create(final ItemStack stack) {
+        final int rgb = DyeableItem.getColor(stack);
+        final float red = (rgb >> 16 & 0xFF) / 255.0F;
+        final float green = (rgb >> 8 & 0xFF) / 255.0F;
+        final float blue = (rgb & 0xFF) / 255.0F;
+        return new FixedColorBehavior(red, green, blue);
     }
 }

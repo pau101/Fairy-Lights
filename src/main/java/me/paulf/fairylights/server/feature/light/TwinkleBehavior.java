@@ -2,18 +2,19 @@ package me.paulf.fairylights.server.feature.light;
 
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.Mth;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class TwinkleBehavior extends FixedColorBehavior implements StandardLightBehavior {
+public class TwinkleBehavior implements BrightLightBehavior {
     private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
 
     private final TwinkleLogic logic;
 
     private boolean powered = true;
 
-    public TwinkleBehavior(final float red, final float green, final float blue, final float chance, final int duration) {
-        super(red, green, blue);
+    public TwinkleBehavior(final float chance, final int duration) {
         this.logic = new TwinkleLogic(chance, duration);
     }
 
@@ -34,5 +35,10 @@ public class TwinkleBehavior extends FixedColorBehavior implements StandardLight
     @Override
     public void tick(final World world, final Vec3d origin, final Light<?> light) {
         this.logic.tick(world.rand, this.powered);
+    }
+
+    public static boolean exists(final ItemStack stack) {
+        final CompoundNBT tag = stack.getTag();
+        return tag != null && tag.getBoolean("twinkle");
     }
 }
