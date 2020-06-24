@@ -4,7 +4,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class IncandescentBehavior implements BrightLightBehavior {
+public class IncandescentBehavior implements BrightnessLightBehavior {
     private float prevBrightness = 1.0F;
 
     private float brightness = 1.0F;

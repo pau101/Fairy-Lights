@@ -1,11 +1,11 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.server.feature.light.BrightLightBehavior;
+import me.paulf.fairylights.server.feature.light.BrightnessLightBehavior;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class CandleLanternModel extends LightModel<BrightLightBehavior> {
+public class CandleLanternModel extends LightModel<BrightnessLightBehavior> {
     public CandleLanternModel() {
         this.unlit.setTextureOffset(21, 0);
         this.unlit.addBox(-1, 0.5F, -1, 2, 1, 2, -0.05F);
@@ -34,7 +34,7 @@ public class CandleLanternModel extends LightModel<BrightLightBehavior> {
     }
 
     @Override
-    public void animate(final Light<?> light, final BrightLightBehavior behavior, final float delta) {
+    public void animate(final Light<?> light, final BrightnessLightBehavior behavior, final float delta) {
         super.animate(light, behavior, delta);
         this.brightness = behavior.getBrightness(delta);
     }

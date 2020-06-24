@@ -4,11 +4,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class CompositeBehavior implements StandardLightBehavior {
-    private final BrightLightBehavior brightness;
+    private final BrightnessLightBehavior brightness;
 
     private final ColorLightBehavior color;
 
-    public CompositeBehavior(final BrightLightBehavior brightness, final ColorLightBehavior color) {
+    public CompositeBehavior(final BrightnessLightBehavior brightness, final ColorLightBehavior color) {
         this.brightness = brightness;
         this.color = color;
     }

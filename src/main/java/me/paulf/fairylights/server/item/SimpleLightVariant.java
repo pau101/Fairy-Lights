@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.item;
 
-import me.paulf.fairylights.server.feature.light.BrightLightBehavior;
+import me.paulf.fairylights.server.feature.light.BrightnessLightBehavior;
 import me.paulf.fairylights.server.feature.light.ColorChangingBehavior;
 import me.paulf.fairylights.server.feature.light.ColorLightBehavior;
 import me.paulf.fairylights.server.feature.light.CompositeBehavior;
@@ -42,9 +42,9 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
         }
         return new MeteorLightBehavior(color);
     });
-    public static final LightVariant<BrightLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), 0.000D, stack -> new TorchLightBehavior(0.13D));
-    public static final LightVariant<BrightLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), 0.000D, stack -> new TorchLightBehavior(0.2D));
-    public static final LightVariant<BrightLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.166D, -0.291D, -0.166D, 0.166D, 0.062D, 0.166D), 0.103D, stack -> new IncandescentBehavior(), true);
+    public static final LightVariant<BrightnessLightBehavior> OIL_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.219D, -0.656D, -0.188D, 0.219D, 0.091D, 0.188D), 0.000D, stack -> new TorchLightBehavior(0.13D));
+    public static final LightVariant<BrightnessLightBehavior> CANDLE_LANTERN = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.198D, -0.531D, -0.198D, 0.198D, 0.091D, 0.198D), 0.000D, stack -> new TorchLightBehavior(0.2D));
+    public static final LightVariant<BrightnessLightBehavior> INCANDESCENT_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.166D, -0.291D, -0.166D, 0.166D, 0.062D, 0.166D), 0.103D, stack -> new IncandescentBehavior(), true);
 
     private final boolean parallelsCord;
 
@@ -102,7 +102,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     }
 
     private static StandardLightBehavior standardBehavior(final ItemStack stack) {
-        final BrightLightBehavior brightness;
+        final BrightnessLightBehavior brightness;
         if (TwinkleBehavior.exists(stack)) {
             brightness = new TwinkleBehavior(0.05F, 40);
         } else {

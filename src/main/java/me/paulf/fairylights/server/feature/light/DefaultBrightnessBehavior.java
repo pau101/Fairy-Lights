@@ -3,7 +3,7 @@ package me.paulf.fairylights.server.feature.light;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class DefaultBrightnessBehavior implements BrightLightBehavior {
+public class DefaultBrightnessBehavior implements BrightnessLightBehavior {
     private float value = 1.0F;
 
     @Override

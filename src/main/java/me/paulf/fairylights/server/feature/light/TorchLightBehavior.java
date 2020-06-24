@@ -4,7 +4,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class TorchLightBehavior implements BrightLightBehavior {
+public class TorchLightBehavior implements BrightnessLightBehavior {
     private final double offset;
 
     private float value = 1.0F;

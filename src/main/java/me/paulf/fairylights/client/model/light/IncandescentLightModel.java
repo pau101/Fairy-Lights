@@ -2,11 +2,11 @@ package me.paulf.fairylights.client.model.light;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.server.feature.light.BrightLightBehavior;
+import me.paulf.fairylights.server.feature.light.BrightnessLightBehavior;
 import me.paulf.fairylights.server.feature.light.Light;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
+public class IncandescentLightModel extends LightModel<BrightnessLightBehavior> {
     final ModelRenderer bulb;
 
     final ModelRenderer bulbGlow;
@@ -25,7 +25,7 @@ public class IncandescentLightModel extends LightModel<BrightLightBehavior> {
     }
 
     @Override
-    public void animate(final Light<?> light, final BrightLightBehavior behavior, final float delta) {
+    public void animate(final Light<?> light, final BrightnessLightBehavior behavior, final float delta) {
         super.animate(light, behavior, delta);
         this.brightness = behavior.getBrightness(delta);
     }
