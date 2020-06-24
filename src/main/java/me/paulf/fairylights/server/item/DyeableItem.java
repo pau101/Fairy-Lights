@@ -13,8 +13,7 @@ import java.util.Optional;
 public final class DyeableItem {
     private DyeableItem() {}
 
-    public static ITextComponent getDisplayName(final ItemStack stack, final ITextComponent name) {
-        final int color = getColor(stack);
+    public static ITextComponent getColorName(final int color) {
         final int r = color >> 16 & 0xFF;
         final int g = color >> 8 & 0xFF;
         final int b = color & 0xFF;
@@ -36,8 +35,12 @@ public final class DyeableItem {
                 closestDist = dist;
             }
         }
-        final String key = closestDist == 0 ? "format.fairylights.colored" : "format.fairylights.dyed_colored";
-        return new TranslationTextComponent(key, new TranslationTextComponent("color.fairylights." + closest.getTranslationKey()), name);
+        final ITextComponent colorName = new TranslationTextComponent("color.fairylights." + closest.getTranslationKey());
+        return closestDist == 0 ? colorName : new TranslationTextComponent("format.fairylights.dyed_colored", colorName);
+    }
+
+    public static ITextComponent getDisplayName(final ItemStack stack, final ITextComponent name) {
+        return new TranslationTextComponent("format.fairylights.colored", getColorName(getColor(stack)), name);
     }
 
     public static int getColor(final DyeColor color) {

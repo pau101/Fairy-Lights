@@ -5,11 +5,13 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -39,6 +41,12 @@ public class LightItem extends BlockItem {
         if (tag != null) {
             if (tag.getBoolean("twinkle")) {
                 tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").applyTextStyles(TextFormatting.GRAY, TextFormatting.ITALIC));
+            }
+            if (tag.contains("colors", Constants.NBT.TAG_LIST)) {
+                final ListNBT colors = tag.getList("colors", Constants.NBT.TAG_INT);
+                for (int i = 0; i < colors.size(); i++) {
+                    tooltip.add(DyeableItem.getColorName(colors.getInt(i)).applyTextStyle(TextFormatting.GRAY));
+                }
             }
         }
     }
