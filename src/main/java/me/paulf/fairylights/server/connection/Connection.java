@@ -245,7 +245,7 @@ public abstract class Connection implements NBTSerializable {
 
     private boolean slacken(final Vec3d hit, final ItemStack heldStack, final float amount) {
         if (this.slack <= 0 && amount < 0 || this.slack >= MAX_SLACK && amount > 0) {
-            return false;
+            return true;
         }
         this.slack = MathHelper.clamp(this.slack + amount, 0, MAX_SLACK);
         if (this.slack < 1e-2F) {
