@@ -1,5 +1,6 @@
 package me.paulf.fairylights.server.fastener.connection.type.hanginglights;
 
+import com.google.common.base.Throwables;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.connection.ConnectionType;
@@ -20,14 +21,19 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.SectionPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.lighting.IWorldLightListener;
 import net.minecraft.world.lighting.LightEngine;
+import net.minecraft.world.lighting.WorldLightManager;
+import net.minecraft.world.server.ServerWorldLightManager;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -217,15 +223,49 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     private static final Method SET_LIGHT = ObfuscationReflectionHelper.findMethod(LightEngine.class, "func_215623_a", BlockPos.class, int.class);
 
+    private static final Method ADD_TASK;
+
+    private static final Object POST_PHASE;
+
+    static {
+        final Class<?> phaseType;
+        try {
+            phaseType = Class.forName("net.minecraft.world.server.ServerWorldLightManager$Phase");
+        } catch (final ClassNotFoundException e) {
+            throw new Error(e);
+        }
+        ADD_TASK = ObfuscationReflectionHelper.findMethod(ServerWorldLightManager.class, "func_215586_a", int.class, int.class, phaseType, Runnable.class);
+        POST_PHASE = phaseType.getEnumConstants()[1];
+    }
+
     private void setLight(final BlockPos pos) {
         if (this.world.isAirBlock(pos) && this.world.getLightFor(LightType.BLOCK, pos) < MAX_LIGHT) {
-            final IWorldLightListener light = this.world.getChunkProvider().getLightManager().getLightEngine(LightType.BLOCK);
+            final WorldLightManager manager = this.world.getChunkProvider().getLightManager();
+            final IWorldLightListener light = manager.getLightEngine(LightType.BLOCK);
             if (light instanceof LightEngine) {
                 final LightEngine engine = (LightEngine) light;
-                try {
-                    SET_LIGHT.invoke(engine, pos, MAX_LIGHT);
-                } catch (final IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
+                if (manager instanceof ServerWorldLightManager) {
+                    try {
+                        ADD_TASK.invoke(manager, pos.getX() >> 4, pos.getZ() >> 4, POST_PHASE, Util.namedRunnable(() -> {
+                            try {
+                                SET_LIGHT.invoke(engine, pos, MAX_LIGHT);
+                            } catch (final IllegalAccessException | InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }, () -> "setLight " + pos));
+                    } catch (final IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                    this.world.getChunkProvider().markLightChanged(LightType.BLOCK, SectionPos.from(pos));
+                } else {
+                    try {
+                        SET_LIGHT.invoke(engine, pos, MAX_LIGHT);
+                    } catch (final IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    } catch (final InvocationTargetException e) {
+                        Throwables.throwIfInstanceOf(e, Error.class);
+                        LogManager.getLogger().warn("Exception setting light", e.getCause());
+                    }
                 }
             }
         }
