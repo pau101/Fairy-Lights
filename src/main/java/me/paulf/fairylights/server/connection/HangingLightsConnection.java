@@ -26,15 +26,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
+import net.minecraft.world.lighting.BlockLightEngine;
 import net.minecraft.world.lighting.IWorldLightListener;
-import net.minecraft.world.lighting.LightEngine;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -218,18 +215,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
     }
 
-    private static final Method SET_LIGHT = ObfuscationReflectionHelper.findMethod(LightEngine.class, "func_215623_a", BlockPos.class, int.class);
-
     private void setLight(final BlockPos pos) {
         if (this.world.isAirBlock(pos) && this.world.getLightFor(LightType.BLOCK, pos) < MAX_LIGHT) {
             final IWorldLightListener light = this.world.getChunkProvider().getLightManager().getLightEngine(LightType.BLOCK);
-            if (light instanceof LightEngine) {
-                final LightEngine<?, ?> engine = (LightEngine<?, ?>) light;
-                try {
-                    SET_LIGHT.invoke(engine, pos, MAX_LIGHT);
-                } catch (final IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
+            if (light instanceof BlockLightEngine) {
+                ((BlockLightEngine) light).func_215623_a(pos, MAX_LIGHT);
             }
         }
     }
