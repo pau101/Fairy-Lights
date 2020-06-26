@@ -138,6 +138,10 @@ public abstract class Connection implements NBTSerializable {
         this.drop = true;
     }
 
+    public void noDrop() {
+        this.drop = false;
+    }
+
     public boolean shouldDrop() {
         return this.drop;
     }

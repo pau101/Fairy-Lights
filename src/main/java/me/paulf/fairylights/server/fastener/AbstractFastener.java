@@ -102,6 +102,9 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
                 dirty = true;
                 it.remove();
                 this.incoming.remove(connection.getUUID());
+                if (this.world != null) {
+                    this.drop(this.world, this.getPos(), connection);
+                }
             }
         }
         if (this.world != null) {
@@ -142,22 +145,26 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     @Override
     public void dropItems(final World world, final BlockPos pos) {
+        for (final Connection connection : this.getAllConnections()) {
+            this.drop(world, pos, connection);
+        }
+    }
+
+    private void drop(final World world, final BlockPos pos, final Connection connection) {
+        if (!connection.shouldDrop()) return;
         final float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
         final float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
         final float offsetZ = world.rand.nextFloat() * 0.8F + 0.1F;
-        for (final Connection connection : this.outgoing.values()) {
-            if (connection.shouldDrop()) {
-                final ItemStack stack = connection.getItemStack();
-                final ItemEntity entityItem = new ItemEntity(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
-                final float scale = 0.05F;
-                entityItem.setMotion(
-                    world.rand.nextGaussian() * scale,
-                    world.rand.nextGaussian() * scale + 0.2F,
-                    world.rand.nextGaussian() * scale
-                );
-                world.addEntity(entityItem);
-            }
-        }
+        final ItemStack stack = connection.getItemStack();
+        final ItemEntity entityItem = new ItemEntity(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
+        final float scale = 0.05F;
+        entityItem.setMotion(
+            world.rand.nextGaussian() * scale,
+            world.rand.nextGaussian() * scale + 0.2F,
+            world.rand.nextGaussian() * scale
+        );
+        world.addEntity(entityItem);
+        connection.noDrop();
     }
 
     @Override
