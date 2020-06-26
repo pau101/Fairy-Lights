@@ -11,6 +11,7 @@ import me.paulf.fairylights.client.renderer.block.entity.LightBlockEntityRendere
 import me.paulf.fairylights.client.renderer.block.entity.LightRenderer;
 import me.paulf.fairylights.client.renderer.block.entity.PennantBuntingRenderer;
 import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
+import me.paulf.fairylights.client.tutorial.ClippyController;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
@@ -68,6 +69,7 @@ public final class ClientProxy extends ServerProxy {
     @Override
     public void init(final IEventBus modBus) {
         super.init(modBus);
+        new ClippyController().init(modBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, FLClientConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         new ClientCommandProvider.Builder()

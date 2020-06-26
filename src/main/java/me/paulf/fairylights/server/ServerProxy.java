@@ -1,7 +1,6 @@
 package me.paulf.fairylights.server;
 
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.client.tutorial.ClippyController;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.config.FLConfig;
 import me.paulf.fairylights.server.fastener.BlockView;
@@ -38,7 +37,6 @@ public class ServerProxy {
             this.addListener(server.getResourceManager(), mgr -> JingleLibrary.loadAll(server));
         });
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
-        new ClippyController().init(modBus);
         modBus.addListener(this::setup);
     }
 
