@@ -54,8 +54,6 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     private final ImmutableList<IntUnaryOperator> xFunctions = ImmutableList.of(IntUnaryOperator.identity(), i -> this.getWidth() - 1 - i);
 
-    private final NonNullList<Ingredient> displayIngredients;
-
     GenericRecipe(final ResourceLocation id, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height, final int outputIngredient) {
         Preconditions.checkArgument(width > 0, "width must be greater than zero");
         Preconditions.checkArgument(height > 0, "height must be greater than zero");
@@ -67,10 +65,9 @@ public final class GenericRecipe implements ICraftingRecipe {
         this.width = width;
         this.height = height;
         this.outputIngredient = outputIngredient;
-        this.displayIngredients = this.createDisplayIngredients();
     }
 
-    private NonNullList<Ingredient> createDisplayIngredients() {
+    private NonNullList<Ingredient> getDisplayIngredients() {
         final NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
         for (int i = 0; i < this.ingredients.length; i++) {
             final int x = i % this.width;
@@ -128,7 +125,7 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        return this.displayIngredients;
+        return this.getDisplayIngredients();
     }
 
     @Override

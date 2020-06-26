@@ -14,6 +14,7 @@ import me.paulf.fairylights.util.crafting.GenericRecipeBuilder;
 import me.paulf.fairylights.util.crafting.ingredient.BasicAuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.LazyTagIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.item.DyeColor;
@@ -115,7 +116,7 @@ public final class FLCraftingRecipes {
 
     public static final Tag<Item> DYEABLE_LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable_lights"));
 
-    public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(Ingredient.fromTag(Tags.Items.DYES)) {
+    public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(LazyTagIngredient.of(Tags.Items.DYES)) {
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
             return DyeableItem.getDyeColor(output).map(dye -> ImmutableList.of(OreDictUtils.getDyes(dye))).orElse(ImmutableList.of());
@@ -140,7 +141,7 @@ public final class FLCraftingRecipes {
         return new GenericRecipeBuilder(name, EDIT_COLOR)
             .withShape("I")
             .withIngredient('I', DYEABLE).withOutput('I')
-            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<Blender>(Ingredient.fromTag(Tags.Items.DYES), true, 8) {
+            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<Blender>(LazyTagIngredient.of(Tags.Items.DYES), true, 8) {
                 @Override
                 public Blender accumulator() {
                     return new Blender();
@@ -164,7 +165,7 @@ public final class FLCraftingRecipes {
         return new GenericRecipeBuilder(name, LIGHT_TWINKLE)
             .withShape("L")
             .withIngredient('L', TWINKLING_LIGHTS).withOutput('L')
-            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(Tags.Items.DUSTS_GLOWSTONE), true, 1) {
+            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(LazyTagIngredient.of(Tags.Items.DUSTS_GLOWSTONE), true, 1) {
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
                     return useInputsForTagBool(output, "twinkle", true) ? super.getInput(output) : ImmutableList.of();
@@ -194,7 +195,7 @@ public final class FLCraftingRecipes {
             .withShape("IG")
             .withIngredient('I', DYEABLE_LIGHTS).withOutput('I')
             .withIngredient('G', Tags.Items.NUGGETS_GOLD)
-            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<ListNBT>(Ingredient.fromTag(Tags.Items.DYES), true, 8) {
+            .withAuxiliaryIngredient(new BasicAuxiliaryIngredient<ListNBT>(LazyTagIngredient.of(Tags.Items.DYES), true, 8) {
                 @Override
                 public ListNBT accumulator() {
                     return new ListNBT();
@@ -226,7 +227,7 @@ public final class FLCraftingRecipes {
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withIngredient('-', Tags.Items.STRING)
             .withAuxiliaryIngredient(new LightIngredient(true))
-            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(Tags.Items.DYES_WHITE), false, 1) {
+            .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(LazyTagIngredient.of(Tags.Items.DYES_WHITE), false, 1) {
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
                     final CompoundNBT tag = output.getTag();
@@ -570,7 +571,7 @@ public final class FLCraftingRecipes {
 
     private static class LightIngredient extends BasicAuxiliaryIngredient<ListNBT> {
         private LightIngredient(final boolean isRequired) {
-            super(Ingredient.fromTag(LIGHTS), isRequired, 8);
+            super(LazyTagIngredient.of(LIGHTS), isRequired, 8);
         }
 
         @Override
@@ -621,7 +622,7 @@ public final class FLCraftingRecipes {
 
     private static class PennantIngredient extends BasicAuxiliaryIngredient<ListNBT> {
         private PennantIngredient() {
-            super(Ingredient.fromTag(PENNANTS), true, 8);
+            super(LazyTagIngredient.of(PENNANTS), true, 8);
         }
 
         @Override

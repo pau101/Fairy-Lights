@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.BasicRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.InertBasicAuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.LazyTagIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -125,7 +126,7 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder withIngredient(final char key, final Tag<Item> tag) {
-        return this.withIngredient(key, new BasicRegularIngredient(Ingredient.fromTag(tag)));
+        return this.withIngredient(key, new BasicRegularIngredient(LazyTagIngredient.of(tag)));
     }
 
     public GenericRecipeBuilder withIngredient(final char key, final RegularIngredient ingredient) {
@@ -162,7 +163,7 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final Tag<Item> tag, final boolean isRequired, final int limit) {
-        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromTag(tag), isRequired, limit));
+        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(LazyTagIngredient.of(tag), isRequired, limit));
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final Ingredient ingredient) {
@@ -213,7 +214,7 @@ public final class GenericRecipeBuilder {
             return new BasicRegularIngredient(Ingredient.fromStacks((ItemStack) object));
         }
         if (object instanceof Tag) {
-            return new BasicRegularIngredient(Ingredient.fromTag((Tag<Item>) object));
+            return new BasicRegularIngredient(LazyTagIngredient.of((Tag<Item>) object));
         }
         if (object instanceof RegularIngredient) {
             return (RegularIngredient) object;
