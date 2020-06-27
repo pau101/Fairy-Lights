@@ -68,8 +68,8 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
     }
 
     @Override
-    public boolean exists(final World world) {
-        return this.entity == null || this.entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
+    public boolean isGone(final World world) {
+        return this.entity != null && !this.entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
     }
 
     @Override

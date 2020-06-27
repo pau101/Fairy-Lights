@@ -341,7 +341,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
         }
 
         boolean gone(final World world) {
-            return !this.fastener.exists(world);
+            return this.fastener.isGone(world);
         }
 
         Optional<Connection> get(final World world) {

@@ -293,7 +293,7 @@ public abstract class Connection implements NBTSerializable {
             }
             return c;
         }).orElse(false);
-        if (!this.destination.exists(this.world)) {
+        if (this.destination.isGone(this.world)) {
             this.remove();
         }
         return changed;

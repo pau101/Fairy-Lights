@@ -13,7 +13,7 @@ public interface FastenerAccessor {
 
     LazyOptional<Fastener<?>> get(final World world, final boolean load);
 
-    boolean exists(final World world);
+    boolean isGone(final World world);
 
     FastenerType getType();
 
