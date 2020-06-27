@@ -3,14 +3,13 @@ package me.paulf.fairylights.server.block;
 import me.paulf.fairylights.server.ServerEventHandler;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
+import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DirectionalBlock;
-import net.minecraft.block.LeavesBlock;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -122,7 +121,7 @@ public final class FastenerBlock extends DirectionalBlock {
         final Direction facing = state.get(FACING);
         final BlockPos attachedPos = pos.offset(facing.getOpposite());
         final BlockState attachedState = world.getBlockState(attachedPos);
-        return state.getBlock() instanceof LeavesBlock || attachedState.isSolidSide(world, attachedPos, facing) || facing == Direction.UP && attachedState.isIn(BlockTags.WALLS);
+        return attachedState.getBlock().isIn(BlockTags.LEAVES) || attachedState.isSolidSide(world, attachedPos, facing) || facing == Direction.UP && attachedState.isIn(BlockTags.WALLS);
     }
 
     @Nullable
