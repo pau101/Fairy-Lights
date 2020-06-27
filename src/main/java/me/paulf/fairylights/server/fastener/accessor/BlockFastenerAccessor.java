@@ -39,7 +39,7 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
 
     @Override
     public boolean exists(final World world) {
-        if (!world.isBlockPresent(this.pos)) return true;
+        if (world.isRemote || !world.isBlockPresent(this.pos)) return true;
         final TileEntity entity = world.getTileEntity(this.pos);
         return entity != null && entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
     }
