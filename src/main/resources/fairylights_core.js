@@ -32,14 +32,12 @@ easycore.inMethod(WorldRenderer.func_228426_a_(
         aload(6),
         fload(2),
         aload(1),
-        aload(38),
         invokestatic(ClientEventHandler.drawSelectionBox(
                 RayTraceResult,
                 WorldRenderer,
                 ActiveRenderInfo,
                 float,
-                MatrixStack,
-                IRenderTypeBuffer
+                MatrixStack
             ), RayTraceResult)
     )
 

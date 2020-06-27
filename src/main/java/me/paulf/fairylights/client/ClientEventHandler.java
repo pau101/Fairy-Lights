@@ -188,9 +188,9 @@ public final class ClientEventHandler {
         return new HitResult(found, rayTrace);
     }
 
-    public static RayTraceResult drawSelectionBox(final RayTraceResult target, final WorldRenderer context, final ActiveRenderInfo info, final float delta, final MatrixStack matrix, final IRenderTypeBuffer buffers) {
+    public static RayTraceResult drawSelectionBox(final RayTraceResult target, final WorldRenderer context, final ActiveRenderInfo info, final float delta, final MatrixStack matrix) {
         if (target.getType() == RayTraceResult.Type.ENTITY) {
-            MinecraftForge.EVENT_BUS.post(new DrawHighlightEvent.HighlightEntity(context, info, target, delta, matrix, buffers));
+            MinecraftForge.EVENT_BUS.post(new DrawHighlightEvent.HighlightEntity(context, info, target, delta, matrix, Minecraft.getInstance().getRenderTypeBuffers().getBufferSource()));
         }
         return target;
     }
