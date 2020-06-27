@@ -23,7 +23,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.SectionPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
@@ -256,7 +255,6 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
                     } catch (final IllegalAccessException | InvocationTargetException e) {
                         throw new RuntimeException(e);
                     }
-                    this.world.getChunkProvider().markLightChanged(LightType.BLOCK, SectionPos.from(pos));
                 } else {
                     try {
                         SET_LIGHT.invoke(engine, pos, MAX_LIGHT);
