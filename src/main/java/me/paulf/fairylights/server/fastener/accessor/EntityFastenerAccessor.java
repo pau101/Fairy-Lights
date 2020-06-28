@@ -66,7 +66,7 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
 
     @Override
     public boolean exists(final World world) {
-        return this.entity == null || this.entity.isAlive();
+        return world.isRemote || this.entity == null || this.entity.isAlive();
     }
 
     @Override
