@@ -69,7 +69,7 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
 
     @Override
     public boolean isGone(final World world) {
-        return this.entity != null && !this.entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
+        return !world.isRemote && this.entity != null && !this.entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
     }
 
     @Override
