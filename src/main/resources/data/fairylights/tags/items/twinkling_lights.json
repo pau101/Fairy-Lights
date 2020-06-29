@@ -13,6 +13,8 @@
         "fairylights:spider_light",
         "fairylights:witch_light",
         "fairylights:snowflake_light",
+        "fairylights:heart_light",
+        "fairylights:moon_light",
         "fairylights:icicle_lights"
     ]
 }

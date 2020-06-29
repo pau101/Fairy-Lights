@@ -32,6 +32,7 @@ public class SimpleLightVariant<T extends LightBehavior> implements LightVariant
     public static final LightVariant<StandardLightBehavior> WITCH_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.294D, -0.419D, -0.294D, 0.294D, 0.173D, 0.294D), 0.044D, SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> SNOWFLAKE_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.518D, -1.050D, -0.082D, 0.517D, 0.072D, 0.082D), 0.044D, SimpleLightVariant::standardBehavior);
     public static final LightVariant<StandardLightBehavior> HEART_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.280D, -0.408D, -0.106D, 0.274D, 0.063D, 0.106D), 0.062D, SimpleLightVariant::standardBehavior, true);
+    public static final LightVariant<StandardLightBehavior> MOON_LIGHT = new SimpleLightVariant<>(true, 1.0F, new AxisAlignedBB(-0.200D, -0.669D, -0.144D, 0.300D, 0.063D, 0.144D), 0.044D, SimpleLightVariant::standardBehavior, true);
     public static final LightVariant<MultiLightBehavior> ICICLE_LIGHTS = new SimpleLightVariant<>(false, 0.625F, new AxisAlignedBB(-0.264D, -1.032D, -0.253D, 0.276D, 0.091D, 0.266D), 0.012D, stack -> MultiLightBehavior.create(4, () -> standardBehavior(stack)));
     public static final LightVariant<MeteorLightBehavior> METEOR_LIGHT = new SimpleLightVariant<>(false, 1.5F, new AxisAlignedBB(-0.090D, -1.588D, -0.090D, 0.090D, 0.091D, 0.090D), 0.000D, stack -> {
         final ColorLightBehavior color;

@@ -157,6 +157,8 @@ public final class DataGatherer {
                 .build(consumer, new ResourceLocation(FairyLights.ID, "snowflake_light"));
             this.lightRecipe(FLCraftingRecipes.HEART_LIGHT.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "heart_light"));
+            this.lightRecipe(FLCraftingRecipes.MOON_LIGHT.get())
+                .build(consumer, new ResourceLocation(FairyLights.ID, "moon_light"));
             this.lightRecipe(FLCraftingRecipes.ICICLE_LIGHTS.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "icicle_lights"));
             this.lightRecipe(FLCraftingRecipes.METEOR_LIGHT.get())

@@ -53,6 +53,8 @@ public final class FLItems {
 
     public static final RegistryObject<LightItem> HEART_LIGHT = REG.register("heart_light", FLItems.createColorLight(FLBlocks.HEART_LIGHT));
 
+    public static final RegistryObject<LightItem> MOON_LIGHT = REG.register("moon_light", FLItems.createColorLight(FLBlocks.MOON_LIGHT));
+
     public static final RegistryObject<LightItem> ICICLE_LIGHTS = REG.register("icicle_lights", FLItems.createColorLight(FLBlocks.ICICLE_LIGHTS));
 
     public static final RegistryObject<LightItem> METEOR_LIGHT = REG.register("meteor_light", FLItems.createColorLight(FLBlocks.METEOR_LIGHT));

@@ -16,6 +16,7 @@ import me.paulf.fairylights.client.model.light.IncandescentLightModel;
 import me.paulf.fairylights.client.model.light.JackOLanternLightModel;
 import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.client.model.light.MeteorLightModel;
+import me.paulf.fairylights.client.model.light.MoonLightModel;
 import me.paulf.fairylights.client.model.light.OilLanternModel;
 import me.paulf.fairylights.client.model.light.OrbLanternModel;
 import me.paulf.fairylights.client.model.light.PaperLanternModel;
@@ -55,7 +56,8 @@ public class LightRenderer {
         .put(SimpleLightVariant.SPIDER_LIGHT, LightModelProvider.of(new SpiderLightModel()))
         .put(SimpleLightVariant.WITCH_LIGHT, LightModelProvider.of(new WitchLightModel()))
         .put(SimpleLightVariant.SNOWFLAKE_LIGHT, LightModelProvider.of(new SnowflakeLightModel()))
-        .put(SimpleLightVariant.HEART_LIGHT, LightModelProvider.of(HeartLightModel::new))
+        .put(SimpleLightVariant.HEART_LIGHT, LightModelProvider.of(new HeartLightModel()))
+        .put(SimpleLightVariant.MOON_LIGHT, LightModelProvider.of(MoonLightModel::new))
         .put(SimpleLightVariant.ICICLE_LIGHTS, LightModelProvider.of(
             IntStream.rangeClosed(0, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]

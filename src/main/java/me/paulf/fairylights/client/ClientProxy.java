@@ -51,6 +51,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Random;
 
@@ -113,12 +114,13 @@ public final class ClientProxy extends ServerProxy {
         this.entityModels.forEach(ModelLoader::addSpecialModel);
         RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
         final LightRenderer r = new LightRenderer();
-        System.out.printf("waldo%n");
+        final StringBuilder bob = new StringBuilder();
         FLItems.lights().forEach(l -> {
             final LightModel<?> model = r.getModel(l.getBlock().getVariant(), -1);
             final AxisAlignedBB bb = model.getBounds();
-            System.out.printf("%s new AxisAlignedBB(%.3fD, %.3fD, %.3fD, %.3fD, %.3fD, %.3fD), %.3fD%n", l.getRegistryName(), bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ, model.getFloorOffset());
+            bob.append(String.format("%n%s new AxisAlignedBB(%.3fD, %.3fD, %.3fD, %.3fD, %.3fD, %.3fD), %.3fD", l.getRegistryName(), bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ, model.getFloorOffset()));
         });
+        LogManager.getLogger().debug("waldo {}", bob);
     }
 
     private void setupColors(final ColorHandlerEvent.Item event) {
@@ -145,6 +147,7 @@ public final class ClientProxy extends ServerProxy {
             FLItems.WITCH_LIGHT.get(),
             FLItems.SNOWFLAKE_LIGHT.get(),
             FLItems.HEART_LIGHT.get(),
+            FLItems.MOON_LIGHT.get(),
             FLItems.ICICLE_LIGHTS.get(),
             FLItems.METEOR_LIGHT.get()
         );
