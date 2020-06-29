@@ -57,7 +57,7 @@ public class LightRenderer {
         .put(SimpleLightVariant.WITCH_LIGHT, LightModelProvider.of(new WitchLightModel()))
         .put(SimpleLightVariant.SNOWFLAKE_LIGHT, LightModelProvider.of(new SnowflakeLightModel()))
         .put(SimpleLightVariant.HEART_LIGHT, LightModelProvider.of(new HeartLightModel()))
-        .put(SimpleLightVariant.MOON_LIGHT, LightModelProvider.of(MoonLightModel::new))
+        .put(SimpleLightVariant.MOON_LIGHT, LightModelProvider.of(new MoonLightModel()))
         .put(SimpleLightVariant.ICICLE_LIGHTS, LightModelProvider.of(
             IntStream.rangeClosed(0, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
