@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
+import me.paulf.fairylights.client.TranslucentLightRenderer;
 import me.paulf.fairylights.client.model.light.CandleLanternModel;
 import me.paulf.fairylights.client.model.light.ColorCandleLanternModel;
 import me.paulf.fairylights.client.model.light.ColorOilLanternModel;
@@ -75,8 +76,46 @@ public class LightRenderer {
 
     public Data start(final IRenderTypeBuffer source) {
         final IVertexBuilder solid = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
-        final IVertexBuilder translucent = ClientProxy.TRANSLUCENT_TEXTURE.getBuffer(source, RenderType::getEntityTranslucent);
-        return new Data(solid, translucent);
+        final IVertexBuilder mask = source.getBuffer(TranslucentLightRenderer.MASK);
+        final IVertexBuilder translucent = ClientProxy.TRANSLUCENT_TEXTURE.getBuffer(source, TranslucentLightRenderer::get);
+        return new Data(solid, new IVertexBuilder() {
+            @Override
+            public IVertexBuilder pos(final double x, final double y, final double z) {
+                mask.pos(x, y, z);
+                return translucent.pos(x, y, z);
+            }
+
+            @Override
+            public IVertexBuilder color(final int red, final int green, final int blue, final int alpha) {
+                return translucent.color(red, green, blue, alpha);
+            }
+
+            @Override
+            public IVertexBuilder tex(final float u, final float v) {
+                return translucent.tex(u, v);
+            }
+
+            @Override
+            public IVertexBuilder overlay(final int u, final int v) {
+                return translucent.overlay(u, v);
+            }
+
+            @Override
+            public IVertexBuilder lightmap(final int u, final int v) {
+                return translucent.lightmap(u, v);
+            }
+
+            @Override
+            public IVertexBuilder normal(final float x, final float y, final float z) {
+                return translucent.normal(x, y, z);
+            }
+
+            @Override
+            public void endVertex() {
+                mask.endVertex();
+                translucent.endVertex();
+            }
+        });
     }
 
     public <T extends LightBehavior> LightModel<T> getModel(final Light<?> light, final int index) {

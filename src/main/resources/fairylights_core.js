@@ -2,6 +2,7 @@ function initializeCoreMod() {
 Java.type('net.minecraftforge.coremod.api.ASMAPI').loadFile('easycorelib.js')
 
 easycore.include('me')
+easycore.include('it')
 
 var ClientEventHandler = me.paulf.fairylights.client.ClientEventHandler,
     FairyLights = me.paulf.fairylights.FairyLights,
@@ -15,18 +16,22 @@ var ClientEventHandler = me.paulf.fairylights.client.ClientEventHandler,
     PlayerInventory = net.minecraft.entity.player.PlayerInventory,
     NonNullList = net.minecraft.util.NonNullList,
     GameRenderer = net.minecraft.client.renderer.GameRenderer,
-    RayTraceResult = net.minecraft.util.math.RayTraceResult
+    RayTraceResult = net.minecraft.util.math.RayTraceResult,
+    Atlases = net.minecraft.client.renderer.Atlases,
+    RenderTypeBuffers = net.minecraft.client.renderer.RenderTypeBuffers
+    Object2ObjectLinkedOpenHashMap = it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 
-easycore.inMethod(WorldRenderer.func_228426_a_(
-        MatrixStack,
-        float,
-        long,
-        boolean,
-        ActiveRenderInfo,
-        net.minecraft.client.renderer.GameRenderer,
-        net.minecraft.client.renderer.LightTexture,
-        net.minecraft.client.renderer.Matrix4f)
-    )
+var renderWorld = WorldRenderer.func_228426_a_(
+                          MatrixStack,
+                          float,
+                          long,
+                          boolean,
+                          ActiveRenderInfo,
+                          net.minecraft.client.renderer.GameRenderer,
+                          net.minecraft.client.renderer.LightTexture,
+                          net.minecraft.client.renderer.Matrix4f)
+
+easycore.inMethod(renderWorld)
     .atLast(invokevirtual(RayTraceResult.func_216346_c())).prepend(
         aload(0),
         aload(6),
@@ -39,6 +44,17 @@ easycore.inMethod(WorldRenderer.func_228426_a_(
                 float,
                 MatrixStack
             ), RayTraceResult)
+    )
+
+easycore.inMethod(renderWorld)
+    .atLast(invokestatic(Atlases.func_228784_i_())).prepend(
+        invokestatic(me.paulf.fairylights.client.TranslucentLightRenderer.finish())
+    )
+
+easycore.inMethod(RenderTypeBuffers.lambda$new$1(Object2ObjectLinkedOpenHashMap))
+    .atFirst(invokestatic(Atlases.func_228784_i_())).prepend(
+        aload(1),
+        invokestatic(me.paulf.fairylights.client.TranslucentLightRenderer.addFixed(Object2ObjectLinkedOpenHashMap))
     )
 
 easycore.inMethod(PlayerInventory.func_194014_c(ItemStack))
