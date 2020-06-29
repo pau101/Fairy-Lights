@@ -23,6 +23,7 @@ import me.paulf.fairylights.client.model.light.PaperLanternModel;
 import me.paulf.fairylights.client.model.light.SkullLightModel;
 import me.paulf.fairylights.client.model.light.SnowflakeLightModel;
 import me.paulf.fairylights.client.model.light.SpiderLightModel;
+import me.paulf.fairylights.client.model.light.StarLightModel;
 import me.paulf.fairylights.client.model.light.WitchLightModel;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.LightBehavior;
@@ -58,6 +59,7 @@ public class LightRenderer {
         .put(SimpleLightVariant.SNOWFLAKE_LIGHT, LightModelProvider.of(new SnowflakeLightModel()))
         .put(SimpleLightVariant.HEART_LIGHT, LightModelProvider.of(new HeartLightModel()))
         .put(SimpleLightVariant.MOON_LIGHT, LightModelProvider.of(new MoonLightModel()))
+        .put(SimpleLightVariant.STAR_LIGHT, LightModelProvider.of(StarLightModel::new))
         .put(SimpleLightVariant.ICICLE_LIGHTS, LightModelProvider.of(
             IntStream.rangeClosed(0, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
             (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]

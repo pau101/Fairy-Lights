@@ -47,6 +47,8 @@ public final class FLBlocks {
 
     public static final RegistryObject<LightBlock> MOON_LIGHT = REG.register("moon_light", FLBlocks.createLight(SimpleLightVariant.MOON_LIGHT));
 
+    public static final RegistryObject<LightBlock> STAR_LIGHT = REG.register("star_light", FLBlocks.createLight(SimpleLightVariant.STAR_LIGHT));
+
     public static final RegistryObject<LightBlock> ICICLE_LIGHTS = REG.register("icicle_lights", FLBlocks.createLight(SimpleLightVariant.ICICLE_LIGHTS));
 
     public static final RegistryObject<LightBlock> METEOR_LIGHT = REG.register("meteor_light", FLBlocks.createLight(SimpleLightVariant.METEOR_LIGHT));

@@ -96,6 +96,8 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> MOON_LIGHT = REG.register("crafting_special_moon_light", makeSerializer(FLCraftingRecipes::createMoonLight));
 
+    public static final RegistryObject<IRecipeSerializer<GenericRecipe>> STAR_LIGHT = REG.register("crafting_special_star_light", makeSerializer(FLCraftingRecipes::createStarLight));
+
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> ICICLE_LIGHTS = REG.register("crafting_special_icicle_lights", makeSerializer(FLCraftingRecipes::createIcicleLights));
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> METEOR_LIGHT = REG.register("crafting_special_meteor_light", makeSerializer(FLCraftingRecipes::createMeteorLight));
@@ -552,6 +554,15 @@ public final class FLCraftingRecipes {
             .withShape(" I ", "GDG", " C ")
             .withIngredient('G', Tags.Items.GLASS_PANES_WHITE)
             .withIngredient('C', Items.CLOCK)
+        );
+    }
+
+
+    private static GenericRecipe createStarLight(final ResourceLocation name) {
+        return createLight(name, STAR_LIGHT, FLItems.STAR_LIGHT, b -> b
+            .withShape(" I ", "PDP", " G ")
+            .withIngredient('P', Tags.Items.GLASS_PANES_WHITE)
+            .withIngredient('G', Tags.Items.NUGGETS_GOLD)
         );
     }
 
