@@ -65,7 +65,7 @@ public abstract class FastenerAccessorEntity<E extends Entity> implements Fasten
 
 	@Override
 	public boolean exists(World world) {
-		return entity == null || !entity.isDead && entity.hasCapability(CapabilityHandler.FASTENER_CAP, null);
+		return world.isRemote || entity == null || !entity.isDead && entity.hasCapability(CapabilityHandler.FASTENER_CAP, null);
 	}
 
 	@Override
