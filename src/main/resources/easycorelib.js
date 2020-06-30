@@ -338,7 +338,13 @@ MethodTarget.prototype.addTransformer = function (consumer) {
                     return;
                 }
             }
-            throw "Failed to find method " + name + desc;
+            var msg = "";
+            for (var i = 0; i < node.methods.length; i++) {
+                var method = node.methods[i];
+                if (msg) msg += ", ";
+                msg += method.name + method.desc
+            }
+            throw "Failed to find method " + name + desc + " [ " + msg + " ]";
         });
     }
     this.consumers.push(consumer);

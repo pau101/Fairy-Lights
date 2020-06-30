@@ -51,7 +51,13 @@ easycore.inMethod(renderWorld)
         invokestatic(me.paulf.fairylights.client.TranslucentLightRenderer.finish())
     )
 
-easycore.inMethod(RenderTypeBuffers.lambda$new$1(Object2ObjectLinkedOpenHashMap))
+var addFixed;
+if (Java.type("net.minecraftforge.coremod.api.ASMAPI").mapField("field_195596_d") == "field_195596_d") {
+    addFixed = RenderTypeBuffers.func_228485_a_(Object2ObjectLinkedOpenHashMap)
+} else {
+    addFixed = RenderTypeBuffers.lambda$new$1(Object2ObjectLinkedOpenHashMap)
+}
+easycore.inMethod(addFixed)
     .atFirst(invokestatic(Atlases.func_228784_i_())).prepend(
         aload(1),
         invokestatic(me.paulf.fairylights.client.TranslucentLightRenderer.addFixed(Object2ObjectLinkedOpenHashMap))
