@@ -151,9 +151,18 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
+    protected boolean canReuse(final Light<?> feature, final int index) {
+        return ItemStack.areItemStacksEqual(feature.getItem(), this.getPatternStack(index));
+    }
+
+    @Override
     protected Light<?> createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
-        final ItemStack lightData = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
+        final ItemStack lightData = this.getPatternStack(index);
         return this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY_LIGHT));
+    }
+
+    private ItemStack getPatternStack(final int index) {
+        return this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
     }
 
     @Override

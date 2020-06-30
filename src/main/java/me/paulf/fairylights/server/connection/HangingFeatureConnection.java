@@ -49,7 +49,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
         this.onBeforeUpdateFeatures();
         catenary.visitPoints(spacing, true, (index, x, y, z, yaw, pitch) -> {
             final F feature;
-            if (!relocated && prev != null && index < prev.length) {
+            if (!relocated && prev != null && index < prev.length && this.canReuse(prev[index], index)) {
                 feature = prev[index];
                 feature.set(new Vec3d(x, y, z), yaw, pitch);
             } else {
@@ -60,6 +60,10 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
         });
         this.features = features.toArray(this.createFeatures(features.size()));
         this.onAfterUpdateFeatures();
+    }
+
+    protected boolean canReuse(final F feature, final int index) {
+        return true;
     }
 
     protected abstract F[] createFeatures(int length);
