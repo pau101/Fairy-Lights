@@ -501,9 +501,15 @@ function addGlobals(elements, factory) {
     }
 }
 
-addGlobals([ "boolean", "byte", "char", "double", "float", "int", "long", "short" ], function (name) {
-    var type = Type[name.toUpperCase() + "_TYPE"];
-    var arrayType = Java.type(name + "[]");
+function addPrimitiveGlobals(elements, factory) {
+    for (var i = 0; i < elements.length; i++) {
+        scope[elements[i][0]] = factory(elements[i]);
+    }
+}
+
+addPrimitiveGlobals([ [ "boolean", Type.BOOLEAN_TYPE ], [ "byte", Type.BYTE_TYPE ], [ "char", Type.CHAR_TYPE ], [ "double", Type.DOUBLE_TYPE ], [ "float", Type.FLOAT_TYPE ], [ "int", Type.INT_TYPE ], [ "long", Type.LONG_TYPE ], [ "short", Type.SHORT_TYPE ] ], function (name) {
+    var type = name[1];
+    var arrayType = Java.type(name[0] + "[]");
     var factory = function (value) {
         var p = new Primitive(value);
         p.type = type;

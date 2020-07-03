@@ -27,7 +27,7 @@ var renderWorld = WorldRenderer.func_228426_a_(
                           long,
                           boolean,
                           ActiveRenderInfo,
-                          net.minecraft.client.renderer.GameRenderer,
+                          GameRenderer,
                           net.minecraft.client.renderer.LightTexture,
                           net.minecraft.client.renderer.Matrix4f)
 
