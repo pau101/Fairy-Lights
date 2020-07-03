@@ -9,8 +9,6 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 public class IncandescentLightModel extends LightModel<BrightnessLightBehavior> {
     final ModelRenderer bulb;
 
-    final ModelRenderer bulbGlow;
-
     final ModelRenderer filament;
 
     public IncandescentLightModel() {
@@ -18,8 +16,6 @@ public class IncandescentLightModel extends LightModel<BrightnessLightBehavior> 
         this.unlit.addBox(-1.0F, -0.01F, -1.0F, 2.0F, 1.0F, 2.0F);
         this.bulb = new ModelRenderer(this, 98, 10);
         this.bulb.addBox(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F);
-        this.bulbGlow = new ModelRenderer(this, 98, 10);
-        this.bulbGlow.addBox(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.65F);
         this.filament = new ModelRenderer(this, 90, 13);
         this.filament.addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F);
     }
@@ -48,10 +44,8 @@ public class IncandescentLightModel extends LightModel<BrightnessLightBehavior> 
     public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         final float bi = this.brightness;
         final int emissiveLight = this.getLight(light);
-        final float br = 1.0F, bg = 0.94F, bb = 0.79F;
-        this.bulb.render(matrix, builder, emissiveLight, overlay, r * (br * bi + (1.0F - bi)), g * (bg * bi + (1.0F - bi)), b * (bb * bi + (1.0F - bi)), bi * 0.55F + 0.25F);
-        final float cr = 1.0F, cg = 0.77F, cb = 0.25F;
-        this.bulbGlow.render(matrix, builder, emissiveLight, overlay, r * cr, g * cg, b * cb, bi * 0.3F);
+        final float br = 1.0F, bg = 0.73F, bb = 0.3F;
+        this.bulb.render(matrix, builder, emissiveLight, overlay, r * (br * bi + (1.0F - bi)), g * (bg * bi + (1.0F - bi)), b * (bb * bi + (1.0F - bi)), bi * 0.4F + 0.25F);
         super.renderTranslucent(matrix, builder, light, overlay, r, g, b, a);
     }
 }
