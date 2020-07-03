@@ -54,6 +54,8 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     private final ImmutableList<IntUnaryOperator> xFunctions = ImmutableList.of(IntUnaryOperator.identity(), i -> this.getWidth() - 1 - i);
 
+    private final int room;
+
     GenericRecipe(final ResourceLocation id, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height, final int outputIngredient) {
         Preconditions.checkArgument(width > 0, "width must be greater than zero");
         Preconditions.checkArgument(height > 0, "height must be greater than zero");
@@ -65,6 +67,18 @@ public final class GenericRecipe implements ICraftingRecipe {
         this.width = width;
         this.height = height;
         this.outputIngredient = outputIngredient;
+        int room = 0;
+        for (final RegularIngredient ing : this.ingredients) {
+            if (ing.getInputs().isEmpty()) {
+                room++;
+            }
+        }
+        for (final AuxiliaryIngredient<?> aux : this.auxiliaryIngredients) {
+            if (aux.isRequired()) {
+                room--;
+            }
+        }
+        this.room = room;
     }
 
     private NonNullList<Ingredient> getDisplayIngredients() {
@@ -75,13 +89,16 @@ public final class GenericRecipe implements ICraftingRecipe {
             final ItemStack[] stacks = this.ingredients[i].getInputs().toArray(new ItemStack[0]);
             ingredients.set(x + y * 3, Ingredient.fromStacks(stacks));
         }
-        for (int i = 0, slot = 0; i < this.auxiliaryIngredients.length && slot < ingredients.size(); slot++) {
+        for (int i = 0, slot = 0; slot < ingredients.size(); slot++) {
             final Ingredient ing = ingredients.get(slot);
-            if (ing == Ingredient.EMPTY) {
-                final AuxiliaryIngredient<?> aux = this.auxiliaryIngredients[i++];
-                if (aux.isRequired()) {
-                    final ItemStack[] stacks = aux.getInputs().toArray(new ItemStack[0]);
-                    ingredients.set(slot, Ingredient.fromStacks(stacks));
+            if (ing.hasNoMatchingItems()) {
+                while (i < this.auxiliaryIngredients.length) {
+                    final AuxiliaryIngredient<?> aux = this.auxiliaryIngredients[i++];
+                    if (aux.isRequired()) {
+                        final ItemStack[] stacks = aux.getInputs().toArray(new ItemStack[0]);
+                        ingredients.set(slot, Ingredient.fromStacks(stacks));
+                        break;
+                    }
                 }
             }
         }
@@ -130,7 +147,7 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     @Override
     public boolean canFit(final int width, final int height) {
-        return this.width <= width && this.height <= height;
+        return this.width <= width && this.height <= height && (this.room >= 0 || width * height - this.width * this.height + this.room >= 0);
     }
 
     @Override
