@@ -18,7 +18,7 @@ var ClientEventHandler = me.paulf.fairylights.client.ClientEventHandler,
     GameRenderer = net.minecraft.client.renderer.GameRenderer,
     RayTraceResult = net.minecraft.util.math.RayTraceResult,
     Atlases = net.minecraft.client.renderer.Atlases,
-    RenderTypeBuffers = net.minecraft.client.renderer.RenderTypeBuffers
+    RenderTypeBuffers = net.minecraft.client.renderer.RenderTypeBuffers,
     Object2ObjectLinkedOpenHashMap = it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 
 var renderWorld = WorldRenderer.func_228426_a_(
@@ -51,7 +51,7 @@ easycore.inMethod(renderWorld)
         invokestatic(me.paulf.fairylights.client.TranslucentLightRenderer.finish())
     )
 
-var addFixed;
+var addFixed
 if (Java.type("net.minecraftforge.coremod.api.ASMAPI").mapField("field_195596_d") == "field_195596_d") {
     addFixed = RenderTypeBuffers.func_228485_a_(Object2ObjectLinkedOpenHashMap)
 } else {
