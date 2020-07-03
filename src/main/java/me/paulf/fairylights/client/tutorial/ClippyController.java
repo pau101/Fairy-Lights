@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.FLClientConfig;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
+import me.paulf.fairylights.util.LazyItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.toasts.IToast;
@@ -93,8 +94,7 @@ public class ClippyController {
         final Balloon balloon;
 
         CraftHangingLightsState() {
-            this.balloon = new Balloon(
-                FLItems.HANGING_LIGHTS.map(Item::getDefaultInstance).orElse(ItemStack.EMPTY),
+            this.balloon = new Balloon(new LazyItemStack(FLItems.HANGING_LIGHTS, Item::getDefaultInstance),
                 new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.title"),
                 new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.description")
             );
@@ -137,12 +137,12 @@ public class ClippyController {
     }
 
     static class Balloon implements IToast {
-        final ItemStack stack;
+        final LazyItemStack stack;
         final String title;
         final String subtitle;
         IToast.Visibility visibility;
 
-        Balloon(final ItemStack stack, final ITextComponent title, final ITextComponent subtitle) {
+        Balloon(final LazyItemStack stack, final ITextComponent title, final ITextComponent subtitle) {
             this.stack = stack;
             this.title = title.getFormattedText();
             this.subtitle = subtitle.getFormattedText();
@@ -158,7 +158,7 @@ public class ClippyController {
             toastGui.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
             RenderSystem.color3f(1.0F, 1.0F, 1.0F);
             toastGui.blit(0, 0, 0, 96, 160, 32);
-            toastGui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGUI(null, this.stack, 6 + 2, 6 + 2);
+            toastGui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGUI(null, this.stack.get(), 6 + 2, 6 + 2);
             if (this.subtitle.isEmpty()) {
                 toastGui.getMinecraft().fontRenderer.drawString(this.title, 30.0F, 12.0F, 0xFF500050);
             } else {
