@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -48,9 +49,13 @@ public class ClippyController {
             }
         });
         modBus.<ModConfig.Loading>addListener(e -> {
-            if (e.getConfig().getSpec() == FLClientConfig.SPEC) {
+            if (e.getConfig().getSpec() == FLClientConfig.SPEC && Minecraft.getInstance().player != null) {
                 this.reload();
             }
+        });
+        modBus.<ClientPlayerNetworkEvent.LoggedInEvent>addListener(e -> {
+            this.reload();
+            this.state.tick(e.getPlayer(), this);
         });
     }
 
