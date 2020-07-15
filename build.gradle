@@ -13,7 +13,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '3.0.4'
+version = '3.0.5'
 group = 'me.paulf.fairylights'
 archivesBaseName = 'fairylights'
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8

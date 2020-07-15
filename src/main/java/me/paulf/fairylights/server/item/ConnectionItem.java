@@ -122,9 +122,11 @@ public abstract class ConnectionItem extends Item {
     public void connect(final ItemStack stack, final PlayerEntity user, final World world, final Fastener<?> fastener, final boolean playConnectSound) {
         user.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(attacher -> {
             boolean playSound = playConnectSound;
-            final Optional<Connection> conn = attacher.getFirstConnection();
-            if (conn.isPresent()) {
-                if (conn.get().reconnect(fastener)) {
+            final Optional<Connection> placing = attacher.getFirstConnection();
+            if (placing.isPresent()) {
+                final Connection conn = placing.get();
+                if (conn.reconnect(fastener)) {
+                    conn.onConnect(world, user, stack);
                     stack.shrink(1);
                 } else {
                     playSound = false;

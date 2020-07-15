@@ -12,7 +12,7 @@ issueTrackerURL="https://github.com/pau101/Fairy-Lights/issues"
 [[dependencies.fairylights]]
 	modId="forge"
 	mandatory=true
-	versionRange="[31,)"
+	versionRange="[31.2,)"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.fairylights]]
