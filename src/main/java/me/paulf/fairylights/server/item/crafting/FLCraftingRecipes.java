@@ -658,8 +658,7 @@ public final class FLCraftingRecipes {
             }
             final ImmutableList.Builder<ImmutableList<ItemStack>> pennants = ImmutableList.builder();
             for (int i = 0; i < pattern.size(); i++) {
-                final CompoundNBT pennant = pattern.getCompound(i);
-                pennants.add(ImmutableList.of(ItemStack.read(pennant)));
+                pennants.add(ImmutableList.of(ItemStack.read(pattern.getCompound(i))));
             }
             return pennants.build();
         }
