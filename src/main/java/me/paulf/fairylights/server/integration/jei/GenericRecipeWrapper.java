@@ -227,7 +227,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
                 final List<List<ItemStack>> inputs = new ArrayList<>(this.allInputs.size());
                 for (int n = 0; n < this.allInputs.size(); n++) {
                     final List<ItemStack> stacks = this.allInputs.get(n);
-                    inputs.add(i == n ? Collections.singletonList(matched) : stacks.isEmpty() ? Collections.singletonList(ItemStack.EMPTY) : stacks);
+                    inputs.add(i == n ? Collections.singletonList(matched) : stacks);
                 }
                 return new Input(inputs, this.ingredientMatrix);
             }
