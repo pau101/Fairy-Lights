@@ -4,6 +4,7 @@ import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.connection.ConnectionTypes;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.string.StringType;
+import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.DyeColor;
@@ -52,6 +53,7 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
 
     @Override
     public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
+        if (!StringTypes.BLACK_STRING.isPresent() && FairyLights.isForgeInStupidState()) return;
         if (this.isInGroup(tab)) {
             for (final DyeColor color : DyeColor.values()) {
                 subItems.add(FLCraftingRecipes.makeHangingLights(new ItemStack(this), color));

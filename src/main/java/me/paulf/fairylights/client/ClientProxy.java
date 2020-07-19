@@ -44,10 +44,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.ClientModLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -122,7 +120,7 @@ public final class ClientProxy extends ServerProxy {
     }
 
     private void setupColors(final ColorHandlerEvent.Item event) {
-        if (!FLItems.FAIRY_LIGHT.isPresent() && ObfuscationReflectionHelper.getPrivateValue(ClientModLoader.class, null, "error") != null) {
+        if (!FLItems.FAIRY_LIGHT.isPresent() && FairyLights.isForgeInStupidState()) {
             return;
         }
         final ItemColors colors = event.getItemColors();
