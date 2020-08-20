@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -70,6 +71,11 @@ public class LightBlockEntity extends TileEntity {
     @Override
     public CompoundNBT getUpdateTag() {
         return this.write(new CompoundNBT());
+    }
+
+    @Override
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
+        this.read(pkt.getNbtCompound());
     }
 
     @Override
