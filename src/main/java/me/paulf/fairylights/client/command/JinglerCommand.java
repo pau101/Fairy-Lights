@@ -30,9 +30,12 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Transmitter;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 public final class JinglerCommand {
+    private static final AtomicBoolean USED_COMMAND = new AtomicBoolean(false);
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(new TranslationTextComponent("commands.jingler.open.failure.no_hanging_lights"));
@@ -73,6 +76,7 @@ public final class JinglerCommand {
                     }
                     transmitter.setReceiver(new MidiJingler((HangingLightsConnection) conn));
                     ctx.getSource().sendFeedback(new TranslationTextComponent("commands.jingler.open.success", name), false);
+                    USED_COMMAND.compareAndSet(false, true);
                     return 1;
                 })))
             .then(LiteralArgumentBuilder.<S>literal("close").then(helper.executes(
@@ -114,6 +118,8 @@ public final class JinglerCommand {
             final MidiDevice device;
             try {
                 device = MidiSystem.getMidiDevice(info);
+            } catch (final IllegalArgumentException ignored) {
+                continue;
             } catch (final MidiUnavailableException e) {
                 LOGGER.debug("Midi device unavailable: \"{}\", reason: \"{}\"", info.getName(), e.getMessage());
                 continue;
@@ -165,6 +171,10 @@ public final class JinglerCommand {
                 e.getFontRenderer()
             );
         });
-        bus.<WorldEvent.Unload>addListener(e -> getDevices().forEach(MidiDevice::close));
+        bus.<WorldEvent.Unload>addListener(e -> {
+            if (e.getWorld().isRemote() && USED_COMMAND.compareAndSet(true, false)) {
+                getDevices().forEach(JinglerCommand::close);
+            }
+        });
     }
 }
