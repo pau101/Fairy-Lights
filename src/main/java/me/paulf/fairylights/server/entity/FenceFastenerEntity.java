@@ -87,7 +87,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     @Override
     public float getBrightness() {
         final BlockPos pos = new BlockPos(this);
-        if (this.world.isBlockLoaded(pos)) {
+        if (this.world.isBlockPresent(pos)) {
             return this.world.getBrightness(pos);
         }
         return 0;
@@ -96,7 +96,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     @Override
     public int getBrightnessForRender() {
         final BlockPos pos = new BlockPos(this);
-        if (this.world.isBlockLoaded(pos)) {
+        if (this.world.isBlockPresent(pos)) {
             return this.world.getCombinedLight(pos, 0);
         }
         return 0;
@@ -114,7 +114,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 
     @Override
     public boolean onValidSurface() {
-        return ConnectionItem.isFence(this.world.getBlockState(this.hangingPosition));
+        return !this.world.isBlockPresent(this.hangingPosition) || ConnectionItem.isFence(this.world.getBlockState(this.hangingPosition));
     }
 
     @Override
