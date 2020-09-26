@@ -1,3 +1,4 @@
+// v1.0.0
 (function (scope) {
 
 var ASMAPI = Java.type("net.minecraftforge.coremod.api.ASMAPI");
