@@ -140,7 +140,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             final Light light = this.features[i];
             light.tick(this, this.twinkle, on);
         }
-        if (on && this.isOrigin() && this.features.length > 0) {
+        if (!this.world.isRemote && on && this.isOrigin() && this.features.length > 0) {
             this.lightUpdateTime++;
             if (this.lightUpdateTime > LIGHT_UPDATE_WAIT && this.lightUpdateTime % LIGHT_UPDATE_RATE == 0) {
                 if (this.lightUpdateIndex >= this.features.length) {
@@ -166,7 +166,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     protected Light createFeature(final int index, final Vec3d point, final Vec3d rotation) {
         final boolean on = !this.isDynamic() && this.isOn;
         final Light light = new Light(index, point, rotation, on);
-        if (on && this.isOrigin()) {
+        if (!this.world.isRemote && on && this.isOrigin()) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
             this.setLight(pos);
