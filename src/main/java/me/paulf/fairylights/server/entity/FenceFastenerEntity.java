@@ -137,6 +137,11 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     }
 
     @Override
+    public boolean isNonBoss() {
+        return false;
+    }
+
+    @Override
     public void onBroken(@Nullable final Entity breaker) {
         this.getFastener().ifPresent(fastener -> fastener.dropItems(this.world, this.hangingPosition));
         if (breaker != null) {

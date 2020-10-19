@@ -47,6 +47,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
@@ -88,6 +89,14 @@ public final class ServerEventHandler {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityJoinWorld(final EntityJoinWorldEvent event) {
+        final Entity entity = event.getEntity();
+        if (entity instanceof PlayerEntity || entity instanceof FenceFastenerEntity) {
+            entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.setWorld(event.getWorld()));
         }
     }
 
