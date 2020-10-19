@@ -45,6 +45,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -63,6 +64,14 @@ public final class ServerEventHandler {
 
     // Every 5 minutes on average a jingle will attempt to play
     private final float jingleProbability = 1F / (5 * 60 * 20);
+
+    @SubscribeEvent
+    public void onEntityJoinWorld(final EntityJoinWorldEvent event) {
+        final Entity entity = event.getEntity();
+        if (entity instanceof PlayerEntity || entity instanceof FenceFastenerEntity) {
+            entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.setWorld(event.getWorld()));
+        }
+    }
 
     @SubscribeEvent
     public void onAttachEntityCapability(final AttachCapabilitiesEvent<Entity> event) {

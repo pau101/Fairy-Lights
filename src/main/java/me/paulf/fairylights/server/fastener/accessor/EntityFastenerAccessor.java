@@ -60,7 +60,7 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
                 }
             }
         }
-        if (this.entity != null) {
+        if (this.entity != null && this.entity.world == world) {
             this.pos = this.entity.getPositionVec();
             return this.entity.getCapability(CapabilityHandler.FASTENER_CAP);
         }
@@ -69,7 +69,7 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
 
     @Override
     public boolean isGone(final World world) {
-        return !world.isRemote && this.entity != null && !this.entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
+        return !world.isRemote && this.entity != null && (!this.entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent() || this.entity.world != world);
     }
 
     @Override
