@@ -128,7 +128,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         for (final Light<?> light : this.features) {
             light.tick(this.world, this.fastener.getConnectionPoint());
         }
-        if (!this.world.isRemote && on && this.features.length > 0) {
+        if (on && this.features.length > 0) {
             this.lightUpdateTime++;
             if (this.lightUpdateTime > LIGHT_UPDATE_WAIT && this.lightUpdateTime % LIGHT_UPDATE_RATE == 0) {
                 if (this.lightUpdateIndex >= this.features.length) {
@@ -168,7 +168,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     protected void updateFeature(final Light<?> light) {
         super.updateFeature(light);
-        if (!this.world.isRemote && !this.isDynamic() && this.isOn) {
+        if (!this.isDynamic() && this.isOn) {
             final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
             this.setLight(pos);
@@ -225,7 +225,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     private void setLight(final BlockPos pos) {
-        if (this.world.isAirBlock(pos) && this.world.getLightFor(LightType.BLOCK, pos) < MAX_LIGHT) {
+        if (this.world.isBlockPresent(pos) && this.world.isAirBlock(pos) && this.world.getLightFor(LightType.BLOCK, pos) < MAX_LIGHT) {
             final IWorldLightListener light = this.world.getChunkProvider().getLightManager().getLightEngine(LightType.BLOCK);
             if (light instanceof BlockLightEngine) {
                 ((BlockLightEngine) light).func_215623_a(pos, MAX_LIGHT);
