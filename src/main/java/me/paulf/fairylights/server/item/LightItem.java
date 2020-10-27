@@ -40,12 +40,12 @@ public class LightItem extends BlockItem {
         final CompoundNBT tag = stack.getTag();
         if (tag != null) {
             if (tag.getBoolean("twinkle")) {
-                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").applyTextStyles(TextFormatting.GRAY, TextFormatting.ITALIC));
+                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").mergeStyle(TextFormatting.GRAY, TextFormatting.ITALIC));
             }
             if (tag.contains("colors", Constants.NBT.TAG_LIST)) {
                 final ListNBT colors = tag.getList("colors", Constants.NBT.TAG_INT);
                 for (int i = 0; i < colors.size(); i++) {
-                    tooltip.add(DyeableItem.getColorName(colors.getInt(i)).applyTextStyle(TextFormatting.GRAY));
+                    tooltip.add(DyeableItem.getColorName(colors.getInt(i)).mergeStyle(TextFormatting.GRAY));
                 }
             }
         }

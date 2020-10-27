@@ -2,14 +2,14 @@ package me.paulf.fairylights.server.feature;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class Pennant extends HangingFeature {
     private final int color;
 
     private final Item item;
 
-    public Pennant(final int index, final Vec3d point, final float yaw, final float pitch, final int color, final Item item) {
+    public Pennant(final int index, final Vector3d point, final float yaw, final float pitch, final int color, final Item item) {
         super(index, point, yaw, pitch, 0.0F, 0.0F);
         this.color = color;
         this.item = item;

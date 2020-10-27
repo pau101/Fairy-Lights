@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class FLSounds {
     private FLSounds() {}
 
-    public static final DeferredRegister<SoundEvent> REG = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, FairyLights.ID);
+    public static final DeferredRegister<SoundEvent> REG = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, FairyLights.ID);
 
     public static final RegistryObject<SoundEvent> CORD_STRETCH = create("cord.stretch");
 

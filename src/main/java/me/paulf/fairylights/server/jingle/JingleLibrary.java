@@ -2,11 +2,14 @@ package me.paulf.fairylights.server.jingle;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Lifecycle;
 import me.paulf.fairylights.FairyLights;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
@@ -21,11 +24,11 @@ import java.util.Random;
 public class JingleLibrary {
     private static final ResourceLocation DEFAULT_ID = new ResourceLocation(FairyLights.ID, "unknown");
 
-    private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(DEFAULT_ID.toString());
+    private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(DEFAULT_ID.toString(), RegistryKey.getOrCreateRootKey(new ResourceLocation(FairyLights.ID, "jingle")), Lifecycle.experimental());
 
     private static final JingleLibrary DEFAULT = register(new JingleLibrary(DEFAULT_ID) {
         @Override
-        public void load(final MinecraftServer server) {
+        public void load(final IResourceManager manager) {
         }
     });
 
@@ -85,8 +88,8 @@ public class JingleLibrary {
         return null;
     }
 
-    public void load(final MinecraftServer server) {
-        try (final IResource resource = server.getResourceManager().getResource(new ResourceLocation(this.name.getNamespace(), "/jingles/" + this.name.getPath() + ".dat"))) {
+    public void load(final IResourceManager manger) {
+        try (final IResource resource = manger.getResource(new ResourceLocation(this.name.getNamespace(), "/jingles/" + this.name.getPath() + ".dat"))) {
             this.deserialize(CompressedStreamTools.readCompressed(resource.getInputStream()));
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -118,9 +121,9 @@ public class JingleLibrary {
         return REGISTRY.getOrDefault(name);
     }
 
-    public static void loadAll(final MinecraftServer server) {
+    public static void loadAll(final IResourceManager manager) {
         for (final JingleLibrary library : REGISTRY) {
-            library.load(server);
+            library.load(manager);
         }
     }
 }

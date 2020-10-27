@@ -8,7 +8,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     public PlayerFastener(final PlayerEntity entity) {
@@ -16,8 +17,8 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     }
 
     @Override
-    public Vec3d getConnectionPoint() {
-        final Vec3d point = super.getConnectionPoint();
+    public Vector3d getConnectionPoint() {
+        final Vector3d point = super.getConnectionPoint();
         if (this.entity.isElytraFlying()) {
             return point;
         }
@@ -61,7 +62,7 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
     }
 
     @Override
-    public void resistSnap(final Vec3d from) {
+    public void resistSnap(final Vector3d from) {
         final double dist = this.getConnectionPoint().distanceTo(from);
         if (dist > Connection.MAX_LENGTH) {
             final double dx = this.entity.getPosX() - from.x;
@@ -71,7 +72,7 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
             final double vectorY = dy / dist;
             final double vectorZ = dz / dist;
             final double factor = Math.min((dist - Connection.MAX_LENGTH) / Connection.PULL_RANGE, Connection.PULL_RANGE);
-            final Vec3d motion = this.entity.getMotion();
+            final Vector3d motion = this.entity.getMotion();
             final double tangent = Math.cos(MathHelper.atan2(dy, Math.sqrt(dx * dx + dz * dz))) * Math.signum(motion.y);
             final double speed = motion.length();
             final double swing = Math.abs(speed) < 1e-6 ? 0 : (1 - Math.abs(motion.y / speed - tangent)) * 0.1;

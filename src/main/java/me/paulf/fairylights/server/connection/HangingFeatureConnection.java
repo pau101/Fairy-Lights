@@ -9,7 +9,7 @@ import me.paulf.fairylights.server.feature.HangingFeature;
 import me.paulf.fairylights.util.AABBBuilder;
 import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -51,9 +51,9 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
             final F feature;
             if (!relocated && prev != null && index < prev.length && this.canReuse(prev[index], index)) {
                 feature = prev[index];
-                feature.set(new Vec3d(x, y, z), yaw, pitch);
+                feature.set(new Vector3d(x, y, z), yaw, pitch);
             } else {
-                feature = this.createFeature(index, new Vec3d(x, y, z), yaw, pitch);
+                feature = this.createFeature(index, new Vector3d(x, y, z), yaw, pitch);
             }
             this.updateFeature(feature);
             features.add(feature);
@@ -68,7 +68,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
 
     protected abstract F[] createFeatures(int length);
 
-    protected abstract F createFeature(int index, Vec3d point, float yaw, final float pitch);
+    protected abstract F createFeature(int index, Vector3d point, float yaw, final float pitch);
 
     protected abstract float getFeatureSpacing();
 
@@ -79,12 +79,12 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
     protected void onAfterUpdateFeatures() {}
 
     @Override
-    public void addCollision(final CollidableList.Builder collision, final Vec3d origin) {
+    public void addCollision(final CollidableList.Builder collision, final Vector3d origin) {
         super.addCollision(collision, origin);
         if (this.features.length > 0) {
             final MatrixStack matrix = new MatrixStack();
             collision.add(FeatureCollisionTree.build(FEATURE, this.features, f -> {
-                final Vec3d pos = f.getPoint();
+                final Vector3d pos = f.getPoint();
                 final double x = origin.x + pos.x;
                 final double y = origin.y + pos.y;
                 final double z = origin.z + pos.z;
@@ -96,17 +96,17 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
                 matrix.translate(0.0F, -f.getDescent(), 0.0F);
                 final AABBBuilder bounds = new AABBBuilder();
                 final AxisAlignedBB bb = f.getBounds().grow(0.01D);
-                final Vec3d[] verts = {
-                    new Vec3d(bb.minX, bb.minY, bb.minZ),
-                    new Vec3d(bb.maxX, bb.minY, bb.minZ),
-                    new Vec3d(bb.maxX, bb.minY, bb.minZ),
-                    new Vec3d(bb.minX, bb.minY, bb.maxZ),
-                    new Vec3d(bb.minX, bb.maxY, bb.minZ),
-                    new Vec3d(bb.maxX, bb.maxY, bb.minZ),
-                    new Vec3d(bb.maxX, bb.maxY, bb.maxZ),
-                    new Vec3d(bb.minX, bb.maxY, bb.maxZ)
+                final Vector3d[] verts = {
+                    new Vector3d(bb.minX, bb.minY, bb.minZ),
+                    new Vector3d(bb.maxX, bb.minY, bb.minZ),
+                    new Vector3d(bb.maxX, bb.minY, bb.minZ),
+                    new Vector3d(bb.minX, bb.minY, bb.maxZ),
+                    new Vector3d(bb.minX, bb.maxY, bb.minZ),
+                    new Vector3d(bb.maxX, bb.maxY, bb.minZ),
+                    new Vector3d(bb.maxX, bb.maxY, bb.maxZ),
+                    new Vector3d(bb.minX, bb.maxY, bb.maxZ)
                 };
-                for (final Vec3d vert : verts) {
+                for (final Vector3d vert : verts) {
                     bounds.include(matrix.transform(vert));
                 }
                 matrix.pop();

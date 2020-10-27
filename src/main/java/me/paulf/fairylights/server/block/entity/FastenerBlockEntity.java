@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -27,7 +27,7 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
         return this.getFastener().map(fastener -> fastener.getBounds().grow(1)).orElseGet(super::getRenderBoundingBox);
     }
 
-    public Vec3d getOffset() {
+    public Vector3d getOffset() {
         return FLBlocks.FASTENER.get().getOffset(this.getFacing(), 0.125F);
     }
 
@@ -51,7 +51,7 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
-        this.read(pkt.getNbtCompound());
+        this.read(this.world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
     }
 
     @Override

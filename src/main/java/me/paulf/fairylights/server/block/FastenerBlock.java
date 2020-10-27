@@ -20,7 +20,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -165,7 +165,7 @@ public final class FastenerBlock extends DirectionalBlock {
             final boolean receivingPower = world.isBlockPowered(pos);
             final boolean isPowered = state.get(TRIGGERED);
             if (receivingPower && !isPowered) {
-                world.getPendingBlockTicks().scheduleTick(pos, this, this.tickRate(world));
+                world.getPendingBlockTicks().scheduleTick(pos, this, 2);
                 world.setBlockState(pos, state.with(TRIGGERED, true), 4);
             } else if (!receivingPower && isPowered) {
                 world.setBlockState(pos, state.with(TRIGGERED, false), 4);
@@ -195,11 +195,6 @@ public final class FastenerBlock extends DirectionalBlock {
             .max().orElse(0);
     }
 
-    @Override
-    public int tickRate(final IWorldReader world) {
-        return 2;
-    }
-
     @SuppressWarnings("deprecation")
     @Override
     public void tick(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
@@ -219,11 +214,11 @@ public final class FastenerBlock extends DirectionalBlock {
         );
     }
 
-    public Vec3d getOffset(final Direction facing, final float offset) {
+    public Vector3d getOffset(final Direction facing, final float offset) {
         return getFastenerOffset(facing, offset);
     }
 
-    public static Vec3d getFastenerOffset(final Direction facing, final float offset) {
+    public static Vector3d getFastenerOffset(final Direction facing, final float offset) {
         double x = offset, y = offset, z = offset;
         switch (facing) {
             case DOWN:
@@ -244,6 +239,6 @@ public final class FastenerBlock extends DirectionalBlock {
                 x += 0.375F;
                 y += 0.375F;
         }
-        return new Vec3d(x, y, z);
+        return new Vector3d(x, y, z);
     }
 }

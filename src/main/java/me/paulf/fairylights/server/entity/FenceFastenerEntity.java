@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -87,7 +88,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     @SuppressWarnings("deprecation")
     @Override
     public float getBrightness() {
-        final BlockPos pos = new BlockPos(this);
+        final BlockPos pos = this.getPosition();
         if (this.world.isBlockPresent(pos)) {
             return this.world.getBrightness(pos);
         }
@@ -199,7 +200,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     }
 
     @Override
-    public boolean processInitialInteract(final PlayerEntity player, final Hand hand) {
+    public ActionResultType processInitialInteract(final PlayerEntity player, final Hand hand) {
         final ItemStack stack = player.getHeldItem(hand);
         if (stack.getItem() instanceof ConnectionItem) {
             if (this.world.isRemote) {
@@ -207,7 +208,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
             } else {
                 this.getFastener().ifPresent(fastener -> ((ConnectionItem) stack.getItem()).connect(stack, player, this.world, fastener));
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         return super.processInitialInteract(player, hand);
     }

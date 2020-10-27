@@ -28,9 +28,11 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.RegistryObject;
@@ -48,7 +50,7 @@ import java.util.function.UnaryOperator;
 public final class FLCraftingRecipes {
     private FLCraftingRecipes() {}
 
-    public static final DeferredRegister<IRecipeSerializer<?>> REG = new DeferredRegister<>(ForgeRegistries.RECIPE_SERIALIZERS, FairyLights.ID);
+    public static final DeferredRegister<IRecipeSerializer<?>> REG = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, FairyLights.ID);
 
     public static final RegistryObject<IRecipeSerializer<GenericRecipe>> HANGING_LIGHTS = REG.register("crafting_special_hanging_lights", makeSerializer(FLCraftingRecipes::createHangingLights));
 
@@ -110,15 +112,15 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<CopyColorRecipe>> COPY_COLOR = REG.register("crafting_special_copy_color", makeSerializer(CopyColorRecipe::new));
 
-    public static final Tag<Item> LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "lights"));
+    public static final ITag.INamedTag<Item> LIGHTS = ItemTags.makeWrapperTag(FairyLights.ID + ":lights");
 
-    public static final Tag<Item> TWINKLING_LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "twinkling_lights"));
+    public static final ITag.INamedTag<Item> TWINKLING_LIGHTS = ItemTags.makeWrapperTag(FairyLights.ID + ":twinkling_lights");
 
-    public static final Tag<Item> PENNANTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "pennants"));
+    public static final ITag.INamedTag<Item> PENNANTS = ItemTags.makeWrapperTag(FairyLights.ID + ":pennants");
 
-    public static final Tag<Item> DYEABLE = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable"));
+    public static final ITag.INamedTag<Item> DYEABLE = ItemTags.makeWrapperTag(FairyLights.ID + ":dyeable");
 
-    public static final Tag<Item> DYEABLE_LIGHTS = new ItemTags.Wrapper(new ResourceLocation(FairyLights.ID, "dyeable_lights"));
+    public static final ITag.INamedTag<Item> DYEABLE_LIGHTS = ItemTags.makeWrapperTag(FairyLights.ID + ":dyeable_lights");
 
     public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(LazyTagIngredient.of(Tags.Items.DYES)) {
         @Override
@@ -186,7 +188,7 @@ public final class FLCraftingRecipes {
                 }
 
                 @Override
-                public void addTooltip(final List<String> tooltip) {
+                public void addTooltip(final List<ITextComponent> tooltip) {
                     super.addTooltip(tooltip);
                     tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.twinkling_lights.glowstone"));
                 }
@@ -249,7 +251,7 @@ public final class FLCraftingRecipes {
                 }
 
                 @Override
-                public void addTooltip(final List<String> tooltip) {
+                public void addTooltip(final List<ITextComponent> tooltip) {
                     super.addTooltip(tooltip);
                     tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.hangingLights.string"));
                 }
@@ -636,7 +638,7 @@ public final class FLCraftingRecipes {
         }
 
         @Override
-        public void addTooltip(final List<String> tooltip) {
+        public void addTooltip(final List<ITextComponent> tooltip) {
             tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.hangingLights.light"));
         }
     }
@@ -688,7 +690,7 @@ public final class FLCraftingRecipes {
         }
 
         @Override
-        public void addTooltip(final List<String> tooltip) {
+        public void addTooltip(final List<ITextComponent> tooltip) {
             tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.pennantBunting.pennant"));
         }
     }

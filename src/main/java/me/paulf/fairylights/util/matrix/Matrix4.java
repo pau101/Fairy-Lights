@@ -1,7 +1,7 @@
 package me.paulf.fairylights.util.matrix;
 
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.Objects;
 
@@ -146,9 +146,9 @@ public final class Matrix4 {
         this.m33 = m33;
     }
 
-    public Vec3d transform(final Vec3d point) {
+    public Vector3d transform(final Vector3d point) {
         Objects.requireNonNull(point, "point");
-        return new Vec3d(
+        return new Vector3d(
             this.m00 * point.x + this.m01 * point.y + this.m02 * point.z + this.m03,
             this.m10 * point.x + this.m11 * point.y + this.m12 * point.z + this.m13,
             this.m20 * point.x + this.m21 * point.y + this.m22 * point.z + this.m23

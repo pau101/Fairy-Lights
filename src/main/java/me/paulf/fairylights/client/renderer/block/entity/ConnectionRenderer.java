@@ -7,11 +7,11 @@ import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 
 public abstract class ConnectionRenderer<C extends Connection> {
     private final WireModel model;

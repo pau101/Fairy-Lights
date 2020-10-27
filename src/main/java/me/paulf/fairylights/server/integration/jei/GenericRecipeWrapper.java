@@ -19,6 +19,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Size2i;
 import org.apache.logging.log4j.LogManager;
 
@@ -321,7 +322,7 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         }
 
         @Override
-        public void onTooltip(final int slot, final boolean input, final ItemStack ingredient, final List<String> tooltip) {
+        public void onTooltip(final int slot, final boolean input, final ItemStack ingredient, final List<ITextComponent> tooltip) {
             if (input) {
                 final GenericIngredient<?, ?> ing = this.ingredients[slot - 1];
                 if (ing != null) {

@@ -1,9 +1,11 @@
 package me.paulf.fairylights.client.gui.component;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
 
 public class ToggleButton extends Button {
     private final int u;
@@ -14,7 +16,7 @@ public class ToggleButton extends Button {
 
     private boolean pressed;
 
-    public ToggleButton(final int x, final int y, final int u, final int v, final String msg, final Button.IPressable pressable) {
+    public ToggleButton(final int x, final int y, final int u, final int v, final ITextComponent msg, final Button.IPressable pressable) {
         super(x, y, 20, 20, msg, pressable);
         this.u = u;
         this.v = v;
@@ -41,7 +43,7 @@ public class ToggleButton extends Button {
     }
 
     @Override
-    public void renderButton(final int mouseX, final int mouseY, final float delta) {
+    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -59,7 +61,7 @@ public class ToggleButton extends Button {
                     t = 0;
                 }
             }
-            this.blit(this.x, this.y, this.u, this.v + this.height * t, this.width, this.height);
+            this.blit(stack, this.x, this.y, this.u, this.v + this.height * t, this.width, this.height);
         }
     }
 }

@@ -1,6 +1,6 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.Objects;
 import java.util.function.ToIntFunction;
@@ -57,13 +57,13 @@ public final class Mth {
         return x;
     }
 
-    public static Vec3d lerp(final Vec3d a, final Vec3d b, final double t) {
+    public static Vector3d lerp(final Vector3d a, final Vector3d b, final double t) {
         Objects.requireNonNull(a, "a vector");
         Objects.requireNonNull(b, "b vector");
         final double x = a.x + (b.x - a.x) * t;
         final double y = a.y + (b.y - a.y) * t;
         final double z = a.z + (b.z - a.z) * t;
-        return new Vec3d(x, y, z);
+        return new Vector3d(x, y, z);
     }
 
     public static float lerpAngle(final float a, final float b, final float t) {
@@ -116,7 +116,7 @@ public final class Mth {
         return a;
     }
 
-    public static double angle(final Vec3d a, final Vec3d b) {
+    public static double angle(final Vector3d a, final Vector3d b) {
         Objects.requireNonNull(a, "a vector");
         Objects.requireNonNull(b, "b vector");
         final double theta = a.dotProduct(b) / (a.length() * b.length());

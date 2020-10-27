@@ -25,7 +25,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -136,7 +136,7 @@ public abstract class ConnectionItem extends Item {
                 fastener.connect(world, attacher, this.getConnectionType(), data == null ? new CompoundNBT() : data, false);
             }
             if (playSound) {
-                final Vec3d pos = fastener.getConnectionPoint();
+                final Vector3d pos = fastener.getConnectionPoint();
                 world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         });

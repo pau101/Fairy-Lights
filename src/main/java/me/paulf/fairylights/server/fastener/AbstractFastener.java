@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -90,7 +90,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     @Override
     public boolean update() {
         final Iterator<Connection> it = this.outgoing.values().iterator();
-        final Vec3d fromOffset = this.getConnectionPoint();
+        final Vector3d fromOffset = this.getConnectionPoint();
         boolean dirty = this.dirty;
         this.dirty = false;
         while (it.hasNext()) {

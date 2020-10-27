@@ -16,12 +16,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix3f;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
@@ -70,7 +70,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 final float g = ((color >> 8) & 0xFF) / 255.0F;
                 final float b = (color & 0xFF) / 255.0F;
                 final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(this.models.getOrDefault(currPennant.getItem(), TRIANGLE_MODEL));
-                final Vec3d pos = currPennant.getPoint(delta);
+                final Vector3d pos = currPennant.getPoint(delta);
                 matrix.push();
                 matrix.translate(pos.x, pos.y, pos.z);
                 matrix.rotate(Vector3f.YP.rotation(-currPennant.getYaw(delta)));

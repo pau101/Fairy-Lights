@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public final class FLBlocks {
     private FLBlocks() {}
 
-    public static final DeferredRegister<Block> REG = new DeferredRegister<>(ForgeRegistries.BLOCKS, FairyLights.ID);
+    public static final DeferredRegister<Block> REG = DeferredRegister.create(ForgeRegistries.BLOCKS, FairyLights.ID);
 
     public static final RegistryObject<FastenerBlock> FASTENER = REG.register("fastener", () -> new FastenerBlock(Block.Properties.create(Material.MISCELLANEOUS).noDrops()));
 
@@ -64,6 +64,6 @@ public final class FLBlocks {
     }
 
     private static Supplier<LightBlock> createLight(final LightVariant<?> variant, final BiFunction<Block.Properties, LightVariant<?>, LightBlock> factory) {
-        return () -> factory.apply(Block.Properties.create(Material.MISCELLANEOUS).lightValue(15).notSolid(), variant);
+        return () -> factory.apply(Block.Properties.create(Material.MISCELLANEOUS).setLightLevel(state -> 15).notSolid(), variant);
     }
 }

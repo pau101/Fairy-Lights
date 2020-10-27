@@ -16,7 +16,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.Entity;
-import net.minecraft.profiler.DebugProfiler;
+import net.minecraft.profiler.IProfileResult;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -150,12 +151,12 @@ public final class ClientCommandProvider {
 
         public DummyServer() {
             //noinspection ConstantConditions
-            super(null, null, null, null, null, null, null, null, null);
+            super(null, null, null, null, null, null, null, null, null, null, null);
         }
 
         @Override
-        public DebugProfiler getProfiler() {
-            return new DebugProfiler(() -> 0);
+        public IProfileResult func_240791_aR_() {
+            return super.func_240791_aR_();
         }
     }
 
@@ -167,8 +168,8 @@ public final class ClientCommandProvider {
         }
 
         @Override
-        public void sendMessage(final ITextComponent message) {
-            this.entity.sendMessage(message);
+        public void sendMessage(final ITextComponent component, final UUID sender) {
+            this.entity.sendMessage(component, sender);
         }
 
         @Override

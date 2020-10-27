@@ -40,7 +40,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -116,7 +116,7 @@ public final class ServerEventHandler {
             if (!world.isRemote) {
                 final IPacket<?> pkt = new SBlockActionPacket(pos, noteBlock, event.getInstrument().ordinal(), note);
                 final PlayerList players = world.getServer().getPlayerList();
-                players.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, world.getDimension().getType(), pkt);
+                players.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, world.getDimensionKey(), pkt);
             }
             event.setCanceled(true);
         }
@@ -171,11 +171,11 @@ public final class ServerEventHandler {
         }
         if (FairyLights.CHRISTMAS.isOccurringNow() && FLConfig.isJingleEnabled() && this.rng.nextFloat() < this.jingleProbability) {
             final List<TileEntity> tileEntities = event.world.loadedTileEntityList;
-            final List<Vec3d> playingSources = new ArrayList<>();
+            final List<Vector3d> playingSources = new ArrayList<>();
             final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections = new HashMap<>();
             for (final TileEntity tileEntity : tileEntities) {
                 tileEntity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
-                    final List<Vec3d> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
+                    final List<Vector3d> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
                     if (!newPlayingSources.isEmpty()) {
                         playingSources.addAll(newPlayingSources);
                     }
@@ -183,7 +183,7 @@ public final class ServerEventHandler {
             }
             ((ServerWorld) event.world).getEntities().forEach(entity -> {
                 entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
-                    final List<Vec3d> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
+                    final List<Vector3d> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
                     if (!newPlayingSources.isEmpty()) {
                         playingSources.addAll(newPlayingSources);
                     }
@@ -208,8 +208,8 @@ public final class ServerEventHandler {
         }
     }
 
-    private List<Vec3d> getPlayingLightSources(final World world, final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections, final Fastener<?> fastener) {
-        final List<Vec3d> points = new ArrayList<>();
+    private List<Vector3d> getPlayingLightSources(final World world, final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections, final Fastener<?> fastener) {
+        final List<Vector3d> points = new ArrayList<>();
         final double expandAmount = FLConfig.getJingleAmplitude();
         final AxisAlignedBB listenerRegion = fastener.getBounds().expand(expandAmount, expandAmount, expandAmount);
         final List<PlayerEntity> nearPlayers = world.getEntitiesWithinAABB(PlayerEntity.class, listenerRegion);
@@ -238,9 +238,9 @@ public final class ServerEventHandler {
         return points;
     }
 
-    public boolean isTooCloseTo(final Fastener<?> fastener, final Light<?>[] lights, final List<Vec3d> playingSources) {
+    public boolean isTooCloseTo(final Fastener<?> fastener, final Light<?>[] lights, final List<Vector3d> playingSources) {
         for (final Light<?> light : lights) {
-            for (final Vec3d point : playingSources) {
+            for (final Vector3d point : playingSources) {
                 if (light.getAbsolutePoint(fastener).distanceTo(point) <= FLConfig.getJingleAmplitude()) {
                     return true;
                 }

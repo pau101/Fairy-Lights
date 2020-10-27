@@ -23,7 +23,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.lighting.BlockLightEngine;
@@ -84,7 +84,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
+    public boolean interact(final PlayerEntity player, final Vector3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
         if (featureType == FEATURE && heldStack.getItem().isIn(FLCraftingRecipes.LIGHTS )) {
             final int index = feature % this.pattern.size();
             final ItemStack light = this.pattern.get(index);
@@ -156,7 +156,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    protected Light<?> createFeature(final int index, final Vec3d point, final float yaw, final float pitch) {
+    protected Light<?> createFeature(final int index, final Vector3d point, final float yaw, final float pitch) {
         final ItemStack lightData = this.getPatternStack(index);
         return this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY_LIGHT));
     }
@@ -175,7 +175,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
     }
 
-    private <T extends LightBehavior> Light<T> createLight(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack stack, final LightVariant<T> variant) {
+    private <T extends LightBehavior> Light<T> createLight(final int index, final Vector3d point, final float yaw, final float pitch, final ItemStack stack, final LightVariant<T> variant) {
         return new Light<>(index, point, yaw, pitch, stack, variant, 0.125F);
     }
 

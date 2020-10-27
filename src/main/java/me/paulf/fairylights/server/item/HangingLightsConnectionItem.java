@@ -35,7 +35,7 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
         final CompoundNBT compound = stack.getTag();
         if (compound != null) {
             final ResourceLocation name = RegistryObjects.getName(getString(compound));
-            tooltip.add(new TranslationTextComponent("item." + name.getNamespace() + "." + name.getPath()).applyTextStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("item." + name.getNamespace() + "." + name.getPath()).mergeStyle(TextFormatting.GRAY));
         }
         if (compound != null && compound.contains("pattern", NBT.TAG_LIST)) {
             final ListNBT tagList = compound.getList("pattern", NBT.TAG_COMPOUND);

@@ -1,12 +1,12 @@
 package me.paulf.fairylights.server.collision;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 
 public interface Collidable {
     @Nullable
-    Intersection intersect(final Vec3d origin, final Vec3d end);
+    Intersection intersect(final Vector3d origin, final Vector3d end);
 
     static Collidable empty() {
         return (o, e) -> null;

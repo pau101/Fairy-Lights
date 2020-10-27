@@ -26,8 +26,8 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
     }
 
     @Override
-    protected int getBlockLight(final FenceFastenerEntity entity, final float delta) {
-        return entity.world.getLightFor(LightType.BLOCK, new BlockPos(entity));
+    protected int getBlockLight(final FenceFastenerEntity entity, final BlockPos delta) {
+        return entity.world.getLightFor(LightType.BLOCK, entity.getPosition());
     }
 
     @Override

@@ -20,7 +20,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class LightBlockEntity extends TileEntity {
@@ -30,7 +30,7 @@ public class LightBlockEntity extends TileEntity {
 
     public LightBlockEntity() {
         super(FLBlockEntities.LIGHT.get());
-        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, SimpleLightVariant.FAIRY_LIGHT, 0.0F);
+        this.light = new Light<>(0, Vector3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, SimpleLightVariant.FAIRY_LIGHT, 0.0F);
     }
 
     public Light<?> getLight() {
@@ -38,7 +38,7 @@ public class LightBlockEntity extends TileEntity {
     }
 
     public void setItemStack(final ItemStack stack) {
-        this.light = new Light<>(0, Vec3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).orElse(SimpleLightVariant.FAIRY_LIGHT), 0.0F);
+        this.light = new Light<>(0, Vector3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).orElse(SimpleLightVariant.FAIRY_LIGHT), 0.0F);
         this.markDirty();
     }
 
@@ -86,7 +86,7 @@ public class LightBlockEntity extends TileEntity {
                 matrix.translate(0.0F, -(float) this.light.getVariant().getBounds().minY - 0.5F, 0.0F);
             }
         }
-        this.light.getBehavior().animateTick(this.world, new Vec3d(this.getPos()).add(matrix.transform(Vec3d.ZERO)), this.light);
+        this.light.getBehavior().animateTick(this.world, Vector3d.copy(this.getPos()).add(matrix.transform(Vector3d.ZERO)), this.light);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class LightBlockEntity extends TileEntity {
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
-        this.read(pkt.getNbtCompound());
+        this.read(this.world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
     }
 
     @Override
@@ -113,8 +113,8 @@ public class LightBlockEntity extends TileEntity {
     }
 
     @Override
-    public void read(final CompoundNBT compound) {
-        super.read(compound);
+    public void read(final BlockState state, final CompoundNBT compound) {
+        super.read(state, compound);
         this.setItemStack(ItemStack.read(compound.getCompound("item")));
         this.setOn(compound.getBoolean("on"));
     }

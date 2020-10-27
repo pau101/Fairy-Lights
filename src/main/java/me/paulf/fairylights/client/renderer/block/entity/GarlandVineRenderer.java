@@ -9,9 +9,9 @@ import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.RandomArray;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.stream.IntStream;
 

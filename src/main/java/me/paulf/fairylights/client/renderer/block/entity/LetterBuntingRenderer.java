@@ -11,9 +11,9 @@ import me.paulf.fairylights.server.connection.LetterBuntingConnection;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.Locale;
 
@@ -50,7 +50,7 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
             final float r = ((color >> 16) & 0xFF) / 255.0F;
             final float g = ((color >> 8) & 0xFF) / 255.0F;
             final float b = (color & 0xFF) / 255.0F;
-            final Vec3d pos = letter.getPoint(delta);
+            final Vector3d pos = letter.getPoint(delta);
             matrix.push();
             matrix.translate(pos.x, pos.y, pos.z);
             matrix.rotate(Vector3f.YP.rotation(-letter.getYaw(delta)));

@@ -12,7 +12,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.function.BiConsumer;
@@ -24,7 +24,7 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
 
     private PlayerAction type;
 
-    private Vec3d hit;
+    private Vector3d hit;
 
     private FeatureType featureType;
 
@@ -55,7 +55,7 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
     public void decode(final PacketBuffer buf) {
         super.decode(buf);
         this.type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
-        this.hit = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        this.hit = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.featureType = FeatureType.fromId(buf.readVarInt());
         this.featureId = buf.readVarInt();
     }
@@ -66,7 +66,7 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
             final ServerPlayerEntity player = context.getPlayer();
             getConnection(message, c -> true, player.world).ifPresent(connection -> {
                 if (connection.isModifiable(player) &&
-                    player.getPositionVec().squareDistanceTo(new Vec3d(connection.getFastener().getPos())) < RANGE &&
+                    player.getPositionVec().squareDistanceTo(Vector3d.copy(connection.getFastener().getPos())) < RANGE &&
                     player.getDistanceSq(message.hit.x, message.hit.y, message.hit.z) < REACH
                 ) {
                     if (message.type == PlayerAction.ATTACK) {
@@ -78,7 +78,7 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
             });
         }
 
-        private void interact(final InteractionConnectionMessage message, final PlayerEntity player, final Connection connection, final Vec3d hit) {
+        private void interact(final InteractionConnectionMessage message, final PlayerEntity player, final Connection connection, final Vector3d hit) {
             for (final Hand hand : Hand.values()) {
                 final ItemStack stack = player.getHeldItem(hand);
                 final ItemStack oldStack = stack.copy();

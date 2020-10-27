@@ -2,7 +2,7 @@ package me.paulf.fairylights.util;
 
 import me.paulf.fairylights.server.connection.Connection;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.NoSuchElementException;
 
@@ -182,8 +182,8 @@ public final class Catenary {
             }
 
             @Override
-            public Vec3d getPos() {
-                return new Vec3d(Catenary.this.x[this.index] * Catenary.this.dx, Catenary.this.y[this.index], Catenary.this.x[this.index] * Catenary.this.dz);
+            public Vector3d getPos() {
+                return new Vector3d(Catenary.this.x[this.index] * Catenary.this.dx, Catenary.this.y[this.index], Catenary.this.x[this.index] * Catenary.this.dz);
             }
 
             @Override
@@ -230,7 +230,7 @@ public final class Catenary {
 
         float getZ(final float t);
 
-        Vec3d getPos();
+        Vector3d getPos();
 
         float getYaw();
 
@@ -247,7 +247,7 @@ public final class Catenary {
         return this.length;
     }
 
-    public static Catenary from(final Vec3d direction, final float verticalYaw, final CubicBezier bezier, final float slack) {
+    public static Catenary from(final Vector3d direction, final float verticalYaw, final CubicBezier bezier, final float slack) {
         final float dist = (float) direction.length();
         final float length;
         if (slack < 1e-2 || Math.abs(direction.x) < 1e-6 && Math.abs(direction.z) < 1e-6) {
@@ -262,7 +262,7 @@ public final class Catenary {
         return bezier.eval(MathHelper.clamp((float) length / Connection.MAX_LENGTH, 0, 1)) * Connection.MAX_LENGTH;
     }
 
-    public static Catenary from(final Vec3d dir, final float verticalYaw, final float ropeLength) {
+    public static Catenary from(final Vector3d dir, final float verticalYaw, final float ropeLength) {
         final float endX = MathHelper.sqrt(dir.x * dir.x + dir.z * dir.z);
         final float endY = (float) dir.y;
         final float angle = endX < 1e-3F ? endY < 0.0F ? verticalYaw + Mth.PI : verticalYaw : (float) MathHelper.atan2(dir.z, dir.x);

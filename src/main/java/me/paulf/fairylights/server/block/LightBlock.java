@@ -11,6 +11,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.AttachFace;
@@ -29,8 +31,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -79,10 +79,9 @@ public class LightBlock extends HorizontalFaceBlock {
         return this.variant;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public int getLightValue(final BlockState state) {
-        return state.get(LIT) ? super.getLightValue(state) : 0;
+    public int getLightValue(final BlockState state, final IBlockReader world, final BlockPos pos) {
+        return state.get(LIT) ? super.getLightValue(state, world, pos) : 0;
     }
 
     @Override

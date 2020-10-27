@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
@@ -26,7 +26,7 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
     private E entity;
 
     @Nullable
-    private Vec3d pos;
+    private Vector3d pos;
 
     public EntityFastenerAccessor(final Class<? extends E> entityClass) {
         this(entityClass, (UUID) null);
@@ -102,7 +102,7 @@ public abstract class EntityFastenerAccessor<E extends Entity> implements Fasten
         this.uuid = tag.getUniqueId("UUID");
         if (tag.contains("Pos", Constants.NBT.TAG_LIST)) {
             final ListNBT pos = tag.getList("Pos", Constants.NBT.TAG_DOUBLE);
-            this.pos = new Vec3d(pos.getDouble(0), pos.getDouble(1), pos.getDouble(2));
+            this.pos = new Vector3d(pos.getDouble(0), pos.getDouble(1), pos.getDouble(2));
         } else {
             this.pos = null;
         }

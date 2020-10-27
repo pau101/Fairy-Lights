@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
@@ -32,7 +32,7 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
     AxisAlignedBB getBounds();
 
-    Vec3d getConnectionPoint();
+    Vector3d getConnectionPoint();
 
     BlockPos getPos();
 
@@ -47,7 +47,7 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
     boolean isMoving();
 
-    default void resistSnap(final Vec3d from) {}
+    default void resistSnap(final Vector3d from) {}
 
     boolean update();
 

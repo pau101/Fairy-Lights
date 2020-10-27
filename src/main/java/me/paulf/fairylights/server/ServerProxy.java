@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -32,17 +33,16 @@ import java.util.function.Consumer;
 public class ServerProxy {
     public void init(final IEventBus modBus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
-        MinecraftForge.EVENT_BUS.<FMLServerAboutToStartEvent>addListener(e -> {
-            final MinecraftServer server = e.getServer();
-            this.addListener(server.getResourceManager(), mgr -> JingleLibrary.loadAll(server));
+        MinecraftForge.EVENT_BUS.<AddReloadListenerEvent>addListener(e -> {
+            this.addListener(e, JingleLibrary::loadAll);
         });
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         modBus.addListener(this::setup);
     }
 
     @SuppressWarnings("deprecation")
-    private void addListener(final IReloadableResourceManager manager, final Consumer<IResourceManager> listener) {
-        manager.addReloadListener((IResourceManagerReloadListener) listener::accept);
+    private void addListener(final AddReloadListenerEvent event, final Consumer<IResourceManager> listener) {
+        event.addListener((IResourceManagerReloadListener) listener::accept);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

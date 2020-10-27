@@ -2,7 +2,7 @@ package me.paulf.fairylights.server.feature.light;
 
 import me.paulf.fairylights.server.item.DyeableItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class FixedColorBehavior implements ColorLightBehavior {
@@ -38,7 +38,7 @@ public class FixedColorBehavior implements ColorLightBehavior {
     }
 
     @Override
-    public void tick(final World world, final Vec3d origin, final Light<?> light) {
+    public void tick(final World world, final Vector3d origin, final Light<?> light) {
     }
 
     public static ColorLightBehavior create(final ItemStack stack) {

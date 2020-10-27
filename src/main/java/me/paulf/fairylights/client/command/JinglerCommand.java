@@ -13,6 +13,7 @@ import me.paulf.fairylights.client.midi.MidiJingler;
 import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -147,17 +148,18 @@ public final class JinglerCommand {
     private static ITextComponent createDeviceText(final MidiDevice device) {
         final MidiDevice.Info info = device.getDeviceInfo();
         return new StringTextComponent("")
-            .appendSibling(new TranslationTextComponent("commands.jingler.device.vendor", new StringTextComponent(info.getVendor()).applyTextStyle(TextFormatting.GOLD)))
-            .appendText("\n")
-            .appendSibling(new TranslationTextComponent("commands.jingler.device.description", new StringTextComponent(info.getDescription()).applyTextStyle(TextFormatting.GOLD)));
+            .append(new TranslationTextComponent("commands.jingler.device.vendor", new StringTextComponent(info.getVendor()).mergeStyle(TextFormatting.GOLD)))
+            .appendString("\n")
+            .append(new TranslationTextComponent("commands.jingler.device.description", new StringTextComponent(info.getDescription()).mergeStyle(TextFormatting.GOLD)));
     }
 
     public static void register(final IEventBus bus) {
-        bus.<RenderTooltipEvent.Pre>addListener(EventPriority.HIGH, e -> {
+        // TODO: jingler tooltip line splitting
+        /*bus.<RenderTooltipEvent.Pre>addListener(EventPriority.HIGH, e -> {
             if (!e.getStack().isEmpty()) return;
-            final List<String> lines = e.getLines();
+            final List<? extends ITextProperties> lines = e.getLines();
             if (lines.size() != 1) return;
-            final String line = lines.get(0);
+            final ITextProperties line = lines.get(0);
             final String[] split = line.split("\n");
             if (split.length == 1) return;
             e.setCanceled(true);
@@ -170,7 +172,7 @@ public final class JinglerCommand {
                 e.getMaxWidth(),
                 e.getFontRenderer()
             );
-        });
+        });*/
         bus.<WorldEvent.Unload>addListener(e -> {
             if (e.getWorld().isRemote() && USED_COMMAND.compareAndSet(true, false)) {
                 getDevices().forEach(JinglerCommand::close);

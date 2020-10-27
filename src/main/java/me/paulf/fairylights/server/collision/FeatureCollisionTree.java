@@ -4,7 +4,8 @@ import me.paulf.fairylights.server.feature.Feature;
 import me.paulf.fairylights.server.feature.FeatureType;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -26,13 +27,13 @@ public final class FeatureCollisionTree implements Collidable {
 
     @Nullable
     @Override
-    public Intersection intersect(final Vec3d origin, final Vec3d end) {
+    public Intersection intersect(final Vector3d origin, final Vector3d end) {
         return this.intersect(origin, end, 0);
     }
 
     @Nullable
-    private Intersection intersect(final Vec3d origin, final Vec3d end, final int node) {
-        final Vec3d result;
+    private Intersection intersect(final Vector3d origin, final Vector3d end, final int node) {
+        final Vector3d result;
         if (this.tree[node].contains(origin)) {
             result = origin;
         } else {

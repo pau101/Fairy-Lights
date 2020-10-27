@@ -13,13 +13,13 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '3.0.11'
+version = '3.1.0'
 group = 'me.paulf.fairylights'
 archivesBaseName = 'fairylights'
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    mappings channel: 'snapshot', version: '20200916-1.16.2'
     runs {
         client {
             workingDirectory project.file('run')
@@ -57,7 +57,7 @@ minecraft {
 }
 
 jar {
-    classifier '1.15.2'
+    classifier '1.16.3'
     exclude '.cache'
 }
 
@@ -81,9 +81,9 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
-    compileOnly fg.deobf('mezz.jei:jei-1.15.2:6.0.0.4:api')
-    runtimeOnly fg.deobf('mezz.jei:jei-1.15.2:6.0.0.4')
+    minecraft 'net.minecraftforge:forge:1.16.3-34.1.29'
+    compileOnly fg.deobf('mezz.jei:jei-1.16.3:7.6.0.49:api')
+    runtimeOnly fg.deobf('mezz.jei:jei-1.16.3:7.6.0.49')
 }
 
 processResources {

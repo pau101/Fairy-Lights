@@ -3,8 +3,8 @@ package me.paulf.fairylights.util;
 import com.google.common.base.Preconditions;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public final class AABBBuilder {
         this.maxZ = (this.minZ = pos.getZ()) + 1;
     }
 
-    public AABBBuilder(final Vec3d min, final Vec3d max) {
+    public AABBBuilder(final Vector3d min, final Vector3d max) {
         this(
             Objects.requireNonNull(min, "min").x, min.y, min.z,
             Objects.requireNonNull(max, "max").x, max.y, max.z
@@ -48,11 +48,11 @@ public final class AABBBuilder {
         this.maxZ = Math.max(minZ, maxZ);
     }
 
-    public AABBBuilder add(final Vec3d point) {
+    public AABBBuilder add(final Vector3d point) {
         return this.add(Objects.requireNonNull(point, "point").x, point.y, point.z);
     }
 
-    public AABBBuilder add(final Vec3i point) {
+    public AABBBuilder add(final Vector3i point) {
         return this.add(Objects.requireNonNull(point, "point").getX(), point.getY(), point.getZ());
     }
 
@@ -66,7 +66,7 @@ public final class AABBBuilder {
         return this;
     }
 
-    public AABBBuilder include(final Vec3d point) {
+    public AABBBuilder include(final Vector3d point) {
         return this.include(Objects.requireNonNull(point, "point").x, point.y, point.z);
     }
 

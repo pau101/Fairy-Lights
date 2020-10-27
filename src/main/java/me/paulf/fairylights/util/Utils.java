@@ -1,6 +1,8 @@
 package me.paulf.fairylights.util;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Objects;
 
@@ -12,11 +14,11 @@ public final class Utils {
         return values[ordinal < 0 || ordinal >= values.length ? 0 : ordinal];
     }
 
-    public static String formatRecipeTooltip(final String key) {
+    public static ITextComponent formatRecipeTooltip(final String key) {
         return formatRecipeTooltipValue(I18n.format(key));
     }
 
-    private static String formatRecipeTooltipValue(final String value) {
-        return I18n.format("recipe.ingredient.tooltip", value);
+    private static ITextComponent formatRecipeTooltipValue(final String value) {
+        return new TranslationTextComponent("recipe.ingredient.tooltip", value);
     }
 }

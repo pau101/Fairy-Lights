@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public final class FLItems {
     private FLItems() {}
 
-    public static final DeferredRegister<Item> REG = new DeferredRegister<>(ForgeRegistries.ITEMS, FairyLights.ID);
+    public static final DeferredRegister<Item> REG = DeferredRegister.create(ForgeRegistries.ITEMS, FairyLights.ID);
 
     public static final RegistryObject<ConnectionItem> HANGING_LIGHTS = REG.register("hanging_lights", () -> new HangingLightsConnectionItem(defaultProperties()));
 

@@ -6,8 +6,8 @@ import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.util.Mth;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConnection> {
     private final LightRenderer lights = new LightRenderer();
@@ -31,7 +31,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
         final LightRenderer.Data data = this.lights.start(source);
         for (int i = 0; i < lights.length; i++) {
             final Light<?> light = lights[i];
-            final Vec3d pos = light.getPoint(delta);
+            final Vector3d pos = light.getPoint(delta);
             matrix.push();
             matrix.translate(pos.x, pos.y, pos.z);
             matrix.rotate(Vector3f.YP.rotation(-light.getYaw(delta)));

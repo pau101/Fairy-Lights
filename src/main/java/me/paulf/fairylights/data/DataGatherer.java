@@ -17,13 +17,13 @@ import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.loot.LootParameterSet;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTableManager;
+import net.minecraft.loot.ValidationTracker;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootParameterSet;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableManager;
-import net.minecraft.world.storage.loot.ValidationTracker;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -64,15 +64,15 @@ public final class DataGatherer {
                 .key('P', Items.PAPER)
                 .key('B', Items.INK_SAC)
                 .key('F', Tags.Items.FEATHERS)
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
+                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_string", hasItem(Tags.Items.STRING))
                 .build(addNbt(consumer, nbt));
             ShapedRecipeBuilder.shapedRecipe(FLItems.GARLAND.get(), 2)
                 .patternLine("I-I")
                 .key('I', Tags.Items.INGOTS_IRON)
                 .key('-', Items.VINE)
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_vine", this.hasItem(Items.VINE))
+                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_vine", hasItem(Items.VINE))
                 .build(consumer);
             ShapedRecipeBuilder.shapedRecipe(FLItems.OIL_LANTERN.get(), 4)
                 .patternLine(" I ")
@@ -82,8 +82,8 @@ public final class DataGatherer {
                 .key('S', Items.STICK)
                 .key('T', Items.TORCH)
                 .key('G', Tags.Items.GLASS_PANES_COLORLESS)
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", this.hasItem(Items.TORCH))
+                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_torch", hasItem(Items.TORCH))
                 .build(consumer);
             ShapedRecipeBuilder.shapedRecipe(FLItems.CANDLE_LANTERN.get(), 4)
                 .patternLine(" I ")
@@ -92,8 +92,8 @@ public final class DataGatherer {
                 .key('I', Tags.Items.INGOTS_IRON)
                 .key('G', Tags.Items.NUGGETS_GOLD)
                 .key('T', Items.TORCH)
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", this.hasItem(Items.TORCH))
+                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_torch", hasItem(Items.TORCH))
                 .build(consumer);
             ShapedRecipeBuilder.shapedRecipe(FLItems.INCANDESCENT_LIGHT.get(), 4)
                 .patternLine(" I ")
@@ -102,20 +102,20 @@ public final class DataGatherer {
                 .key('I', Tags.Items.INGOTS_IRON)
                 .key('G', Tags.Items.GLASS_PANES_COLORLESS)
                 .key('T', Items.TORCH)
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", this.hasItem(Items.TORCH))
+                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_torch", hasItem(Items.TORCH))
                 .build(consumer);
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS.get())
-                .addCriterion("has_lights", this.hasItem(FLCraftingRecipes.LIGHTS))
+                .addCriterion("has_lights", hasItem(FLCraftingRecipes.LIGHTS))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS_AUGMENTATION.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights_augmentation"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.TINSEL_GARLAND.get())
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", this.hasItem(Tags.Items.STRING))
+                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_string", hasItem(Tags.Items.STRING))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "tinsel_garland"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING.get())
-                .addCriterion("has_pennants", this.hasItem(FLCraftingRecipes.PENNANTS))
+                .addCriterion("has_pennants", hasItem(FLCraftingRecipes.PENNANTS))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING_AUGMENTATION.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting_augmentation"));
@@ -173,14 +173,14 @@ public final class DataGatherer {
 
         GenericRecipeBuilder lightRecipe(final IRecipeSerializer<?> serializer) {
             return GenericRecipeBuilder.customRecipe(serializer)
-                .addCriterion("has_iron", this.hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_dye", this.hasItem(Tags.Items.DYES));
+                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_dye", hasItem(Tags.Items.DYES));
         }
 
         GenericRecipeBuilder pennantRecipe(final IRecipeSerializer<?> serializer) {
             return GenericRecipeBuilder.customRecipe(serializer)
-                .addCriterion("has_paper", this.hasItem(Items.PAPER))
-                .addCriterion("has_string", this.hasItem(Tags.Items.STRING));
+                .addCriterion("has_paper", hasItem(Items.PAPER))
+                .addCriterion("has_string", hasItem(Tags.Items.STRING));
         }
     }
 
@@ -200,7 +200,7 @@ public final class DataGatherer {
             /*for (final ResourceLocation name : Sets.difference(MyBuiltInLootTables.getAll(), map.keySet())) {
                 tracker.addProblem("Missing built-in table: " + name);
             }*/
-            map.forEach((name, table) -> LootTableManager.func_227508_a_(tracker, name, table));
+            map.forEach((name, table) -> LootTableManager.validateLootTable(tracker, name, table));
         }
     }
 

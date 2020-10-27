@@ -1,10 +1,12 @@
 package me.paulf.fairylights.client.gui.component;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public final class ColorButton extends Button {
@@ -20,7 +22,7 @@ public final class ColorButton extends Button {
 
     private float displayColorB;
 
-    public ColorButton(final int x, final int y, final String msg, final Button.IPressable onPress) {
+    public ColorButton(final int x, final int y, final ITextComponent msg, final Button.IPressable onPress) {
         super(x, y, 20, 20, msg, onPress);
     }
 
@@ -45,15 +47,15 @@ public final class ColorButton extends Button {
     }
 
     @Override
-    public void renderButton(final int mouseX, final int mouseY, final float delta) {
+    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.blit(this.x, this.y, TEX_U, this.isHovered ? TEX_V + this.height : TEX_V, this.width, this.height);
+            this.blit(stack, this.x, this.y, TEX_U, this.isHovered ? TEX_V + this.height : TEX_V, this.width, this.height);
             if (this.displayColor != null) {
-                this.blit(this.x, this.y, TEX_U + this.width, TEX_V, this.width, this.height);
+                this.blit(stack, this.x, this.y, TEX_U + this.width, TEX_V, this.width, this.height);
                 RenderSystem.color4f(this.displayColorR, this.displayColorG, this.displayColorB, 1.0F);
-                this.blit(this.x, this.y, TEX_U + this.width, TEX_V + this.height, this.width, this.height);
+                this.blit(stack, this.x, this.y, TEX_U + this.width, TEX_V + this.height, this.width, this.height);
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }

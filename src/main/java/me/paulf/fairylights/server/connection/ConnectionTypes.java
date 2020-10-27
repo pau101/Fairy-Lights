@@ -8,7 +8,7 @@ import net.minecraftforge.registries.DeferredRegister;
 public final class ConnectionTypes {
     private ConnectionTypes() {}
 
-    public static final DeferredRegister<ConnectionType<?>> REG = new DeferredRegister<>(FairyLights.CONNECTION_TYPES, FairyLights.ID);
+    public static final DeferredRegister<ConnectionType<?>> REG = DeferredRegister.create(FairyLights.CONNECTION_TYPES, FairyLights.ID);
 
     public static final RegistryObject<ConnectionType<HangingLightsConnection>> HANGING_LIGHTS = REG.register("hanging_lights",
         () -> ConnectionType.Builder.create(HangingLightsConnection::new).item(FLItems.HANGING_LIGHTS).build()

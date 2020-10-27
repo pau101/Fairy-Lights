@@ -5,7 +5,8 @@ import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor> {
     private final FastenerBlockEntity fastener;
@@ -35,8 +36,8 @@ public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor>
     }
 
     @Override
-    public Vec3d getConnectionPoint() {
-        return this.view.getPosition(this.getWorld(), this.fastener.getPos(), new Vec3d(this.getPos()).add(this.fastener.getOffset()));
+    public Vector3d getConnectionPoint() {
+        return this.view.getPosition(this.getWorld(), this.fastener.getPos(), Vector3d.copy(this.getPos()).add(this.fastener.getOffset()));
     }
 
     @Override

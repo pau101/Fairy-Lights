@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -56,46 +56,7 @@ public final class TranslucentLightRenderer {
         map.put(TRANSLUCENT, new BufferBuilder(TRANSLUCENT.getBufferSize()));
     }
 
-    public static IVertexBuilder get(final IRenderTypeBuffer source, final Material material) {
-        final IVertexBuilder mask = source.getBuffer(TranslucentLightRenderer.MASK);
-        final IVertexBuilder translucent = material.getBuffer(source, TranslucentLightRenderer::get);
-        return new IVertexBuilder() {
-            @Override
-            public IVertexBuilder pos(final double x, final double y, final double z) {
-                mask.pos(x, y, z);
-                return translucent.pos(x, y, z);
-            }
-
-            @Override
-            public IVertexBuilder color(final int red, final int green, final int blue, final int alpha) {
-                return translucent.color(red, green, blue, alpha);
-            }
-
-            @Override
-            public IVertexBuilder tex(final float u, final float v) {
-                return translucent.tex(u, v);
-            }
-
-            @Override
-            public IVertexBuilder overlay(final int u, final int v) {
-                return translucent.overlay(u, v);
-            }
-
-            @Override
-            public IVertexBuilder lightmap(final int u, final int v) {
-                return translucent.lightmap(u, v);
-            }
-
-            @Override
-            public IVertexBuilder normal(final float x, final float y, final float z) {
-                return translucent.normal(x, y, z);
-            }
-
-            @Override
-            public void endVertex() {
-                mask.endVertex();
-                translucent.endVertex();
-            }
-        };
+    public static IVertexBuilder get(final IRenderTypeBuffer source, final RenderMaterial material) {
+        return material.getBuffer(source, RenderType::getEntityTranslucent);
     }
 }

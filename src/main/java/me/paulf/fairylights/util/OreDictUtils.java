@@ -6,6 +6,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
@@ -72,16 +73,16 @@ public final class OreDictUtils {
         RED(Tags.Items.DYES_RED, DyeColor.RED),
         BLACK(Tags.Items.DYES_BLACK, DyeColor.BLACK);
 
-        private final Tag<Item> name;
+        private final ITag<Item> name;
 
         private final DyeColor color;
 
-        Dye(final Tag<Item> name, final DyeColor color) {
+        Dye(final ITag<Item> name, final DyeColor color) {
             this.name = name;
             this.color = color;
         }
 
-        private Tag<Item> getName() {
+        private ITag<Item> getName() {
             return this.name;
         }
 

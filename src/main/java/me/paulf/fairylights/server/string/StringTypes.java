@@ -7,7 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 public final class StringTypes {
     private StringTypes() {}
 
-    public static final DeferredRegister<StringType> REG = new DeferredRegister<>(FairyLights.STRING_TYPES, FairyLights.ID);
+    public static final DeferredRegister<StringType> REG = DeferredRegister.create(FairyLights.STRING_TYPES, FairyLights.ID);
 
     public static final RegistryObject<StringType> BLACK_STRING = REG.register("black_string", () -> new StringType(0x323232));
 

@@ -5,6 +5,7 @@ import me.paulf.fairylights.util.Utils;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -35,7 +36,7 @@ public interface AuxiliaryIngredient<A> extends GenericIngredient<AuxiliaryIngre
     }
 
     @Override
-    default void addTooltip(final List<String> tooltip) {
+    default void addTooltip(final List<ITextComponent> tooltip) {
         if (!this.isRequired()) {
             tooltip.add(Utils.formatRecipeTooltip("recipe.fairylights.ingredient.auxiliary.optional"));
         }

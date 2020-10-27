@@ -5,6 +5,7 @@ import me.paulf.fairylights.util.crafting.GenericRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 import java.util.Objects;
@@ -45,5 +46,5 @@ public interface GenericIngredient<I extends GenericIngredient<I, M>, M extends 
         return ImmutableList.copyOf(stack.getMatchingStacks());
     }
 
-    default void addTooltip(final List<String> tooltip) {}
+    default void addTooltip(final List<ITextComponent> tooltip) {}
 }

@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
@@ -125,7 +126,7 @@ public final class GenericRecipeBuilder {
         return this.withIngredient(key, new BasicRegularIngredient(ingredient));
     }
 
-    public GenericRecipeBuilder withIngredient(final char key, final Tag<Item> tag) {
+    public GenericRecipeBuilder withIngredient(final char key, final ITag<Item> tag) {
         return this.withIngredient(key, new BasicRegularIngredient(LazyTagIngredient.of(tag)));
     }
 

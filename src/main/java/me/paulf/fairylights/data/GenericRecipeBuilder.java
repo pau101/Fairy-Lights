@@ -6,6 +6,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.IRequirementsStrategy;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -37,7 +38,7 @@ public class GenericRecipeBuilder {
             advancementId = new ResourceLocation("");
         } else {
             advancementBuilder = this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-                .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id))
+                .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, id))
                 .withRewards(AdvancementRewards.Builder.recipe(id))
                 .withRequirementsStrategy(IRequirementsStrategy.OR)
                 ::serialize;

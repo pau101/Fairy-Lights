@@ -3,6 +3,8 @@ package me.paulf.fairylights.util.styledstring;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonParseException;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -521,7 +523,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     @Override
     public String toString() {
-        return this.toTextComponent().getFormattedText();
+        return this.toTextComponent().getString();
     }
 
     public ITextComponent toTextComponent() {
@@ -529,15 +531,15 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         if (value.length() == 0) {
             return new StringTextComponent("");
         }
-        ITextComponent text = null;
+        IFormattableTextComponent text = null;
         final Style[] styling = this.styling;
         final StringBuilder bob = new StringBuilder();
         Style currentStyle = styling[0];
         for (int i = 0; ; ) {
             final Style style = i < value.length() ? styling[i] : null;
             if (!currentStyle.equals(style)) {
-                final ITextComponent t = new StringTextComponent(bob.toString());
-                t.getStyle().setColor(currentStyle.getColor());
+                final IFormattableTextComponent t = new StringTextComponent(bob.toString());
+                t.getStyle().setColor(Color.fromTextFormatting(currentStyle.getColor()));
                 if (currentStyle.isObfuscated()) t.getStyle().setObfuscated(true);
                 if (currentStyle.isBold()) t.getStyle().setBold(true);
                 if (currentStyle.isStrikethrough()) t.getStyle().setStrikethrough(true);
@@ -546,7 +548,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
                 if (text == null) {
                     text = t;
                 } else {
-                    text.appendSibling(t);
+                    text.append(t);
                 }
                 bob.setLength(0);
             }
@@ -577,7 +579,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
     public static StyledString deserialize(final CompoundNBT compound) {
         final ITextComponent text;
         try {
-            text = ITextComponent.Serializer.fromJson(compound.getString("value"));
+            text = ITextComponent.Serializer.getComponentFromJson(compound.getString("value"));
         } catch (final JsonParseException e) {
             return new StyledString(compound.getString("value"), new Style());
         }
@@ -587,8 +589,9 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return fromTextComponent(text);
     }
 
+    // TODO: reimplement serialize to not require converting text component to legacy format for parsing
     public static StyledString fromTextComponent(final ITextComponent component) {
-        return valueOf(component.getFormattedText());
+        return valueOf(component.getString());
     }
 
     public static StyledString valueOf(final String str) {

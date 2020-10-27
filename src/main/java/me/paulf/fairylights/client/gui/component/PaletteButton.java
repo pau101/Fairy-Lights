@@ -1,5 +1,6 @@
 package me.paulf.fairylights.client.gui.component;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
@@ -8,6 +9,7 @@ import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -51,7 +53,7 @@ public class PaletteButton extends Button {
 
     private final ColorButton colorBtn;
 
-    public PaletteButton(final int x, final int y, final ColorButton colorBtn, final String msg, final Button.IPressable pressable) {
+    public PaletteButton(final int x, final int y, final ColorButton colorBtn, final ITextComponent msg, final Button.IPressable pressable) {
         super(x, y, 28, 28, msg, pressable);
         this.colorBtn = colorBtn;
     }
@@ -72,16 +74,16 @@ public class PaletteButton extends Button {
     }
 
     @Override
-    public void renderButton(final int mouseX, final int mouseY, final float delta) {
+    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.blit(this.x, this.y, TEX_U, TEX_V, this.width, this.height);
+            this.blit(stack, this.x, this.y, TEX_U, TEX_V, this.width, this.height);
             if (this.colorBtn.hasDisplayColor()) {
                 final int idx = COLOR_IDX[this.colorBtn.getDisplayColor().ordinal()];
                 final int selectX = this.x + 2 + (idx % 4) * 6;
                 final int selectY = this.y + 2 + (idx / 4) * 6;
-                this.blit(selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+                this.blit(stack, selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             for (int i = 0; i < IDX_COLOR.length; i++) {
                 final TextFormatting color = IDX_COLOR[i];
@@ -90,7 +92,7 @@ public class PaletteButton extends Button {
                 final float g = (rgb >> 8 & 0xFF) / 255F;
                 final float b = (rgb & 0xFF) / 255F;
                 RenderSystem.color4f(r, g, b, 1.0F);
-                this.blit(this.x + 2 + (i % 4) * 6, this.y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
+                this.blit(stack, this.x + 2 + (i % 4) * 6, this.y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             final int selectIndex = this.getMouseOverIndex(mouseX, mouseY);
             if (selectIndex > -1) {
@@ -99,7 +101,7 @@ public class PaletteButton extends Button {
                 RenderSystem.color4f(1, 1, 1, 0.5F);
                 final int hoverSelectX = this.x + 2 + selectIndex % 4 * 6;
                 final int hoverSelectY = this.y + 2 + selectIndex / 4 * 6;
-                this.blit(hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+                this.blit(stack, hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
                 RenderSystem.disableBlend();
             }
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

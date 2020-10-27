@@ -1,5 +1,6 @@
 package me.paulf.fairylights.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.gui.component.ColorButton;
 import me.paulf.fairylights.client.gui.component.PaletteButton;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
@@ -53,23 +55,23 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
         this.minecraft.keyboardListener.enableRepeatEvents(true);
         final int pad = 4;
         final int buttonWidth = 150;
-        this.doneBtn = this.addButton(new Button(this.width / 2 - pad - buttonWidth, this.height / 4 + 120 + 12, buttonWidth, 20, I18n.format("gui.done"), b -> {
+        this.doneBtn = this.addButton(new Button(this.width / 2 - pad - buttonWidth, this.height / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.done"), b -> {
             FairyLights.NETWORK.sendToServer(new EditLetteredConnectionMessage<>(this.connection, this.textField.getValue()));
-            this.onClose();
+            this.closeScreen();
         }));
-        this.cancelBtn = this.addButton(new Button(this.width / 2 + pad, this.height / 4 + 120 + 12, buttonWidth, 20, I18n.format("gui.cancel"), b -> this.onClose()));
+        this.cancelBtn = this.addButton(new Button(this.width / 2 + pad, this.height / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.cancel"), b -> this.closeScreen()));
         final int textFieldX = this.width / 2 - 150;
         final int textFieldY = this.height / 2 - 10;
         int buttonX = textFieldX;
         final int buttonY = textFieldY - 25;
         final int bInc = 24;
-        this.colorBtn = this.addButton(new ColorButton(buttonX, buttonY, "", b -> this.paletteBtn.visible = !this.paletteBtn.visible));
-        this.paletteBtn = this.addButton(new PaletteButton(buttonX - 4, buttonY - 30, this.colorBtn, "fairylights.color", b -> this.textField.updateStyling(this.colorBtn.getDisplayColor(), true)));
-        this.boldBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 40, 0, "", b -> this.updateStyleButton(TextFormatting.BOLD, this.boldBtn)));
-        this.italicBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 60, 0, "", b -> this.updateStyleButton(TextFormatting.ITALIC, this.italicBtn)));
-        this.underlineBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 80, 0, "", b -> this.updateStyleButton(TextFormatting.UNDERLINE, this.underlineBtn)));
-        this.strikethroughBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 100, 0, "", b -> this.updateStyleButton(TextFormatting.STRIKETHROUGH, this.strikethroughBtn)));
-        this.textField = new StyledTextFieldWidget(this.font, this.colorBtn, this.boldBtn, this.italicBtn, this.underlineBtn, this.strikethroughBtn, textFieldX, textFieldY, 300, 20, "fairylights.letteredText");
+        this.colorBtn = this.addButton(new ColorButton(buttonX, buttonY, StringTextComponent.EMPTY, b -> this.paletteBtn.visible = !this.paletteBtn.visible));
+        this.paletteBtn = this.addButton(new PaletteButton(buttonX - 4, buttonY - 30, this.colorBtn, new TranslationTextComponent("fairylights.color"), b -> this.textField.updateStyling(this.colorBtn.getDisplayColor(), true)));
+        this.boldBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 40, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.BOLD, this.boldBtn)));
+        this.italicBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 60, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.ITALIC, this.italicBtn)));
+        this.underlineBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 80, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.UNDERLINE, this.underlineBtn)));
+        this.strikethroughBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 100, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.STRIKETHROUGH, this.strikethroughBtn)));
+        this.textField = new StyledTextFieldWidget(this.font, this.colorBtn, this.boldBtn, this.italicBtn, this.underlineBtn, this.strikethroughBtn, textFieldX, textFieldY, 300, 20, new TranslationTextComponent("fairylights.letteredText"));
         this.textField.setValue(this.connection.getText());
         this.textField.setCaretStart();
         this.textField.setIsBlurable(false);
@@ -84,7 +86,7 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
         this.italicBtn.visible = ss.hasItalic();
         this.underlineBtn.visible = ss.hasUnderline();
         this.strikethroughBtn.visible = ss.hasStrikethrough();
-        this.setFocused(this.textField);
+        this.setFocusedDefault(this.textField);
     }
 
     private void validateText(final StyledString text) {
@@ -92,7 +94,8 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     }
 
     @Override
-    public void removed() {
+    public void onClose() {
+        super.onClose();
         this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
 
@@ -152,18 +155,18 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     }
 
     @Override
-    public void render(final int mouseX, final int mouseY, final float delta) {
-        this.renderBackground();
-        this.drawCenteredString(this.font, I18n.format("fairylights.editLetteredConnection"), this.width / 2, 20, 0xFFFFFF);
-        super.render(mouseX, mouseY, delta);
-        this.textField.render(mouseX, mouseY, delta);
+    public void render(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+        this.renderBackground(stack);
+        drawCenteredString(stack, this.font, new TranslationTextComponent("fairylights.editLetteredConnection"), this.width / 2, 20, 0xFFFFFF);
+        super.render(stack, mouseX, mouseY, delta);
+        this.textField.render(stack, mouseX, mouseY, delta);
         final String allowed = this.connection.getAllowedDescription();
         if (!allowed.isEmpty()) {
-            this.drawString(this.font,
+            drawString(stack, this.font,
                 new TranslationTextComponent("fairylights.editLetteredConnection.allowed_characters", allowed)
-                    .applyTextStyle(TextFormatting.GRAY).getFormattedText(),
+                    .mergeStyle(TextFormatting.GRAY),
                 this.textField.x,
-                this.textField.y + this.textField.getHeight() + 4,
+                this.textField.y + 24,
                 0xFFFFFFFF
             );
         }

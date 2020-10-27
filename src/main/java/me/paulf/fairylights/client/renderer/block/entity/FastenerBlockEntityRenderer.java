@@ -9,7 +9,7 @@ import me.paulf.fairylights.util.matrix.Matrix;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public final class FastenerBlockEntityRenderer extends TileEntityRenderer<FastenerBlockEntity> {
     private final BlockView view;
@@ -31,7 +31,7 @@ public final class FastenerBlockEntityRenderer extends TileEntityRenderer<Fasten
         fastener.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> {
             //this.bindTexture(FastenerRenderer.TEXTURE);
             matrix.push();
-            final Vec3d offset = fastener.getOffset();
+            final Vector3d offset = fastener.getOffset();
             matrix.translate(offset.x, offset.y, offset.z);
             //this.view.unrotate(this.getWorld(), f.getPos(), FastenerBlockEntityRenderer.GlMatrix.INSTANCE, delta);
             this.renderer.render(f, delta, matrix, bufferSource, packedLight, packedOverlay);

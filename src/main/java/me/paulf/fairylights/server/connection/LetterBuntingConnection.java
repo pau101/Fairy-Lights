@@ -14,7 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -115,7 +115,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
                     final float pointOffset = pointOffsets[n];
                     if (pointOffset < distance + length) {
                         final float t = (pointOffset - distance) / length;
-                        final Vec3d point = new Vec3d(it.getX(t), it.getY(t), it.getZ(t));
+                        final Vector3d point = new Vector3d(it.getX(t), it.getY(t), it.getZ(t));
                         final Letter letter;
                         if (prevLetters != null && pointIdx < prevLetters.length) {
                             letter = prevLetters[pointIdx];

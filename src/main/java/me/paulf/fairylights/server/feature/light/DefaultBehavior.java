@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.feature.light;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class DefaultBehavior extends FixedColorBehavior implements StandardLightBehavior {
@@ -21,5 +21,5 @@ public class DefaultBehavior extends FixedColorBehavior implements StandardLight
     }
 
     @Override
-    public void tick(final World world, final Vec3d origin, final Light<?> light) {}
+    public void tick(final World world, final Vector3d origin, final Light<?> light) {}
 }

@@ -1,19 +1,19 @@
 package me.paulf.fairylights.server.connection;
 
 import me.paulf.fairylights.FairyLights;
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.FastenerType;
-import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.util.Catenary;
-import me.paulf.fairylights.server.feature.Feature;
-import me.paulf.fairylights.server.feature.FeatureType;
 import me.paulf.fairylights.server.collision.Collidable;
 import me.paulf.fairylights.server.collision.CollidableList;
 import me.paulf.fairylights.server.collision.FeatureCollisionTree;
 import me.paulf.fairylights.server.collision.Intersection;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.FastenerType;
+import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
+import me.paulf.fairylights.server.feature.Feature;
+import me.paulf.fairylights.server.feature.FeatureType;
 import me.paulf.fairylights.server.item.ConnectionItem;
 import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import me.paulf.fairylights.server.sound.FLSounds;
+import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.NBTSerializable;
 import net.minecraft.entity.item.ItemEntity;
@@ -28,7 +28,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -186,11 +186,11 @@ public abstract class Connection implements NBTSerializable {
         FairyLights.NETWORK.sendToServer(new InteractionConnectionMessage(this, action, intersection));
     }
 
-    public void disconnect(final PlayerEntity player, final Vec3d hit) {
+    public void disconnect(final PlayerEntity player, final Vector3d hit) {
         this.destination.get(this.world).ifPresent(f -> this.disconnect(f, hit));
     }
 
-    private void disconnect(final Fastener<?> destinationFastener, final Vec3d hit) {
+    private void disconnect(final Fastener<?> destinationFastener, final Vector3d hit) {
         this.fastener.removeConnection(this);
         destinationFastener.removeConnection(this.uuid);
         if (this.shouldDrop()) {
@@ -211,7 +211,7 @@ public abstract class Connection implements NBTSerializable {
         return this.fastener.reconnect(this.world, this, destination);
     }
 
-    public boolean interact(final PlayerEntity player, final Vec3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
+    public boolean interact(final PlayerEntity player, final Vector3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
         final Item item = heldStack.getItem();
         if (item instanceof ConnectionItem && !this.matches(heldStack)) {
             return this.replace(player, hit, heldStack);
@@ -231,7 +231,7 @@ public abstract class Connection implements NBTSerializable {
         return false;
     }
 
-    private boolean replace(final PlayerEntity player, final Vec3d hit, final ItemStack heldStack) {
+    private boolean replace(final PlayerEntity player, final Vector3d hit, final ItemStack heldStack) {
         return this.destination.get(this.world).map(dest -> {
             this.fastener.removeConnection(this);
             dest.removeConnection(this.uuid);
@@ -249,7 +249,7 @@ public abstract class Connection implements NBTSerializable {
         }).orElse(false);
     }
 
-    private boolean slacken(final Vec3d hit, final ItemStack heldStack, final float amount) {
+    private boolean slacken(final Vector3d hit, final ItemStack heldStack, final float amount) {
         if (this.slack <= 0 && amount < 0 || this.slack >= MAX_SLACK && amount > 0) {
             return true;
         }
@@ -270,10 +270,10 @@ public abstract class Connection implements NBTSerializable {
 
     protected void onCalculateCatenary(final boolean relocated) {}
 
-    public final boolean update(final Vec3d from) {
+    public final boolean update(final Vector3d from) {
         this.prevCatenary = this.catenary;
         final boolean changed = this.destination.get(this.world, false).map(dest -> {
-            final Vec3d point = dest.getConnectionPoint();
+            final Vector3d point = dest.getConnectionPoint();
             final boolean c = this.updateCatenary(from, dest, point);
             this.onUpdate();
             final double dist = point.distanceTo(from);
@@ -299,9 +299,9 @@ public abstract class Connection implements NBTSerializable {
         return changed;
     }
 
-    private boolean updateCatenary(final Vec3d from, final Fastener<?> dest, final Vec3d point) {
+    private boolean updateCatenary(final Vector3d from, final Fastener<?> dest, final Vector3d point) {
         if (this.updateCatenary || this.isDynamic()) {
-            final Vec3d vec = point.subtract(from);
+            final Vector3d vec = point.subtract(from);
             if (vec.length() > 1e-6) {
                 final Direction facing = this.fastener.getFacing();
                 this.catenary = Catenary.from(vec, facing.getAxis() != Direction.Axis.Y ? (float) Math.toRadians(90.0F + facing.getHorizontalAngle()) : 0.0F, SLACK_CURVE, this.slack);
@@ -317,7 +317,7 @@ public abstract class Connection implements NBTSerializable {
         return false;
     }
 
-    public void addCollision(final CollidableList.Builder collision, final Vec3d origin) {
+    public void addCollision(final CollidableList.Builder collision, final Vector3d origin) {
         if (this.catenary == null) {
             return;
         }

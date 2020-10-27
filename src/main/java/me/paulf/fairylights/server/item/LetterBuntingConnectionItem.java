@@ -31,7 +31,7 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
             final CompoundNBT text = compound.getCompound("text");
             final StyledString s = StyledString.deserialize(text);
             if (s.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).applyTextStyle(TextFormatting.GRAY));
+                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).mergeStyle(TextFormatting.GRAY));
             }
         }
     }

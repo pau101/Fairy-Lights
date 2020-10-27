@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -40,7 +40,7 @@ public final class JinglePlayer {
         this.state = new PlayingState(library, jingle, lightOffset);
     }
 
-    public void tick(final World world, final Vec3d origin, final Light[] lights, final boolean isClient) {
+    public void tick(final World world, final Vector3d origin, final Light[] lights, final boolean isClient) {
         this.state = this.state.tick(world, origin, lights, isClient);
     }
 
@@ -103,7 +103,7 @@ public final class JinglePlayer {
 
         public abstract float getProgress();
 
-        public abstract State<?> tick(World world, Vec3d origin, Light[] lights, boolean isClient);
+        public abstract State<?> tick(World world, Vector3d origin, Light[] lights, boolean isClient);
 
         public abstract StateFactory<S> getFactory();
 
@@ -129,7 +129,7 @@ public final class JinglePlayer {
         }
 
         @Override
-        public State<?> tick(final World world, final Vec3d origin, final Light[] lights, final boolean isClient) {
+        public State<?> tick(final World world, final Vector3d origin, final Light[] lights, final boolean isClient) {
             return this;
         }
 
@@ -213,7 +213,7 @@ public final class JinglePlayer {
         }
 
         @Override
-        public State<?> tick(final World world, final Vec3d origin, final Light[] lights, final boolean isClient) {
+        public State<?> tick(final World world, final Vector3d origin, final Light[] lights, final boolean isClient) {
             this.time++;
             if (this.rest <= 0) {
                 if (this.index >= this.playTicks.size()) {
@@ -230,7 +230,7 @@ public final class JinglePlayer {
             return this;
         }
 
-        private void play(final World world, final Vec3d origin, final Light[] lights, final Jingle.PlayTick playTick) {
+        private void play(final World world, final Vector3d origin, final Light[] lights, final Jingle.PlayTick playTick) {
             for (final int note : playTick.getNotes()) {
                 final int idx = note - this.jingle.getLowestNote() + this.lightOffset;
                 if (idx >= 0 && idx < lights.length) {

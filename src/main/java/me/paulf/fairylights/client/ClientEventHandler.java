@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -31,13 +30,15 @@ import net.minecraft.network.INetHandler;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.chunk.Chunk;
@@ -115,7 +116,7 @@ public final class ClientEventHandler {
         if (mc.objectMouseOver != null && mc.world != null && viewer != null) {
             final HitResult result = getHitConnection(mc.world, viewer);
             if (result != null) {
-                final Vec3d eyes = viewer.getEyePosition(1.0F);
+                final Vector3d eyes = viewer.getEyePosition(1.0F);
                 if (result.intersection.getResult().distanceTo(eyes) < mc.objectMouseOver.getHitVec().distanceTo(eyes)) {
                     mc.objectMouseOver = new EntityRayTraceResult(new HitConnection(mc.world, result));
                     mc.pointedEntity = null;
@@ -158,10 +159,10 @@ public final class ClientEventHandler {
         if (fasteners.isEmpty()) {
             return null;
         }
-        final Vec3d origin = viewer.getEyePosition(1);
-        final Vec3d look = viewer.getLook(1);
+        final Vector3d origin = viewer.getEyePosition(1);
+        final Vector3d look = viewer.getLook(1);
         final double reach = Minecraft.getInstance().playerController.getBlockReachDistance();
-        final Vec3d end = origin.add(look.x * reach, look.y * reach, look.z * reach);
+        final Vector3d end = origin.add(look.x * reach, look.y * reach, look.z * reach);
         Connection found = null;
         Intersection rayTrace = null;
         double distance = Double.MAX_VALUE;
@@ -188,17 +189,10 @@ public final class ClientEventHandler {
         return new HitResult(found, rayTrace);
     }
 
-    public static RayTraceResult drawSelectionBox(final RayTraceResult target, final WorldRenderer context, final ActiveRenderInfo info, final float delta, final MatrixStack matrix) {
-        if (target.getType() == RayTraceResult.Type.ENTITY) {
-            MinecraftForge.EVENT_BUS.post(new DrawHighlightEvent.HighlightEntity(context, info, target, delta, matrix, Minecraft.getInstance().getRenderTypeBuffers().getBufferSource()));
-        }
-        return target;
-    }
-
     @SubscribeEvent
     public void drawBlockHighlight(final DrawHighlightEvent.HighlightEntity event) {
         final Entity entity = event.getTarget().getEntity();
-        final Vec3d pos = event.getInfo().getProjectedView();
+        final Vector3d pos = event.getInfo().getProjectedView();
         final IRenderTypeBuffer buf = event.getBuffers();
         if (entity instanceof FenceFastenerEntity) {
             this.drawFenceFastenerHighlight((FenceFastenerEntity) entity, event.getMatrix(), buf.getBuffer(RenderType.getLines()), event.getPartialTicks(), pos.x, pos.y, pos.z);
@@ -207,7 +201,7 @@ public final class ClientEventHandler {
             if (hit.result.intersection.getFeatureType() == Connection.CORD_FEATURE) {
                 final MatrixStack matrix = event.getMatrix();
                 matrix.push();
-                final Vec3d p = hit.result.connection.getFastener().getConnectionPoint();
+                final Vector3d p = hit.result.connection.getFastener().getConnectionPoint();
                 matrix.translate(p.x - pos.x, p.y - pos.y, p.z - pos.z);
                 this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.getLines()));
                 matrix.pop();
@@ -308,12 +302,12 @@ public final class ClientEventHandler {
         }
 
         @Override
-        public boolean processInitialInteract(final PlayerEntity player, final Hand hand) {
+        public ActionResultType processInitialInteract(final PlayerEntity player, final Hand hand) {
             if (player == Minecraft.getInstance().player) {
                 this.processAction(PlayerAction.INTERACT);
-                return true;
+                return ActionResultType.SUCCESS;
             }
-            return false;
+            return super.processInitialInteract(player, hand);
         }
 
         private void processAction(final PlayerAction action) {

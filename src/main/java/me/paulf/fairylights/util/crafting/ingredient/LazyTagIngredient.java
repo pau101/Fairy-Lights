@@ -7,15 +7,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 
 import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
 public class LazyTagIngredient extends Ingredient {
-    private final Tag<Item> tag;
+    private final ITag<Item> tag;
 
-    private LazyTagIngredient(final Tag<Item> tag) {
+    private LazyTagIngredient(final ITag<Item> tag) {
         super(Stream.empty());
         this.tag = tag;
     }
@@ -46,7 +47,7 @@ public class LazyTagIngredient extends Ingredient {
         return this.tag.getAllElements().isEmpty();
     }
 
-    public static LazyTagIngredient of(final Tag<Item> tag) {
+    public static LazyTagIngredient of(final ITag<Item> tag) {
         return new LazyTagIngredient(tag);
     }
 }

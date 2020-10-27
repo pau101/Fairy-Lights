@@ -10,7 +10,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public final class Light<T extends LightBehavior> extends HangingFeature {
@@ -38,7 +38,7 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
 
     private boolean powered;
 
-    public Light(final int index, final Vec3d point, final float yaw, final float pitch, final ItemStack item, final LightVariant<T> variant, final float descent) {
+    public Light(final int index, final Vector3d point, final float yaw, final float pitch, final ItemStack item, final LightVariant<T> variant, final float descent) {
         super(index, point, yaw, pitch, 0.0F, descent);
         this.item = item;
         this.variant = variant;
@@ -57,15 +57,15 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
         return this.variant;
     }
 
-    public void jingle(final World world, final Vec3d origin, final int note) {
+    public void jingle(final World world, final Vector3d origin, final int note) {
         this.jingle(world, origin, note, ParticleTypes.NOTE);
     }
 
-    public void jingle(final World world, final Vec3d origin, final int note, final BasicParticleType particle) {
+    public void jingle(final World world, final Vector3d origin, final int note, final BasicParticleType particle) {
         this.jingle(world, origin, note, FLSounds.JINGLE_BELL.get(), particle);
     }
 
-    public void jingle(final World world, final Vec3d origin, final int note, final SoundEvent sound, final BasicParticleType... particles) {
+    public void jingle(final World world, final Vector3d origin, final int note, final SoundEvent sound, final BasicParticleType... particles) {
         if (world.isRemote) {
             final double x = origin.x + this.point.x;
             final double y = origin.y + this.point.y;
@@ -110,7 +110,7 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
         return this.powered;
     }
 
-    public void tick(final World world, final Vec3d origin) {
+    public void tick(final World world, final Vector3d origin) {
         super.tick(world);
         this.behavior.tick(world, origin, this);
         if (this.swaying) {

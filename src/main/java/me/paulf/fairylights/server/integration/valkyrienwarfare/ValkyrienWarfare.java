@@ -39,12 +39,12 @@ public class ValkyrienWarfare {
 		}
 
 		@Override
-		public Vec3d getPosition(final World world, final BlockPos source, final Vec3d pos) {
+		public Vector3d getPosition(final World world, final BlockPos source, final Vector3d pos) {
 			final PhysicsWrapperEntity entity = new RealMethods().getShipEntityManagingPos(world, source);
 			if (entity != null) {
 				final Vector p = new Vector(pos);
 				entity.getPhysicsObject().coordTransform.fromLocalToGlobal(p);
-				return p.toVec3d();
+				return p.toVector3d();
 			}
 			return this.parent.getPosition(world, source, pos);
 		}

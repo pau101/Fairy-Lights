@@ -54,7 +54,7 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     private final ImmutableList<IntUnaryOperator> xFunctions = ImmutableList.of(IntUnaryOperator.identity(), i -> this.getWidth() - 1 - i);
 
-    private final int room;
+    private int room;
 
     GenericRecipe(final ResourceLocation id, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height, final int outputIngredient) {
         Preconditions.checkArgument(width > 0, "width must be greater than zero");
@@ -67,18 +67,25 @@ public final class GenericRecipe implements ICraftingRecipe {
         this.width = width;
         this.height = height;
         this.outputIngredient = outputIngredient;
-        int room = 0;
-        for (final RegularIngredient ing : this.ingredients) {
-            if (ing.getInputs().isEmpty()) {
-                room++;
+        this.room = -1;
+    }
+
+    private int getRoom() {
+        if (this.room < 0) {
+            int room = 0;
+            for (final RegularIngredient ing : this.ingredients) {
+                if (ing.getInputs().isEmpty()) {
+                    room++;
+                }
             }
-        }
-        for (final AuxiliaryIngredient<?> aux : this.auxiliaryIngredients) {
-            if (aux.isRequired()) {
-                room--;
+            for (final AuxiliaryIngredient<?> aux : this.auxiliaryIngredients) {
+                if (aux.isRequired()) {
+                    room--;
+                }
             }
+            this.room = room;
         }
-        this.room = room;
+        return this.room;
     }
 
     private NonNullList<Ingredient> getDisplayIngredients() {
@@ -147,7 +154,7 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     @Override
     public boolean canFit(final int width, final int height) {
-        return this.width <= width && this.height <= height && (this.room >= 0 || width * height - this.width * this.height + this.room >= 0);
+        return this.width <= width && this.height <= height && (this.getRoom() >= 0 || width * height - this.width * this.height + this.getRoom() >= 0);
     }
 
     @Override
