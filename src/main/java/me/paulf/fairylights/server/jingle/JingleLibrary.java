@@ -101,10 +101,4 @@ public class JingleLibrary {
             return new JingleLibrary(this);
         }
     }
-
-    public static void main(final String[] args) {
-        System.out.println("Playing with Fire".hashCode());
-        System.out.println("My Anthem".hashCode());
-        System.out.println("I'm Fine Thank You".hashCode());
-    }
 }
