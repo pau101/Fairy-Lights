@@ -37,6 +37,11 @@ public class JingleLibrary {
     }
 
     @Nullable
+    public Jingle get(final String name) {
+        return this.jingles.get(name);
+    }
+
+    @Nullable
     public Jingle getRandom(final Random rng, final int range) {
         final RangeSet jingles = this.ranges.get(Math.min(range, MAX_RANGE));
         return jingles == null ? null : jingles.get(rng);
