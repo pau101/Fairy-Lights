@@ -40,7 +40,7 @@ public class JingleManager extends JsonReloadListener {
             final String path = file.getPath();
             final int sl = path.indexOf('/');
             final String library = path.substring(0, Math.max(0, sl));
-            final String name = path.substring(sl + 1);
+            final ResourceLocation name = new ResourceLocation(file.getNamespace(), path.substring(sl + 1));
             Jingle.CODEC.parse(JsonOps.INSTANCE, json)
                 .resultOrPartial(error -> LOGGER.warn("Parsing error loading jingle {}: {}", file, error))
                 .ifPresent(jingle -> builders.computeIfAbsent(library, l -> new JingleLibrary.Builder()).add(name, jingle));

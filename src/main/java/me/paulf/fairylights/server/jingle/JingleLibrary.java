@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -20,7 +21,7 @@ public class JingleLibrary {
 
     private static final int MAX_RANGE = 25;
 
-    private final Object2ObjectMap<String, Jingle> jingles;
+    private final Object2ObjectMap<ResourceLocation, Jingle> jingles;
 
     private final Int2ObjectMap<RangeSet> ranges;
 
@@ -37,7 +38,7 @@ public class JingleLibrary {
     }
 
     @Nullable
-    public Jingle get(final String name) {
+    public Jingle get(final ResourceLocation name) {
         return this.jingles.get(name);
     }
 
@@ -91,10 +92,10 @@ public class JingleLibrary {
     }
 
     public static class Builder {
-        final Object2ObjectMap<String, Jingle> jingles = new Object2ObjectOpenHashMap<>();
+        final Object2ObjectMap<ResourceLocation, Jingle> jingles = new Object2ObjectOpenHashMap<>();
         final Int2ObjectMap<RangeSet.Builder> ranges = new Int2ObjectOpenHashMap<>();
 
-        public Builder add(final String id, final Jingle jingle) {
+        public Builder add(final ResourceLocation id, final Jingle jingle) {
             this.jingles.put(id, jingle);
             for (int range = jingle.getRange(); range <= MAX_RANGE; range++) {
                 this.ranges.computeIfAbsent(range, r -> new RangeSet.Builder()).add(jingle);
