@@ -16,7 +16,8 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.Entity;
-import net.minecraft.profiler.IProfileResult;
+import net.minecraft.profiler.EmptyProfiler;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -155,8 +156,8 @@ public final class ClientCommandProvider {
         }
 
         @Override
-        public IProfileResult func_240791_aR_() {
-            return super.func_240791_aR_();
+        public IProfiler getProfiler() {
+            return EmptyProfiler.INSTANCE;
         }
     }
 
