@@ -80,11 +80,6 @@ public class LightBlock extends HorizontalFaceBlock {
     }
 
     @Override
-    public int getLightValue(final BlockState state, final IBlockReader world, final BlockPos pos) {
-        return state.get(LIT) ? super.getLightValue(state, world, pos) : 0;
-    }
-
-    @Override
     public boolean hasTileEntity(final BlockState state) {
         return true;
     }

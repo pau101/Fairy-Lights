@@ -64,6 +64,6 @@ public final class FLBlocks {
     }
 
     private static Supplier<LightBlock> createLight(final LightVariant<?> variant, final BiFunction<Block.Properties, LightVariant<?>, LightBlock> factory) {
-        return () -> factory.apply(Block.Properties.create(Material.MISCELLANEOUS).setLightLevel(state -> 15).notSolid(), variant);
+        return () -> factory.apply(Block.Properties.create(Material.MISCELLANEOUS).setLightLevel(state -> state.get(LightBlock.LIT) ? 15 : 0).notSolid(), variant);
     }
 }
