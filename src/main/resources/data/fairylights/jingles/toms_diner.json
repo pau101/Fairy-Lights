@@ -1,0 +1,198 @@
+{
+  "title": "Tom's Diner",
+  "artist": "Suzanne Vega",
+  "ticks": [
+    {
+      "duration": 8,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9
+      ]
+    }
+  ]
+}

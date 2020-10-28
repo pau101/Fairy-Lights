@@ -1,0 +1,357 @@
+{
+  "title": "Mr. Saxobeat",
+  "artist": "Alexandra Stan",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        8,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        12,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        12,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        10,
+        22
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        17,
+        22,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        13,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        22
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        13,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        17,
+        24
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        17,
+        22
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        13,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        10,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        12,
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        19,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        15,
+        19,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        15,
+        19,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        12,
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        8,
+        17,
+        20
+      ]
+    }
+  ]
+}

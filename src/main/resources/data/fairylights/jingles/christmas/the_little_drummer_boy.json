@@ -1,0 +1,80 @@
+{
+  "title": "The Little Drummer Boy",
+  "artist": "Katherine Kennicott Davis",
+  "ticks": [
+    {
+      "duration": 20,
+      "notes": [
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 20,
+      "notes": [
+        6,
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        6,
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        6,
+        11,
+        16
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        6,
+        11,
+        15
+      ]
+    }
+  ]
+}

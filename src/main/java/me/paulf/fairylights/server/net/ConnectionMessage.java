@@ -8,6 +8,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;

@@ -1,0 +1,111 @@
+{
+  "title": "Inspector Gadget Theme",
+  "artist": "Saban Records",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        1,
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1,
+        5,
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        1,
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        11,
+        17
+      ]
+    }
+  ]
+}

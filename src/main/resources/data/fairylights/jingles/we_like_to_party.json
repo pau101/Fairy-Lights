@@ -1,0 +1,496 @@
+{
+  "title": "We like to Party!",
+  "artist": "Vengaboys",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        13
+      ]
+    }
+  ]
+}

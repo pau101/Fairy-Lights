@@ -1,0 +1,188 @@
+{
+  "title": "Addams Family Theme",
+  "artist": "Vic Mizzy",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        20
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        1,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9,
+        21
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        6,
+        18
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        15
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        6,
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        15
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11,
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        20
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11,
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        20
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        1,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9,
+        21
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        6,
+        18
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        15
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11,
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1,
+        13
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3,
+        15
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4,
+        16
+      ]
+    }
+  ]
+}

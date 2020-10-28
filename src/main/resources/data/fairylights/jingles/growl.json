@@ -1,0 +1,496 @@
+{
+  "title": "Growl",
+  "artist": "EXO",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        5,
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        5,
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        5,
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        8
+      ]
+    }
+  ]
+}

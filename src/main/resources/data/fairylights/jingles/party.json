@@ -1,0 +1,168 @@
+{
+  "title": "Party",
+  "artist": "Girls' Generation",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9,
+        14
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7,
+        9,
+        14
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        14,
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        14,
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6,
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9,
+        14
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        9,
+        14
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        14,
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        14,
+        18
+      ]
+    }
+  ]
+}

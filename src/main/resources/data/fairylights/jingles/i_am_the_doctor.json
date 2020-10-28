@@ -1,0 +1,442 @@
+{
+  "title": "I Am the Doctor",
+  "artist": "Murray Gold",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        11,
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        11,
+        14,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        10,
+        14,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        8,
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        10,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        11,
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        11,
+        14,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        10,
+        14,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        8,
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        10,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        11,
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        11,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        10,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        8,
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        10,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        11,
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        11,
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        10,
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        8,
+        14,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        10,
+        18
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        3,
+        8,
+        11,
+        20
+      ]
+    }
+  ]
+}

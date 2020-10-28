@@ -1,0 +1,382 @@
+{
+  "title": "Run Away",
+  "artist": "SunStroke Project & Olia Tira",
+  "ticks": [
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        14
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        5,
+        9,
+        12,
+        16,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        0,
+        4,
+        12,
+        16,
+        24
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0,
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        4,
+        7,
+        11,
+        12,
+        16,
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        14
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        5,
+        9,
+        12,
+        16,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        0,
+        7,
+        12,
+        19,
+        24
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0,
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        4,
+        7,
+        11,
+        12,
+        19,
+        23
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9
+      ]
+    }
+  ]
+}

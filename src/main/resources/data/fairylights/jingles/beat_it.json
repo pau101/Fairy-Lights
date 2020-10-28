@@ -1,0 +1,356 @@
+{
+  "title": "Beat It",
+  "artist": "Michael Jackson",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        14,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        14,
+        16,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        7,
+        14,
+        17,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        12,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        14,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        12,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        7,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 20,
+      "notes": [
+        7,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        0,
+        9,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        9,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        7,
+        11,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        9,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        9,
+        11,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        14,
+        19
+      ]
+    }
+  ]
+}

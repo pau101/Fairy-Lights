@@ -1,0 +1,120 @@
+{
+  "title": "Under the Sea",
+  "artist": "Alan Menken",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        21
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        16
+      ]
+    }
+  ]
+}

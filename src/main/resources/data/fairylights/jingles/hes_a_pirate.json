@@ -1,0 +1,206 @@
+{
+  "title": "He's A Pirate",
+  "artist": "Klaus Badelt and Hans Zimmer",
+  "ticks": [
+    {
+      "duration": 8,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11,
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        18,
+        23
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        11,
+        15
+      ]
+    }
+  ]
+}

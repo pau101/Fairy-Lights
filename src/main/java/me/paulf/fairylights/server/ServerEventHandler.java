@@ -17,6 +17,7 @@ import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.ConnectionItem;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.jingle.JingleLibrary;
+import me.paulf.fairylights.server.jingle.JingleManager;
 import me.paulf.fairylights.server.net.clientbound.JingleMessage;
 import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
 import me.paulf.fairylights.server.sound.FLSounds;
@@ -249,13 +250,14 @@ public final class ServerEventHandler {
         return false;
     }
 
-    public static boolean tryJingle(final World world, final HangingLightsConnection hangingLights, final JingleLibrary library) {
+    public static boolean tryJingle(final World world, final HangingLightsConnection hangingLights, final String lib) {
+        if (world.isRemote) return false;
         final Light<?>[] lights = hangingLights.getFeatures();
-        final Jingle jingle = library.getRandom(world.rand, lights.length);
+        final Jingle jingle = JingleManager.INSTANCE.get(lib).getRandom(world.rand, lights.length);
         if (jingle != null) {
             final int lightOffset = lights.length / 2 - jingle.getRange() / 2;
-            hangingLights.play(library, jingle, lightOffset);
-            ServerProxy.sendToPlayersWatchingChunk(new JingleMessage(hangingLights, lightOffset, library, jingle), world, hangingLights.getFastener().getPos());
+            hangingLights.play(jingle, lightOffset);
+            ServerProxy.sendToPlayersWatchingChunk(new JingleMessage(hangingLights, lightOffset, jingle), world, hangingLights.getFastener().getPos());
             return true;
         }
         return false;

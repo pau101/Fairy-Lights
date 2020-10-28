@@ -1,0 +1,232 @@
+{
+  "title": "Wii Sports Title Screen",
+  "artist": "Kazumi Totaka",
+  "ticks": [
+    {
+      "duration": 3,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        22,
+        24
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12,
+        17,
+        19,
+        24
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 24,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 24,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7
+      ]
+    }
+  ]
+}

@@ -1,0 +1,390 @@
+{
+  "title": "The Nexus",
+  "artist": "Amaranthe",
+  "ticks": [
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        11
+      ]
+    }
+  ]
+}

@@ -10,7 +10,6 @@ import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.server.jingle.Jingle;
-import me.paulf.fairylights.server.jingle.JingleLibrary;
 import me.paulf.fairylights.server.jingle.JinglePlayer;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.server.string.StringType;
@@ -79,8 +78,8 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         return this.jinglePlayer.getJingle();
     }
 
-    public void play(final JingleLibrary library, final Jingle jingle, final int lightOffset) {
-        this.jinglePlayer.play(library, jingle, lightOffset);
+    public void play(final Jingle jingle, final int lightOffset) {
+        this.jinglePlayer.play(jingle, lightOffset);
     }
 
     @Override

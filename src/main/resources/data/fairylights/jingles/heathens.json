@@ -1,0 +1,60 @@
+{
+  "title": "Heathens",
+  "artist": "Twenty One Pilots",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        10
+      ]
+    }
+  ]
+}

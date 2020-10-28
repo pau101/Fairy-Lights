@@ -1,0 +1,66 @@
+{
+  "title": "Funkytown",
+  "artist": "Lipps Inc.",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        18
+      ]
+    }
+  ]
+}

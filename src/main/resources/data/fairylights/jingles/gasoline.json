@@ -1,0 +1,202 @@
+{
+  "title": "Gasoline",
+  "artist": "Halsey",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        7,
+        16,
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        0,
+        9,
+        12,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        7,
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        4,
+        16,
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7,
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        21
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        7,
+        19,
+        23
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        9,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11,
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7,
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9,
+        21,
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11,
+        23
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7,
+        9,
+        16,
+        19,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7,
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        21
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        7,
+        19,
+        23
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4,
+        16,
+        19
+      ]
+    }
+  ]
+}

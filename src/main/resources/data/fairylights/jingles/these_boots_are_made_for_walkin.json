@@ -1,0 +1,397 @@
+{
+  "title": "These Boots Are Made for Walkin'",
+  "artist": "Nancy Sinatra",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        10,
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        4,
+        9
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        1,
+        4,
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        4,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        9,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        10,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        1,
+        4,
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        4,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        9,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        10,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        4,
+        9,
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        1,
+        6,
+        10
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "title": "Joy to the World",
+  "artist": "George Frideric Handel",
+  "ticks": [
+    {
+      "duration": 13,
+      "notes": [
+        8,
+        12,
+        20
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        8,
+        12,
+        20
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 20,
+      "notes": [
+        8,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 13,
+      "notes": [
+        1,
+        5,
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1,
+        3
+      ]
+    },
+    {
+      "duration": 20,
+      "notes": [
+        1,
+        3,
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0,
+        8,
+        15
+      ]
+    },
+    {
+      "duration": 20,
+      "notes": [
+        0,
+        8,
+        13,
+        15
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1,
+        8,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 20,
+      "notes": [
+        1,
+        8,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        3,
+        8,
+        10,
+        19
+      ]
+    }
+  ]
+}

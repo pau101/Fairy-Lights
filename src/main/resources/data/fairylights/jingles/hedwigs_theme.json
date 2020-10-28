@@ -1,0 +1,90 @@
+{
+  "title": "Hedwig's Theme",
+  "artist": "John Williams",
+  "ticks": [
+    {
+      "duration": 7,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 7,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 14,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 7,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 21,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 21,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 10,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 7,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 14,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 7,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5
+      ]
+    }
+  ]
+}

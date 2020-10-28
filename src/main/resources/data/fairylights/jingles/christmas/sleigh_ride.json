@@ -1,0 +1,96 @@
+{
+  "title": "Sleigh Ride",
+  "artist": "Leroy Anderson",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        1
+      ]
+    }
+  ]
+}

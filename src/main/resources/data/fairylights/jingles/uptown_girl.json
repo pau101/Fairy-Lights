@@ -1,0 +1,465 @@
+{
+  "title": "Uptown Girl",
+  "artist": "Billy Joel",
+  "ticks": [
+    {
+      "duration": 8,
+      "notes": [
+        2,
+        5,
+        14,
+        17,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        2,
+        5,
+        14,
+        17,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        14,
+        17,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        7,
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        12,
+        15,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        15,
+        19,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        2,
+        5,
+        9,
+        12,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        9,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        5,
+        7,
+        9,
+        14,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        2,
+        5,
+        10,
+        14,
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        2,
+        5,
+        14,
+        17,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        14,
+        17,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        12,
+        15,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        15,
+        19,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        19,
+        21,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        9,
+        12,
+        17,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        5,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        7,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        9,
+        12,
+        17
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5,
+        9
+      ]
+    }
+  ]
+}

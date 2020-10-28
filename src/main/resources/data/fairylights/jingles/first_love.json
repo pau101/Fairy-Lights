@@ -1,0 +1,212 @@
+{
+  "title": "First Love",
+  "artist": "Utada Hikaru",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        0,
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8,
+        15
+      ]
+    },
+    {
+      "duration": 16,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        1,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 16,
+      "notes": [
+        20,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        18,
+        20
+      ]
+    }
+  ]
+}

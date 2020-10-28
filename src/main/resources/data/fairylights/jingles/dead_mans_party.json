@@ -1,0 +1,542 @@
+{
+  "title": "Dead Man's Party",
+  "artist": "Oingo Boingo",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4,
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        0,
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        19,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        16,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        16,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        7,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4,
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        0,
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        19,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        16,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        16,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        7,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        4,
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        0,
+        9
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        2,
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        19,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        21,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        16,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12,
+        16,
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        16,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        21
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        4
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        14,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        9,
+        12,
+        21
+      ]
+    }
+  ]
+}

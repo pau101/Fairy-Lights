@@ -1,0 +1,482 @@
+{
+  "title": "The Little Einsteins Theme",
+  "artist": "Billy Straus",
+  "ticks": [
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        7,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        19,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        14,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        14,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        14,
+        22
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        14,
+        17
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        7,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        20
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        15,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        0,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        10,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        14,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        14
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        15,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        14,
+        17,
+        22
+      ]
+    }
+  ]
+}

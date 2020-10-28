@@ -1,0 +1,132 @@
+{
+  "title": "Rasputin",
+  "artist": "Boney M.",
+  "ticks": [
+    {
+      "duration": 12,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 18,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        5
+      ]
+    }
+  ]
+}

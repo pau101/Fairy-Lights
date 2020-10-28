@@ -1,0 +1,148 @@
+{
+  "title": "Livin' La Vida Loca",
+  "artist": "Ricky Martin",
+  "ticks": [
+    {
+      "duration": 8,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        2,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        2,
+        9
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        9,
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        2,
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        10
+      ]
+    }
+  ]
+}

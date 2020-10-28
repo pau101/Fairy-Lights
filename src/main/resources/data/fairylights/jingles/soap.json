@@ -1,0 +1,123 @@
+{
+  "title": "Soap",
+  "artist": "Melanie Martinez",
+  "ticks": [
+    {
+      "duration": 24,
+      "notes": [
+        0,
+        3
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        20
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        22
+      ]
+    },
+    {
+      "duration": 18,
+      "notes": [
+        24
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        22
+      ]
+    },
+    {
+      "duration": 18,
+      "notes": [
+        24
+      ]
+    },
+    {
+      "duration": 18,
+      "notes": [
+        0,
+        3
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        15
+      ]
+    }
+  ]
+}

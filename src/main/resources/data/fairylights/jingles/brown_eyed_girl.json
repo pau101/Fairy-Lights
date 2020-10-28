@@ -1,0 +1,274 @@
+{
+  "title": "Brown Eyed Girl",
+  "artist": "Van Morrison",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        8,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        5,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        13,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        0,
+        3,
+        8,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        5,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        20,
+        23
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        20,
+        24
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        5,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        13,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        0,
+        8,
+        15
+      ]
+    }
+  ]
+}

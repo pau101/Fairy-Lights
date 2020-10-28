@@ -7,13 +7,11 @@ import me.paulf.fairylights.server.fastener.BlockView;
 import me.paulf.fairylights.server.fastener.CreateBlockViewEvent;
 import me.paulf.fairylights.server.fastener.RegularBlockView;
 import me.paulf.fairylights.server.item.LightVariant;
-import me.paulf.fairylights.server.jingle.JingleLibrary;
+import me.paulf.fairylights.server.jingle.JingleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.INBT;
-import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,7 +23,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.function.Consumer;
@@ -34,7 +31,7 @@ public class ServerProxy {
     public void init(final IEventBus modBus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FLConfig.GENERAL_SPEC);
         MinecraftForge.EVENT_BUS.<AddReloadListenerEvent>addListener(e -> {
-            this.addListener(e, JingleLibrary::loadAll);
+            e.addListener(JingleManager.INSTANCE);
         });
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         modBus.addListener(this::setup);

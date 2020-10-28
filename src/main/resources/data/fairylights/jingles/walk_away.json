@@ -1,0 +1,66 @@
+{
+  "title": "Walk Away",
+  "artist": "Dia Frampton",
+  "ticks": [
+    {
+      "duration": 11,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 17,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 11,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 5,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7
+      ]
+    }
+  ]
+}

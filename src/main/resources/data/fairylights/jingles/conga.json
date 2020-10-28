@@ -1,0 +1,263 @@
+{
+  "title": "Conga",
+  "artist": "Miami Sound Machine",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        1,
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        6,
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        5,
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        10
+      ]
+    }
+  ]
+}

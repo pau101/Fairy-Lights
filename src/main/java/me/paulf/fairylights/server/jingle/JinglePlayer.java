@@ -1,26 +1,22 @@
 package me.paulf.fairylights.server.jingle;
 
-import com.google.common.collect.Sets;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.sound.FLSounds;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class JinglePlayer {
-    private static final Set<String> WITH_LOVE = Sets.newHashSet("my_anthem", "im_fine_thank_you");
-
     private State<?> state = new NotPlayingState();
 
     @Nullable
@@ -36,8 +32,8 @@ public final class JinglePlayer {
         return this.state.getProgress();
     }
 
-    public void play(final JingleLibrary library, final Jingle jingle, final int lightOffset) {
-        this.state = new PlayingState(library, jingle, lightOffset);
+    public void play(final Jingle jingle, final int lightOffset) {
+        this.state = new PlayingState(jingle, lightOffset);
     }
 
     public void tick(final World world, final Vector3d origin, final Light[] lights, final boolean isClient) {
@@ -166,8 +162,6 @@ public final class JinglePlayer {
     private static final class PlayingState extends State<PlayingState> {
         public static final StateFactory<PlayingState> FACTORY = newFactory();
 
-        private final JingleLibrary library;
-
         private final Jingle jingle;
 
         private final int lightOffset;
@@ -184,12 +178,11 @@ public final class JinglePlayer {
 
         private int time;
 
-        private PlayingState(final JingleLibrary library, final Jingle jingle, final int lightOffset) {
-            this(library, jingle, lightOffset, jingle.getPlayTicks(), jingle.getLength(), getParticles(jingle));
+        private PlayingState(final Jingle jingle, final int lightOffset) {
+            this(jingle, lightOffset, jingle.getPlayTicks(), jingle.getLength(), getParticles(jingle));
         }
 
-        private PlayingState(final JingleLibrary library, final Jingle jingle, final int lightOffset, final List<Jingle.PlayTick> playTicks, final int length, final BasicParticleType[] noteParticle) {
-            this.library = library;
+        private PlayingState(final Jingle jingle, final int lightOffset, final List<Jingle.PlayTick> playTicks, final int length, final BasicParticleType[] noteParticle) {
             this.jingle = jingle;
             this.lightOffset = lightOffset;
             this.playTicks = playTicks;
@@ -220,7 +213,7 @@ public final class JinglePlayer {
                     return new NotPlayingState();
                 }
                 final Jingle.PlayTick playTick = this.playTicks.get(this.index++);
-                this.rest = playTick.getLength() - 1;
+                this.rest = playTick.getDuration() - 1;
                 if (isClient) {
                     this.play(world, origin, lights, playTick);
                 }
@@ -259,37 +252,37 @@ public final class JinglePlayer {
                 @Override
                 public CompoundNBT serialize(final PlayingState state) {
                     final CompoundNBT compound = new CompoundNBT();
-                    compound.putString("library", state.library.getName().toString());
-                    compound.putString("jingle", state.jingle.getId());
-                    compound.putInt("lightOffset", state.lightOffset);
-                    compound.putInt("index", state.index);
-                    compound.putInt("rest", state.rest);
-                    compound.putInt("time", state.time);
+                    Jingle.CODEC.encodeStart(NBTDynamicOps.INSTANCE, state.jingle).result()
+                        .ifPresent(jingle -> {
+                            compound.put("jingle", jingle);
+                            compound.putInt("lightOffset", state.lightOffset);
+                            compound.putInt("index", state.index);
+                            compound.putInt("rest", state.rest);
+                            compound.putInt("time", state.time);
+                        });
                     return compound;
                 }
 
                 @Override
                 public State<?> deserialize(final CompoundNBT compound) {
-                    final JingleLibrary library = JingleLibrary.fromName(ResourceLocation.tryCreate(compound.getString("library")));
-                    final Jingle jingle = library.get(compound.getString("jingle"));
-                    if (jingle == null) {
-                        return new NotPlayingState();
-                    }
-                    final int lightOffset = compound.getInt("lightOffset");
-                    final PlayingState state = new PlayingState(library, jingle, lightOffset);
-                    state.index = compound.getInt("index");
-                    state.rest = compound.getInt("rest");
-                    state.time = compound.getInt("time");
-                    return state;
+                    return Jingle.CODEC.parse(NBTDynamicOps.INSTANCE, compound.getCompound("jingle"))
+                        .result().<State<?>>map(jingle -> {
+                            final int lightOffset = compound.getInt("lightOffset");
+                            final PlayingState state = new PlayingState(jingle, lightOffset);
+                            state.index = compound.getInt("index");
+                            state.rest = compound.getInt("rest");
+                            state.time = compound.getInt("time");
+                            return state;
+                        }).orElseGet(NotPlayingState::new);
                 }
             };
         }
 
         private static BasicParticleType[] getParticles(final Jingle jingle) {
-            if ("playing_with_fire".equals(jingle.getId())) {
+            if (jingle.getName().hashCode() == 0xf2b587de) {
                 return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.LAVA};
             }
-            if (WITH_LOVE.contains(jingle.getId())) {
+            if (jingle.getName().hashCode() == 0xc3fa68bd || jingle.getName().hashCode() == 0x70f77bf4) {
                 return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.HEART};
             }
             return new BasicParticleType[]{ParticleTypes.NOTE};

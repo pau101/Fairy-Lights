@@ -1,35 +1,39 @@
 package me.paulf.fairylights.server.jingle;
 
-import com.google.common.base.Strings;
-import com.google.common.primitives.UnsignedBytes;
-import me.paulf.fairylights.util.NBTSerializable;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
-public final class Jingle implements NBTSerializable {
-    private static final Pattern LOWER_UNDERSCORE_CASE = Pattern.compile("[a-z0-9]+(_[a-z0-9]+)*");
-
-    private static final int DEFAULT_LENGTH = 2;
-
-    private String id;
+public final class Jingle {
+    public static final Codec<Jingle> CODEC = RecordCodecBuilder.create(builder -> builder
+        .group(
+            Codec.STRING.fieldOf("title").forGetter(j -> j.name),
+            Codec.STRING.fieldOf("artist").forGetter(j -> j.artist),
+            PlayTick.CODEC.listOf().fieldOf("ticks").xmap(l -> ObjectLists.unmodifiable(new ObjectArrayList<>(l)), l -> l).forGetter(j -> j.ticks)
+        )
+        .apply(builder, Jingle::new)
+    );
 
     private String name;
 
     private String artist;
 
-    private List<PlayTick> ticks;
+    private ObjectList<PlayTick> ticks;
 
-    private int minNote = -1, maxNote = -1;
+    private int range = -1;
 
-    private Jingle() {}
+    private int min;
 
-    public String getId() {
-        return this.id;
+    private Jingle(final String name, final String artist, final ObjectList<PlayTick> ticks) {
+        this.name = name;
+        this.artist = artist;
+        this.ticks = ticks;
     }
 
     public String getName() {
@@ -43,7 +47,7 @@ public final class Jingle implements NBTSerializable {
     public int getLength() {
         int length = 0;
         for (final PlayTick playTick : this.ticks) {
-            length += playTick.getLength();
+            length += playTick.getDuration();
         }
         return length;
     }
@@ -53,124 +57,59 @@ public final class Jingle implements NBTSerializable {
     }
 
     public int getLowestNote() {
-        return this.minNote;
+        this.calculateRange();
+        return this.min;
     }
 
     public int getRange() {
-        return this.maxNote - this.minNote + 1;
-    }
-
-    public boolean isValid() {
-        if (Strings.isNullOrEmpty(this.id) || Strings.isNullOrEmpty(this.name) || Strings.isNullOrEmpty(this.artist)) {
-            return false;
-        }
-        if (!LOWER_UNDERSCORE_CASE.matcher(this.id).matches()) {
-            return false;
-        }
-        if (this.ticks == null || this.ticks.isEmpty()) {
-            return false;
-        }
-        if (this.minNote > this.maxNote || this.minNote < 0) {
-            return false;
-        }
-        for (final PlayTick tick : this.ticks) {
-            if (tick.length <= 0 || tick.length > 255 || tick.notes == null || tick.notes.length == 0) {
-                return false;
-            }
-            for (final int note : tick.notes) {
-                if (note < 0 || note > 24) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        this.calculateRange();
+        return this.range;
     }
 
     private void calculateRange() {
-        this.minNote = 24;
-        this.maxNote = 0;
-        for (final PlayTick tick : this.ticks) {
-            for (final int note : tick.notes) {
-                if (note > this.maxNote) {
-                    this.maxNote = note;
-                }
-                if (note < this.minNote) {
-                    this.minNote = note;
-                }
-            }
-        }
-    }
-
-    @Override
-    public CompoundNBT serialize() {
-        final CompoundNBT compound = new CompoundNBT();
-        compound.putString("id", this.id);
-        compound.putString("name", this.name);
-        compound.putString("artist", this.artist);
-        final ListNBT tickList = new ListNBT();
-        for (final PlayTick tick : this.ticks) {
-            final CompoundNBT tickCompound = new CompoundNBT();
-            int notes = 0;
-            for (final int note : tick.notes) {
-                notes |= 1 << note;
-            }
-            tickCompound.putInt("notes", notes);
-            tickCompound.putByte("length", UnsignedBytes.checkedCast(tick.length));
-            tickList.add(tickCompound);
-        }
-        compound.put("ticks", tickList);
-        return compound;
-    }
-
-    @Override
-    public void deserialize(final CompoundNBT compound) {
-        this.id = compound.getString("id");
-        this.name = compound.getString("name");
-        this.artist = compound.getString("artist");
-        final ListNBT tickList = compound.getList("ticks", NBT.TAG_COMPOUND);
-        this.ticks = new ArrayList<>(tickList.size());
-        for (int i = 0; i < tickList.size(); i++) {
-            final CompoundNBT tickCompound = tickList.getCompound(i);
-            final int noteBits = tickCompound.getInt("notes");
-            final int[] notes = new int[Integer.bitCount(noteBits)];
-            for (int idx = 0, note = 0; note < 25; note++) {
-                if ((noteBits & (1 << note)) > 0) {
-                    notes[idx++] = note;
-                }
-            }
-            final int length;
-            if (tickCompound.contains("length", NBT.TAG_ANY_NUMERIC)) {
-                length = tickCompound.getByte("length") & 0xFF;
+        if (this.range == -1) {
+            if (this.ticks.isEmpty()) {
+                this.min = 0;
+                this.range = 1;
             } else {
-                length = DEFAULT_LENGTH;
+                int minNote = 24;
+                int maxNote = 0;
+                for (final PlayTick tick : this.ticks) {
+                    for (final int note : tick.notes) {
+                        maxNote = Math.max(maxNote, note);
+                        minNote = Math.min(minNote, note);
+                    }
+                }
+                this.min = minNote;
+                this.range = maxNote - minNote + 1;
             }
-            this.ticks.add(new PlayTick(notes, length));
         }
-        this.calculateRange();
     }
 
-    public static final class PlayTick {
-        private final int[] notes;
+    static final class PlayTick {
+        public static final Codec<PlayTick> CODEC = RecordCodecBuilder.create(builder -> builder
+            .group(
+                Codec.INT.fieldOf("duration").forGetter(t -> t.duration),
+                Codec.INT_STREAM.fieldOf("notes").xmap(IntStream::toArray, Arrays::stream).forGetter(t -> t.notes)
+            )
+            .apply(builder, PlayTick::new)
+        );
 
-        private final int length;
+        final int duration;
 
-        public PlayTick(final int[] notes, final int length) {
+        final int[] notes;
+
+        PlayTick(final int duration, final int[] notes) {
+            this.duration = duration;
             this.notes = notes;
-            this.length = length;
         }
 
-        public int getLength() {
-            return this.length;
+        public int getDuration() {
+            return this.duration;
         }
 
         public int[] getNotes() {
             return this.notes;
         }
-    }
-
-    public static Jingle from(final CompoundNBT compound) {
-        final Jingle jingle = new Jingle();
-        jingle.deserialize(compound);
-        return jingle;
     }
 }

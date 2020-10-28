@@ -1,0 +1,125 @@
+{
+  "title": "Deck the Halls",
+  "artist": "Thomas Oliphant",
+  "ticks": [
+    {
+      "duration": 12,
+      "notes": [
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8,
+        11
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6,
+        10
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        6,
+        11
+      ]
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "title": "Thriller",
+  "artist": "Michael Jackson",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        9,
+        13,
+        16,
+        18
+      ]
+    },
+    {
+      "duration": 39,
+      "notes": [
+        13,
+        16
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        6,
+        11
+      ]
+    },
+    {
+      "duration": 18,
+      "notes": [
+        4,
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        6,
+        11,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        9,
+        16,
+        18
+      ]
+    },
+    {
+      "duration": 39,
+      "notes": [
+        9,
+        16
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        9,
+        13
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 24,
+      "notes": [
+        4,
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        6,
+        11,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        11
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        2,
+        6,
+        18,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        6,
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        9
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        4,
+        11,
+        18,
+        21
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        16
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        18
+      ]
+    }
+  ]
+}

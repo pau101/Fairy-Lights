@@ -1,0 +1,444 @@
+{
+  "title": "Shanghai Romance",
+  "artist": "Orange Caramel",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10,
+        15,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        10,
+        13,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        11,
+        15,
+        18,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        8,
+        11,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6,
+        8,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        8,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        1,
+        6,
+        10,
+        13,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        15,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        17,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        8,
+        11,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        15,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        17,
+        18,
+        20,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        18,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13,
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        13,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        10,
+        15,
+        18
+      ]
+    }
+  ]
+}

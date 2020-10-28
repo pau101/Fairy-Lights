@@ -1,0 +1,177 @@
+{
+  "title": "Jingle Bells",
+  "artist": "James Lord Pierpont",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17,
+        20
+      ]
+    },
+    {
+      "duration": 7,
+      "notes": [
+        13,
+        20
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        13,
+        15
+      ]
+    },
+    {
+      "duration": 14,
+      "notes": [
+        15,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 7,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17,
+        18
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        17
+      ]
+    },
+    {
+      "duration": 9,
+      "notes": [
+        15,
+        17
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        15,
+        20
+      ]
+    }
+  ]
+}

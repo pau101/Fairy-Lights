@@ -1,129 +1,110 @@
 package me.paulf.fairylights.server.jingle;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.mojang.serialization.Lifecycle;
-import me.paulf.fairylights.FairyLights;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.DefaultedRegistry;
-import net.minecraft.util.registry.Registry;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class JingleLibrary {
-    private static final ResourceLocation DEFAULT_ID = new ResourceLocation(FairyLights.ID, "unknown");
+    public static final String CHRISTMAS = "christmas";
 
-    private static final DefaultedRegistry<JingleLibrary> REGISTRY = new DefaultedRegistry<>(DEFAULT_ID.toString(), RegistryKey.getOrCreateRootKey(new ResourceLocation(FairyLights.ID, "jingle")), Lifecycle.experimental());
-
-    private static final JingleLibrary DEFAULT = register(new JingleLibrary(DEFAULT_ID) {
-        @Override
-        public void load(final IResourceManager manager) {
-        }
-    });
-
-    public static final JingleLibrary CHRISTMAS = JingleLibrary.create("christmas");
-
-    public static final JingleLibrary RANDOM = JingleLibrary.create("random");
+    public static final String RANDOM = "";
 
     private static final int MAX_RANGE = 25;
 
-    private final ResourceLocation name;
+    private final Object2ObjectMap<String, Jingle> jingles;
 
-    private final Map<String, Jingle> jingles = new HashMap<>();
+    private final Int2ObjectMap<RangeSet> ranges;
 
-    private final Multimap<Integer, Jingle> jinglesWithinRange = ArrayListMultimap.create();
-
-    private final Map<Integer, Integer> rangeWeights = new HashMap<>();
-
-    private JingleLibrary(final ResourceLocation name) {
-        this.name = name;
+    private JingleLibrary() {
+        this.jingles = Object2ObjectMaps.emptyMap();
+        this.ranges = Int2ObjectMaps.emptyMap();
     }
 
-    public ResourceLocation getName() {
-        return this.name;
-    }
-
-    public boolean contains(final String id) {
-        return this.jingles.containsKey(id);
-    }
-
-    @Nullable
-    public Jingle get(final String id) {
-        return this.jingles.get(id);
-    }
-
-    private void put(final String id, final Jingle jingle) {
-        this.jingles.put(id, jingle);
-        for (int range = jingle.getRange(); range <= MAX_RANGE; range++) {
-            this.jinglesWithinRange.put(range, jingle);
-            this.rangeWeights.merge(range, jingle.getRange(), Math::addExact);
-        }
+    private JingleLibrary(final Builder builder) {
+        this.jingles = Object2ObjectMaps.unmodifiable(new Object2ObjectOpenHashMap<>(builder.jingles));
+        final Int2ObjectMap<RangeSet> ranges = new Int2ObjectOpenHashMap<>();
+        Int2ObjectMaps.fastForEach(builder.ranges, e -> ranges.put(e.getIntKey(), e.getValue().build()));
+        this.ranges = Int2ObjectMaps.unmodifiable(ranges);
     }
 
     @Nullable
     public Jingle getRandom(final Random rng, final int range) {
-        final int fitRange = Math.min(range, MAX_RANGE);
-        final Collection<Jingle> jingles = this.jinglesWithinRange.get(fitRange);
-        if (jingles.isEmpty()) {
+        final RangeSet jingles = this.ranges.get(Math.min(range, MAX_RANGE));
+        return jingles == null ? null : jingles.get(rng);
+    }
+
+    public static JingleLibrary empty() {
+        return new JingleLibrary();
+    }
+
+    private static class RangeSet {
+        final ObjectList<Jingle> jingles;
+        final int total;
+
+        RangeSet(final Builder builder) {
+            this.jingles = ObjectLists.unmodifiable(builder.jingles);
+            this.total = builder.total;
+        }
+
+        @Nullable
+        public Jingle get(final Random rng) {
+            if (this.jingles.isEmpty()) {
+                return null;
+            }
+            float choice = rng.nextFloat() * this.total;
+            for (final Jingle jingle : this.jingles) {
+                choice -= jingle.getRange();
+                if (choice <= 0.0F) {
+                    return jingle;
+                }
+            }
             return null;
         }
-        float choice = rng.nextFloat() * this.rangeWeights.get(fitRange);
-        for (final Jingle jingle : jingles) {
-            choice -= jingle.getRange();
-            if (choice <= 0) {
-                return jingle;
+
+        static class Builder {
+            final ObjectList<Jingle> jingles = new ObjectArrayList<>();
+            int total;
+
+            void add(final Jingle jingle) {
+                this.jingles.add(jingle);
+                this.total += jingle.getRange();
             }
-        }
-        return null;
-    }
 
-    public void load(final IResourceManager manger) {
-        try (final IResource resource = manger.getResource(new ResourceLocation(this.name.getNamespace(), "/jingles/" + this.name.getPath() + ".dat"))) {
-            this.deserialize(CompressedStreamTools.readCompressed(resource.getInputStream()));
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void deserialize(final CompoundNBT library) {
-        this.jingles.clear();
-        this.jinglesWithinRange.clear();
-        this.rangeWeights.clear();
-        for (final String id : library.keySet()) {
-            final CompoundNBT jingleCompound = library.getCompound(id);
-            final Jingle jingle = Jingle.from(jingleCompound);
-            if (jingle.isValid() && !this.contains(jingle.getId())) {
-                this.put(jingle.getId(), jingle);
+            RangeSet build() {
+                return new RangeSet(this);
             }
         }
     }
 
-    public static JingleLibrary create(final String name) {
-        return register(new JingleLibrary(new ResourceLocation(FairyLights.ID, name)));
-    }
+    public static class Builder {
+        final Object2ObjectMap<String, Jingle> jingles = new Object2ObjectOpenHashMap<>();
+        final Int2ObjectMap<RangeSet.Builder> ranges = new Int2ObjectOpenHashMap<>();
 
-    private static JingleLibrary register(final JingleLibrary library) {
-        return Registry.register(REGISTRY, library.name, library);
-    }
-
-    public static JingleLibrary fromName(final ResourceLocation name) {
-        return REGISTRY.getOrDefault(name);
-    }
-
-    public static void loadAll(final IResourceManager manager) {
-        for (final JingleLibrary library : REGISTRY) {
-            library.load(manager);
+        public Builder add(final String id, final Jingle jingle) {
+            this.jingles.put(id, jingle);
+            for (int range = jingle.getRange(); range <= MAX_RANGE; range++) {
+                this.ranges.computeIfAbsent(range, r -> new RangeSet.Builder()).add(jingle);
+            }
+            return this;
         }
+
+        public JingleLibrary build() {
+            return new JingleLibrary(this);
+        }
+    }
+
+    public static void main(final String[] args) {
+        System.out.println("Playing with Fire".hashCode());
+        System.out.println("My Anthem".hashCode());
+        System.out.println("I'm Fine Thank You".hashCode());
     }
 }

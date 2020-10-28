@@ -1,0 +1,138 @@
+{
+  "title": "Settle Down",
+  "artist": "Kimbra",
+  "ticks": [
+    {
+      "duration": 4,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 36,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 36,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 16,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        18
+      ]
+    },
+    {
+      "duration": 24,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        10
+      ]
+    }
+  ]
+}

@@ -1,0 +1,636 @@
+{
+  "title": "Lucifer",
+  "artist": "SHINee",
+  "ticks": [
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3,
+        8
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        3,
+        7
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0,
+        5,
+        7
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        6
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        0,
+        5
+      ]
+    },
+    {
+      "duration": 3,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        8,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10,
+        15
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8,
+        10,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        8,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        8
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        0,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        7,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        5,
+        8,
+        13
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        3,
+        12
+      ]
+    },
+    {
+      "duration": 6,
+      "notes": [
+        1,
+        10
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        0,
+        8
+      ]
+    }
+  ]
+}

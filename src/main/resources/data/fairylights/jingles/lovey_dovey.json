@@ -1,0 +1,692 @@
+{
+  "title": "Lovey Dovey",
+  "artist": "T-ara",
+  "ticks": [
+    {
+      "duration": 8,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        15,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        3,
+        10
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8,
+        17
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        8,
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        12,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        10
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        8,
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        3,
+        12
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        5,
+        14
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        7,
+        15
+      ]
+    },
+    {
+      "duration": 16,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        14,
+        22
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        10,
+        19
+      ]
+    },
+    {
+      "duration": 12,
+      "notes": [
+        8,
+        17
+      ]
+    },
+    {
+      "duration": 8,
+      "notes": [
+        7
+      ]
+    },
+    {
+      "duration": 4,
+      "notes": [
+        10
+      ]
+    },
+    {
+      "duration": 2,
+      "notes": [
+        7,
+        12
+      ]
+    }
+  ]
+}
