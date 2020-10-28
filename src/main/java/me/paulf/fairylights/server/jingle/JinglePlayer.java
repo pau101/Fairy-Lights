@@ -279,10 +279,10 @@ public final class JinglePlayer {
         }
 
         private static BasicParticleType[] getParticles(final Jingle jingle) {
-            if (jingle.getName().hashCode() == 0xf2b587de) {
+            if (jingle.getTitle().hashCode() == 0xf2b587de) {
                 return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.LAVA};
             }
-            if (jingle.getName().hashCode() == 0xc3fa68bd || jingle.getName().hashCode() == 0x70f77bf4) {
+            if (jingle.getTitle().hashCode() == 0xc3fa68bd || jingle.getTitle().hashCode() == 0x70f77bf4) {
                 return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.HEART};
             }
             return new BasicParticleType[]{ParticleTypes.NOTE};

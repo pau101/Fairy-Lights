@@ -13,14 +13,14 @@ import java.util.stream.IntStream;
 public final class Jingle {
     public static final Codec<Jingle> CODEC = RecordCodecBuilder.create(builder -> builder
         .group(
-            Codec.STRING.fieldOf("title").forGetter(j -> j.name),
+            Codec.STRING.fieldOf("title").forGetter(j -> j.title),
             Codec.STRING.fieldOf("artist").forGetter(j -> j.artist),
             PlayTick.CODEC.listOf().fieldOf("ticks").xmap(l -> ObjectLists.unmodifiable(new ObjectArrayList<>(l)), l -> l).forGetter(j -> j.ticks)
         )
         .apply(builder, Jingle::new)
     );
 
-    private final String name;
+    private final String title;
 
     private final String artist;
 
@@ -30,14 +30,14 @@ public final class Jingle {
 
     private int min;
 
-    private Jingle(final String name, final String artist, final ObjectList<PlayTick> ticks) {
-        this.name = name;
+    private Jingle(final String title, final String artist, final ObjectList<PlayTick> ticks) {
+        this.title = title;
         this.artist = artist;
         this.ticks = ticks;
     }
 
-    public String getName() {
-        return this.name;
+    public String getTitle() {
+        return this.title;
     }
 
     public String getArtist() {

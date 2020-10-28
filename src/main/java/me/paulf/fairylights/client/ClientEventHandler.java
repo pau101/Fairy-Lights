@@ -17,7 +17,6 @@ import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.Jingle;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -105,7 +104,7 @@ public final class ClientEventHandler {
             if (lines.size() > 0) {
                 lines.add("");
             }
-            lines.add("Song: " + jingle.getName());
+            lines.add("Song: " + jingle.getTitle());
             lines.add("Artist: " + jingle.getArtist());
         }
     }
