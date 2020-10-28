@@ -843,8 +843,8 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             visibleSelectionEnd = visibleText.length();
         }
         if (visibleText.length() > 0) {
-            final String beforeCaret = (isCaretVisible ? visibleText.substring(0, visibleCaret) : visibleText).toString();
-            textX = this.font.drawStringWithShadow(stack, beforeCaret, offsetX, offsetY, textColor);
+            final ITextComponent beforeCaret = (isCaretVisible ? visibleText.substring(0, visibleCaret) : visibleText).toTextComponent();
+            textX = this.font.func_243246_a(stack, beforeCaret, offsetX, offsetY, textColor);
         }
         final int caretX;
         if (isCaretVisible) {
@@ -853,7 +853,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             caretX = visibleCaret > 0 ? offsetX + this.width - 6 : offsetX;
         }
         if (visibleText.length() > 0 && isCaretVisible && visibleCaret < visibleText.length()) {
-            textX = this.font.drawStringWithShadow(stack, visibleText.substring(visibleCaret).toString(), textX, offsetY, textColor);
+            textX = this.font.func_243246_a(stack, visibleText.substring(visibleCaret).toTextComponent(), textX, offsetY, textColor);
         }
         if (drawCaret) {
             final int rgb = StyledString.getColor(this.currentStyle.getColor());
@@ -900,7 +900,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             }
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            this.font.drawStringWithShadow(stack, this.getSelectedText().toString(), mouseX + 5, mouseY + 5, textColor | 0xBF000000);
+            this.font.func_243246_a(stack, this.getSelectedText().toTextComponent(), mouseX + 5, mouseY + 5, textColor | 0xBF000000);
             RenderSystem.disableBlend();
         }
     }

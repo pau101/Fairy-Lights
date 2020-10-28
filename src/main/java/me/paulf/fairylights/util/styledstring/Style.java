@@ -27,8 +27,12 @@ public final class Style implements Comparable<Style> {
         this(Style.pack(color, isBold, isStrikethrough, isUnderline, isItalic, isObfuscated));
     }
 
-    private Style(final int value) {
+    public Style(final int value) {
         this.value = value;
+    }
+
+    public int packed() {
+        return this.value;
     }
 
     public TextFormatting getColor() {

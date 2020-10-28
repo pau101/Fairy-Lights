@@ -1,9 +1,7 @@
 package me.paulf.fairylights.util.styledstring;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonParseException;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.Color;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -14,6 +12,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public final class StyledString implements Comparable<StyledString>, CharSequence {
@@ -523,7 +522,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     @Override
     public String toString() {
-        return this.toTextComponent().getString();
+        return this.value;
     }
 
     public ITextComponent toTextComponent() {
@@ -539,12 +538,12 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
             final Style style = i < value.length() ? styling[i] : null;
             if (!currentStyle.equals(style)) {
                 final IFormattableTextComponent t = new StringTextComponent(bob.toString());
-                t.getStyle().setColor(Color.fromTextFormatting(currentStyle.getColor()));
-                if (currentStyle.isObfuscated()) t.getStyle().setObfuscated(true);
-                if (currentStyle.isBold()) t.getStyle().setBold(true);
-                if (currentStyle.isStrikethrough()) t.getStyle().setStrikethrough(true);
-                if (currentStyle.isUnderline()) t.getStyle().setUnderlined(true);
-                if (currentStyle.isItalic()) t.getStyle().setItalic(true);
+                t.mergeStyle(currentStyle.getColor());
+                if (currentStyle.isObfuscated()) t.mergeStyle(TextFormatting.OBFUSCATED);
+                if (currentStyle.isBold()) t.mergeStyle(TextFormatting.BOLD);
+                if (currentStyle.isStrikethrough()) t.mergeStyle(TextFormatting.STRIKETHROUGH);
+                if (currentStyle.isUnderline()) t.mergeStyle(TextFormatting.UNDERLINE);
+                if (currentStyle.isItalic()) t.mergeStyle(TextFormatting.ITALIC);
                 if (text == null) {
                     text = t;
                 } else {
@@ -572,26 +571,22 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     public static CompoundNBT serialize(final StyledString str) {
         final CompoundNBT compound = new CompoundNBT();
-        compound.putString("value", ITextComponent.Serializer.toJson(str.toTextComponent()));
+        compound.putString("value", str.value);
+        compound.putIntArray("styling", Arrays.stream(str.styling).mapToInt(Style::packed).toArray());
         return compound;
     }
 
     public static StyledString deserialize(final CompoundNBT compound) {
-        final ITextComponent text;
-        try {
-            text = ITextComponent.Serializer.getComponentFromJson(compound.getString("value"));
-        } catch (final JsonParseException e) {
-            return new StyledString(compound.getString("value"), new Style());
+        final String value = compound.getString("value");
+        Style[] styling = Arrays.stream(compound.getIntArray("styling"))
+            .mapToObj(Style::new)
+            .toArray(Style[]::new);
+        if (styling.length != value.length()) {
+            styling = Arrays.stream(Arrays.copyOf(styling, value.length()))
+                .map(s -> Optional.ofNullable(s).orElseGet(Style::new))
+                .toArray(Style[]::new);
         }
-        if (text == null) {
-            return new StyledString();
-        }
-        return fromTextComponent(text);
-    }
-
-    // TODO: reimplement serialize to not require converting text component to legacy format for parsing
-    public static StyledString fromTextComponent(final ITextComponent component) {
-        return valueOf(component.getString());
+        return new StyledString(value, styling);
     }
 
     public static StyledString valueOf(final String str) {
