@@ -1,5 +1,6 @@
 package me.paulf.fairylights.server.net.clientbound;
 
+import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.Jingle;
@@ -42,7 +43,7 @@ public final class JingleMessage extends ConnectionMessage {
         try {
             this.jingle = buf.func_240628_a_(Jingle.CODEC);
         } catch (final IOException e) {
-            throw new EncoderException(e);
+            throw new DecoderException(e);
         }
     }
 
