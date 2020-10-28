@@ -84,7 +84,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     @Override
     public boolean interact(final PlayerEntity player, final Vector3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
-        if (featureType == FEATURE && heldStack.getItem().isIn(FLCraftingRecipes.LIGHTS )) {
+        if (featureType == FEATURE && heldStack.getItem().isIn(FLCraftingRecipes.LIGHTS)) {
             final int index = feature % this.pattern.size();
             final ItemStack light = this.pattern.get(index);
             if (!ItemStack.areItemStacksEqual(light, heldStack)) {

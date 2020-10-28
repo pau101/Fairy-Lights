@@ -35,7 +35,7 @@ public final class MidiJingler implements Receiver {
         final int inMCSpace = shortMsg.getData1() - 53; // F#3 is 0
         // Keep F#5 the same
         final int note = inMCSpace == 24 ? 24 : Mth.mod(inMCSpace, 24);
-        final Light[] lights = this.connection.getFeatures();
+        final Light<?>[] lights = this.connection.getFeatures();
         final int offset = lights.length / 2 - 12;
         final int idx = note + offset;
         if (idx >= 0 && idx < lights.length) {
