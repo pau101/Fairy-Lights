@@ -20,11 +20,11 @@ public final class Jingle {
         .apply(builder, Jingle::new)
     );
 
-    private String name;
+    private final String name;
 
-    private String artist;
+    private final String artist;
 
-    private ObjectList<PlayTick> ticks;
+    private final ObjectList<PlayTick> ticks;
 
     private int range = -1;
 
