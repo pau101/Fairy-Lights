@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
+import net.minecraft.network.PacketBuffer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -84,6 +85,35 @@ public final class Jingle {
                 this.range = maxNote - minNote + 1;
             }
         }
+    }
+
+    public void write(final PacketBuffer buf) {
+        buf.writeString(this.title);
+        buf.writeString(this.artist);
+        buf.writeVarInt(this.ticks.size());
+        for (final PlayTick tick : this.ticks) {
+            int bits = 0;
+            for (final int n : tick.notes) bits |= 1 << n;
+            buf.writeInt((tick.duration << 25) | (bits & (1 << 25) - 1));
+        }
+    }
+
+    public static Jingle read(final PacketBuffer buf) {
+        final String title = buf.readString();
+        final String artist = buf.readString();
+        final int len = buf.readVarInt();
+        final ObjectList<PlayTick> ticks = new ObjectArrayList<>(len);
+        for (int rem = len; rem --> 0; ) {
+            final int packed = buf.readInt();
+            final int duration = (packed >> 25) & 0x7F;
+            final int bits = packed & ((1 << 25) - 1);
+            final int[] notes = new int[Integer.bitCount(bits)];
+            for (int n = 0, i = 0; n < 25; n++) {
+                if ((bits & (1 << n)) != 0) notes[i++] = n;
+            }
+            ticks.add(new PlayTick(duration, notes));
+        }
+        return new Jingle(title, artist, ObjectLists.unmodifiable(ticks));
     }
 
     static final class PlayTick {

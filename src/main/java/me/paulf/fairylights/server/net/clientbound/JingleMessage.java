@@ -29,22 +29,14 @@ public final class JingleMessage extends ConnectionMessage {
     public void encode(final PacketBuffer buf) {
         super.encode(buf);
         buf.writeVarInt(this.lightOffset);
-        try {
-            buf.func_240629_a_(Jingle.CODEC, this.jingle);
-        } catch (final IOException e) {
-            throw new EncoderException(e);
-        }
+        this.jingle.write(buf);
     }
 
     @Override
     public void decode(final PacketBuffer buf) {
         super.decode(buf);
         this.lightOffset = buf.readVarInt();
-        try {
-            this.jingle = buf.func_240628_a_(Jingle.CODEC);
-        } catch (final IOException e) {
-            throw new DecoderException(e);
-        }
+        this.jingle = Jingle.read(buf);
     }
 
     public static class Handler implements BiConsumer<JingleMessage, ClientMessageContext> {
