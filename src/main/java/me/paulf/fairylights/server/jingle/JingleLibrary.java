@@ -17,6 +17,8 @@ import java.util.Random;
 public class JingleLibrary {
     public static final String CHRISTMAS = "christmas";
 
+    public static final String HALLOWEEN = "halloween";
+
     public static final String RANDOM = "";
 
     private static final int MAX_RANGE = 25;

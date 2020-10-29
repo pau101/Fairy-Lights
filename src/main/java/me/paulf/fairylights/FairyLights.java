@@ -55,6 +55,8 @@ public final class FairyLights {
 
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 
+    public static final CalendarEvent HALLOWEEN = new CalendarEvent(Month.OCTOBER, 31, 31);
+
     @SuppressWarnings("unchecked")
     public static final IForgeRegistry<ConnectionType<?>> CONNECTION_TYPES = new RegistryBuilder<ConnectionType<?>>()
         .setType((Class<ConnectionType<?>>) (Class<?>) ConnectionType.class)

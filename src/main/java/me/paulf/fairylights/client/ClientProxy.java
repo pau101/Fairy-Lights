@@ -172,6 +172,9 @@ public final class ClientProxy extends ServerProxy {
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
                 return (index + Util.milliTime() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
             }
+            if (FairyLights.HALLOWEEN.isOccurringNow()) {
+                return index % 2 == 0 ? 0xf9801d : 0x8932b8;
+            }
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());
         colors.register((stack, index) -> index == 0 ? DyeableItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());

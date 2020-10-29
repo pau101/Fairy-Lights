@@ -63,8 +63,7 @@ import java.util.Random;
 public final class ServerEventHandler {
     private final Random rng = new Random();
 
-    // Every 5 minutes on average a jingle will attempt to play
-    private final float jingleProbability = 1F / (5 * 60 * 20);
+    private boolean eventOccurring = false;
 
     @SubscribeEvent
     public void onEntityJoinWorld(final EntityJoinWorldEvent event) {
@@ -167,10 +166,13 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onWorldTick(final TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.START || !FLConfig.isJingleEnabled()) {
             return;
         }
-        if (FairyLights.CHRISTMAS.isOccurringNow() && FLConfig.isJingleEnabled() && this.rng.nextFloat() < this.jingleProbability) {
+        if (event.world.getGameTime() % (5 * 60 * 20) == 0) {
+            this.eventOccurring = FairyLights.CHRISTMAS.isOccurringNow() || FairyLights.HALLOWEEN.isOccurringNow();
+        }
+        if (this.eventOccurring && this.rng.nextFloat() < 1.0F / (5 * 60 * 20)) {
             final List<TileEntity> tileEntities = event.world.loadedTileEntityList;
             final List<Vector3d> playingSources = new ArrayList<>();
             final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections = new HashMap<>();
@@ -205,7 +207,7 @@ public final class ServerEventHandler {
             final Fastener<?> fastener = feasibleConnections.keySet().toArray(new Fastener[0])[this.rng.nextInt(feasibleConnections.size())];
             final List<HangingLightsConnection> connections = feasibleConnections.get(fastener);
             final HangingLightsConnection connection = connections.get(this.rng.nextInt(connections.size()));
-            tryJingle(event.world, connection, JingleLibrary.CHRISTMAS);
+            tryJingle(event.world, connection, FairyLights.CHRISTMAS.isOccurringNow() ? JingleLibrary.CHRISTMAS : JingleLibrary.HALLOWEEN);
         }
     }
 
