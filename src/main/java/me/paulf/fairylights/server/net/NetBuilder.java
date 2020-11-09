@@ -85,7 +85,7 @@ public final class NetBuilder {
 
     @SuppressWarnings("Convert2MethodRef")
     public <T extends Message> MessageBuilder<T, ClientMessageContext> clientbound(final Supplier<T> factory) {
-        return new MessageBuilder<>(factory, DistExecutor.runForDist(() -> () -> new HandlerConsumerFactory<>(LogicalSide.CLIENT, ClientMessageContext::new), () -> () -> new NoopConsumerFactory<>()));
+        return new MessageBuilder<>(factory, DistExecutor.safeRunForDist(() -> () -> new HandlerConsumerFactory<>(LogicalSide.CLIENT, ClientMessageContext::new), () -> () -> new NoopConsumerFactory<>()));
     }
 
     public SimpleChannel build() {

@@ -81,15 +81,11 @@ public final class FairyLights {
         FLCraftingRecipes.REG.register(bus);
         ConnectionTypes.REG.register(bus);
         StringTypes.REG.register(bus);
-        final ServerProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+        final ServerProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         proxy.init(bus);
     }
 
     public static boolean ingredientMatches(final boolean equalsExact, final ItemStack ingredient, final ItemStack stack) {
         return equalsExact || RegistryObjects.namespaceEquals(ingredient.getItem(), FairyLights.ID) && RegistryObjects.namespaceEquals(stack.getItem(), FairyLights.ID);
-    }
-
-    public static boolean isForgeInStupidState() {
-        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> ObfuscationReflectionHelper.getPrivateValue(ClientModLoader.class, null, "error")) != null;
     }
 }

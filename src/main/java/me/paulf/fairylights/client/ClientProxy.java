@@ -120,9 +120,6 @@ public final class ClientProxy extends ServerProxy {
     }
 
     private void setupColors(final ColorHandlerEvent.Item event) {
-        if (!FLItems.FAIRY_LIGHT.isPresent() && FairyLights.isForgeInStupidState()) {
-            return;
-        }
         final ItemColors colors = event.getItemColors();
         colors.register((stack, index) -> {
             if (index == 1) {
