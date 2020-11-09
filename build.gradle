@@ -57,7 +57,7 @@ minecraft {
 }
 
 jar {
-    classifier '1.16'
+    classifier '1.16.4'
     exclude '.cache'
 }
 
