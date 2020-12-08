@@ -37,6 +37,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -100,14 +101,13 @@ public final class ClientProxy extends ServerProxy {
         });
         modBus.addListener(this::setup);
         modBus.addListener(this::setupColors);
+        modBus.addListener(this::setupModels);
     }
 
     private void setup(final FMLClientSetupEvent event) {
         ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.get(), dispatcher -> new FastenerBlockEntityRenderer(dispatcher, ServerProxy.buildBlockView()));
         ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.get(), LightBlockEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.get(), FenceFastenerRenderer::new);
-        ModelLoader.addSpecialModel(FenceFastenerRenderer.MODEL);
-        this.entityModels.forEach(ModelLoader::addSpecialModel);
         RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
         /*final LightRenderer r = new LightRenderer();
         final StringBuilder bob = new StringBuilder();
@@ -117,6 +117,11 @@ public final class ClientProxy extends ServerProxy {
             bob.append(String.format("%n%s new AxisAlignedBB(%.3fD, %.3fD, %.3fD, %.3fD, %.3fD, %.3fD), %.3fD", l.getRegistryName(), bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ, model.getFloorOffset()));
         });
         LogManager.getLogger().debug("waldo {}", bob);*/
+    }
+
+    private void setupModels(final ModelRegistryEvent event) {
+        ModelLoader.addSpecialModel(FenceFastenerRenderer.MODEL);
+        this.entityModels.forEach(ModelLoader::addSpecialModel);
     }
 
     private void setupColors(final ColorHandlerEvent.Item event) {
