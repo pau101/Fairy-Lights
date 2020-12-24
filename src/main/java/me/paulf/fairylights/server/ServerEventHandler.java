@@ -52,8 +52,11 @@ import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -166,14 +169,18 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onWorldTick(final TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START || !FLConfig.isJingleEnabled()) {
+        if (event.phase == TickEvent.Phase.START || event.side == LogicalSide.CLIENT || !FLConfig.isJingleEnabled()) {
             return;
         }
         if (event.world.getGameTime() % (5 * 60 * 20) == 0) {
             this.eventOccurring = FairyLights.CHRISTMAS.isOccurringNow() || FairyLights.HALLOWEEN.isOccurringNow();
         }
         if (this.eventOccurring && this.rng.nextFloat() < 1.0F / (5 * 60 * 20)) {
-            final List<TileEntity> tileEntities = event.world.loadedTileEntityList;
+            List<TileEntity> tileEntities = Collections.emptyList();
+            try {
+                tileEntities = new ArrayList<>(event.world.tickableTileEntities);
+            } catch (ConcurrentModificationException ignored) {
+            }
             final List<Vector3d> playingSources = new ArrayList<>();
             final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections = new HashMap<>();
             for (final TileEntity tileEntity : tileEntities) {
