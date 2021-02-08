@@ -16,6 +16,7 @@ import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.NBTSerializable;
+import me.paulf.fairylights.util.Utils;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -226,7 +227,7 @@ public abstract class Connection implements NBTSerializable {
     public boolean matches(final ItemStack stack) {
         if (this.getType().getItem().equals(stack.getItem())) {
             final CompoundNBT tag = stack.getTag();
-            return tag == null || NBTUtil.areNBTEquals(this.serializeLogic(), tag, true);
+            return tag == null || Utils.impliesNbt(this.serializeLogic(), tag);
         }
         return false;
     }
