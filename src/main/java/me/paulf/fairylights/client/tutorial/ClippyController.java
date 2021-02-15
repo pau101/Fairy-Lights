@@ -120,7 +120,7 @@ public class ClippyController {
 
         @Override
         public void tick(final ClientPlayerEntity player, final ClippyController controller) {
-            if (player.openContainer.getInventory().stream().noneMatch(stack -> stack.getItem().isIn(FLCraftingRecipes.LIGHTS)) &&
+            if (!player.inventory.hasTag(FLCraftingRecipes.LIGHTS) &&
                     !player.inventory.getItemStack().getItem().isIn(FLCraftingRecipes.LIGHTS)) {
                 controller.setState(new NoProgressState());
             } else if (FLItems.HANGING_LIGHTS.filter(i ->
