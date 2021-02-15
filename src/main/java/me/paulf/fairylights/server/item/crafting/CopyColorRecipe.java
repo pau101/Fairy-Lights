@@ -37,6 +37,7 @@ public class CopyColorRecipe extends SpecialRecipe {
                         original = stack;
                     } else {
                         final ItemStack copy = stack.copy();
+                        copy.setCount(1);
                         DyeableItem.setColor(copy, DyeableItem.getColor(original));
                         return copy;
                     }
