@@ -82,8 +82,8 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
-    compileOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.0.62:api')
-    runtimeOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.0.62')
+    compileOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.1.68:api')
+    runtimeOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.1.68')
 }
 
 processResources {
