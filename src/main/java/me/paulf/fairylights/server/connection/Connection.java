@@ -323,7 +323,7 @@ public abstract class Connection implements NBTSerializable {
             return;
         }
         final int count = this.catenary.getCount();
-        if (count < 2) {
+        if (count <= 2) {
             return;
         }
         final float r = this.getRadius();
