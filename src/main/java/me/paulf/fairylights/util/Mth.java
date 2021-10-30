@@ -96,7 +96,7 @@ public final class Mth {
 
     public static int log2(int n) {
         if (n <= 0) {
-            throw new ArithmeticException("Negative infinity: " + n);
+            n = 1;
         }
         int r = 0;
         while ((n >>= 1) > 0) {
