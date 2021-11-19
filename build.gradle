@@ -22,8 +22,13 @@ group= "com.pau101.fairylights"
 archivesBaseName = "fairylights"
 
 minecraft {
-	version = "1.7.10-10.13.4.1448-1.7.10"
-	assetDir = "eclipse/assets"
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "minecraft"
+}
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
 }
 
 dependencies {
@@ -59,6 +64,12 @@ processResources
 	// copy everything else, thats not the mcmod.info
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'mcmod.info'
+	}
+}
+
+idea {
+	module {
+		inheritOutputDirs = true
 	}
 }
 
