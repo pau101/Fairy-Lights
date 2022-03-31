@@ -34,13 +34,13 @@ public class JingleManager extends JsonReloadListener {
     }
 
     @Override
-    protected void apply(final Map<ResourceLocation, JsonElement> elements, final IResourceManager manager, final IProfiler profiler) {
+    protected void func_212853_a_(final Map<ResourceLocation, JsonElement> elements, final IResourceManager manager, final IProfiler profiler) {
         final Object2ObjectMap<String, JingleLibrary.Builder> builders = new Object2ObjectOpenHashMap<>();
         elements.forEach((file, json) -> {
-            final String path = file.getPath();
+            final String path = file.func_110623_a();
             final int sl = path.indexOf('/');
             final String library = path.substring(0, Math.max(0, sl));
-            final ResourceLocation name = new ResourceLocation(file.getNamespace(), path.substring(sl + 1));
+            final ResourceLocation name = new ResourceLocation(file.func_110624_b(), path.substring(sl + 1));
             Jingle.CODEC.parse(JsonOps.INSTANCE, json)
                 .resultOrPartial(error -> LOGGER.warn("Parsing error loading jingle {}: {}", file, error))
                 .ifPresent(jingle -> builders.computeIfAbsent(library, l -> new JingleLibrary.Builder()).add(name, jingle));

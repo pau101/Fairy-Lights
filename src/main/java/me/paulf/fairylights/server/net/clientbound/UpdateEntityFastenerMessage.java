@@ -17,26 +17,26 @@ public final class UpdateEntityFastenerMessage implements Message {
     public UpdateEntityFastenerMessage() {}
 
     public UpdateEntityFastenerMessage(final Entity entity, final CompoundNBT compound) {
-        this.entityId = entity.getEntityId();
+        this.entityId = entity.func_145782_y();
         this.compound = compound;
     }
 
     @Override
     public void encode(final PacketBuffer buf) {
-        buf.writeVarInt(this.entityId);
-        buf.writeCompoundTag(this.compound);
+        buf.func_150787_b(this.entityId);
+        buf.func_150786_a(this.compound);
     }
 
     @Override
     public void decode(final PacketBuffer buf) {
-        this.entityId = buf.readVarInt();
-        this.compound = buf.readCompoundTag();
+        this.entityId = buf.func_150792_a();
+        this.compound = buf.func_150793_b();
     }
 
     public static final class Handler implements BiConsumer<UpdateEntityFastenerMessage, ClientMessageContext> {
         @Override
         public void accept(final UpdateEntityFastenerMessage message, final ClientMessageContext context) {
-            final Entity entity = context.getWorld().getEntityByID(message.entityId);
+            final Entity entity = context.getWorld().func_73045_a(message.entityId);
             if (entity != null) {
                 entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.deserializeNBT(message.compound));
             }

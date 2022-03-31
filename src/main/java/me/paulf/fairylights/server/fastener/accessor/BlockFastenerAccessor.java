@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 
 public final class BlockFastenerAccessor implements FastenerAccessor {
-    private BlockPos pos = BlockPos.ZERO;
+    private BlockPos pos = BlockPos.field_177992_a;
 
     public BlockFastenerAccessor() {}
 
@@ -28,8 +28,8 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
 
     @Override
     public LazyOptional<Fastener<?>> get(final World world, final boolean load) {
-        if (load || world.isBlockPresent(this.pos)) {
-            final TileEntity entity = world.getTileEntity(this.pos);
+        if (load || world.func_195588_v(this.pos)) {
+            final TileEntity entity = world.func_175625_s(this.pos);
             if (entity != null) {
                 return entity.getCapability(CapabilityHandler.FASTENER_CAP);
             }
@@ -39,8 +39,8 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
 
     @Override
     public boolean isGone(final World world) {
-        if (world.isRemote || !world.isBlockPresent(this.pos)) return false;
-        final TileEntity entity = world.getTileEntity(this.pos);
+        if (world.field_72995_K || !world.func_195588_v(this.pos)) return false;
+        final TileEntity entity = world.func_175625_s(this.pos);
         return entity == null || !entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
     }
 
@@ -62,11 +62,11 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
 
     @Override
     public CompoundNBT serialize() {
-        return NBTUtil.writeBlockPos(this.pos);
+        return NBTUtil.func_186859_a(this.pos);
     }
 
     @Override
     public void deserialize(final CompoundNBT nbt) {
-        this.pos = NBTUtil.readBlockPos(nbt);
+        this.pos = NBTUtil.func_186861_c(nbt);
     }
 }

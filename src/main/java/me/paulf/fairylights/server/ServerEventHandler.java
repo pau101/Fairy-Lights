@@ -98,7 +98,7 @@ public final class ServerEventHandler {
     public void onTick(final TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             event.player.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
-                if (fastener.update() && !event.player.world.isRemote) {
+                if (fastener.update() && !event.player.field_70170_p.field_72995_K) {
                     ServerProxy.sendToPlayersWatchingEntity(new UpdateEntityFastenerMessage(event.player, fastener.serializeNBT()), event.player);
                 }
             });
@@ -109,17 +109,17 @@ public final class ServerEventHandler {
     public void onNoteBlockPlay(final NoteBlockEvent.Play event) {
         final World world = (World) event.getWorld();
         final BlockPos pos = event.getPos();
-        final Block noteBlock = world.getBlockState(pos).getBlock();
-        final BlockState below = world.getBlockState(pos.down());
-        if (below.getBlock() == FLBlocks.FASTENER.get() && below.get(FastenerBlock.FACING) == Direction.DOWN) {
+        final Block noteBlock = world.func_180495_p(pos).func_177230_c();
+        final BlockState below = world.func_180495_p(pos.func_177977_b());
+        if (below.func_177230_c() == FLBlocks.FASTENER.get() && below.func_177229_b(FastenerBlock.field_176387_N) == Direction.DOWN) {
             final int note = event.getVanillaNoteId();
             final float pitch = (float) Math.pow(2, (note - 12) / 12D);
-            world.playSound(null, pos, FLSounds.JINGLE_BELL.get(), SoundCategory.RECORDS, 3, pitch);
-            world.addParticle(ParticleTypes.NOTE, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5, note / 24D, 0, 0);
-            if (!world.isRemote) {
+            world.func_184133_a(null, pos, FLSounds.JINGLE_BELL.get(), SoundCategory.RECORDS, 3, pitch);
+            world.func_195594_a(ParticleTypes.field_197597_H, pos.func_177958_n() + 0.5, pos.func_177956_o() + 1.2, pos.func_177952_p() + 0.5, note / 24D, 0, 0);
+            if (!world.field_72995_K) {
                 final IPacket<?> pkt = new SBlockActionPacket(pos, noteBlock, event.getInstrument().ordinal(), note);
-                final PlayerList players = world.getServer().getPlayerList();
-                players.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, world.getDimensionKey(), pkt);
+                final PlayerList players = world.func_73046_m().func_184103_al();
+                players.func_148543_a(null, pos.func_177958_n(), pos.func_177956_o(), pos.func_177952_p(), 64, world.func_234923_W_(), pkt);
             }
             event.setCanceled(true);
         }
@@ -129,15 +129,15 @@ public final class ServerEventHandler {
     public void onRightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
         final World world = event.getWorld();
         final BlockPos pos = event.getPos();
-        if (!(world.getBlockState(pos).getBlock() instanceof FenceBlock)) {
+        if (!(world.func_180495_p(pos).func_177230_c() instanceof FenceBlock)) {
             return;
         }
         final ItemStack stack = event.getItemStack();
-        boolean checkHanging = stack.getItem() == Items.LEAD;
+        boolean checkHanging = stack.func_77973_b() == Items.field_151058_ca;
         final PlayerEntity player = event.getPlayer();
         if (event.getHand() == Hand.MAIN_HAND) {
-            final ItemStack offhandStack = player.getHeldItemOffhand();
-            if (offhandStack.getItem() instanceof ConnectionItem) {
+            final ItemStack offhandStack = player.func_184592_cb();
+            if (offhandStack.func_77973_b() instanceof ConnectionItem) {
                 if (checkHanging) {
                     event.setCanceled(true);
                     return;
@@ -146,14 +146,14 @@ public final class ServerEventHandler {
                 }
             }
         }
-        if (!checkHanging && !world.isRemote) {
+        if (!checkHanging && !world.field_72995_K) {
             final double range = 7;
-            final int x = pos.getX();
-            final int y = pos.getY();
-            final int z = pos.getZ();
+            final int x = pos.func_177958_n();
+            final int y = pos.func_177956_o();
+            final int z = pos.func_177952_p();
             final AxisAlignedBB area = new AxisAlignedBB(x - range, y - range, z - range, x + range, y + range, z + range);
-            for (final MobEntity entity : world.getEntitiesWithinAABB(MobEntity.class, area)) {
-                if (entity.getLeashed() && entity.getLeashHolder() == player) {
+            for (final MobEntity entity : world.func_217357_a(MobEntity.class, area)) {
+                if (entity.func_110167_bD() && entity.func_110166_bE() == player) {
                     checkHanging = true;
                     break;
                 }
@@ -172,13 +172,13 @@ public final class ServerEventHandler {
         if (event.phase == TickEvent.Phase.START || event.side == LogicalSide.CLIENT || !FLConfig.isJingleEnabled()) {
             return;
         }
-        if (event.world.getGameTime() % (5 * 60 * 20) == 0) {
+        if (event.world.func_82737_E() % (5 * 60 * 20) == 0) {
             this.eventOccurring = FairyLights.CHRISTMAS.isOccurringNow() || FairyLights.HALLOWEEN.isOccurringNow();
         }
         if (this.eventOccurring && this.rng.nextFloat() < 1.0F / (5 * 60 * 20)) {
             List<TileEntity> tileEntities = Collections.emptyList();
             try {
-                tileEntities = new ArrayList<>(event.world.tickableTileEntities);
+                tileEntities = new ArrayList<>(event.world.field_175730_i);
             } catch (ConcurrentModificationException ignored) {
             }
             final List<Vector3d> playingSources = new ArrayList<>();
@@ -221,8 +221,8 @@ public final class ServerEventHandler {
     private List<Vector3d> getPlayingLightSources(final World world, final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections, final Fastener<?> fastener) {
         final List<Vector3d> points = new ArrayList<>();
         final double expandAmount = FLConfig.getJingleAmplitude();
-        final AxisAlignedBB listenerRegion = fastener.getBounds().expand(expandAmount, expandAmount, expandAmount);
-        final List<PlayerEntity> nearPlayers = world.getEntitiesWithinAABB(PlayerEntity.class, listenerRegion);
+        final AxisAlignedBB listenerRegion = fastener.getBounds().func_72321_a(expandAmount, expandAmount, expandAmount);
+        final List<PlayerEntity> nearPlayers = world.func_217357_a(PlayerEntity.class, listenerRegion);
         final boolean arePlayersNear = nearPlayers.size() > 0;
         for (final Connection connection : fastener.getOwnConnections()) {
             if (connection.getDestination().get(world, false).isPresent() && connection instanceof HangingLightsConnection) {
@@ -251,7 +251,7 @@ public final class ServerEventHandler {
     public boolean isTooCloseTo(final Fastener<?> fastener, final Light<?>[] lights, final List<Vector3d> playingSources) {
         for (final Light<?> light : lights) {
             for (final Vector3d point : playingSources) {
-                if (light.getAbsolutePoint(fastener).distanceTo(point) <= FLConfig.getJingleAmplitude()) {
+                if (light.getAbsolutePoint(fastener).func_72438_d(point) <= FLConfig.getJingleAmplitude()) {
                     return true;
                 }
             }
@@ -260,9 +260,9 @@ public final class ServerEventHandler {
     }
 
     public static boolean tryJingle(final World world, final HangingLightsConnection hangingLights, final String lib) {
-        if (world.isRemote) return false;
+        if (world.field_72995_K) return false;
         final Light<?>[] lights = hangingLights.getFeatures();
-        final Jingle jingle = JingleManager.INSTANCE.get(lib).getRandom(world.rand, lights.length);
+        final Jingle jingle = JingleManager.INSTANCE.get(lib).getRandom(world.field_73012_v, lights.length);
         if (jingle != null) {
             final int lightOffset = lights.length / 2 - jingle.getRange() / 2;
             hangingLights.play(jingle, lightOffset);

@@ -22,29 +22,29 @@ public class LazyTagIngredient extends Ingredient {
     }
 
     @Override
-    public ItemStack[] getMatchingStacks() {
-        return this.tag.getAllElements().stream().map(ItemStack::new).toArray(ItemStack[]::new);
+    public ItemStack[] func_193365_a() {
+        return this.tag.func_230236_b_().stream().map(ItemStack::new).toArray(ItemStack[]::new);
     }
 
     @Override
     public boolean test(@Nullable final ItemStack stack) {
-        return stack != null && stack.getItem().isIn(this.tag);
+        return stack != null && stack.func_77973_b().func_206844_a(this.tag);
     }
 
     @Override
-    public IntList getValidItemStacksPacked() {
-        final ItemStack[] stacks = this.getMatchingStacks();
+    public IntList func_194139_b() {
+        final ItemStack[] stacks = this.func_193365_a();
         final IntList list = new IntArrayList(stacks.length);
-        for (final ItemStack stack : this.getMatchingStacks()) {
-            list.add(RecipeItemHelper.pack(stack));
+        for (final ItemStack stack : this.func_193365_a()) {
+            list.add(RecipeItemHelper.func_194113_b(stack));
         }
         list.sort(IntComparators.NATURAL_COMPARATOR);
         return list;
     }
 
     @Override
-    public boolean hasNoMatchingItems() {
-        return this.tag.getAllElements().isEmpty();
+    public boolean func_203189_d() {
+        return this.tag.func_230236_b_().isEmpty();
     }
 
     public static LazyTagIngredient of(final ITag<Item> tag) {

@@ -36,7 +36,7 @@ public final class DyeableItem {
                 closestDist = dist;
             }
         }
-        final IFormattableTextComponent colorName = new TranslationTextComponent("color.fairylights." + closest.getTranslationKey());
+        final IFormattableTextComponent colorName = new TranslationTextComponent("color.fairylights." + closest.func_176762_d());
         return closestDist == 0 ? colorName : new TranslationTextComponent("format.fairylights.dyed_colored", colorName);
     }
 
@@ -64,7 +64,7 @@ public final class DyeableItem {
     }
 
     public static ItemStack setColor(final ItemStack stack, final int color) {
-        setColor(stack.getOrCreateTag(), color);
+        setColor(stack.func_196082_o(), color);
         return stack;
     }
 
@@ -73,16 +73,16 @@ public final class DyeableItem {
     }
 
     public static CompoundNBT setColor(final CompoundNBT tag, final int color) {
-        tag.putInt("color", color);
+        tag.func_74768_a("color", color);
         return tag;
     }
 
     public static int getColor(final ItemStack stack) {
-        final CompoundNBT tag = stack.getTag();
+        final CompoundNBT tag = stack.func_77978_p();
         return tag != null ? getColor(tag) : 0xFFFFFF;
     }
 
     public static int getColor(final CompoundNBT tag) {
-        return tag.contains("color", Constants.NBT.TAG_INT) ? tag.getInt("color") : 0xFFFFFF;
+        return tag.func_150297_b("color", Constants.NBT.TAG_INT) ? tag.func_74762_e("color") : 0xFFFFFF;
     }
 }

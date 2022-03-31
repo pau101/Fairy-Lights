@@ -46,70 +46,70 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     private PaletteButton paletteBtn;
 
     public EditLetteredConnectionScreen(final C connection) {
-        super(NarratorChatListener.EMPTY);
+        super(NarratorChatListener.field_216868_a);
         this.connection = connection;
     }
 
     @Override
-    public void init() {
-        this.minecraft.keyboardListener.enableRepeatEvents(true);
+    public void func_231160_c_() {
+        this.field_230706_i_.field_195559_v.func_197967_a(true);
         final int pad = 4;
         final int buttonWidth = 150;
-        this.doneBtn = this.addButton(new Button(this.width / 2 - pad - buttonWidth, this.height / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.done"), b -> {
+        this.doneBtn = this.func_230480_a_(new Button(this.field_230708_k_ / 2 - pad - buttonWidth, this.field_230709_l_ / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.done"), b -> {
             FairyLights.NETWORK.sendToServer(new EditLetteredConnectionMessage<>(this.connection, this.textField.getValue()));
-            this.closeScreen();
+            this.func_231175_as__();
         }));
-        this.cancelBtn = this.addButton(new Button(this.width / 2 + pad, this.height / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.cancel"), b -> this.closeScreen()));
-        final int textFieldX = this.width / 2 - 150;
-        final int textFieldY = this.height / 2 - 10;
+        this.cancelBtn = this.func_230480_a_(new Button(this.field_230708_k_ / 2 + pad, this.field_230709_l_ / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.cancel"), b -> this.func_231175_as__()));
+        final int textFieldX = this.field_230708_k_ / 2 - 150;
+        final int textFieldY = this.field_230709_l_ / 2 - 10;
         int buttonX = textFieldX;
         final int buttonY = textFieldY - 25;
         final int bInc = 24;
-        this.colorBtn = this.addButton(new ColorButton(buttonX, buttonY, StringTextComponent.EMPTY, b -> this.paletteBtn.visible = !this.paletteBtn.visible));
-        this.paletteBtn = this.addButton(new PaletteButton(buttonX - 4, buttonY - 30, this.colorBtn, new TranslationTextComponent("fairylights.color"), b -> this.textField.updateStyling(this.colorBtn.getDisplayColor(), true)));
-        this.boldBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 40, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.BOLD, this.boldBtn)));
-        this.italicBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 60, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.ITALIC, this.italicBtn)));
-        this.underlineBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 80, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.UNDERLINE, this.underlineBtn)));
-        this.strikethroughBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 100, 0, StringTextComponent.EMPTY, b -> this.updateStyleButton(TextFormatting.STRIKETHROUGH, this.strikethroughBtn)));
-        this.textField = new StyledTextFieldWidget(this.font, this.colorBtn, this.boldBtn, this.italicBtn, this.underlineBtn, this.strikethroughBtn, textFieldX, textFieldY, 300, 20, new TranslationTextComponent("fairylights.letteredText"));
+        this.colorBtn = this.func_230480_a_(new ColorButton(buttonX, buttonY, StringTextComponent.field_240750_d_, b -> this.paletteBtn.field_230694_p_ = !this.paletteBtn.field_230694_p_));
+        this.paletteBtn = this.func_230480_a_(new PaletteButton(buttonX - 4, buttonY - 30, this.colorBtn, new TranslationTextComponent("fairylights.color"), b -> this.textField.updateStyling(this.colorBtn.getDisplayColor(), true)));
+        this.boldBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 40, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.BOLD, this.boldBtn)));
+        this.italicBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 60, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.ITALIC, this.italicBtn)));
+        this.underlineBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 80, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.UNDERLINE, this.underlineBtn)));
+        this.strikethroughBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 100, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.STRIKETHROUGH, this.strikethroughBtn)));
+        this.textField = new StyledTextFieldWidget(this.field_230712_o_, this.colorBtn, this.boldBtn, this.italicBtn, this.underlineBtn, this.strikethroughBtn, textFieldX, textFieldY, 300, 20, new TranslationTextComponent("fairylights.letteredText"));
         this.textField.setValue(this.connection.getText());
         this.textField.setCaretStart();
         this.textField.setIsBlurable(false);
         this.textField.registerChangeListener(this::validateText);
         this.textField.setCharInputTransformer(this.connection.getInputTransformer());
-        this.textField.setFocused(true);
-        this.children.add(this.textField);
-        this.paletteBtn.visible = false;
+        this.textField.func_230996_d_(true);
+        this.field_230705_e_.add(this.textField);
+        this.paletteBtn.field_230694_p_ = false;
         final StylingPresence ss = this.connection.getSupportedStyling();
-        this.colorBtn.visible = ss.hasColor();
-        this.boldBtn.visible = ss.hasBold();
-        this.italicBtn.visible = ss.hasItalic();
-        this.underlineBtn.visible = ss.hasUnderline();
-        this.strikethroughBtn.visible = ss.hasStrikethrough();
-        this.setFocusedDefault(this.textField);
+        this.colorBtn.field_230694_p_ = ss.hasColor();
+        this.boldBtn.field_230694_p_ = ss.hasBold();
+        this.italicBtn.field_230694_p_ = ss.hasItalic();
+        this.underlineBtn.field_230694_p_ = ss.hasUnderline();
+        this.strikethroughBtn.field_230694_p_ = ss.hasStrikethrough();
+        this.func_212928_a(this.textField);
     }
 
     private void validateText(final StyledString text) {
-        this.doneBtn.active = this.connection.isSupportedText(text) && !this.connection.getText().equals(text);
+        this.doneBtn.field_230693_o_ = this.connection.isSupportedText(text) && !this.connection.getText().equals(text);
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
-        this.minecraft.keyboardListener.enableRepeatEvents(false);
+    public void func_231164_f_() {
+        super.func_231164_f_();
+        this.field_230706_i_.field_195559_v.func_197967_a(false);
     }
 
     @Override
-    public void tick() {
-        final Minecraft mc = Minecraft.getInstance();
-        final int x = (int) (mc.mouseHelper.getMouseX() * mc.getMainWindow().getScaledWidth() / mc.getMainWindow().getWidth());
-        final int y = (int) (mc.mouseHelper.getMouseY() * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getHeight());
+    public void func_231023_e_() {
+        final Minecraft mc = Minecraft.func_71410_x();
+        final int x = (int) (mc.field_71417_B.func_198024_e() * mc.func_228018_at_().func_198107_o() / mc.func_228018_at_().func_198105_m());
+        final int y = (int) (mc.field_71417_B.func_198026_f() * mc.func_228018_at_().func_198087_p() / mc.func_228018_at_().func_198083_n());
         this.textField.update(x, y);
     }
 
     @Override
-    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        this.paletteBtn.visible = false;
+    public boolean func_231046_a_(final int keyCode, final int scanCode, final int modifiers) {
+        this.paletteBtn.field_230694_p_ = false;
         if (isControlOp(keyCode, GLFW.GLFW_KEY_B)) {
             this.toggleStyleButton(TextFormatting.BOLD, this.boldBtn);
             return true;
@@ -122,13 +122,13 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
         } else if (isControlOp(keyCode, GLFW.GLFW_KEY_S)) {
             this.toggleStyleButton(TextFormatting.STRIKETHROUGH, this.strikethroughBtn);
             return true;
-        } else if (super.keyPressed(keyCode, scanCode, modifiers)) {
+        } else if (super.func_231046_a_(keyCode, scanCode, modifiers)) {
             return true;
-        } else if ((keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) && this.doneBtn.active) {
-            this.doneBtn.onPress();
+        } else if ((keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) && this.doneBtn.field_230693_o_) {
+            this.doneBtn.func_230930_b_();
             return true;
         } else if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            this.cancelBtn.onPress();
+            this.cancelBtn.func_230930_b_();
             return true;
         }
         return false;
@@ -140,39 +140,39 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     }
 
     @Override
-    public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
+    public boolean func_231044_a_(final double mouseX, final double mouseY, final int button) {
+        if (super.func_231044_a_(mouseX, mouseY, button)) {
             return true;
         }
-        this.paletteBtn.visible = false;
+        this.paletteBtn.field_230694_p_ = false;
         return false;
     }
 
     private void updateStyleButton(final TextFormatting styling, final ToggleButton btn) {
-        if (btn.visible) {
+        if (btn.field_230694_p_) {
             this.textField.updateStyling(styling, btn.getValue());
         }
     }
 
     @Override
-    public void render(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
-        this.renderBackground(stack);
-        drawCenteredString(stack, this.font, new TranslationTextComponent("fairylights.editLetteredConnection"), this.width / 2, 20, 0xFFFFFF);
-        super.render(stack, mouseX, mouseY, delta);
-        this.textField.render(stack, mouseX, mouseY, delta);
+    public void func_230430_a_(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+        this.func_230446_a_(stack);
+        func_238472_a_(stack, this.field_230712_o_, new TranslationTextComponent("fairylights.editLetteredConnection"), this.field_230708_k_ / 2, 20, 0xFFFFFF);
+        super.func_230430_a_(stack, mouseX, mouseY, delta);
+        this.textField.func_230430_a_(stack, mouseX, mouseY, delta);
         final String allowed = this.connection.getAllowedDescription();
         if (!allowed.isEmpty()) {
-            drawString(stack, this.font,
+            func_238475_b_(stack, this.field_230712_o_,
                 new TranslationTextComponent("fairylights.editLetteredConnection.allowed_characters", allowed)
-                    .mergeStyle(TextFormatting.GRAY),
-                this.textField.x,
-                this.textField.y + 24,
+                    .func_240699_a_(TextFormatting.GRAY),
+                this.textField.field_230690_l_,
+                this.textField.field_230691_m_ + 24,
                 0xFFFFFFFF
             );
         }
     }
 
     public static boolean isControlOp(final int key, final int controlKey) {
-        return key == controlKey && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
+        return key == controlKey && Screen.func_231172_r_() && !Screen.func_231173_s_() && !Screen.func_231174_t_();
     }
 }

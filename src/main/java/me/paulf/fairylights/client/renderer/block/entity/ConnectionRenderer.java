@@ -26,20 +26,20 @@ public abstract class ConnectionRenderer<C extends Connection> {
         if (currCat != null && prevCat != null) {
             final Catenary cat = prevCat.lerp(currCat, delta);
             final Catenary.SegmentIterator it = cat.iterator();
-            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.func_229311_a_(source, RenderType::func_228638_b_);
             final int color = this.getWireColor(conn);
             final float r = ((color >> 16) & 0xFF) / 255.0F;
             final float g = ((color >> 8) & 0xFF) / 255.0F;
             final float b = (color & 0xFF) / 255.0F;
             while (it.next()) {
-                this.model.root.rotationPointX = it.getX(0.0F) * 16.0F;
-                this.model.root.rotationPointY = it.getY(0.0F) * 16.0F;
-                this.model.root.rotationPointZ = it.getZ(0.0F) * 16.0F;
-                this.model.root.rotateAngleY = Mth.PI / 2.0F - it.getYaw();
-                this.model.root.rotateAngleX = -it.getPitch();
-                this.model.root.rotateAngleZ = 0.0F;
+                this.model.root.field_78800_c = it.getX(0.0F) * 16.0F;
+                this.model.root.field_78797_d = it.getY(0.0F) * 16.0F;
+                this.model.root.field_78798_e = it.getZ(0.0F) * 16.0F;
+                this.model.root.field_78796_g = Mth.PI / 2.0F - it.getYaw();
+                this.model.root.field_78795_f = -it.getPitch();
+                this.model.root.field_78808_h = 0.0F;
                 this.model.length = it.getLength() * 16.0F;
-                this.model.render(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
+                this.model.func_225598_a_(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
                 this.renderSegment(conn, it, delta, matrix, source, packedLight, packedOverlay);
             }
             this.render(conn, cat, delta, matrix, source, packedLight, packedOverlay);
@@ -59,24 +59,24 @@ public abstract class ConnectionRenderer<C extends Connection> {
         float length;
 
         WireModel(final int u, final int v, final float size) {
-            super(RenderType::getEntityCutout);
-            this.textureWidth = 128;
-            this.textureHeight = 128;
+            super(RenderType::func_228638_b_);
+            this.field_78090_t = 128;
+            this.field_78089_u = 128;
             this.root = new ModelRenderer(this, u, v) {
                 @Override
-                public void translateRotate(final MatrixStack stack) {
-                    super.translateRotate(stack);
+                public void func_228307_a_(final MatrixStack stack) {
+                    super.func_228307_a_(stack);
                     // Don't scale normal matrix
-                    stack.getLast().getMatrix().mul(Matrix4f.makeScale(1.0F + (size % 1.0F), 1.0F, WireModel.this.length));
+                    stack.func_227866_c_().func_227870_a_().func_226595_a_(Matrix4f.func_226593_a_(1.0F + (size % 1.0F), 1.0F, WireModel.this.length));
                 }
             };
-            final int s = MathHelper.floor(size);
-            this.root.addBox(-s * 0.5F, -s * 0.5F, 0.0F, s, s, 1.0F);
+            final int s = MathHelper.func_76141_d(size);
+            this.root.func_228300_a_(-s * 0.5F, -s * 0.5F, 0.0F, s, s, 1.0F);
         }
 
         @Override
-        public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-            this.root.render(matrix, builder, light, overlay, r, g, b, a);
+        public void func_225598_a_(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+            this.root.func_228309_a_(matrix, builder, light, overlay, r, g, b, a);
         }
     }
 }

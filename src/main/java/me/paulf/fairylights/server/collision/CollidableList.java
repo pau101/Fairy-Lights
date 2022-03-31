@@ -21,7 +21,7 @@ public final class CollidableList implements Collidable {
         for (final Collidable collidable : this.collision) {
             final Intersection r = collidable.intersect(origin, end);
             if (r != null) {
-                final double d = r.getResult().distanceTo(origin);
+                final double d = r.getResult().func_72438_d(origin);
                 if (d < distance) {
                     result = r;
                     distance = d;

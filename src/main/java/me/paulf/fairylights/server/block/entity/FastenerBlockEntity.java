@@ -24,7 +24,7 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return this.getFastener().map(fastener -> fastener.getBounds().grow(1)).orElseGet(super::getRenderBoundingBox);
+        return this.getFastener().map(fastener -> fastener.getBounds().func_186662_g(1)).orElseGet(super::getRenderBoundingBox);
     }
 
     public Vector3d getOffset() {
@@ -32,51 +32,51 @@ public final class FastenerBlockEntity extends TileEntity implements ITickableTi
     }
 
     public Direction getFacing() {
-        final BlockState state = this.world.getBlockState(this.pos);
-        if (state.getBlock() != FLBlocks.FASTENER.get()) {
+        final BlockState state = this.field_145850_b.func_180495_p(this.field_174879_c);
+        if (state.func_177230_c() != FLBlocks.FASTENER.get()) {
             return Direction.UP;
         }
-        return state.get(FastenerBlock.FACING);
+        return state.func_177229_b(FastenerBlock.field_176387_N);
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    public SUpdateTileEntityPacket func_189518_D_() {
+        return new SUpdateTileEntityPacket(this.field_174879_c, 0, this.func_189517_E_());
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+    public CompoundNBT func_189517_E_() {
+        return this.func_189515_b(new CompoundNBT());
     }
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
-        this.read(this.world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
+        this.func_230337_a_(this.field_145850_b.func_180495_p(pkt.func_179823_a()), pkt.func_148857_g());
     }
 
     @Override
-    public void setWorldAndPos(final World world, final BlockPos pos) {
-        super.setWorldAndPos(world, pos);
+    public void func_226984_a_(final World world, final BlockPos pos) {
+        super.func_226984_a_(world, pos);
         this.getFastener().ifPresent(fastener -> fastener.setWorld(world));
     }
 
     @Override
-    public void tick() {
+    public void func_73660_a() {
         this.getFastener().ifPresent(fastener -> {
-            if (!this.world.isRemote && fastener.hasNoConnections()) {
-                this.world.removeBlock(this.pos, false);
-            } else if (!this.world.isRemote && fastener.update()) {
-                this.markDirty();
-                final BlockState state = this.world.getBlockState(this.pos);
-                this.world.notifyBlockUpdate(this.pos, state, state, 3);
+            if (!this.field_145850_b.field_72995_K && fastener.hasNoConnections()) {
+                this.field_145850_b.func_217377_a(this.field_174879_c, false);
+            } else if (!this.field_145850_b.field_72995_K && fastener.update()) {
+                this.func_70296_d();
+                final BlockState state = this.field_145850_b.func_180495_p(this.field_174879_c);
+                this.field_145850_b.func_184138_a(this.field_174879_c, state, state, 3);
             }
         });
     }
 
     @Override
-    public void remove() {
+    public void func_145843_s() {
         this.getFastener().ifPresent(Fastener::remove);
-        super.remove();
+        super.func_145843_s();
     }
 
     private LazyOptional<Fastener<?>> getFastener() {

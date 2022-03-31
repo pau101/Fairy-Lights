@@ -47,15 +47,15 @@ public final class ColorButton extends Button {
     }
 
     @Override
-    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
-        if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
+    public void func_230431_b_(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+        if (this.field_230694_p_) {
+            Minecraft.func_71410_x().func_110434_K().func_110577_a(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.blit(stack, this.x, this.y, TEX_U, this.isHovered ? TEX_V + this.height : TEX_V, this.width, this.height);
+            this.func_238474_b_(stack, this.field_230690_l_, this.field_230691_m_, TEX_U, this.field_230692_n_ ? TEX_V + this.field_230689_k_ : TEX_V, this.field_230688_j_, this.field_230689_k_);
             if (this.displayColor != null) {
-                this.blit(stack, this.x, this.y, TEX_U + this.width, TEX_V, this.width, this.height);
+                this.func_238474_b_(stack, this.field_230690_l_, this.field_230691_m_, TEX_U + this.field_230688_j_, TEX_V, this.field_230688_j_, this.field_230689_k_);
                 RenderSystem.color4f(this.displayColorR, this.displayColorG, this.displayColorB, 1.0F);
-                this.blit(stack, this.x, this.y, TEX_U + this.width, TEX_V + this.height, this.width, this.height);
+                this.func_238474_b_(stack, this.field_230690_l_, this.field_230691_m_, TEX_U + this.field_230688_j_, TEX_V + this.field_230689_k_, this.field_230688_j_, this.field_230689_k_);
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }

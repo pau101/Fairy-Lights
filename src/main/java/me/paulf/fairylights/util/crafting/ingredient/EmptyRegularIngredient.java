@@ -9,7 +9,7 @@ import java.util.Collections;
 public class EmptyRegularIngredient implements RegularIngredient {
     @Override
     public GenericRecipe.MatchResultRegular matches(final ItemStack input) {
-        return new GenericRecipe.MatchResultRegular(this, input, input.isEmpty(), Collections.emptyList());
+        return new GenericRecipe.MatchResultRegular(this, input, input.func_190926_b(), Collections.emptyList());
     }
 
     @Override

@@ -76,7 +76,7 @@ public final class JinglerCommand {
                         }
                     }
                     transmitter.setReceiver(new MidiJingler((HangingLightsConnection) conn));
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("commands.jingler.open.success", name), false);
+                    ctx.getSource().func_197030_a(new TranslationTextComponent("commands.jingler.open.success", name), false);
                     USED_COMMAND.compareAndSet(false, true);
                     return 1;
                 })))
@@ -94,7 +94,7 @@ public final class JinglerCommand {
                     if (closed == 0) {
                         throw CLOSE_FAILURE.create();
                     }
-                    ctx.getSource().sendFeedback(new TranslationTextComponent(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
+                    ctx.getSource().func_197030_a(new TranslationTextComponent(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
                     return closed;
                 }
             )));
@@ -148,9 +148,9 @@ public final class JinglerCommand {
     private static ITextComponent createDeviceText(final MidiDevice device) {
         final MidiDevice.Info info = device.getDeviceInfo();
         return new StringTextComponent("")
-            .append(new TranslationTextComponent("commands.jingler.device.vendor", new StringTextComponent(info.getVendor()).mergeStyle(TextFormatting.GOLD)))
-            .appendString("\n")
-            .append(new TranslationTextComponent("commands.jingler.device.description", new StringTextComponent(info.getDescription()).mergeStyle(TextFormatting.GOLD)));
+            .func_230529_a_(new TranslationTextComponent("commands.jingler.device.vendor", new StringTextComponent(info.getVendor()).func_240699_a_(TextFormatting.GOLD)))
+            .func_240702_b_("\n")
+            .func_230529_a_(new TranslationTextComponent("commands.jingler.device.description", new StringTextComponent(info.getDescription()).func_240699_a_(TextFormatting.GOLD)));
     }
 
     public static void register(final IEventBus bus) {
@@ -174,7 +174,7 @@ public final class JinglerCommand {
             );
         });*/
         bus.<WorldEvent.Unload>addListener(e -> {
-            if (e.getWorld().isRemote() && USED_COMMAND.compareAndSet(true, false)) {
+            if (e.getWorld().func_201670_d() && USED_COMMAND.compareAndSet(true, false)) {
                 getDevices().forEach(JinglerCommand::close);
             }
         });

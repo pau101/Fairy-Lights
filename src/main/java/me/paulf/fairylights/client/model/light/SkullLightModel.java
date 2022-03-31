@@ -6,11 +6,11 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 public class SkullLightModel extends ColorLightModel {
     public SkullLightModel() {
         final ModelRenderer apertures = new ModelRenderer(this, 12, 10);
-        apertures.setRotationPoint(0, -3, -2.75F);
-        apertures.addBox(-1.5F, -1, 0, 3, 2, 0, 0);
-        apertures.rotateAngleX = Mth.PI;
-        apertures.rotateAngleY = Mth.PI;
-        this.unlit.addChild(apertures);
+        apertures.func_78793_a(0, -3, -2.75F);
+        apertures.func_228301_a_(-1.5F, -1, 0, 3, 2, 0, 0);
+        apertures.field_78795_f = Mth.PI;
+        apertures.field_78796_g = Mth.PI;
+        this.unlit.func_78792_a(apertures);
         final BulbBuilder bulb = this.createBulb();
         final BulbBuilder skull = bulb.createChild(0, 54);
         skull.addBox(-2.5F, 0, -2.5F, 5, 4, 5, 0);
@@ -24,9 +24,9 @@ public class SkullLightModel extends ColorLightModel {
         maxilla.setAngles(Mth.PI, 0, 0);
         maxilla.addBox(-1, 0, -0.5F, 2, 1, 1, -0.125F);
         final ModelRenderer chain = new ModelRenderer(this, 34, 18);
-        chain.setRotationPoint(0, 2, 0);
-        chain.addBox(-1, 0, -1, 2, 2, 2, -0.05F);
-        chain.rotateAngleX = Mth.PI;
-        this.lit.addChild(chain);
+        chain.func_78793_a(0, 2, 0);
+        chain.func_228301_a_(-1, 0, -1, 2, 2, 2, -0.05F);
+        chain.field_78795_f = Mth.PI;
+        this.lit.func_78792_a(chain);
     }
 }

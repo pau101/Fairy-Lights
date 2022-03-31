@@ -39,14 +39,14 @@ public enum FastenerType {
 
     public static CompoundNBT serialize(final FastenerAccessor accessor) {
         final CompoundNBT compound = new CompoundNBT();
-        compound.putString("type", accessor.getType().name);
-        compound.put("data", accessor.serialize());
+        compound.func_74778_a("type", accessor.getType().name);
+        compound.func_218657_a("data", accessor.serialize());
         return compound;
     }
 
     public static FastenerAccessor deserialize(final CompoundNBT compound) {
-        final FastenerAccessor accessor = NAME_TO_TYPE.get(compound.getString("type")).createAccessor();
-        accessor.deserialize(compound.getCompound("data"));
+        final FastenerAccessor accessor = NAME_TO_TYPE.get(compound.func_74779_i("type")).createAccessor();
+        accessor.deserialize(compound.func_74775_l("data"));
         return accessor;
     }
 }

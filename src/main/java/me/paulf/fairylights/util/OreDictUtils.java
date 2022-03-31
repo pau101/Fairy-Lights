@@ -16,22 +16,22 @@ public final class OreDictUtils {
     private OreDictUtils() {}
 
     public static boolean isDye(final ItemStack stack) {
-        if (!stack.isEmpty()) {
-            if (stack.getItem() instanceof DyeItem) {
+        if (!stack.func_190926_b()) {
+            if (stack.func_77973_b() instanceof DyeItem) {
                 return true;
             }
-            return stack.getItem().isIn(Tags.Items.DYES);
+            return stack.func_77973_b().func_206844_a(Tags.Items.DYES);
         }
         return false;
     }
 
     public static DyeColor getDyeColor(final ItemStack stack) {
-        if (!stack.isEmpty()) {
-            if (stack.getItem() instanceof DyeItem) {
-                return ((DyeItem) stack.getItem()).getDyeColor();
+        if (!stack.func_190926_b()) {
+            if (stack.func_77973_b() instanceof DyeItem) {
+                return ((DyeItem) stack.func_77973_b()).func_195962_g();
             }
             for (final Dye dye : Dye.values()) {
-                if (stack.getItem().isIn(dye.getName())) {
+                if (stack.func_77973_b().func_206844_a(dye.getName())) {
                     return dye.getColor();
                 }
             }
@@ -50,7 +50,7 @@ public final class OreDictUtils {
     private static ImmutableMultimap<DyeColor, ItemStack> getDyeItemStacks() {
         final ImmutableMultimap.Builder<DyeColor, ItemStack> bob = ImmutableMultimap.builder();
         for (final Dye dye : Dye.values()) {
-            bob.putAll(dye.getColor(), dye.getName().getAllElements().stream().map(ItemStack::new).collect(Collectors.toList()));
+            bob.putAll(dye.getColor(), dye.getName().func_230236_b_().stream().map(ItemStack::new).collect(Collectors.toList()));
         }
         return bob.build();
     }

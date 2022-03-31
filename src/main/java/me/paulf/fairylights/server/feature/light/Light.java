@@ -58,7 +58,7 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
     }
 
     public void jingle(final World world, final Vector3d origin, final int note) {
-        this.jingle(world, origin, note, ParticleTypes.NOTE);
+        this.jingle(world, origin, note, ParticleTypes.field_197597_H);
     }
 
     public void jingle(final World world, final Vector3d origin, final int note, final BasicParticleType particle) {
@@ -66,24 +66,24 @@ public final class Light<T extends LightBehavior> extends HangingFeature {
     }
 
     public void jingle(final World world, final Vector3d origin, final int note, final SoundEvent sound, final BasicParticleType... particles) {
-        if (world.isRemote) {
-            final double x = origin.x + this.point.x;
-            final double y = origin.y + this.point.y;
-            final double z = origin.z + this.point.z;
+        if (world.field_72995_K) {
+            final double x = origin.field_72450_a + this.point.field_72450_a;
+            final double y = origin.field_72448_b + this.point.field_72448_b;
+            final double z = origin.field_72449_c + this.point.field_72449_c;
             for (final BasicParticleType particle : particles) {
-                double vx = world.rand.nextGaussian();
-                double vy = world.rand.nextGaussian();
-                double vz = world.rand.nextGaussian();
-                final double t = world.rand.nextDouble() * (0.4 - 0.2) + 0.2;
+                double vx = world.field_73012_v.nextGaussian();
+                double vy = world.field_73012_v.nextGaussian();
+                double vz = world.field_73012_v.nextGaussian();
+                final double t = world.field_73012_v.nextDouble() * (0.4 - 0.2) + 0.2;
                 final double mag = t / Math.sqrt(vx * vx + vy * vy + vz * vz);
                 vx *= mag;
                 vy *= mag;
                 vz *= mag;
-                world.addParticle(particle, x + vx, y + vy, z + vz, particle == ParticleTypes.NOTE ? note / 24D : 0, 0, 0);
+                world.func_195594_a(particle, x + vx, y + vy, z + vz, particle == ParticleTypes.field_197597_H ? note / 24D : 0, 0, 0);
             }
             if (this.lastJingledTick != this.tick) {
-                world.playSound(x, y, z, sound, SoundCategory.BLOCKS, FLConfig.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
-                this.startSwaying(world.rand.nextBoolean());
+                world.func_184134_a(x, y, z, sound, SoundCategory.BLOCKS, FLConfig.getJingleAmplitude() / 16F, (float) Math.pow(2, (note - 12) / 12F), false);
+                this.startSwaying(world.field_73012_v.nextBoolean());
                 this.lastJingledTick = this.tick;
             }
         }

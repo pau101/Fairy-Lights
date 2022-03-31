@@ -75,7 +75,7 @@ public class LightRenderer {
     }
 
     public Data start(final IRenderTypeBuffer source) {
-        final IVertexBuilder solid = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+        final IVertexBuilder solid = ClientProxy.SOLID_TEXTURE.func_229311_a_(source, RenderType::func_228638_b_);
         return new Data(solid, TranslucentLightRenderer.get(source, ClientProxy.TRANSLUCENT_TEXTURE));
     }
 
@@ -94,7 +94,7 @@ public class LightRenderer {
 
     public <T extends LightBehavior> void render(final MatrixStack matrix, final Data data, final Light<T> light, final LightModel<T> model, final float delta, final int packedLight, final int packedOverlay) {
         model.animate(light, light.getBehavior(), delta);
-        model.render(matrix, data.solid, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.func_225598_a_(matrix, data.solid, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
         model.renderTranslucent(matrix, data.translucent, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 

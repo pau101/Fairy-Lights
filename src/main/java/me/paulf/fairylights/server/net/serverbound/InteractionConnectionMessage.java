@@ -44,11 +44,11 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
     public void encode(final PacketBuffer buf) {
         super.encode(buf);
         buf.writeByte(this.type.ordinal());
-        buf.writeDouble(this.hit.x);
-        buf.writeDouble(this.hit.y);
-        buf.writeDouble(this.hit.z);
-        buf.writeVarInt(this.featureType.getId());
-        buf.writeVarInt(this.featureId);
+        buf.writeDouble(this.hit.field_72450_a);
+        buf.writeDouble(this.hit.field_72448_b);
+        buf.writeDouble(this.hit.field_72449_c);
+        buf.func_150787_b(this.featureType.getId());
+        buf.func_150787_b(this.featureId);
     }
 
     @Override
@@ -56,18 +56,18 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
         super.decode(buf);
         this.type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
         this.hit = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        this.featureType = FeatureType.fromId(buf.readVarInt());
-        this.featureId = buf.readVarInt();
+        this.featureType = FeatureType.fromId(buf.func_150792_a());
+        this.featureId = buf.func_150792_a();
     }
 
     public static final class Handler implements BiConsumer<InteractionConnectionMessage, ServerMessageContext> {
         @Override
         public void accept(final InteractionConnectionMessage message, final ServerMessageContext context) {
             final ServerPlayerEntity player = context.getPlayer();
-            getConnection(message, c -> true, player.world).ifPresent(connection -> {
+            getConnection(message, c -> true, player.field_70170_p).ifPresent(connection -> {
                 if (connection.isModifiable(player) &&
-                    player.getPositionVec().squareDistanceTo(Vector3d.copy(connection.getFastener().getPos())) < RANGE &&
-                    player.getDistanceSq(message.hit.x, message.hit.y, message.hit.z) < REACH
+                    player.func_213303_ch().func_72436_e(Vector3d.func_237491_b_(connection.getFastener().getPos())) < RANGE &&
+                    player.func_70092_e(message.hit.field_72450_a, message.hit.field_72448_b, message.hit.field_72449_c) < REACH
                 ) {
                     if (message.type == PlayerAction.ATTACK) {
                         connection.disconnect(player, message.hit);
@@ -80,8 +80,8 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
 
         private void interact(final InteractionConnectionMessage message, final PlayerEntity player, final Connection connection, final Vector3d hit) {
             for (final Hand hand : Hand.values()) {
-                final ItemStack stack = player.getHeldItem(hand);
-                final ItemStack oldStack = stack.copy();
+                final ItemStack stack = player.func_184586_b(hand);
+                final ItemStack oldStack = stack.func_77946_l();
                 if (connection.interact(player, hit, message.featureType, message.featureId, stack, hand)) {
                     this.updateItem(player, oldStack, stack, hand);
                     break;
@@ -90,11 +90,11 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
         }
 
         private void updateItem(final PlayerEntity player, final ItemStack oldStack, final ItemStack stack, final Hand hand) {
-            if (stack.getCount() <= 0 && !player.abilities.isCreativeMode) {
+            if (stack.func_190916_E() <= 0 && !player.field_71075_bZ.field_75098_d) {
                 ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
-                player.setHeldItem(hand, ItemStack.EMPTY);
-            } else if (stack.getCount() < oldStack.getCount() && player.abilities.isCreativeMode) {
-                stack.setCount(oldStack.getCount());
+                player.func_184611_a(hand, ItemStack.field_190927_a);
+            } else if (stack.func_190916_E() < oldStack.func_190916_E() && player.field_71075_bZ.field_75098_d) {
+                stack.func_190920_e(oldStack.func_190916_E());
             }
         }
     }

@@ -42,8 +42,8 @@ public interface Lettered {
     Screen createTextGUI();
 
     default boolean openTextGui(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
-        if (action == PlayerAction.INTERACT && player.isSneaking()) {
-            Minecraft.getInstance().displayGuiScreen(this.createTextGUI());
+        if (action == PlayerAction.INTERACT && player.func_225608_bj_()) {
+            Minecraft.func_71410_x().func_147108_a(this.createTextGUI());
             return false;
         }
         return true;

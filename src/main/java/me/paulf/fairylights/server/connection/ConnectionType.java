@@ -30,7 +30,7 @@ public class ConnectionType<T extends Connection> extends ForgeRegistryEntry<Con
     public static final class Builder<T extends Connection> {
         final Factory<T> factory;
 
-        Supplier<? extends Item> item = () -> Items.AIR;
+        Supplier<? extends Item> item = () -> Items.field_190931_a;
 
         private Builder(final Factory<T> factory) {
             this.factory = factory;

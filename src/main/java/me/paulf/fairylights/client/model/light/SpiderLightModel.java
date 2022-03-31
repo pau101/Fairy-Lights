@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 public class SpiderLightModel extends ColorLightModel {
     public SpiderLightModel() {
         final ModelRenderer string = new ModelRenderer(this, 30, 6);
-        string.addBox(-1, 0, -1, 2, 2, 2, -0.05F);
-        this.unlit.addChild(string);
+        string.func_228301_a_(-1, 0, -1, 2, 2, 2, -0.05F);
+        this.unlit.func_78792_a(string);
         final BulbBuilder bulb = this.createBulb();
         bulb.setAngles(0.0F, -Mth.PI / 2.0F, 0.0F);
         final BulbBuilder abdomen = bulb.createChild(20, 54);

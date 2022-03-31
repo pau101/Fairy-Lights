@@ -34,7 +34,7 @@ public class CollectFastenersEvent extends Event {
 
     public void accept(final Chunk chunk) {
         try {
-            for (final TileEntity entity : chunk.getTileEntityMap().values()) {
+            for (final TileEntity entity : chunk.func_177434_r().values()) {
                 this.accept(entity);
             }
         } catch (final ConcurrentModificationException e) {
@@ -47,7 +47,7 @@ public class CollectFastenersEvent extends Event {
     }
 
     public void accept(final Fastener<?> fastener) {
-        if (this.region.contains(fastener.getConnectionPoint())) {
+        if (this.region.func_72318_a(fastener.getConnectionPoint())) {
             this.fasteners.add(fastener);
         }
     }

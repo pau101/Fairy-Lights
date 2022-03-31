@@ -32,19 +32,19 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
         for (int i = 0; i < lights.length; i++) {
             final Light<?> light = lights[i];
             final Vector3d pos = light.getPoint(delta);
-            matrix.push();
-            matrix.translate(pos.x, pos.y, pos.z);
-            matrix.rotate(Vector3f.YP.rotation(-light.getYaw(delta)));
+            matrix.func_227860_a_();
+            matrix.func_227861_a_(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c);
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(-light.getYaw(delta)));
             if (light.parallelsCord()) {
-                matrix.rotate(Vector3f.ZP.rotation(light.getPitch(delta)));
+                matrix.func_227863_a_(Vector3f.field_229183_f_.func_229193_c_(light.getPitch(delta)));
             }
-            matrix.rotate(Vector3f.XP.rotation(light.getRoll(delta)));
+            matrix.func_227863_a_(Vector3f.field_229179_b_.func_229193_c_(light.getRoll(delta)));
             if (light.getVariant() != SimpleLightVariant.FAIRY_LIGHT) { // FIXME
-                matrix.rotate(Vector3f.YP.rotation(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
+                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
             }
-            matrix.translate(0.0D, -light.getDescent(), 0.0D);
+            matrix.func_227861_a_(0.0D, -light.getDescent(), 0.0D);
             this.lights.render(matrix, data, light, i, delta, packedLight, packedOverlay);
-            matrix.pop();
+            matrix.func_227865_b_();
         }
     }
 }

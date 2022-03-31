@@ -17,7 +17,7 @@ public final class FLBlocks {
 
     public static final DeferredRegister<Block> REG = DeferredRegister.create(ForgeRegistries.BLOCKS, FairyLights.ID);
 
-    public static final RegistryObject<FastenerBlock> FASTENER = REG.register("fastener", () -> new FastenerBlock(Block.Properties.create(Material.MISCELLANEOUS).noDrops()));
+    public static final RegistryObject<FastenerBlock> FASTENER = REG.register("fastener", () -> new FastenerBlock(Block.Properties.func_200945_a(Material.field_151594_q).func_222380_e()));
 
     public static final RegistryObject<LightBlock> FAIRY_LIGHT = REG.register("fairy_light", FLBlocks.createLight(SimpleLightVariant.FAIRY_LIGHT));
 
@@ -64,6 +64,6 @@ public final class FLBlocks {
     }
 
     private static Supplier<LightBlock> createLight(final LightVariant<?> variant, final BiFunction<Block.Properties, LightVariant<?>, LightBlock> factory) {
-        return () -> factory.apply(Block.Properties.create(Material.MISCELLANEOUS).setLightLevel(state -> state.get(LightBlock.LIT) ? 15 : 0).notSolid(), variant);
+        return () -> factory.apply(Block.Properties.func_200945_a(Material.field_151594_q).func_235838_a_(state -> state.func_177229_b(LightBlock.LIT) ? 15 : 0).func_226896_b_(), variant);
     }
 }

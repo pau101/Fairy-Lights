@@ -72,15 +72,15 @@ public final class JinglePlayer {
         public static <S extends State<S>> CompoundNBT serialize(final State<S> state) {
             final StateFactory<S> factory = state.getFactory();
             final CompoundNBT compound = new CompoundNBT();
-            compound.putString("state", factory.getId());
-            compound.put("data", factory.serialize(state.resolve()));
+            compound.func_74778_a("state", factory.getId());
+            compound.func_218657_a("data", factory.serialize(state.resolve()));
             return compound;
         }
 
         public static State<?> deserialize(final CompoundNBT compound) {
-            return MAP.getOrDefault(compound.getString("state"), NOT_PLAYING)
+            return MAP.getOrDefault(compound.func_74779_i("state"), NOT_PLAYING)
                 .getFactory()
-                .deserialize(compound.getCompound("data"));
+                .deserialize(compound.func_74775_l("data"));
         }
     }
 
@@ -252,26 +252,26 @@ public final class JinglePlayer {
                 @Override
                 public CompoundNBT serialize(final PlayingState state) {
                     final CompoundNBT compound = new CompoundNBT();
-                    Jingle.CODEC.encodeStart(NBTDynamicOps.INSTANCE, state.jingle).result()
+                    Jingle.CODEC.encodeStart(NBTDynamicOps.field_210820_a, state.jingle).result()
                         .ifPresent(jingle -> {
-                            compound.put("jingle", jingle);
-                            compound.putInt("lightOffset", state.lightOffset);
-                            compound.putInt("index", state.index);
-                            compound.putInt("rest", state.rest);
-                            compound.putInt("time", state.time);
+                            compound.func_218657_a("jingle", jingle);
+                            compound.func_74768_a("lightOffset", state.lightOffset);
+                            compound.func_74768_a("index", state.index);
+                            compound.func_74768_a("rest", state.rest);
+                            compound.func_74768_a("time", state.time);
                         });
                     return compound;
                 }
 
                 @Override
                 public State<?> deserialize(final CompoundNBT compound) {
-                    return Jingle.CODEC.parse(NBTDynamicOps.INSTANCE, compound.getCompound("jingle"))
+                    return Jingle.CODEC.parse(NBTDynamicOps.field_210820_a, compound.func_74775_l("jingle"))
                         .result().<State<?>>map(jingle -> {
-                            final int lightOffset = compound.getInt("lightOffset");
+                            final int lightOffset = compound.func_74762_e("lightOffset");
                             final PlayingState state = new PlayingState(jingle, lightOffset);
-                            state.index = compound.getInt("index");
-                            state.rest = compound.getInt("rest");
-                            state.time = compound.getInt("time");
+                            state.index = compound.func_74762_e("index");
+                            state.rest = compound.func_74762_e("rest");
+                            state.time = compound.func_74762_e("time");
                             return state;
                         }).orElseGet(NotPlayingState::new);
                 }
@@ -280,12 +280,12 @@ public final class JinglePlayer {
 
         private static BasicParticleType[] getParticles(final Jingle jingle) {
             if (jingle.getTitle().hashCode() == 0xf2b587de) {
-                return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.LAVA};
+                return new BasicParticleType[]{ParticleTypes.field_197597_H, ParticleTypes.field_197595_F};
             }
             if (jingle.getTitle().hashCode() == 0xc3fa68bd || jingle.getTitle().hashCode() == 0x70f77bf4) {
-                return new BasicParticleType[]{ParticleTypes.NOTE, ParticleTypes.HEART};
+                return new BasicParticleType[]{ParticleTypes.field_197597_H, ParticleTypes.field_197633_z};
             }
-            return new BasicParticleType[]{ParticleTypes.NOTE};
+            return new BasicParticleType[]{ParticleTypes.field_197597_H};
         }
     }
 }

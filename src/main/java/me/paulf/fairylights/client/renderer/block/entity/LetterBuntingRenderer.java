@@ -40,7 +40,7 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
         if (count == 0) {
             return;
         }
-        final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
+        final IVertexBuilder buf = source.getBuffer(Atlases.func_228783_h_());
         for (final Letter letter : letters) {
             final ResourceLocation path = MODELS.get(letter.getLetter());
             if (path == null) {
@@ -51,14 +51,14 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
             final float g = ((color >> 8) & 0xFF) / 255.0F;
             final float b = (color & 0xFF) / 255.0F;
             final Vector3d pos = letter.getPoint(delta);
-            matrix.push();
-            matrix.translate(pos.x, pos.y, pos.z);
-            matrix.rotate(Vector3f.YP.rotation(-letter.getYaw(delta)));
-            matrix.rotate(Vector3f.ZP.rotation(letter.getPitch(delta)));
-            matrix.rotate(Vector3f.XP.rotation(letter.getRoll(delta)));
-            matrix.translate(-0.5F, -1.0F - 0.5F / 16.0F, -0.5F);
+            matrix.func_227860_a_();
+            matrix.func_227861_a_(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c);
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(-letter.getYaw(delta)));
+            matrix.func_227863_a_(Vector3f.field_229183_f_.func_229193_c_(letter.getPitch(delta)));
+            matrix.func_227863_a_(Vector3f.field_229179_b_.func_229193_c_(letter.getRoll(delta)));
+            matrix.func_227861_a_(-0.5F, -1.0F - 0.5F / 16.0F, -0.5F);
             FastenerRenderer.renderBakedModel(path, matrix, buf, r, g, b, packedLight, packedOverlay);
-            matrix.pop();
+            matrix.func_227865_b_();
         }
     }
 }

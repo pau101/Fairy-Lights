@@ -8,8 +8,8 @@ import java.util.Random;
 public class SnowflakeLightModel extends ColorLightModel {
     public SnowflakeLightModel() {
         final ModelRenderer connector = new ModelRenderer(this, 90, 40);
-        connector.addBox(-1.0F, 0.2F, -1.0F, 2.0F, 1.0F, 2.0F, -0.05F);
-        this.unlit.addChild(connector);
+        connector.func_228301_a_(-1.0F, 0.2F, -1.0F, 2.0F, 1.0F, 2.0F, -0.05F);
+        this.unlit.func_78792_a(connector);
         final BulbBuilder bulb = this.createBulb();
         final Random rng = new Random(0xFE337752);
         final float size = 8.0F;

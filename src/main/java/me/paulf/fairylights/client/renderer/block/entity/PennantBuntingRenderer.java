@@ -52,8 +52,8 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
         final Pennant[] currLights = conn.getFeatures();
         if (currLights != null) {
-            final FontRenderer font = Minecraft.getInstance().fontRenderer;
-            final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
+            final FontRenderer font = Minecraft.func_71410_x().field_71466_p;
+            final IVertexBuilder buf = source.getBuffer(Atlases.func_228783_h_());
             final int count = currLights.length;
             if (count == 0) {
                 return;
@@ -69,21 +69,21 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 final float r = ((color >> 16) & 0xFF) / 255.0F;
                 final float g = ((color >> 8) & 0xFF) / 255.0F;
                 final float b = (color & 0xFF) / 255.0F;
-                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(this.models.getOrDefault(currPennant.getItem(), TRIANGLE_MODEL));
+                final IBakedModel model = Minecraft.func_71410_x().func_209506_al().getModel(this.models.getOrDefault(currPennant.getItem(), TRIANGLE_MODEL));
                 final Vector3d pos = currPennant.getPoint(delta);
-                matrix.push();
-                matrix.translate(pos.x, pos.y, pos.z);
-                matrix.rotate(Vector3f.YP.rotation(-currPennant.getYaw(delta)));
-                matrix.rotate(Vector3f.ZP.rotation(currPennant.getPitch(delta)));
-                matrix.rotate(Vector3f.XP.rotation(currPennant.getRoll(delta)));
-                matrix.push();
+                matrix.func_227860_a_();
+                matrix.func_227861_a_(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c);
+                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(-currPennant.getYaw(delta)));
+                matrix.func_227863_a_(Vector3f.field_229183_f_.func_229193_c_(currPennant.getPitch(delta)));
+                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229193_c_(currPennant.getRoll(delta)));
+                matrix.func_227860_a_();
                 FastenerRenderer.renderBakedModel(model, matrix, buf, r, g, b, packedLight, packedOverlay);
-                matrix.pop();
+                matrix.func_227865_b_();
                 if (i >= offset && i < offset + text.length()) {
                     this.drawLetter(matrix, source, currPennant, packedLight, font, text, i - offset, 1, delta);
                     this.drawLetter(matrix, source, currPennant, packedLight, font, text, text.length() - 1 - (i - offset), -1, delta);
                 }
-                matrix.pop();
+                matrix.func_227865_b_();
             }
         }
     }
@@ -99,26 +99,26 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         bob.append(text.charAt(index));
         final String chr = bob.toString();
         final Matrix3f m = new Matrix3f();
-        m.setIdentity();
-        m.mul(Vector3f.YP.rotation(pennant.getYaw(delta)));
-        m.mul(Vector3f.ZP.rotation(pennant.getPitch(delta)));
-        m.mul(Vector3f.XP.rotation(pennant.getRoll(delta)));
+        m.func_226119_c_();
+        m.func_226115_a_(Vector3f.field_229181_d_.func_229193_c_(pennant.getYaw(delta)));
+        m.func_226115_a_(Vector3f.field_229183_f_.func_229193_c_(pennant.getPitch(delta)));
+        m.func_226115_a_(Vector3f.field_229179_b_.func_229193_c_(pennant.getRoll(delta)));
         final Vector3f v = new Vector3f(0.0F, 0.0F, side);
-        v.transform(m);
+        v.func_229188_a_(m);
         // TODO: correct entity diffuse
-        final float brightness = LightUtil.diffuseLight(v.getX(), v.getY(), v.getZ());
-        final int styleColor = MoreObjects.firstNonNull(style.getColor().getColor(), 0xFFFFFF);
+        final float brightness = LightUtil.diffuseLight(v.func_195899_a(), v.func_195900_b(), v.func_195902_c());
+        final int styleColor = MoreObjects.firstNonNull(style.getColor().func_211163_e(), 0xFFFFFF);
         final int r = (int) ((styleColor >> 16 & 0xFF) * brightness);
         final int g = (int) ((styleColor >> 8 & 0xFF) * brightness);
         final int b = (int) ((styleColor & 0xFF) * brightness);
         final int argb = 0xFF000000 | r << 16 | g << 8 | b;
-        matrix.push();
-        matrix.translate(0.0F, -0.25F, 0.04F * side);
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(0.0F, -0.25F, 0.04F * side);
         final float s = 0.03075F;
-        matrix.scale(s * side, -s, s);
-        final float w = font.getStringWidth(chr);
-        font.renderString(chr, -(w - 1.0F) / 2.0F, -4.0F, argb, false, matrix.getLast().getMatrix(), source, false, 0, packedLight);
-        matrix.pop();
+        matrix.func_227862_a_(s * side, -s, s);
+        final float w = font.func_78256_a(chr);
+        font.func_228079_a_(chr, -(w - 1.0F) / 2.0F, -4.0F, argb, false, matrix.func_227866_c_().func_227870_a_(), source, false, 0, packedLight);
+        matrix.func_227865_b_();
     }
 
 }

@@ -22,25 +22,25 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
     }
 
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-        if (!stack.hasTag()) {
+    public void func_77624_a(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+        if (!stack.func_77942_o()) {
             return;
         }
-        final CompoundNBT compound = stack.getTag();
-        if (compound.contains("text", NBT.TAG_COMPOUND)) {
-            final CompoundNBT text = compound.getCompound("text");
+        final CompoundNBT compound = stack.func_77978_p();
+        if (compound.func_150297_b("text", NBT.TAG_COMPOUND)) {
+            final CompoundNBT text = compound.func_74775_l("text");
             final StyledString s = StyledString.deserialize(text);
             if (s.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).mergeStyle(TextFormatting.GRAY));
+                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).func_240699_a_(TextFormatting.GRAY));
             }
         }
     }
 
     @Override
-    public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> items) {
-        if (this.isInGroup(tab)) {
+    public void func_150895_a(final ItemGroup tab, final NonNullList<ItemStack> items) {
+        if (this.func_194125_a(tab)) {
             final ItemStack bunting = new ItemStack(this, 1);
-            bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
+            bunting.func_196082_o().func_218657_a("text", StyledString.serialize(new StyledString()));
             items.add(bunting);
         }
     }

@@ -151,7 +151,7 @@ public abstract class Connection implements NBTSerializable {
         final ItemStack stack = new ItemStack(this.getType().getItem());
         final CompoundNBT tagCompound = this.serializeLogic();
         if (!tagCompound.isEmpty()) {
-            stack.setTag(tagCompound);
+            stack.func_77982_d(tagCompound);
         }
         return stack;
     }
@@ -165,7 +165,7 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public final boolean isModifiable(final PlayerEntity player) {
-        return this.world.isBlockModifiable(player, this.fastener.getPos());
+        return this.world.func_175660_a(player, this.fastener.getPos());
     }
 
     public final void remove() {
@@ -196,16 +196,16 @@ public abstract class Connection implements NBTSerializable {
         destinationFastener.removeConnection(this.uuid);
         if (this.shouldDrop()) {
             final ItemStack stack = this.getItemStack();
-            final ItemEntity item = new ItemEntity(this.world, hit.x, hit.y, hit.z, stack);
+            final ItemEntity item = new ItemEntity(this.world, hit.field_72450_a, hit.field_72448_b, hit.field_72449_c, stack);
             final float scale = 0.05F;
-            item.setMotion(
-                this.world.rand.nextGaussian() * scale,
-                this.world.rand.nextGaussian() * scale + 0.2F,
-                this.world.rand.nextGaussian() * scale
+            item.func_213293_j(
+                this.world.field_73012_v.nextGaussian() * scale,
+                this.world.field_73012_v.nextGaussian() * scale + 0.2F,
+                this.world.field_73012_v.nextGaussian() * scale
             );
-            this.world.addEntity(item);
+            this.world.func_217376_c(item);
         }
-        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_DISCONNECT.get(), SoundCategory.BLOCKS, 1, 1);
+        this.world.func_184148_a(null, hit.field_72450_a, hit.field_72448_b, hit.field_72449_c, FLSounds.CORD_DISCONNECT.get(), SoundCategory.BLOCKS, 1, 1);
     }
 
     public boolean reconnect(final Fastener<?> destination) {
@@ -213,20 +213,20 @@ public abstract class Connection implements NBTSerializable {
     }
 
     public boolean interact(final PlayerEntity player, final Vector3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
-        final Item item = heldStack.getItem();
+        final Item item = heldStack.func_77973_b();
         if (item instanceof ConnectionItem && !this.matches(heldStack)) {
             return this.replace(player, hit, heldStack);
-        } else if (heldStack.getItem().isIn(Tags.Items.STRING)) {
+        } else if (heldStack.func_77973_b().func_206844_a(Tags.Items.STRING)) {
             return this.slacken(hit, heldStack, 0.2F);
-        } else if (heldStack.getItem() == Items.STICK) {
+        } else if (heldStack.func_77973_b() == Items.field_151055_y) {
             return this.slacken(hit, heldStack, -0.2F);
         }
         return false;
     }
 
     public boolean matches(final ItemStack stack) {
-        if (this.getType().getItem().equals(stack.getItem())) {
-            final CompoundNBT tag = stack.getTag();
+        if (this.getType().getItem().equals(stack.func_77973_b())) {
+            final CompoundNBT tag = stack.func_77978_p();
             return tag == null || Utils.impliesNbt(this.serializeLogic(), tag);
         }
         return false;
@@ -237,15 +237,15 @@ public abstract class Connection implements NBTSerializable {
             this.fastener.removeConnection(this);
             dest.removeConnection(this.uuid);
             if (this.shouldDrop()) {
-                player.inventory.addItemStackToInventory(this.getItemStack());
+                player.field_71071_by.func_70441_a(this.getItemStack());
             }
-            final CompoundNBT data = heldStack.getTag();
-            final ConnectionType<? extends Connection> type = ((ConnectionItem) heldStack.getItem()).getConnectionType();
+            final CompoundNBT data = heldStack.func_77978_p();
+            final ConnectionType<? extends Connection> type = ((ConnectionItem) heldStack.func_77973_b()).getConnectionType();
             final Connection conn = this.fastener.connect(this.world, dest, type, data == null ? new CompoundNBT() : data, true);
             conn.slack = this.slack;
-            conn.onConnect(player.world, player, heldStack);
-            heldStack.shrink(1);
-            this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
+            conn.onConnect(player.field_70170_p, player, heldStack);
+            heldStack.func_190918_g(1);
+            this.world.func_184148_a(null, hit.field_72450_a, hit.field_72448_b, hit.field_72449_c, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1, 1);
             return true;
         }).orElse(false);
     }
@@ -254,12 +254,12 @@ public abstract class Connection implements NBTSerializable {
         if (this.slack <= 0 && amount < 0 || this.slack >= MAX_SLACK && amount > 0) {
             return true;
         }
-        this.slack = MathHelper.clamp(this.slack + amount, 0, MAX_SLACK);
+        this.slack = MathHelper.func_76131_a(this.slack + amount, 0, MAX_SLACK);
         if (this.slack < 1e-2F) {
             this.slack = 0;
         }
         this.computeCatenary();
-        this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.CORD_STRETCH.get(), SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - this.slack) * 0.4F);
+        this.world.func_184148_a(null, hit.field_72450_a, hit.field_72448_b, hit.field_72449_c, FLSounds.CORD_STRETCH.get(), SoundCategory.BLOCKS, 1, 0.8F + (MAX_SLACK - this.slack) * 0.4F);
         return true;
     }
 
@@ -277,17 +277,17 @@ public abstract class Connection implements NBTSerializable {
             final Vector3d point = dest.getConnectionPoint();
             final boolean c = this.updateCatenary(from, dest, point);
             this.onUpdate();
-            final double dist = point.distanceTo(from);
+            final double dist = point.func_72438_d(from);
             final double pull = dist - MAX_LENGTH + PULL_RANGE;
             if (pull > 0) {
                 final int stage = (int) (pull + 0.1F);
                 if (stage > this.prevStretchStage) {
-                    this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_STRETCH.get(), SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
+                    this.world.func_184148_a(null, point.field_72450_a, point.field_72448_b, point.field_72449_c, FLSounds.CORD_STRETCH.get(), SoundCategory.BLOCKS, 0.25F, 0.5F + stage / 8F);
                 }
                 this.prevStretchStage = stage;
             }
             if (dist > MAX_LENGTH + PULL_RANGE) {
-                this.world.playSound(null, point.x, point.y, point.z, FLSounds.CORD_SNAP.get(), SoundCategory.BLOCKS, 0.75F, 0.8F + this.world.rand.nextFloat() * 0.3F);
+                this.world.func_184148_a(null, point.field_72450_a, point.field_72448_b, point.field_72449_c, FLSounds.CORD_SNAP.get(), SoundCategory.BLOCKS, 0.75F, 0.8F + this.world.field_73012_v.nextFloat() * 0.3F);
                 this.remove();
             } else if (dest.isMoving()) {
                 dest.resistSnap(from);
@@ -302,10 +302,10 @@ public abstract class Connection implements NBTSerializable {
 
     private boolean updateCatenary(final Vector3d from, final Fastener<?> dest, final Vector3d point) {
         if (this.updateCatenary || this.isDynamic()) {
-            final Vector3d vec = point.subtract(from);
-            if (vec.length() > 1e-6) {
+            final Vector3d vec = point.func_178788_d(from);
+            if (vec.func_72433_c() > 1e-6) {
                 final Direction facing = this.fastener.getFacing();
-                this.catenary = Catenary.from(vec, facing.getAxis() != Direction.Axis.Y ? (float) Math.toRadians(90.0F + facing.getHorizontalAngle()) : 0.0F, SLACK_CURVE, this.slack);
+                this.catenary = Catenary.from(vec, facing.func_176740_k() != Direction.Axis.Y ? (float) Math.toRadians(90.0F + facing.func_185119_l()) : 0.0F, SLACK_CURVE, this.slack);
                 this.onCalculateCatenary(!this.destination.equals(this.prevDestination));
                 final CollidableList.Builder bob = new CollidableList.Builder();
                 this.addCollision(bob, from);
@@ -338,9 +338,9 @@ public abstract class Connection implements NBTSerializable {
             final float y1 = it.getY(1.0F);
             final float z1 = it.getZ(1.0F);
             bounds[index++] = new AxisAlignedBB(
-                origin.x + x0, origin.y + y0, origin.z + z0,
-                origin.x + x1, origin.y + y1, origin.z + z1
-            ).grow(r);
+                origin.field_72450_a + x0, origin.field_72448_b + y0, origin.field_72449_c + z0,
+                origin.field_72450_a + x1, origin.field_72448_b + y1, origin.field_72449_c + z1
+            ).func_186662_g(r);
         }
         collision.add(FeatureCollisionTree.build(CORD_FEATURE, i -> Segment.INSTANCE, i -> bounds[i], 1, bounds.length - 2));
     }
@@ -354,19 +354,19 @@ public abstract class Connection implements NBTSerializable {
     @Override
     public CompoundNBT serialize() {
         final CompoundNBT compound = new CompoundNBT();
-        compound.put("destination", FastenerType.serialize(this.destination));
-        compound.put("logic", this.serializeLogic());
-        compound.putFloat("slack", this.slack);
-        if (!this.drop) compound.putBoolean("drop", false);
+        compound.func_218657_a("destination", FastenerType.serialize(this.destination));
+        compound.func_218657_a("logic", this.serializeLogic());
+        compound.func_74776_a("slack", this.slack);
+        if (!this.drop) compound.func_74757_a("drop", false);
         return compound;
     }
 
     @Override
     public void deserialize(final CompoundNBT compound) {
-        this.destination = FastenerType.deserialize(compound.getCompound("destination"));
-        this.deserializeLogic(compound.getCompound("logic"));
-        this.slack = compound.contains("slack", NBT.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;
-        this.drop = !compound.contains("drop", NBT.TAG_ANY_NUMERIC) || compound.getBoolean("drop");
+        this.destination = FastenerType.deserialize(compound.func_74775_l("destination"));
+        this.deserializeLogic(compound.func_74775_l("logic"));
+        this.slack = compound.func_150297_b("slack", NBT.TAG_ANY_NUMERIC) ? compound.func_74760_g("slack") : 1;
+        this.drop = !compound.func_150297_b("drop", NBT.TAG_ANY_NUMERIC) || compound.func_74767_n("drop");
         this.updateCatenary = true;
     }
 

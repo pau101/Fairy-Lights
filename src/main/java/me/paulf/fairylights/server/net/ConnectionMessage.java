@@ -32,16 +32,16 @@ public abstract class ConnectionMessage implements Message {
 
     @Override
     public void encode(final PacketBuffer buf) {
-        buf.writeBlockPos(this.pos);
-        buf.writeCompoundTag(FastenerType.serialize(this.accessor));
-        buf.writeUniqueId(this.uuid);
+        buf.func_179255_a(this.pos);
+        buf.func_150786_a(FastenerType.serialize(this.accessor));
+        buf.func_179252_a(this.uuid);
     }
 
     @Override
     public void decode(final PacketBuffer buf) {
-        this.pos = buf.readBlockPos();
-        this.accessor = FastenerType.deserialize(Objects.requireNonNull(buf.readCompoundTag(), "tag"));
-        this.uuid = buf.readUniqueId();
+        this.pos = buf.func_179259_c();
+        this.accessor = FastenerType.deserialize(Objects.requireNonNull(buf.func_150793_b(), "tag"));
+        this.uuid = buf.func_179253_g();
     }
 
     @SuppressWarnings("unchecked")

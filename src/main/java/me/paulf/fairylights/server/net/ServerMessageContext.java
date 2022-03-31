@@ -19,11 +19,11 @@ public class ServerMessageContext extends MessageContext {
     }
 
     public MinecraftServer getServer() {
-        return this.getPlayer().server;
+        return this.getPlayer().field_71133_b;
     }
 
     public ServerWorld getWorld() {
-        return this.getPlayer().getServerWorld();
+        return this.getPlayer().func_71121_q();
     }
 
     public ServerPlayerEntity getPlayer() {

@@ -55,13 +55,13 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         if (featureType == FEATURE && OreDictUtils.isDye(heldStack)) {
             final int index = feature % this.pattern.size();
             final ItemStack pennant = this.pattern.get(index);
-            if (!ItemStack.areItemStacksEqual(pennant, heldStack)) {
-                final ItemStack placed = heldStack.split(1);
+            if (!ItemStack.func_77989_b(pennant, heldStack)) {
+                final ItemStack placed = heldStack.func_77979_a(1);
                 this.pattern.set(index, placed);
                 ItemHandlerHelper.giveItemToPlayer(player, pennant);
                 this.computeCatenary();
-                heldStack.shrink(1);
-                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
+                heldStack.func_190918_g(1);
+                this.world.func_184148_a(null, hit.field_72450_a, hit.field_72448_b, hit.field_72449_c, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
                 return true;
             }
         }
@@ -83,8 +83,8 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
 
     @Override
     protected Pennant createFeature(final int index, final Vector3d point, final float yaw, final float pitch) {
-        final ItemStack data = this.pattern.isEmpty() ? ItemStack.EMPTY : this.pattern.get(index % this.pattern.size());
-        return new Pennant(index, point, yaw, pitch, DyeableItem.getColor(data), data.getItem());
+        final ItemStack data = this.pattern.isEmpty() ? ItemStack.field_190927_a : this.pattern.get(index % this.pattern.size());
+        return new Pennant(index, point, yaw, pitch, DyeableItem.getColor(data), data.func_77973_b());
     }
 
     @Override
@@ -119,10 +119,10 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
         final CompoundNBT compound = super.serializeLogic();
         final ListNBT patternList = new ListNBT();
         for (final ItemStack entry : this.pattern) {
-            patternList.add(entry.write(new CompoundNBT()));
+            patternList.add(entry.func_77955_b(new CompoundNBT()));
         }
-        compound.put("pattern", patternList);
-        compound.put("text", StyledString.serialize(this.text));
+        compound.func_218657_a("pattern", patternList);
+        compound.func_218657_a("text", StyledString.serialize(this.text));
         return compound;
     }
 
@@ -130,10 +130,10 @@ public final class PennantBuntingConnection extends HangingFeatureConnection<Pen
     public void deserializeLogic(final CompoundNBT compound) {
         super.deserializeLogic(compound);
         this.pattern = new ArrayList<>();
-        final ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
+        final ListNBT patternList = compound.func_150295_c("pattern", NBT.TAG_COMPOUND);
         for (int i = 0; i < patternList.size(); i++) {
-            this.pattern.add(ItemStack.read(patternList.getCompound(i)));
+            this.pattern.add(ItemStack.func_199557_a(patternList.func_150305_b(i)));
         }
-        this.text = StyledString.deserialize(compound.getCompound("text"));
+        this.text = StyledString.deserialize(compound.func_74775_l("text"));
     }
 }

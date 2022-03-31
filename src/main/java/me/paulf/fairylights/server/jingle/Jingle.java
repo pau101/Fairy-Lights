@@ -88,9 +88,9 @@ public final class Jingle {
     }
 
     public void write(final PacketBuffer buf) {
-        buf.writeString(this.title);
-        buf.writeString(this.artist);
-        buf.writeVarInt(this.ticks.size());
+        buf.func_180714_a(this.title);
+        buf.func_180714_a(this.artist);
+        buf.func_150787_b(this.ticks.size());
         for (final PlayTick tick : this.ticks) {
             int bits = 0;
             for (final int n : tick.notes) bits |= 1 << n;
@@ -99,9 +99,9 @@ public final class Jingle {
     }
 
     public static Jingle read(final PacketBuffer buf) {
-        final String title = buf.readString();
-        final String artist = buf.readString();
-        final int len = buf.readVarInt();
+        final String title = buf.func_218666_n();
+        final String artist = buf.func_218666_n();
+        final int len = buf.func_150792_a();
         final ObjectList<PlayTick> ticks = new ObjectArrayList<>(len);
         for (int rem = len; rem --> 0; ) {
             final int packed = buf.readInt();

@@ -37,7 +37,7 @@ public class MeteorLightBehavior implements ColorLightBehavior {
 
     @Override
     public void tick(final World world, final Vector3d origin, final Light<?> light) {
-        this.logic.tick(world.rand, this.powered);
+        this.logic.tick(world.field_73012_v, this.powered);
         this.color.tick(world, origin, light);
     }
 

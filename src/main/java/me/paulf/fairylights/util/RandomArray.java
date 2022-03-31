@@ -27,7 +27,7 @@ public final class RandomArray {
     }
 
     public float get(final float t) {
-        final int t0 = MathHelper.floor(Mth.mod(t, this.values.length));
+        final int t0 = MathHelper.func_76141_d(Mth.mod(t, this.values.length));
         final int t1 = Mth.mod(t0 + 1, this.values.length);
         return this.values[t0] * (1 - t % 1) + this.values[t1] * (t % 1);
     }

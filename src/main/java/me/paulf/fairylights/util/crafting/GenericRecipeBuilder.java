@@ -45,7 +45,7 @@ public final class GenericRecipeBuilder {
     private final List<AuxiliaryIngredient<?>> auxiliaryIngredients = new ArrayList<>();
 
     public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer) {
-        this(name, serializer, ItemStack.EMPTY);
+        this(name, serializer, ItemStack.field_190927_a);
     }
 
     public GenericRecipeBuilder(final ResourceLocation name, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final Item item) {
@@ -119,7 +119,7 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder withIngredient(final char key, final ItemStack stack) {
-        return this.withIngredient(key, Ingredient.fromStacks(Objects.requireNonNull(stack, "stack")));
+        return this.withIngredient(key, Ingredient.func_193369_a(Objects.requireNonNull(stack, "stack")));
     }
 
     public GenericRecipeBuilder withIngredient(final char key, final Ingredient ingredient) {
@@ -156,7 +156,7 @@ public final class GenericRecipeBuilder {
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final ItemStack stack, final boolean isRequired, final int limit) {
-        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.fromStacks(Objects.requireNonNull(stack, "stack")), isRequired, limit));
+        return this.withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(Ingredient.func_193369_a(Objects.requireNonNull(stack, "stack")), isRequired, limit));
     }
 
     public GenericRecipeBuilder withAuxiliaryIngredient(final Tag<Item> tag) {
@@ -206,13 +206,13 @@ public final class GenericRecipeBuilder {
     @SuppressWarnings("unchecked")
     private static RegularIngredient asIngredient(final Object object) {
         if (object instanceof Item) {
-            return new BasicRegularIngredient(Ingredient.fromItems((Item) object));
+            return new BasicRegularIngredient(Ingredient.func_199804_a((Item) object));
         }
         if (object instanceof Block) {
-            return new BasicRegularIngredient(Ingredient.fromItems((Block) object));
+            return new BasicRegularIngredient(Ingredient.func_199804_a((Block) object));
         }
         if (object instanceof ItemStack) {
-            return new BasicRegularIngredient(Ingredient.fromStacks((ItemStack) object));
+            return new BasicRegularIngredient(Ingredient.func_193369_a((ItemStack) object));
         }
         if (object instanceof Tag) {
             return new BasicRegularIngredient(LazyTagIngredient.of((Tag<Item>) object));

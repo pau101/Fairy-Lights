@@ -538,16 +538,16 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
             final Style style = i < value.length() ? styling[i] : null;
             if (!currentStyle.equals(style)) {
                 final IFormattableTextComponent t = new StringTextComponent(bob.toString());
-                t.mergeStyle(currentStyle.getColor());
-                if (currentStyle.isObfuscated()) t.mergeStyle(TextFormatting.OBFUSCATED);
-                if (currentStyle.isBold()) t.mergeStyle(TextFormatting.BOLD);
-                if (currentStyle.isStrikethrough()) t.mergeStyle(TextFormatting.STRIKETHROUGH);
-                if (currentStyle.isUnderline()) t.mergeStyle(TextFormatting.UNDERLINE);
-                if (currentStyle.isItalic()) t.mergeStyle(TextFormatting.ITALIC);
+                t.func_240699_a_(currentStyle.getColor());
+                if (currentStyle.isObfuscated()) t.func_240699_a_(TextFormatting.OBFUSCATED);
+                if (currentStyle.isBold()) t.func_240699_a_(TextFormatting.BOLD);
+                if (currentStyle.isStrikethrough()) t.func_240699_a_(TextFormatting.STRIKETHROUGH);
+                if (currentStyle.isUnderline()) t.func_240699_a_(TextFormatting.UNDERLINE);
+                if (currentStyle.isItalic()) t.func_240699_a_(TextFormatting.ITALIC);
                 if (text == null) {
                     text = t;
                 } else {
-                    text.append(t);
+                    text.func_230529_a_(t);
                 }
                 bob.setLength(0);
             }
@@ -571,14 +571,14 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     public static CompoundNBT serialize(final StyledString str) {
         final CompoundNBT compound = new CompoundNBT();
-        compound.putString("value", str.value);
-        compound.putIntArray("styling", Arrays.stream(str.styling).mapToInt(Style::packed).toArray());
+        compound.func_74778_a("value", str.value);
+        compound.func_74783_a("styling", Arrays.stream(str.styling).mapToInt(Style::packed).toArray());
         return compound;
     }
 
     public static StyledString deserialize(final CompoundNBT compound) {
-        final String value = compound.getString("value");
-        Style[] styling = Arrays.stream(compound.getIntArray("styling"))
+        final String value = compound.func_74779_i("value");
+        Style[] styling = Arrays.stream(compound.func_74759_k("styling"))
             .mapToObj(Style::new)
             .toArray(Style[]::new);
         if (styling.length != value.length()) {
@@ -602,7 +602,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
                 final char ch = Character.toLowerCase(chr);
                 final int colorIndex = "0123456789abcdef".indexOf(ch);
                 if (colorIndex != -1) {
-                    final TextFormatting color = TextFormatting.fromColorIndex(colorIndex);
+                    final TextFormatting color = TextFormatting.func_175744_a(colorIndex);
                     if (color != null) {
                         style = style.withColor(color);
                     }
@@ -631,7 +631,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
     }
 
     public static int getColor(final TextFormatting color) {
-        final Integer rgb = color.getColor();
+        final Integer rgb = color.func_211163_e();
         Preconditions.checkNotNull(rgb, "Must be a color");
         return rgb;
     }

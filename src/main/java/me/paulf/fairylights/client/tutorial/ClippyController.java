@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import net.minecraft.client.gui.toasts.IToast.Visibility;
+
 public class ClippyController {
     private final ImmutableMap<String, Supplier<State>> states = Stream.<Supplier<State>>of(
             NoProgressState::new,
@@ -46,13 +48,13 @@ public class ClippyController {
             }
         });
         MinecraftForge.EVENT_BUS.addListener((final TickEvent.ClientTickEvent event) -> {
-            final Minecraft mc = Minecraft.getInstance();
-            if (event.phase == TickEvent.Phase.END && !mc.isGamePaused() && mc.player != null) {
-                this.state.tick(mc.player, this);
+            final Minecraft mc = Minecraft.func_71410_x();
+            if (event.phase == TickEvent.Phase.END && !mc.func_147113_T() && mc.field_71439_g != null) {
+                this.state.tick(mc.field_71439_g, this);
             }
         });
         modBus.<ModConfig.Loading>addListener(e -> {
-            if (e.getConfig().getSpec() == FLClientConfig.SPEC && Minecraft.getInstance().player != null) {
+            if (e.getConfig().getSpec() == FLClientConfig.SPEC && Minecraft.func_71410_x().field_71439_g != null) {
                 this.reload();
             }
         });
@@ -92,7 +94,7 @@ public class ClippyController {
 
         @Override
         public void tick(final ClientPlayerEntity player, final ClippyController controller) {
-            if (player.inventory.hasTag(FLCraftingRecipes.LIGHTS)) {
+            if (player.field_71071_by.func_199712_a(FLCraftingRecipes.LIGHTS)) {
                 controller.setState(new CraftHangingLightsState());
             }
         }
@@ -102,7 +104,7 @@ public class ClippyController {
         final Balloon balloon;
 
         CraftHangingLightsState() {
-            this.balloon = new Balloon(new LazyItemStack(FLItems.HANGING_LIGHTS, Item::getDefaultInstance),
+            this.balloon = new Balloon(new LazyItemStack(FLItems.HANGING_LIGHTS, Item::func_190903_i),
                 new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.title"),
                 new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.description")
             );
@@ -115,18 +117,18 @@ public class ClippyController {
 
         @Override
         public void start() {
-            Minecraft.getInstance().getToastGui().add(this.balloon);
+            Minecraft.func_71410_x().func_193033_an().func_192988_a(this.balloon);
         }
 
         @Override
         public void tick(final ClientPlayerEntity player, final ClippyController controller) {
-            if (!player.inventory.hasTag(FLCraftingRecipes.LIGHTS) &&
-                    !player.inventory.getItemStack().getItem().isIn(FLCraftingRecipes.LIGHTS)) {
+            if (!player.field_71071_by.func_199712_a(FLCraftingRecipes.LIGHTS) &&
+                    !player.field_71071_by.func_70445_o().func_77973_b().func_206844_a(FLCraftingRecipes.LIGHTS)) {
                 controller.setState(new NoProgressState());
             } else if (FLItems.HANGING_LIGHTS.filter(i ->
-                    player.inventory.getItemStack().getItem() == i ||
-                    player.inventory.hasItemStack(new ItemStack(i)) ||
-                    player.getStats().getValue(Stats.ITEM_CRAFTED.get(i)) > 0).isPresent()) {
+                    player.field_71071_by.func_70445_o().func_77973_b() == i ||
+                    player.field_71071_by.func_70431_c(new ItemStack(i)) ||
+                    player.func_146107_m().func_77444_a(Stats.field_188066_af.func_199076_b(i)) > 0).isPresent()) {
                 controller.setState(new CompleteState());
             }
         }
@@ -164,15 +166,15 @@ public class ClippyController {
 
         @Override
         public Visibility func_230444_a_(final MatrixStack stack, final ToastGui toastGui, final long delta) {
-            toastGui.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
+            toastGui.func_192989_b().func_110434_K().func_110577_a(field_193654_a);
             RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-            toastGui.blit(stack, 0, 0, 0, 96, 160, 32);
-            toastGui.getMinecraft().getItemRenderer().renderItemAndEffectIntoGUI(null, this.stack.get(), 6 + 2, 6 + 2);
+            toastGui.func_238474_b_(stack, 0, 0, 0, 96, 160, 32);
+            toastGui.func_192989_b().func_175599_af().func_184391_a(null, this.stack.get(), 6 + 2, 6 + 2);
             if (this.subtitle == null) {
-                toastGui.getMinecraft().fontRenderer.func_243248_b(stack, this.title, 30.0F, 12.0F, 0xFF500050);
+                toastGui.func_192989_b().field_71466_p.func_243248_b(stack, this.title, 30.0F, 12.0F, 0xFF500050);
             } else {
-                toastGui.getMinecraft().fontRenderer.func_243248_b(stack, this.title, 30.0F, 7.0F, 0xFF500050);
-                toastGui.getMinecraft().fontRenderer.func_243248_b(stack, this.subtitle, 30.0F, 18.0F, 0xFF000000);
+                toastGui.func_192989_b().field_71466_p.func_243248_b(stack, this.title, 30.0F, 7.0F, 0xFF500050);
+                toastGui.func_192989_b().field_71466_p.func_243248_b(stack, this.subtitle, 30.0F, 18.0F, 0xFF000000);
             }
             return this.visibility;
         }

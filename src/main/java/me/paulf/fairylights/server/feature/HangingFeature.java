@@ -49,7 +49,7 @@ public abstract class HangingFeature implements Feature {
     }
 
     public final Vector3d getPoint(final float delta) {
-        return this.point.subtract(this.prevPoint).scale(delta).add(this.prevPoint);
+        return this.point.func_178788_d(this.prevPoint).func_186678_a(delta).func_178787_e(this.prevPoint);
     }
 
     public final float getYaw() {
@@ -85,7 +85,7 @@ public abstract class HangingFeature implements Feature {
     }
 
     public final Vector3d getAbsolutePoint(final Vector3d origin) {
-        return this.point.add(origin);
+        return this.point.func_178787_e(origin);
     }
 
     public Vector3d getTransformedPoint(final Vector3d origin, final Vector3d point) {
@@ -96,7 +96,7 @@ public abstract class HangingFeature implements Feature {
         }
         matrix.rotate(this.getRoll(), 1.0F, 0.0F, 0.0F);
         matrix.translate(0.0F, -this.getDescent(), 0.0F);
-        return this.point.add(matrix.transform(point)).add(origin);
+        return this.point.func_178787_e(matrix.transform(point)).func_178787_e(origin);
     }
 
     public void tick(final World world) {

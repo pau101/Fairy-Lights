@@ -34,11 +34,11 @@ public class TwinkleBehavior implements BrightnessLightBehavior {
 
     @Override
     public void tick(final World world, final Vector3d origin, final Light<?> light) {
-        this.logic.tick(world.rand, this.powered);
+        this.logic.tick(world.field_73012_v, this.powered);
     }
 
     public static boolean exists(final ItemStack stack) {
-        final CompoundNBT tag = stack.getTag();
-        return tag != null && tag.getBoolean("twinkle");
+        final CompoundNBT tag = stack.func_77978_p();
+        return tag != null && tag.func_74767_n("twinkle");
     }
 }

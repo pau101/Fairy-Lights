@@ -86,6 +86,6 @@ public final class FairyLights {
     }
 
     public static boolean ingredientMatches(final boolean equalsExact, final ItemStack ingredient, final ItemStack stack) {
-        return equalsExact || RegistryObjects.namespaceEquals(ingredient.getItem(), FairyLights.ID) && RegistryObjects.namespaceEquals(stack.getItem(), FairyLights.ID);
+        return equalsExact || RegistryObjects.namespaceEquals(ingredient.func_77973_b(), FairyLights.ID) && RegistryObjects.namespaceEquals(stack.func_77973_b(), FairyLights.ID);
     }
 }

@@ -11,7 +11,7 @@ public final class FairyLightsItemGroup extends ItemGroup {
     }
 
     @Override
-    public ItemStack createIcon() {
+    public ItemStack func_78016_d() {
         return new ItemStack(FLItems.HANGING_LIGHTS.get());
     }
 }

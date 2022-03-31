@@ -16,6 +16,8 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class LightItem extends BlockItem {
     private final LightBlock light;
 
@@ -25,7 +27,7 @@ public class LightItem extends BlockItem {
     }
 
     @Override
-    public LightBlock getBlock() {
+    public LightBlock func_179223_d() {
         return this.light;
     }
 
@@ -35,17 +37,17 @@ public class LightItem extends BlockItem {
     }
 
     @Override
-    public void addInformation(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
-        final CompoundNBT tag = stack.getTag();
+    public void func_77624_a(final ItemStack stack, @Nullable final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
+        super.func_77624_a(stack, world, tooltip, flag);
+        final CompoundNBT tag = stack.func_77978_p();
         if (tag != null) {
-            if (tag.getBoolean("twinkle")) {
-                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").mergeStyle(TextFormatting.GRAY, TextFormatting.ITALIC));
+            if (tag.func_74767_n("twinkle")) {
+                tooltip.add(new TranslationTextComponent("item.fairyLights.twinkle").func_240701_a_(TextFormatting.GRAY, TextFormatting.ITALIC));
             }
-            if (tag.contains("colors", Constants.NBT.TAG_LIST)) {
-                final ListNBT colors = tag.getList("colors", Constants.NBT.TAG_INT);
+            if (tag.func_150297_b("colors", Constants.NBT.TAG_LIST)) {
+                final ListNBT colors = tag.func_150295_c("colors", Constants.NBT.TAG_INT);
                 for (int i = 0; i < colors.size(); i++) {
-                    tooltip.add(DyeableItem.getColorName(colors.getInt(i)).mergeStyle(TextFormatting.GRAY));
+                    tooltip.add(DyeableItem.getColorName(colors.func_186858_c(i)).func_240699_a_(TextFormatting.GRAY));
                 }
             }
         }

@@ -19,11 +19,11 @@ public class ClientMessageContext extends MessageContext {
     }
 
     public Minecraft getMinecraft() {
-        return Minecraft.getInstance();
+        return Minecraft.func_71410_x();
     }
 
     public ClientWorld getWorld() {
-        return Objects.requireNonNull(this.getMinecraft().world);
+        return Objects.requireNonNull(this.getMinecraft().field_71441_e);
     }
 
     public PlayerEntity getPlayer() {

@@ -43,7 +43,7 @@ public interface GenericIngredient<I extends GenericIngredient<I, M>, M extends 
 
     default ImmutableList<ItemStack> getMatchingSubtypes(final Ingredient stack) {
         Objects.requireNonNull(stack, "stack");
-        return ImmutableList.copyOf(stack.getMatchingStacks());
+        return ImmutableList.copyOf(stack.func_193365_a());
     }
 
     default void addTooltip(final List<ITextComponent> tooltip) {}

@@ -26,23 +26,23 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
     }
 
     @Override
-    protected int getBlockLight(final FenceFastenerEntity entity, final BlockPos delta) {
-        return entity.world.getLightFor(LightType.BLOCK, entity.getPosition());
+    protected int func_225624_a_(final FenceFastenerEntity entity, final BlockPos delta) {
+        return entity.field_70170_p.func_226658_a_(LightType.BLOCK, entity.func_233580_cy_());
     }
 
     @Override
-    public void render(final FenceFastenerEntity entity, final float yaw, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight) {
-        final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
-        matrix.push();
-        FastenerRenderer.renderBakedModel(MODEL, matrix, buf, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
-        matrix.pop();
-        entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> this.renderer.render(f, delta, matrix, source, packedLight, OverlayTexture.NO_OVERLAY));
-        super.render(entity, yaw, delta, matrix, source, packedLight);
+    public void func_225623_a_(final FenceFastenerEntity entity, final float yaw, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight) {
+        final IVertexBuilder buf = source.getBuffer(Atlases.func_228783_h_());
+        matrix.func_227860_a_();
+        FastenerRenderer.renderBakedModel(MODEL, matrix, buf, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.field_229196_a_);
+        matrix.func_227865_b_();
+        entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> this.renderer.render(f, delta, matrix, source, packedLight, OverlayTexture.field_229196_a_));
+        super.func_225623_a_(entity, yaw, delta, matrix, source, packedLight);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public ResourceLocation getEntityTexture(final FenceFastenerEntity entity) {
-        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+    public ResourceLocation func_110775_a(final FenceFastenerEntity entity) {
+        return AtlasTexture.field_110575_b;
     }
 }

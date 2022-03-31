@@ -28,7 +28,7 @@ public class TorchLightBehavior implements BrightnessLightBehavior {
 
     @Override
     public void tick(final World world, final Vector3d origin, final Light<?> light) {
-        if (world.rand.nextFloat() < 0.08F) {
+        if (world.field_73012_v.nextFloat() < 0.08F) {
             this.createParticles(world, origin, light);
         }
     }
@@ -41,11 +41,11 @@ public class TorchLightBehavior implements BrightnessLightBehavior {
     private void createParticles(final World world, final Vector3d origin, final Light<?> light) {
         if (this.powered) {
             final Vector3d p = light.getTransformedPoint(origin, new Vector3d(0.0D, -this.offset, 0.0D));
-            final double x = p.getX();
-            final double y = p.getY();
-            final double z = p.getZ();
-            world.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
-            world.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.0D, 0.0D);
+            final double x = p.func_82615_a();
+            final double y = p.func_82617_b();
+            final double z = p.func_82616_c();
+            world.func_195594_a(ParticleTypes.field_197601_L, x, y, z, 0.0D, 0.0D, 0.0D);
+            world.func_195594_a(ParticleTypes.field_197631_x, x, y, z, 0.0D, 0.0D, 0.0D);
         }
     }
 }

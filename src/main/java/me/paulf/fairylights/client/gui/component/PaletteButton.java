@@ -59,31 +59,31 @@ public class PaletteButton extends Button {
     }
 
     @Override
-    public void onPress() {
+    public void func_230930_b_() {
         this.colorBtn.setDisplayColor(IDX_COLOR[(ArrayUtils.indexOf(IDX_COLOR, this.colorBtn.getDisplayColor()) + 1) % IDX_COLOR.length]);
-        super.onPress();
+        super.func_230930_b_();
     }
 
     @Override
-    public void onClick(final double mouseX, final double mouseY) {
+    public void func_230982_a_(final double mouseX, final double mouseY) {
         final int idx = this.getMouseOverIndex(mouseX, mouseY);
         if (idx > -1) {
             this.colorBtn.setDisplayColor(IDX_COLOR[idx]);
-            super.onPress();
+            super.func_230930_b_();
         }
     }
 
     @Override
-    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
-        if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
+    public void func_230431_b_(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+        if (this.field_230694_p_) {
+            Minecraft.func_71410_x().func_110434_K().func_110577_a(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.blit(stack, this.x, this.y, TEX_U, TEX_V, this.width, this.height);
+            this.func_238474_b_(stack, this.field_230690_l_, this.field_230691_m_, TEX_U, TEX_V, this.field_230688_j_, this.field_230689_k_);
             if (this.colorBtn.hasDisplayColor()) {
                 final int idx = COLOR_IDX[this.colorBtn.getDisplayColor().ordinal()];
-                final int selectX = this.x + 2 + (idx % 4) * 6;
-                final int selectY = this.y + 2 + (idx / 4) * 6;
-                this.blit(stack, selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+                final int selectX = this.field_230690_l_ + 2 + (idx % 4) * 6;
+                final int selectY = this.field_230691_m_ + 2 + (idx / 4) * 6;
+                this.func_238474_b_(stack, selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             for (int i = 0; i < IDX_COLOR.length; i++) {
                 final TextFormatting color = IDX_COLOR[i];
@@ -92,16 +92,16 @@ public class PaletteButton extends Button {
                 final float g = (rgb >> 8 & 0xFF) / 255F;
                 final float b = (rgb & 0xFF) / 255F;
                 RenderSystem.color4f(r, g, b, 1.0F);
-                this.blit(stack, this.x + 2 + (i % 4) * 6, this.y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
+                this.func_238474_b_(stack, this.field_230690_l_ + 2 + (i % 4) * 6, this.field_230691_m_ + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             final int selectIndex = this.getMouseOverIndex(mouseX, mouseY);
             if (selectIndex > -1) {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 RenderSystem.color4f(1, 1, 1, 0.5F);
-                final int hoverSelectX = this.x + 2 + selectIndex % 4 * 6;
-                final int hoverSelectY = this.y + 2 + selectIndex / 4 * 6;
-                this.blit(stack, hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+                final int hoverSelectX = this.field_230690_l_ + 2 + selectIndex % 4 * 6;
+                final int hoverSelectY = this.field_230691_m_ + 2 + selectIndex / 4 * 6;
+                this.func_238474_b_(stack, hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
                 RenderSystem.disableBlend();
             }
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -109,8 +109,8 @@ public class PaletteButton extends Button {
     }
 
     private int getMouseOverIndex(final double mouseX, final double mouseY) {
-        final int relX = MathHelper.floor(mouseX - this.x - 3);
-        final int relY = MathHelper.floor(mouseY - this.y - 3);
+        final int relX = MathHelper.func_76128_c(mouseX - this.field_230690_l_ - 3);
+        final int relY = MathHelper.func_76128_c(mouseY - this.field_230691_m_ - 3);
         if (relX < 0 || relY < 0 || relX > 22 || relY > 22) {
             return -1;
         }

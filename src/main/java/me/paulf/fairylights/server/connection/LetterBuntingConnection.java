@@ -196,13 +196,13 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     @Override
     public CompoundNBT serializeLogic() {
         final CompoundNBT compound = super.serializeLogic();
-        compound.put("text", StyledString.serialize(this.text));
+        compound.func_218657_a("text", StyledString.serialize(this.text));
         return compound;
     }
 
     @Override
     public void deserializeLogic(final CompoundNBT compound) {
         super.deserializeLogic(compound);
-        this.text = StyledString.deserialize(compound.getCompound("text"));
+        this.text = StyledString.deserialize(compound.func_74775_l("text"));
     }
 }

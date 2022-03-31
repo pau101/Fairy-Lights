@@ -31,24 +31,24 @@ public class ToggleButton extends Button {
     }
 
     @Override
-    public void onPress() {
+    public void func_230930_b_() {
         this.value = !this.value;
         this.pressed = true;
-        super.onPress();
+        super.func_230930_b_();
     }
 
     @Override
-    public void onRelease(final double mouseX, final double mouseY) {
+    public void func_231000_a__(final double mouseX, final double mouseY) {
         this.pressed = false;
     }
 
     @Override
-    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
-        if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
+    public void func_230431_b_(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+        if (this.field_230694_p_) {
+            Minecraft.func_71410_x().func_110434_K().func_110577_a(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             final int t;
-            if (this.isHovered) {
+            if (this.field_230692_n_) {
                 if (this.pressed) {
                     t = 2;
                 } else {
@@ -61,7 +61,7 @@ public class ToggleButton extends Button {
                     t = 0;
                 }
             }
-            this.blit(stack, this.x, this.y, this.u, this.v + this.height * t, this.width, this.height);
+            this.func_238474_b_(stack, this.field_230690_l_, this.field_230691_m_, this.u, this.v + this.field_230689_k_ * t, this.field_230688_j_, this.field_230689_k_);
         }
     }
 }

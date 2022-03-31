@@ -152,18 +152,18 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     private void drop(final World world, final BlockPos pos, final Connection connection) {
         if (!connection.shouldDrop()) return;
-        final float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
-        final float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
-        final float offsetZ = world.rand.nextFloat() * 0.8F + 0.1F;
+        final float offsetX = world.field_73012_v.nextFloat() * 0.8F + 0.1F;
+        final float offsetY = world.field_73012_v.nextFloat() * 0.8F + 0.1F;
+        final float offsetZ = world.field_73012_v.nextFloat() * 0.8F + 0.1F;
         final ItemStack stack = connection.getItemStack();
-        final ItemEntity entityItem = new ItemEntity(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
+        final ItemEntity entityItem = new ItemEntity(world, pos.func_177958_n() + offsetX, pos.func_177956_o() + offsetY, pos.func_177952_p() + offsetZ, stack);
         final float scale = 0.05F;
-        entityItem.setMotion(
-            world.rand.nextGaussian() * scale,
-            world.rand.nextGaussian() * scale + 0.2F,
-            world.rand.nextGaussian() * scale
+        entityItem.func_213293_j(
+            world.field_73012_v.nextGaussian() * scale,
+            world.field_73012_v.nextGaussian() * scale + 0.2F,
+            world.field_73012_v.nextGaussian() * scale
         );
-        world.addEntity(entityItem);
+        world.func_217376_c(entityItem);
         connection.noDrop();
     }
 
@@ -233,7 +233,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     @Override
     public Connection connect(final World world, final Fastener<?> destination, final ConnectionType<?> type, final CompoundNBT compound, final boolean drop) {
-        final UUID uuid = MathHelper.getRandomUUID();
+        final UUID uuid = MathHelper.func_188210_a();
         final Connection connection = this.createOutgoingConnection(world, uuid, destination, type, compound, drop);
         destination.createIncomingConnection(world, uuid, this, type);
         return connection;
@@ -262,44 +262,44 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             final UUID uuid = connectionEntry.getKey();
             final Connection connection = connectionEntry.getValue();
             final CompoundNBT connectionCompound = new CompoundNBT();
-            connectionCompound.put("connection", connection.serialize());
-            connectionCompound.putString("type", RegistryObjects.getName(connection.getType()).toString());
-            connectionCompound.putUniqueId("uuid", uuid);
+            connectionCompound.func_218657_a("connection", connection.serialize());
+            connectionCompound.func_74778_a("type", RegistryObjects.getName(connection.getType()).toString());
+            connectionCompound.func_186854_a("uuid", uuid);
             outgoing.add(connectionCompound);
         }
-        compound.put("outgoing", outgoing);
+        compound.func_218657_a("outgoing", outgoing);
         final ListNBT incoming = new ListNBT();
         for (final Entry<UUID, Incoming> e : this.incoming.entrySet()) {
             final CompoundNBT tag = new CompoundNBT();
-            tag.putUniqueId("uuid", e.getKey());
-            tag.put("fastener", FastenerType.serialize(e.getValue().fastener));
+            tag.func_186854_a("uuid", e.getKey());
+            tag.func_218657_a("fastener", FastenerType.serialize(e.getValue().fastener));
             incoming.add(tag);
         }
-        compound.put("incoming", incoming);
+        compound.func_218657_a("incoming", incoming);
         return compound;
     }
 
     @Override
     public void deserializeNBT(final CompoundNBT compound) {
-        final ListNBT listConnections = compound.getList("outgoing", NBT.TAG_COMPOUND);
+        final ListNBT listConnections = compound.func_150295_c("outgoing", NBT.TAG_COMPOUND);
         final List<UUID> nbtUUIDs = new ArrayList<>();
         for (int i = 0; i < listConnections.size(); i++) {
-            final CompoundNBT connectionCompound = listConnections.getCompound(i);
+            final CompoundNBT connectionCompound = listConnections.func_150305_b(i);
             final UUID uuid;
-            if (connectionCompound.hasUniqueId("uuid")) {
-                uuid = connectionCompound.getUniqueId("uuid");
+            if (connectionCompound.func_186855_b("uuid")) {
+                uuid = connectionCompound.func_186857_a("uuid");
             } else {
-                uuid = MathHelper.getRandomUUID();
+                uuid = MathHelper.func_188210_a();
             }
             nbtUUIDs.add(uuid);
             if (this.outgoing.containsKey(uuid)) {
                 final Connection connection = this.outgoing.get(uuid);
-                connection.deserialize(connectionCompound.getCompound("connection"));
+                connection.deserialize(connectionCompound.func_74775_l("connection"));
             } else {
-                final ConnectionType<?> type = FairyLights.CONNECTION_TYPES.getValue(ResourceLocation.tryCreate(connectionCompound.getString("type")));
+                final ConnectionType<?> type = FairyLights.CONNECTION_TYPES.getValue(ResourceLocation.func_208304_a(connectionCompound.func_74779_i("type")));
                 if (type != null) {
                     final Connection connection = type.create(this.world, this, uuid);
-                    connection.deserialize(connectionCompound.getCompound("connection"));
+                    connection.deserialize(connectionCompound.func_74775_l("connection"));
                     this.outgoing.put(uuid, connection);
                 }
             }
@@ -313,11 +313,11 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             }
         }
         this.incoming.clear();
-        final ListNBT incoming = compound.getList("incoming", NBT.TAG_COMPOUND);
+        final ListNBT incoming = compound.func_150295_c("incoming", NBT.TAG_COMPOUND);
         for (int i = 0; i < incoming.size(); i++) {
-            final CompoundNBT incomingNbt = incoming.getCompound(i);
-            final UUID uuid = incomingNbt.getUniqueId("uuid");
-            final FastenerAccessor fastener = FastenerType.deserialize(incomingNbt.getCompound("fastener"));
+            final CompoundNBT incomingNbt = incoming.func_150305_b(i);
+            final UUID uuid = incomingNbt.func_186857_a("uuid");
+            final FastenerAccessor fastener = FastenerType.deserialize(incomingNbt.func_74775_l("fastener"));
             this.incoming.put(uuid, new Incoming(fastener, uuid));
         }
         this.setDirty();

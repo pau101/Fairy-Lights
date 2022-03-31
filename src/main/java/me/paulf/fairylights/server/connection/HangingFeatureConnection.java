@@ -85,9 +85,9 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
             final MatrixStack matrix = new MatrixStack();
             collision.add(FeatureCollisionTree.build(FEATURE, this.features, f -> {
                 final Vector3d pos = f.getPoint();
-                final double x = origin.x + pos.x;
-                final double y = origin.y + pos.y;
-                final double z = origin.z + pos.z;
+                final double x = origin.field_72450_a + pos.field_72450_a;
+                final double y = origin.field_72448_b + pos.field_72448_b;
+                final double z = origin.field_72449_c + pos.field_72449_c;
                 matrix.push();
                 if (f.parallelsCord()) {
                     matrix.rotate(-f.getYaw(), 0.0F, 1.0F, 0.0F);
@@ -95,16 +95,16 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
                 }
                 matrix.translate(0.0F, -f.getDescent(), 0.0F);
                 final AABBBuilder bounds = new AABBBuilder();
-                final AxisAlignedBB bb = f.getBounds().grow(0.01D);
+                final AxisAlignedBB bb = f.getBounds().func_186662_g(0.01D);
                 final Vector3d[] verts = {
-                    new Vector3d(bb.minX, bb.minY, bb.minZ),
-                    new Vector3d(bb.maxX, bb.minY, bb.minZ),
-                    new Vector3d(bb.maxX, bb.minY, bb.minZ),
-                    new Vector3d(bb.minX, bb.minY, bb.maxZ),
-                    new Vector3d(bb.minX, bb.maxY, bb.minZ),
-                    new Vector3d(bb.maxX, bb.maxY, bb.minZ),
-                    new Vector3d(bb.maxX, bb.maxY, bb.maxZ),
-                    new Vector3d(bb.minX, bb.maxY, bb.maxZ)
+                    new Vector3d(bb.field_72340_a, bb.field_72338_b, bb.field_72339_c),
+                    new Vector3d(bb.field_72336_d, bb.field_72338_b, bb.field_72339_c),
+                    new Vector3d(bb.field_72336_d, bb.field_72338_b, bb.field_72339_c),
+                    new Vector3d(bb.field_72340_a, bb.field_72338_b, bb.field_72334_f),
+                    new Vector3d(bb.field_72340_a, bb.field_72337_e, bb.field_72339_c),
+                    new Vector3d(bb.field_72336_d, bb.field_72337_e, bb.field_72339_c),
+                    new Vector3d(bb.field_72336_d, bb.field_72337_e, bb.field_72334_f),
+                    new Vector3d(bb.field_72340_a, bb.field_72337_e, bb.field_72334_f)
                 };
                 for (final Vector3d vert : verts) {
                     bounds.include(matrix.transform(vert));

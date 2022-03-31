@@ -13,7 +13,7 @@ public class IncandescentBehavior implements BrightnessLightBehavior {
 
     @Override
     public float getBrightness(final float delta) {
-        return MathHelper.lerp(delta, this.prevBrightness, this.brightness);
+        return MathHelper.func_219799_g(delta, this.prevBrightness, this.brightness);
     }
 
     @Override
@@ -30,8 +30,8 @@ public class IncandescentBehavior implements BrightnessLightBehavior {
         } else {
             this.brighten(0.0F, 0.1F);
         }
-        if (this.brightness > 0.85F && world.rand.nextFloat() < 0.25F) {
-            this.brightness -= world.rand.nextFloat() * 0.05F;
+        if (this.brightness > 0.85F && world.field_73012_v.nextFloat() < 0.25F) {
+            this.brightness -= world.field_73012_v.nextFloat() * 0.05F;
         }
     }
 

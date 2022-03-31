@@ -12,7 +12,7 @@ public abstract class EntityFastener<E extends Entity> extends AbstractFastener<
 
     public EntityFastener(final E entity) {
         this.entity = entity;
-        this.setWorld(entity.world);
+        this.setWorld(entity.field_70170_p);
     }
 
     @Override
@@ -26,11 +26,11 @@ public abstract class EntityFastener<E extends Entity> extends AbstractFastener<
 
     @Override
     public BlockPos getPos() {
-        return this.entity.getPosition();
+        return this.entity.func_233580_cy_();
     }
 
     @Override
     public Vector3d getConnectionPoint() {
-        return this.entity.getPositionVec();
+        return this.entity.func_213303_ch();
     }
 }

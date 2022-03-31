@@ -60,9 +60,9 @@ public final class Mth {
     public static Vector3d lerp(final Vector3d a, final Vector3d b, final double t) {
         Objects.requireNonNull(a, "a vector");
         Objects.requireNonNull(b, "b vector");
-        final double x = a.x + (b.x - a.x) * t;
-        final double y = a.y + (b.y - a.y) * t;
-        final double z = a.z + (b.z - a.z) * t;
+        final double x = a.field_72450_a + (b.field_72450_a - a.field_72450_a) * t;
+        final double y = a.field_72448_b + (b.field_72448_b - a.field_72448_b) * t;
+        final double z = a.field_72449_c + (b.field_72449_c - a.field_72449_c) * t;
         return new Vector3d(x, y, z);
     }
 
@@ -119,7 +119,7 @@ public final class Mth {
     public static double angle(final Vector3d a, final Vector3d b) {
         Objects.requireNonNull(a, "a vector");
         Objects.requireNonNull(b, "b vector");
-        final double theta = a.dotProduct(b) / (a.length() * b.length());
+        final double theta = a.func_72430_b(b) / (a.func_72433_c() * b.func_72433_c());
         if (theta > 1) {
             return 0;
         }

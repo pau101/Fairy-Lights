@@ -23,13 +23,13 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
     @Override
     public void encode(final PacketBuffer buf) {
         super.encode(buf);
-        buf.writeCompoundTag(StyledString.serialize(this.text));
+        buf.func_150786_a(StyledString.serialize(this.text));
     }
 
     @Override
     public void decode(final PacketBuffer buf) {
         super.decode(buf);
-        this.text = StyledString.deserialize(buf.readCompoundTag());
+        this.text = StyledString.deserialize(buf.func_150793_b());
     }
 
     public static final class Handler implements BiConsumer<EditLetteredConnectionMessage<?>, ServerMessageContext> {
@@ -41,7 +41,7 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
 
         private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayerEntity player) {
             if (player != null) {
-                ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, player.world).ifPresent(connection -> {
+                ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, player.field_70170_p).ifPresent(connection -> {
                     if (connection.isModifiable(player) && connection.isSupportedText(message.text)) {
                         connection.setText(message.text);
                     }

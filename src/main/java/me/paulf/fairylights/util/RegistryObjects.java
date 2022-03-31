@@ -12,7 +12,7 @@ public final class RegistryObjects {
 
     public static boolean namespaceEquals(final IForgeRegistryEntry<?> entry, final String namespace) {
         final ResourceLocation name = entry.getRegistryName();
-        return name != null && namespace.equals(name.getNamespace());
+        return name != null && namespace.equals(name.func_110624_b());
     }
 
     public static ResourceLocation getName(final IForgeRegistryEntry<?> type) {

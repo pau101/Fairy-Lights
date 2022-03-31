@@ -13,12 +13,12 @@ public final class FLEntities {
     public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITIES, FairyLights.ID);
 
     public static final RegistryObject<EntityType<FenceFastenerEntity>> FASTENER = REG.register("fastener", () ->
-        EntityType.Builder.<FenceFastenerEntity>create(FenceFastenerEntity::new, EntityClassification.MISC)
-            .size(1.15F, 2.8F)
+        EntityType.Builder.<FenceFastenerEntity>func_220322_a(FenceFastenerEntity::new, EntityClassification.MISC)
+            .func_220321_a(1.15F, 2.8F)
             .setTrackingRange(10)
             .setUpdateInterval(Integer.MAX_VALUE)
             .setShouldReceiveVelocityUpdates(false)
             .setCustomClientFactory((message, world) -> new FenceFastenerEntity(world))
-            .build(FairyLights.ID + ":fastener")
+            .func_206830_a(FairyLights.ID + ":fastener")
     );
 }

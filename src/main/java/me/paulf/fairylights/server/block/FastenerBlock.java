@@ -34,49 +34,49 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public final class FastenerBlock extends DirectionalBlock {
-    public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
+    public static final BooleanProperty TRIGGERED = BlockStateProperties.field_208197_x;
 
-    private static final VoxelShape NORTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 12.0D, 10.0D, 10.0D, 16.0D);
+    private static final VoxelShape NORTH_AABB = Block.func_208617_a(6.0D, 6.0D, 12.0D, 10.0D, 10.0D, 16.0D);
 
-    private static final VoxelShape SOUTH_AABB = Block.makeCuboidShape(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 4.0D);
+    private static final VoxelShape SOUTH_AABB = Block.func_208617_a(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 4.0D);
 
-    private static final VoxelShape WEST_AABB = Block.makeCuboidShape(12.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D);
+    private static final VoxelShape WEST_AABB = Block.func_208617_a(12.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D);
 
-    private static final VoxelShape EAST_AABB = Block.makeCuboidShape(0.0D, 6.0D, 6.0D, 4.0D, 10.0D, 10.0D);
+    private static final VoxelShape EAST_AABB = Block.func_208617_a(0.0D, 6.0D, 6.0D, 4.0D, 10.0D, 10.0D);
 
-    private static final VoxelShape DOWN_AABB = Block.makeCuboidShape(6.0D, 12.0D, 6.0D, 10.0D, 16.0D, 10.0D);
+    private static final VoxelShape DOWN_AABB = Block.func_208617_a(6.0D, 12.0D, 6.0D, 10.0D, 16.0D, 10.0D);
 
-    private static final VoxelShape UP_AABB = Block.makeCuboidShape(6.0D, 0.0D, 6.0D, 10.0D, 4.0D, 10.0D);
+    private static final VoxelShape UP_AABB = Block.func_208617_a(6.0D, 0.0D, 6.0D, 10.0D, 4.0D, 10.0D);
 
     public FastenerBlock(final Block.Properties properties) {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState()
-            .with(FACING, Direction.NORTH)
-            .with(TRIGGERED, false)
+        this.func_180632_j(this.field_176227_L.func_177621_b()
+            .func_206870_a(field_176387_N, Direction.NORTH)
+            .func_206870_a(TRIGGERED, false)
         );
     }
 
     @Override
-    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, TRIGGERED);
+    protected void func_206840_a(final StateContainer.Builder<Block, BlockState> builder) {
+        builder.func_206894_a(field_176387_N, TRIGGERED);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState rotate(final BlockState state, final Rotation rot) {
-        return state.with(FACING, rot.rotate(state.get(FACING)));
+    public BlockState func_185499_a(final BlockState state, final Rotation rot) {
+        return state.func_206870_a(field_176387_N, rot.func_185831_a(state.func_177229_b(field_176387_N)));
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState mirror(final BlockState state, final Mirror mirrorIn) {
-        return state.with(FACING, mirrorIn.mirror(state.get(FACING)));
+    public BlockState func_185471_a(final BlockState state, final Mirror mirrorIn) {
+        return state.func_206870_a(field_176387_N, mirrorIn.func_185803_b(state.func_177229_b(field_176387_N)));
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getShape(final BlockState state, final IBlockReader worldIn, final BlockPos pos, final ISelectionContext context) {
-        switch (state.get(FACING)) {
+    public VoxelShape func_220053_a(final BlockState state, final IBlockReader worldIn, final BlockPos pos, final ISelectionContext context) {
+        switch (state.func_177229_b(field_176387_N)) {
             case NORTH:
                 return NORTH_AABB;
             case SOUTH:
@@ -105,34 +105,34 @@ public final class FastenerBlock extends DirectionalBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            final TileEntity entity = world.getTileEntity(pos);
+    public void func_196243_a(final BlockState state, final World world, final BlockPos pos, final BlockState newState, final boolean isMoving) {
+        if (state.func_177230_c() != newState.func_177230_c()) {
+            final TileEntity entity = world.func_175625_s(pos);
             if (entity instanceof FastenerBlockEntity) {
                 entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.dropItems(world, pos));
             }
-            super.onReplaced(state, world, pos, newState, isMoving);
+            super.func_196243_a(state, world, pos, newState, isMoving);
         }
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean isValidPosition(final BlockState state, final IWorldReader world, final BlockPos pos) {
-        final Direction facing = state.get(FACING);
-        final BlockPos attachedPos = pos.offset(facing.getOpposite());
-        final BlockState attachedState = world.getBlockState(attachedPos);
-        return attachedState.getBlock().isIn(BlockTags.LEAVES) || attachedState.isSolidSide(world, attachedPos, facing) || facing == Direction.UP && attachedState.isIn(BlockTags.WALLS);
+    public boolean func_196260_a(final BlockState state, final IWorldReader world, final BlockPos pos) {
+        final Direction facing = state.func_177229_b(field_176387_N);
+        final BlockPos attachedPos = pos.func_177972_a(facing.func_176734_d());
+        final BlockState attachedState = world.func_180495_p(attachedPos);
+        return attachedState.func_177230_c().func_203417_a(BlockTags.field_206952_E) || attachedState.func_224755_d(world, attachedPos, facing) || facing == Direction.UP && attachedState.func_235714_a_(BlockTags.field_219757_z);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(final BlockItemUseContext context) {
-        BlockState result = this.getDefaultState();
-        final IWorldReader world = context.getWorld();
-        final BlockPos pos = context.getPos();
-        for (final Direction dir : context.getNearestLookingDirections()) {
-            result = result.with(FACING, dir.getOpposite());
-            if (result.isValidPosition(world, pos)) {
+    public BlockState func_196258_a(final BlockItemUseContext context) {
+        BlockState result = this.func_176223_P();
+        final IWorldReader world = context.func_195991_k();
+        final BlockPos pos = context.func_195995_a();
+        for (final Direction dir : context.func_196009_e()) {
+            result = result.func_206870_a(field_176387_N, dir.func_176734_d());
+            if (result.func_196955_c(world, pos)) {
                 return result;
             }
         }
@@ -141,53 +141,53 @@ public final class FastenerBlock extends DirectionalBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updatePostPlacement(final BlockState state, final Direction facing, final BlockState facingState, final IWorld world, final BlockPos currentPos, final BlockPos facingPos) {
-        if (facing.getOpposite() == state.get(FACING) && !state.isValidPosition(world, currentPos)) {
-            return Blocks.AIR.getDefaultState();
+    public BlockState func_196271_a(final BlockState state, final Direction facing, final BlockState facingState, final IWorld world, final BlockPos currentPos, final BlockPos facingPos) {
+        if (facing.func_176734_d() == state.func_177229_b(field_176387_N) && !state.func_196955_c(world, currentPos)) {
+            return Blocks.field_150350_a.func_176223_P();
         }
-        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+        return super.func_196271_a(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onBlockAdded(final BlockState state, final World world, final BlockPos pos, final BlockState oldState, final boolean isMoving) {
-        if (oldState.getBlock() != state.getBlock()) {
-            if (world.isBlockPowered(pos.offset(state.get(FACING).getOpposite()))) {
-                world.setBlockState(pos, state.with(TRIGGERED, true), 3);
+    public void func_220082_b(final BlockState state, final World world, final BlockPos pos, final BlockState oldState, final boolean isMoving) {
+        if (oldState.func_177230_c() != state.func_177230_c()) {
+            if (world.func_175640_z(pos.func_177972_a(state.func_177229_b(field_176387_N).func_176734_d()))) {
+                world.func_180501_a(pos, state.func_206870_a(TRIGGERED, true), 3);
             }
         }
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(final BlockState state, final World world, final BlockPos pos, final Block blockIn, final BlockPos fromPos, final boolean isMoving) {
-        if (state.isValidPosition(world, pos)) {
-            final boolean receivingPower = world.isBlockPowered(pos);
-            final boolean isPowered = state.get(TRIGGERED);
+    public void func_220069_a(final BlockState state, final World world, final BlockPos pos, final Block blockIn, final BlockPos fromPos, final boolean isMoving) {
+        if (state.func_196955_c(world, pos)) {
+            final boolean receivingPower = world.func_175640_z(pos);
+            final boolean isPowered = state.func_177229_b(TRIGGERED);
             if (receivingPower && !isPowered) {
-                world.getPendingBlockTicks().scheduleTick(pos, this, 2);
-                world.setBlockState(pos, state.with(TRIGGERED, true), 4);
+                world.func_205220_G_().func_205360_a(pos, this, 2);
+                world.func_180501_a(pos, state.func_206870_a(TRIGGERED, true), 4);
             } else if (!receivingPower && isPowered) {
-                world.setBlockState(pos, state.with(TRIGGERED, false), 4);
+                world.func_180501_a(pos, state.func_206870_a(TRIGGERED, false), 4);
             }
         } else {
-            final TileEntity entity = world.getTileEntity(pos);
-            spawnDrops(state, world, pos, entity);
-            world.removeBlock(pos, false);
+            final TileEntity entity = world.func_175625_s(pos);
+            func_220059_a(state, world, pos, entity);
+            world.func_217377_a(pos, false);
         }
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean hasComparatorInputOverride(final BlockState state) {
+    public boolean func_149740_M(final BlockState state) {
         return true;
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public int getComparatorInputOverride(final BlockState state, final World world, final BlockPos pos) {
-        final TileEntity entity = world.getTileEntity(pos);
-        if (entity == null) return super.getComparatorInputOverride(state, world, pos);
+    public int func_180641_l(final BlockState state, final World world, final BlockPos pos) {
+        final TileEntity entity = world.func_175625_s(pos);
+        if (entity == null) return super.func_180641_l(state, world, pos);
         return entity.getCapability(CapabilityHandler.FASTENER_CAP).map(f -> f.getAllConnections().stream()).orElse(Stream.empty())
             .filter(HangingLightsConnection.class::isInstance)
             .map(HangingLightsConnection.class::cast)
@@ -197,19 +197,19 @@ public final class FastenerBlock extends DirectionalBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void tick(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
+    public void func_225534_a_(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
         this.jingle(world, pos);
     }
 
     private void jingle(final World world, final BlockPos pos) {
-        final TileEntity entity = world.getTileEntity(pos);
+        final TileEntity entity = world.func_175625_s(pos);
         if (!(entity instanceof FastenerBlockEntity)) {
             return;
         }
         entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> fastener.getAllConnections().stream()
             .filter(HangingLightsConnection.class::isInstance)
             .map(HangingLightsConnection.class::cast)
-            .filter(conn -> conn.canCurrentlyPlayAJingle() && conn.isDestination(new BlockFastenerAccessor(fastener.getPos())) && world.getBlockState(fastener.getPos()).get(TRIGGERED))
+            .filter(conn -> conn.canCurrentlyPlayAJingle() && conn.isDestination(new BlockFastenerAccessor(fastener.getPos())) && world.func_180495_p(fastener.getPos()).func_177229_b(TRIGGERED))
             .findFirst().ifPresent(conn -> ServerEventHandler.tryJingle(world, conn, JingleLibrary.RANDOM))
         );
     }

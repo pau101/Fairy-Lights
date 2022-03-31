@@ -16,11 +16,11 @@ public final class LazyItemStack {
     public LazyItemStack(final RegistryObject<? extends Item> object, final Function<? super Item, ItemStack> factory) {
         this.object = object;
         this.factory = factory;
-        this.stack = ItemStack.EMPTY;
+        this.stack = ItemStack.field_190927_a;
     }
 
     public ItemStack get() {
-        if (this.stack.isEmpty()) {
+        if (this.stack.func_190926_b()) {
             this.object.map(this.factory).ifPresent(stack -> this.stack = stack);
         }
         return this.stack;

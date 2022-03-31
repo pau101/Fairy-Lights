@@ -12,9 +12,9 @@ public final class FLBlockEntities {
 
     public static final DeferredRegister<TileEntityType<?>> REG = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, FairyLights.ID);
 
-    public static final RegistryObject<TileEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> TileEntityType.Builder.create(FastenerBlockEntity::new, FLBlocks.FASTENER.get()).build(null));
+    public static final RegistryObject<TileEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> TileEntityType.Builder.func_223042_a(FastenerBlockEntity::new, FLBlocks.FASTENER.get()).func_206865_a(null));
 
-    public static final RegistryObject<TileEntityType<LightBlockEntity>> LIGHT = REG.register("light", () -> TileEntityType.Builder.create(LightBlockEntity::new,
+    public static final RegistryObject<TileEntityType<LightBlockEntity>> LIGHT = REG.register("light", () -> TileEntityType.Builder.func_223042_a(LightBlockEntity::new,
         FLBlocks.FAIRY_LIGHT.get(),
         FLBlocks.PAPER_LANTERN.get(),
         FLBlocks.ORB_LANTERN.get(),
@@ -35,5 +35,5 @@ public final class FLBlockEntities {
         FLBlocks.OIL_LANTERN.get(),
         FLBlocks.CANDLE_LANTERN.get(),
         FLBlocks.INCANDESCENT_LIGHT.get()
-    ).build(null));
+    ).func_206865_a(null));
 }

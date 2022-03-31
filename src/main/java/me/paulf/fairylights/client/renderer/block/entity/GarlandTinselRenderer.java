@@ -36,52 +36,52 @@ public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConne
         final float r = ((color >> 16) & 0xFF) / 255.0F;
         final float g = ((color >> 8) & 0xFF) / 255.0F;
         final float b = (color & 0xFF) / 255.0F;
-        matrix.push();
-        matrix.translate(it.getX(0.0F), it.getY(0.0F), it.getZ(0.0F));
-        matrix.rotate(Vector3f.YP.rotation(-it.getYaw()));
-        matrix.rotate(Vector3f.ZP.rotation(it.getPitch()));
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(it.getX(0.0F), it.getY(0.0F), it.getZ(0.0F));
+        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(-it.getYaw()));
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229193_c_(it.getPitch()));
         final float length = it.getLength();
-        final int rings = MathHelper.ceil(length * 64);
+        final int rings = MathHelper.func_76123_f(length * 64);
         final int hash = connection.getUUID().hashCode();
         final int index = it.getIndex();
-        final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+        final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.func_229311_a_(source, RenderType::func_228638_b_);
         for (int i = 0; i < rings; i++) {
             final double t = i / (float) rings * length;
-            matrix.push();
-            matrix.translate(t, 0.0F, 0.0F);
+            matrix.func_227860_a_();
+            matrix.func_227861_a_(t, 0.0F, 0.0F);
             final float rotX = RAND.get(31 * (index + 31 * i) + hash) * 22;
             final float rotY = RAND.get(31 * (index + 3 + 31 * i) + hash) * 180;
             final float rotZ = RAND.get(31 * (index + 7 + 31 * i) + hash) * 180;
-            matrix.rotate(Vector3f.XP.rotationDegrees(rotZ));
-            matrix.rotate(Vector3f.YP.rotationDegrees(rotY));
-            matrix.rotate(Vector3f.ZP.rotationDegrees(rotX));
-            matrix.scale(1.0F, RAND.get(i * 63) * 0.1F + 1.0F, 1.0F);
-            this.strip.render(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
-            matrix.pop();
+            matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(rotZ));
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(rotY));
+            matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(rotX));
+            matrix.func_227862_a_(1.0F, RAND.get(i * 63) * 0.1F + 1.0F, 1.0F);
+            this.strip.func_225598_a_(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
+            matrix.func_227865_b_();
         }
-        matrix.pop();
+        matrix.func_227865_b_();
     }
 
     private static class StripModel extends Model {
         final ModelRenderer root;
 
         StripModel() {
-            super(RenderType::getEntityCutout);
-            this.textureWidth = 128;
-            this.textureHeight = 128;
+            super(RenderType::func_228638_b_);
+            this.field_78090_t = 128;
+            this.field_78089_u = 128;
             this.root = new ModelRenderer(this, 62, 0) {
                 @Override
-                public void translateRotate(final MatrixStack stack) {
-                    super.translateRotate(stack);
-                    stack.getLast().getMatrix().mul(Matrix4f.makeScale(1.0F, 1.0F, 0.5F));
+                public void func_228307_a_(final MatrixStack stack) {
+                    super.func_228307_a_(stack);
+                    stack.func_227866_c_().func_227870_a_().func_226595_a_(Matrix4f.func_226593_a_(1.0F, 1.0F, 0.5F));
                 }
             };
-            this.root.addBox(-0.5F, -3.0F, 0.0F, 1.0F, 6.0F, 0.0F);
+            this.root.func_228300_a_(-0.5F, -3.0F, 0.0F, 1.0F, 6.0F, 0.0F);
         }
 
         @Override
-        public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-            this.root.render(matrix, builder, light, overlay, r, g, b, a);
+        public void func_225598_a_(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+            this.root.func_228309_a_(matrix, builder, light, overlay, r, g, b, a);
         }
     }
 }

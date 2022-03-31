@@ -112,15 +112,15 @@ public final class FLCraftingRecipes {
 
     public static final RegistryObject<IRecipeSerializer<CopyColorRecipe>> COPY_COLOR = REG.register("crafting_special_copy_color", makeSerializer(CopyColorRecipe::new));
 
-    public static final ITag.INamedTag<Item> LIGHTS = ItemTags.makeWrapperTag(FairyLights.ID + ":lights");
+    public static final ITag.INamedTag<Item> LIGHTS = ItemTags.func_199901_a(FairyLights.ID + ":lights");
 
-    public static final ITag.INamedTag<Item> TWINKLING_LIGHTS = ItemTags.makeWrapperTag(FairyLights.ID + ":twinkling_lights");
+    public static final ITag.INamedTag<Item> TWINKLING_LIGHTS = ItemTags.func_199901_a(FairyLights.ID + ":twinkling_lights");
 
-    public static final ITag.INamedTag<Item> PENNANTS = ItemTags.makeWrapperTag(FairyLights.ID + ":pennants");
+    public static final ITag.INamedTag<Item> PENNANTS = ItemTags.func_199901_a(FairyLights.ID + ":pennants");
 
-    public static final ITag.INamedTag<Item> DYEABLE = ItemTags.makeWrapperTag(FairyLights.ID + ":dyeable");
+    public static final ITag.INamedTag<Item> DYEABLE = ItemTags.func_199901_a(FairyLights.ID + ":dyeable");
 
-    public static final ITag.INamedTag<Item> DYEABLE_LIGHTS = ItemTags.makeWrapperTag(FairyLights.ID + ":dyeable_lights");
+    public static final ITag.INamedTag<Item> DYEABLE_LIGHTS = ItemTags.func_199901_a(FairyLights.ID + ":dyeable_lights");
 
     public static final RegularIngredient DYE_SUBTYPE_INGREDIENT = new BasicRegularIngredient(LazyTagIngredient.of(Tags.Items.DYES)) {
         @Override
@@ -179,12 +179,12 @@ public final class FLCraftingRecipes {
 
                 @Override
                 public void present(final CompoundNBT nbt) {
-                    nbt.putBoolean("twinkle", true);
+                    nbt.func_74757_a("twinkle", true);
                 }
 
                 @Override
                 public void absent(final CompoundNBT nbt) {
-                    nbt.putBoolean("twinkle", false);
+                    nbt.func_74757_a("twinkle", false);
                 }
 
                 @Override
@@ -209,17 +209,17 @@ public final class FLCraftingRecipes {
 
                 @Override
                 public void consume(final ListNBT data, final ItemStack ingredient) {
-                    data.add(IntNBT.valueOf(DyeableItem.getColor(OreDictUtils.getDyeColor(ingredient))));
+                    data.add(IntNBT.func_229692_a_(DyeableItem.getColor(OreDictUtils.getDyeColor(ingredient))));
                 }
 
                 @Override
                 public boolean finish(final ListNBT data, final CompoundNBT nbt) {
                     if (!data.isEmpty()) {
-                        if (nbt.contains("color", Constants.NBT.TAG_INT)) {
-                            data.add(0, IntNBT.valueOf(nbt.getInt("color")));
-                            nbt.remove("color");
+                        if (nbt.func_150297_b("color", Constants.NBT.TAG_INT)) {
+                            data.add(0, IntNBT.func_229692_a_(nbt.func_74762_e("color")));
+                            nbt.func_82580_o("color");
                         }
-                        nbt.put("colors", data);
+                        nbt.func_218657_a("colors", data);
                     }
                     return false;
                 }
@@ -236,7 +236,7 @@ public final class FLCraftingRecipes {
             .withAuxiliaryIngredient(new InertBasicAuxiliaryIngredient(LazyTagIngredient.of(Tags.Items.DYES_WHITE), false, 1) {
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                    final CompoundNBT tag = output.getTag();
+                    final CompoundNBT tag = output.func_77978_p();
                     return tag != null && HangingLightsConnectionItem.getString(tag) == StringTypes.WHITE_STRING.get() ? super.getInput(output) : ImmutableList.of();
                 }
 
@@ -260,8 +260,8 @@ public final class FLCraftingRecipes {
     }
 
     private static boolean useInputsForTagBool(final ItemStack output, final String key, final boolean value) {
-        final CompoundNBT compound = output.getTag();
-        return compound != null && compound.getBoolean(key) == value;
+        final CompoundNBT compound = output.func_77978_p();
+        return compound != null && compound.func_74767_n(key) == value;
     }
 
     /*
@@ -272,33 +272,33 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createHangingLightsAugmentation(final ResourceLocation name) {
         return new GenericRecipeBuilder(name, HANGING_LIGHTS_AUGMENTATION, FLItems.HANGING_LIGHTS.get())
             .withShape("F")
-            .withIngredient('F', new BasicRegularIngredient(Ingredient.fromItems(FLItems.HANGING_LIGHTS.get())) {
+            .withIngredient('F', new BasicRegularIngredient(Ingredient.func_199804_a(FLItems.HANGING_LIGHTS.get())) {
                 @Override
                 public ImmutableList<ItemStack> getInputs() {
-                    return Arrays.stream(this.ingredient.getMatchingStacks())
-                        .map(ItemStack::copy)
+                    return Arrays.stream(this.ingredient.func_193365_a())
+                        .map(ItemStack::func_77946_l)
                         .flatMap(stack -> {
-                            stack.setTag(new CompoundNBT());
+                            stack.func_77982_d(new CompoundNBT());
                             return makeHangingLightsExamples(stack).stream();
                         }).collect(ImmutableList.toImmutableList());
                 }
 
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                    final ItemStack stack = output.copy();
-                    final CompoundNBT compound = stack.getTag();
+                    final ItemStack stack = output.func_77946_l();
+                    final CompoundNBT compound = stack.func_77978_p();
                     if (compound == null) {
                         return ImmutableList.of();
                     }
-                    stack.setCount(1);
+                    stack.func_190920_e(1);
                     return ImmutableList.of(ImmutableList.of(stack));
                 }
 
                 @Override
                 public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
-                    final CompoundNBT compound = ingredient.getTag();
+                    final CompoundNBT compound = ingredient.func_77978_p();
                     if (compound != null) {
-                        nbt.merge(compound);
+                        nbt.func_197643_a(compound);
                     }
                 }
             })
@@ -327,17 +327,17 @@ public final class FLCraftingRecipes {
     }
 
     public static ItemStack makeHangingLights(final ItemStack base, final DyeColor... colors) {
-        final ItemStack stack = base.copy();
-        CompoundNBT compound = stack.getTag();
+        final ItemStack stack = base.func_77946_l();
+        CompoundNBT compound = stack.func_77978_p();
         final ListNBT lights = new ListNBT();
         for (final DyeColor color : colors) {
-            lights.add(DyeableItem.setColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).write(new CompoundNBT()));
+            lights.add(DyeableItem.setColor(new ItemStack(FLItems.FAIRY_LIGHT.get()), color).func_77955_b(new CompoundNBT()));
         }
         if (compound == null) {
             compound = new CompoundNBT();
-            stack.setTag(compound);
+            stack.func_77982_d(compound);
         }
-        compound.put("pattern", lights);
+        compound.func_218657_a("pattern", lights);
         HangingLightsConnectionItem.setString(compound, StringTypes.BLACK_STRING.get());
         return stack;
     }
@@ -345,7 +345,7 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createTinselGarland(final ResourceLocation name) {
         return new GenericRecipeBuilder(name, TINSEL_GARLAND, FLItems.TINSEL.get())
             .withShape(" P ", "I-I", " D ")
-            .withIngredient('P', Items.PAPER)
+            .withIngredient('P', Items.field_151121_aF)
             .withIngredient('I', Tags.Items.INGOTS_IRON)
             .withIngredient('-', Tags.Items.STRING)
             .withIngredient('D', DYE_SUBTYPE_INGREDIENT)
@@ -364,20 +364,20 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createPennantBuntingAugmentation(final ResourceLocation name) {
         return new GenericRecipeBuilder(name, PENNANT_BUNTING_AUGMENTATION, FLItems.PENNANT_BUNTING.get())
             .withShape("B")
-            .withIngredient('B', new BasicRegularIngredient(Ingredient.fromItems(FLItems.PENNANT_BUNTING.get())) {
+            .withIngredient('B', new BasicRegularIngredient(Ingredient.func_199804_a(FLItems.PENNANT_BUNTING.get())) {
                 @Override
                 public ImmutableList<ItemStack> getInputs() {
-                    return Arrays.stream(this.ingredient.getMatchingStacks())
-                        .map(ItemStack::copy)
+                    return Arrays.stream(this.ingredient.func_193365_a())
+                        .map(ItemStack::func_77946_l)
                         .flatMap(stack -> {
-                            stack.setTag(new CompoundNBT());
+                            stack.func_77982_d(new CompoundNBT());
                             return makePennantExamples(stack).stream();
                         }).collect(ImmutableList.toImmutableList());
                 }
 
                 @Override
                 public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-                    final CompoundNBT compound = output.getTag();
+                    final CompoundNBT compound = output.func_77978_p();
                     if (compound == null) {
                         return ImmutableList.of();
                     }
@@ -386,9 +386,9 @@ public final class FLCraftingRecipes {
 
                 @Override
                 public void matched(final ItemStack ingredient, final CompoundNBT nbt) {
-                    final CompoundNBT compound = ingredient.getTag();
+                    final CompoundNBT compound = ingredient.func_77978_p();
                     if (compound != null) {
-                        nbt.merge(compound);
+                        nbt.func_197643_a(compound);
                     }
                 }
             })
@@ -406,27 +406,27 @@ public final class FLCraftingRecipes {
     }
 
     public static ItemStack makePennant(final ItemStack base, final DyeColor... colors) {
-        final ItemStack stack = base.copy();
-        CompoundNBT compound = stack.getTag();
+        final ItemStack stack = base.func_77946_l();
+        CompoundNBT compound = stack.func_77978_p();
         final ListNBT pennants = new ListNBT();
         for (final DyeColor color : colors) {
             final ItemStack pennant = new ItemStack(FLItems.TRIANGLE_PENNANT.get());
             DyeableItem.setColor(pennant, color);
-            pennants.add(pennant.write(new CompoundNBT()));
+            pennants.add(pennant.func_77955_b(new CompoundNBT()));
         }
         if (compound == null) {
             compound = new CompoundNBT();
-            stack.setTag(compound);
+            stack.func_77982_d(compound);
         }
-        compound.put("pattern", pennants);
-        compound.put("text", StyledString.serialize(new StyledString()));
+        compound.func_218657_a("pattern", pennants);
+        compound.func_218657_a("text", StyledString.serialize(new StyledString()));
         return stack;
     }
 
     private static GenericRecipe createPennant(final ResourceLocation name, final Supplier<IRecipeSerializer<GenericRecipe>> serializer, final Item item, final String pattern) {
         return new GenericRecipeBuilder(name, serializer, item)
             .withShape("- -", "PDP", pattern)
-            .withIngredient('P', Items.PAPER)
+            .withIngredient('P', Items.field_151121_aF)
             .withIngredient('-', Tags.Items.STRING)
             .withIngredient('D', DYE_SUBTYPE_INGREDIENT)
             .build();
@@ -458,7 +458,7 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createPaperLantern(final ResourceLocation name) {
         return createLight(name, PAPER_LANTERN, FLItems.PAPER_LANTERN, b -> b
             .withShape(" I ", "PDP", "PPP")
-            .withIngredient('P', Items.PAPER)
+            .withIngredient('P', Items.field_151121_aF)
         );
     }
 
@@ -466,16 +466,16 @@ public final class FLCraftingRecipes {
         return createLight(name, ORB_LANTERN, FLItems.ORB_LANTERN, b -> b
             .withShape(" I ", "SDS", " W ")
             .withIngredient('S', Tags.Items.STRING)
-            .withIngredient('W', Items.WHITE_WOOL)
+            .withIngredient('W', Items.field_221603_aE)
         );
     }
 
     private static GenericRecipe createFlowerLight(final ResourceLocation name) {
         return createLight(name, FLOWER_LIGHT, FLItems.FLOWER_LIGHT, b -> b
             .withShape(" I ", "RDB", " Y ")
-            .withIngredient('R', Items.POPPY)
-            .withIngredient('Y', Items.DANDELION)
-            .withIngredient('B', Items.BLUE_ORCHID)
+            .withIngredient('R', Items.field_221620_aV)
+            .withIngredient('Y', Items.field_221619_aU)
+            .withIngredient('B', Items.field_221621_aW)
         );
     }
 
@@ -489,7 +489,7 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createOilLanternLight(final ResourceLocation name) {
         return createLight(name, OIL_LANTERN_LIGHT, FLItems.OIL_LANTERN_LIGHT, b -> b
             .withShape(" I ", "SDS", "IGI")
-            .withIngredient('S', Items.STICK)
+            .withIngredient('S', Items.field_151055_y)
             .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS)
         );
     }
@@ -497,9 +497,9 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createJackOLantern(final ResourceLocation name) {
         return createLight(name, JACK_O_LANTERN, FLItems.JACK_O_LANTERN, b -> b
             .withShape(" I ", "SDS", "GPG")
-            .withIngredient('S', ItemTags.WOODEN_SLABS)
-            .withIngredient('G', Items.TORCH)
-            .withIngredient('P', Items.JACK_O_LANTERN)
+            .withIngredient('S', ItemTags.field_202899_i)
+            .withIngredient('G', Items.field_221657_bQ)
+            .withIngredient('P', Items.field_221697_cK)
         );
     }
 
@@ -513,7 +513,7 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createGhostLight(final ResourceLocation name) {
         return createLight(name, GHOST_LIGHT, FLItems.GHOST_LIGHT, b -> b
             .withShape(" I ", "PDP", "IGI")
-            .withIngredient('P', Items.PAPER)
+            .withIngredient('P', Items.field_151121_aF)
             .withIngredient('G', Tags.Items.GLASS_PANES_WHITE)
         );
     }
@@ -521,25 +521,25 @@ public final class FLCraftingRecipes {
     private static GenericRecipe createSpiderLight(final ResourceLocation name) {
         return createLight(name, SPIDER_LIGHT, FLItems.SPIDER_LIGHT, b -> b
             .withShape(" I ", "WDW", "SES")
-            .withIngredient('W', Items.COBWEB)
+            .withIngredient('W', Items.field_221672_ax)
             .withIngredient('S', Tags.Items.STRING)
-            .withIngredient('E', Items.SPIDER_EYE)
+            .withIngredient('E', Items.field_151070_bp)
         );
     }
 
     private static GenericRecipe createWitchLight(final ResourceLocation name) {
         return createLight(name, WITCH_LIGHT, FLItems.WITCH_LIGHT, b -> b
             .withShape(" I ", "BDW", " S ")
-            .withIngredient('B', Items.GLASS_BOTTLE)
-            .withIngredient('W', Items.WHEAT)
-            .withIngredient('S', Items.STICK)
+            .withIngredient('B', Items.field_151069_bo)
+            .withIngredient('W', Items.field_151015_O)
+            .withIngredient('S', Items.field_151055_y)
         );
     }
 
     private static GenericRecipe createSnowflakeLight(final ResourceLocation name) {
         return createLight(name, SNOWFLAKE_LIGHT, FLItems.SNOWFLAKE_LIGHT, b -> b
             .withShape(" I ", "SDS", " G ")
-            .withIngredient('S', Items.SNOWBALL)
+            .withIngredient('S', Items.field_151126_ay)
             .withIngredient('G', Tags.Items.GLASS_PANES_WHITE)
         );
     }
@@ -555,7 +555,7 @@ public final class FLCraftingRecipes {
         return createLight(name, MOON_LIGHT, FLItems.MOON_LIGHT, b -> b
             .withShape(" I ", "GDG", " C ")
             .withIngredient('G', Tags.Items.GLASS_PANES_WHITE)
-            .withIngredient('C', Items.CLOCK)
+            .withIngredient('C', Items.field_151113_aN)
         );
     }
 
@@ -572,7 +572,7 @@ public final class FLCraftingRecipes {
         return createLight(name, ICICLE_LIGHTS, FLItems.ICICLE_LIGHTS, b -> b
             .withShape(" I ", "GDG", " B ")
             .withIngredient('G', Tags.Items.GLASS_PANES_COLORLESS)
-            .withIngredient('B', Items.WATER_BUCKET)
+            .withIngredient('B', Items.field_151131_as)
         );
     }
 
@@ -580,7 +580,7 @@ public final class FLCraftingRecipes {
         return createLight(name, METEOR_LIGHT, FLItems.METEOR_LIGHT, b -> b
             .withShape(" I ", "GDG", "IPI")
             .withIngredient('G', Tags.Items.DUSTS_GLOWSTONE)
-            .withIngredient('P', Items.PAPER)
+            .withIngredient('P', Items.field_151121_aF)
         );
     }
 
@@ -599,17 +599,17 @@ public final class FLCraftingRecipes {
 
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-            final CompoundNBT compound = output.getTag();
+            final CompoundNBT compound = output.func_77978_p();
             if (compound == null) {
                 return ImmutableList.of();
             }
-            final ListNBT pattern = compound.getList("pattern", Constants.NBT.TAG_COMPOUND);
+            final ListNBT pattern = compound.func_150295_c("pattern", Constants.NBT.TAG_COMPOUND);
             if (pattern.isEmpty()) {
                 return ImmutableList.of();
             }
             final ImmutableList.Builder<ImmutableList<ItemStack>> lights = ImmutableList.builder();
             for (int i = 0; i < pattern.size(); i++) {
-                lights.add(ImmutableList.of(ItemStack.read(pattern.getCompound(i))));
+                lights.add(ImmutableList.of(ItemStack.func_199557_a(pattern.func_150305_b(i))));
             }
             return lights.build();
         }
@@ -626,13 +626,13 @@ public final class FLCraftingRecipes {
 
         @Override
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
-            patternList.add(ingredient.write(new CompoundNBT()));
+            patternList.add(ingredient.func_77955_b(new CompoundNBT()));
         }
 
         @Override
         public boolean finish(final ListNBT pattern, final CompoundNBT nbt) {
             if (pattern.size() > 0) {
-                nbt.put("pattern", pattern);
+                nbt.func_218657_a("pattern", pattern);
             }
             return false;
         }
@@ -650,17 +650,17 @@ public final class FLCraftingRecipes {
 
         @Override
         public ImmutableList<ImmutableList<ItemStack>> getInput(final ItemStack output) {
-            final CompoundNBT compound = output.getTag();
+            final CompoundNBT compound = output.func_77978_p();
             if (compound == null) {
                 return ImmutableList.of();
             }
-            final ListNBT pattern = compound.getList("pattern", Constants.NBT.TAG_COMPOUND);
+            final ListNBT pattern = compound.func_150295_c("pattern", Constants.NBT.TAG_COMPOUND);
             if (pattern.isEmpty()) {
                 return ImmutableList.of();
             }
             final ImmutableList.Builder<ImmutableList<ItemStack>> pennants = ImmutableList.builder();
             for (int i = 0; i < pattern.size(); i++) {
-                pennants.add(ImmutableList.of(ItemStack.read(pattern.getCompound(i))));
+                pennants.add(ImmutableList.of(ItemStack.func_199557_a(pattern.func_150305_b(i))));
             }
             return pennants.build();
         }
@@ -677,14 +677,14 @@ public final class FLCraftingRecipes {
 
         @Override
         public void consume(final ListNBT patternList, final ItemStack ingredient) {
-            patternList.add(ingredient.write(new CompoundNBT()));
+            patternList.add(ingredient.func_77955_b(new CompoundNBT()));
         }
 
         @Override
         public boolean finish(final ListNBT pattern, final CompoundNBT nbt) {
             if (pattern.size() > 0) {
-                nbt.put("pattern", pattern);
-                nbt.put("text", StyledString.serialize(new StyledString()));
+                nbt.func_218657_a("pattern", pattern);
+                nbt.func_218657_a("text", StyledString.serialize(new StyledString()));
             }
             return false;
         }

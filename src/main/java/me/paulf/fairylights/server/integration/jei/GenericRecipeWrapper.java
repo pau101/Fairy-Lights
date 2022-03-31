@@ -108,35 +108,35 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
     private void forOutputMatches(final BiConsumer<ItemStack, ItemStack> outputConsumer) {
         final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
             @Override
-            public boolean canInteractWith(final PlayerEntity player) {
+            public boolean func_75145_c(final PlayerEntity player) {
                 return false;
             }
 
             @Override
-            public void onCraftMatrixChanged(final IInventory inventory) {}
+            public void func_75130_a(final IInventory inventory) {}
         }, this.getSize().width, this.getSize().height);
         if (this.subtypeIndex == -1) {
             for (int i = 0; i < this.minimalInputStacks.size(); i++) {
                 final List<ItemStack> stacks = this.minimalInputStacks.get(i);
-                crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+                crafting.func_70299_a(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
             }
-            if (this.recipe.matches(crafting, null)) {
-                outputConsumer.accept(ItemStack.EMPTY, this.recipe.getCraftingResult(crafting));
+            if (this.recipe.func_77569_a(crafting, null)) {
+                outputConsumer.accept(ItemStack.field_190927_a, this.recipe.func_77572_b(crafting));
             }
         } else {
             final List<ItemStack> dictators = this.minimalInputStacks.get(this.subtypeIndex);
             for (final ItemStack subtype : dictators) {
-                crafting.clear();
+                crafting.func_174888_l();
                 for (int i = 0; i < this.minimalInputStacks.size(); i++) {
                     if (i == this.subtypeIndex) {
-                        crafting.setInventorySlotContents(i, subtype);
+                        crafting.func_70299_a(i, subtype);
                     } else {
                         final List<ItemStack> stacks = this.minimalInputStacks.get(i);
-                        crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+                        crafting.func_70299_a(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
                     }
                 }
-                if (this.recipe.matches(crafting, null)) {
-                    outputConsumer.accept(subtype, this.recipe.getCraftingResult(crafting));
+                if (this.recipe.func_77569_a(crafting, null)) {
+                    outputConsumer.accept(subtype, this.recipe.func_77572_b(crafting));
                 }
             }
         }
@@ -199,32 +199,32 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
     private Input getInputsForIngredient(final ItemStack ingredient) {
         final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
             @Override
-            public boolean canInteractWith(final PlayerEntity player) {
+            public boolean func_75145_c(final PlayerEntity player) {
                 return false;
             }
 
             @Override
-            public void onCraftMatrixChanged(final IInventory inventory) {}
+            public void func_75130_a(final IInventory inventory) {}
         }, this.getSize().width, this.getSize().height);
         for (int i = 0; i < this.allInputs.size(); i++) {
             final List<ItemStack> options = this.allInputs.get(i);
             ItemStack matched = null;
             for (final ItemStack o : options) {
-                if (ingredient.getItem() == o.getItem()) {
-                    matched = ingredient.copy();
-                    matched.setCount(1);
+                if (ingredient.func_77973_b() == o.func_77973_b()) {
+                    matched = ingredient.func_77946_l();
+                    matched.func_190920_e(1);
                     break;
                 }
             }
             if (matched == null) {
                 continue;
             }
-            crafting.clear();
+            crafting.func_174888_l();
             for (int n = 0; n < this.minimalInputStacks.size(); n++) {
                 final List<ItemStack> stacks = this.minimalInputStacks.get(n);
-                crafting.setInventorySlotContents(n, i == n ? matched : stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+                crafting.func_70299_a(n, i == n ? matched : stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(0));
             }
-            if (this.recipe.matches(crafting, null)) {
+            if (this.recipe.func_77569_a(crafting, null)) {
                 final List<List<ItemStack>> inputs = new ArrayList<>(this.allInputs.size());
                 for (int n = 0; n < this.allInputs.size(); n++) {
                     final List<ItemStack> stacks = this.allInputs.get(n);
@@ -239,12 +239,12 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
     public List<List<ItemStack>> getOutput(final List<List<ItemStack>> inputs) {
         final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
             @Override
-            public boolean canInteractWith(final PlayerEntity player) {
+            public boolean func_75145_c(final PlayerEntity player) {
                 return false;
             }
 
             @Override
-            public void onCraftMatrixChanged(final IInventory inventory) {}
+            public void func_75130_a(final IInventory inventory) {}
         }, this.getSize().width, this.getSize().height);
         int size = 1;
         for (final List<ItemStack> stack : inputs) {
@@ -256,16 +256,16 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         for (int n = 0; n < size; n++) {
             for (int i = 0; i < inputs.size(); i++) {
                 final List<ItemStack> stacks = inputs.get(i);
-                crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(n % stacks.size()));
+                crafting.func_70299_a(i, stacks.isEmpty() ? ItemStack.field_190927_a : stacks.get(n % stacks.size()));
             }
-            if (this.recipe.matches(crafting, null)) {
-                outputs.add(this.recipe.getCraftingResult(crafting));
+            if (this.recipe.func_77569_a(crafting, null)) {
+                outputs.add(this.recipe.func_77572_b(crafting));
             } else {
                 LogManager.getLogger().debug("No recipe match for {} using inputs {}",
-                    this.recipe.getRecipeOutput().getItem().getRegistryName(),
-                    IntStream.range(0, crafting.getWidth() * crafting.getHeight())
-                        .mapToObj(crafting::getStackInSlot)
-                        .map(s -> Objects.toString(s.getItem().getRegistryName()))
+                    this.recipe.func_77571_b().func_77973_b().getRegistryName(),
+                    IntStream.range(0, crafting.func_174922_i() * crafting.func_174923_h())
+                        .mapToObj(crafting::func_70301_a)
+                        .map(s -> Objects.toString(s.func_77973_b().getRegistryName()))
                         .collect(Collectors.joining(", "))
                 );
             }

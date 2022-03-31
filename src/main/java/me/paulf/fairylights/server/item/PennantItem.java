@@ -13,13 +13,13 @@ public class PennantItem extends Item {
     }
 
     @Override
-    public ITextComponent getDisplayName(final ItemStack stack) {
-        return DyeableItem.getDisplayName(stack, super.getDisplayName(stack));
+    public ITextComponent func_200295_i(final ItemStack stack) {
+        return DyeableItem.getDisplayName(stack, super.func_200295_i(stack));
     }
 
     @Override
-    public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
-        if (this.isInGroup(tab)) {
+    public void func_150895_a(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
+        if (this.func_194125_a(tab)) {
             for (final DyeColor dye : DyeColor.values()) {
                 subItems.add(DyeableItem.setColor(new ItemStack(this), dye));
             }

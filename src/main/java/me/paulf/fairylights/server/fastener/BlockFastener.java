@@ -16,8 +16,8 @@ public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor>
     public BlockFastener(final FastenerBlockEntity fastener, final BlockView view) {
         this.fastener = fastener;
         this.view = view;
-        this.bounds = new AxisAlignedBB(fastener.getPos());
-        this.setWorld(fastener.getWorld());
+        this.bounds = new AxisAlignedBB(fastener.func_174877_v());
+        this.setWorld(fastener.func_145831_w());
     }
 
     @Override
@@ -27,17 +27,17 @@ public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor>
 
     @Override
     public boolean isMoving() {
-        return this.view.isMoving(this.getWorld(), this.fastener.getPos());
+        return this.view.isMoving(this.getWorld(), this.fastener.func_174877_v());
     }
 
     @Override
     public BlockPos getPos() {
-        return this.fastener.getPos();
+        return this.fastener.func_174877_v();
     }
 
     @Override
     public Vector3d getConnectionPoint() {
-        return this.view.getPosition(this.getWorld(), this.fastener.getPos(), Vector3d.copy(this.getPos()).add(this.fastener.getOffset()));
+        return this.view.getPosition(this.getWorld(), this.fastener.func_174877_v(), Vector3d.func_237491_b_(this.getPos()).func_178787_e(this.fastener.getOffset()));
     }
 
     @Override

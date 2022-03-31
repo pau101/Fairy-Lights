@@ -214,7 +214,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     public void setCaret(final int pos, final boolean changeColor) {
-        this.caret = MathHelper.clamp(pos, 0, this.value.length());
+        this.caret = MathHelper.func_76125_a(pos, 0, this.value.length());
         this.setSelectionPos(this.caret);
         if (changeColor) {
             this.setCurrentStyleByIndex(this.caret);
@@ -257,7 +257,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     @Override
-    public void setFocused(final boolean isFocused) {
+    public void func_230996_d_(final boolean isFocused) {
         if (isFocused) {
             if (!this.isFocused) {
                 this.tick = 0;
@@ -269,7 +269,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     @Override
-    public boolean isFocused() {
+    public boolean func_230999_j_() {
         return this.isFocused;
     }
 
@@ -286,12 +286,12 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     public int getInnerWidth() {
-        return this.hasBackground ? this.width - 8 : this.width;
+        return this.hasBackground ? this.field_230688_j_ - 8 : this.field_230688_j_;
     }
 
     public void setSelectionPos(final int pos) {
         final int len = this.value.length();
-        this.selectionEnd = MathHelper.clamp(pos, 0, len);
+        this.selectionEnd = MathHelper.func_76125_a(pos, 0, len);
         if (this.lineScrollOffset > len) {
             this.lineScrollOffset = len;
         }
@@ -301,7 +301,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         } else if (this.selectionEnd <= this.lineScrollOffset) {
             this.lineScrollOffset = this.selectionEnd;
         }
-        this.lineScrollOffset = MathHelper.clamp(this.lineScrollOffset, 0, len);
+        this.lineScrollOffset = MathHelper.func_76125_a(this.lineScrollOffset, 0, len);
         if (this.caret != this.selectionEnd) {
             this.updateSelectionControls();
         }
@@ -356,16 +356,16 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             final int lower;
             final int upper;
             if (this.hasBackground) {
-                lower = this.x + 15;
-                upper = this.x + this.width - 16;
+                lower = this.field_230690_l_ + 15;
+                upper = this.field_230690_l_ + this.field_230688_j_ - 16;
             } else {
-                lower = this.x + 11;
-                upper = this.x + this.width - 12;
+                lower = this.field_230690_l_ + 11;
+                upper = this.field_230690_l_ + this.field_230688_j_ - 12;
             }
             boolean scrolled = false;
             if (mouseX < lower) {
                 if (this.lineScrollOffset > 0) {
-                    final int rate = (2 - (mouseX - this.x) / 5) * 2 + 2;
+                    final int rate = (2 - (mouseX - this.field_230690_l_) / 5) * 2 + 2;
                     this.lineScrollOffset -= rate;
                     if (this.lineScrollOffset < 0) {
                         this.lineScrollOffset = 0;
@@ -375,7 +375,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             } else if (mouseX > upper) {
                 final int max = this.value.length() - trimToWidth(this.value, this.font, this.getInnerWidth(), true).length();
                 if (this.lineScrollOffset < max) {
-                    final int rate = (2 + (mouseX - this.x - this.width + 1) / 5) * 2 + 2;
+                    final int rate = (2 + (mouseX - this.field_230690_l_ - this.field_230688_j_ + 1) / 5) * 2 + 2;
                     this.lineScrollOffset += rate;
                     if (this.lineScrollOffset > max) {
                         this.lineScrollOffset = max;
@@ -384,7 +384,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 }
             }
             if (scrolled && !this.hasDraggedSelecton) {
-                int relativeX = mouseX - this.x;
+                int relativeX = mouseX - this.field_230690_l_;
                 if (this.hasBackground) {
                     relativeX -= 2;
                 }
@@ -395,25 +395,25 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     @Override
-    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
+    public boolean func_231046_a_(final int keyCode, final int scanCode, final int modifiers) {
         if (!this.isFocused) {
             return false;
         }
-        if (Screen.isSelectAll(keyCode)) {
+        if (Screen.func_231170_j_(keyCode)) {
             this.setCaretEnd();
             this.setSelectionPos(0);
-        } else if (Screen.isCopy(keyCode)) {
+        } else if (Screen.func_231169_i_(keyCode)) {
             this.setClipboardString(this.getSelectedText());
-        } else if (Screen.isPaste(keyCode)) {
+        } else if (Screen.func_231168_h_(keyCode)) {
             if (this.isWritable) {
                 final StyledString str = this.getClipboardString();
-                if (Screen.hasShiftDown()) {
+                if (Screen.func_231173_s_()) {
                     this.writeText(str.toUnstyledString());
                 } else {
                     this.writeText(str);
                 }
             }
-        } else if (Screen.isCut(keyCode)) {
+        } else if (Screen.func_231166_g_(keyCode)) {
             this.setClipboardString(this.getSelectedText());
             if (this.isWritable) {
                 this.writeText("");
@@ -427,7 +427,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         } else {
             switch (keyCode) {
                 case GLFW.GLFW_KEY_BACKSPACE:
-                    if (Screen.hasControlDown()) {
+                    if (Screen.func_231172_r_()) {
                         if (this.isWritable) {
                             this.deleteWords(-1);
                         }
@@ -436,20 +436,20 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                     }
                     break;
                 case GLFW.GLFW_KEY_HOME:
-                    if (Screen.hasShiftDown()) {
+                    if (Screen.func_231173_s_()) {
                         this.setSelectionPos(0);
                     } else {
                         this.setCaretStart();
                     }
                     break;
                 case GLFW.GLFW_KEY_LEFT:
-                    if (Screen.hasShiftDown()) {
-                        if (Screen.hasControlDown()) {
+                    if (Screen.func_231173_s_()) {
+                        if (Screen.func_231172_r_()) {
                             this.setSelectionPos(this.skipWords(-1, this.getSelectionEnd()));
                         } else {
                             this.setSelectionPos(this.getSelectionEnd() - 1);
                         }
-                    } else if (Screen.hasControlDown()) {
+                    } else if (Screen.func_231172_r_()) {
                         this.setCaret(this.skipWords(-1));
                     } else {
                         if (this.getSelectedText().isEmpty()) {
@@ -460,13 +460,13 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                     }
                     break;
                 case GLFW.GLFW_KEY_RIGHT:
-                    if (Screen.hasShiftDown()) {
-                        if (Screen.hasControlDown()) {
+                    if (Screen.func_231173_s_()) {
+                        if (Screen.func_231172_r_()) {
                             this.setSelectionPos(this.skipWords(1, this.getSelectionEnd()));
                         } else {
                             this.setSelectionPos(this.getSelectionEnd() + 1);
                         }
-                    } else if (Screen.hasControlDown()) {
+                    } else if (Screen.func_231172_r_()) {
                         this.setCaret(this.skipWords(1));
                     } else {
                         if (this.getSelectedText().isEmpty()) {
@@ -477,14 +477,14 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                     }
                     break;
                 case GLFW.GLFW_KEY_END:
-                    if (Screen.hasShiftDown()) {
+                    if (Screen.func_231173_s_()) {
                         this.setSelectionPos(this.value.length());
                     } else {
                         this.setCaretEnd();
                     }
                     break;
                 case GLFW.GLFW_KEY_DELETE:
-                    if (Screen.hasControlDown()) {
+                    if (Screen.func_231172_r_()) {
                         if (this.isWritable) {
                             this.deleteWords(1);
                         }
@@ -500,11 +500,11 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     @Override
-    public boolean charTyped(final char typedChar, final int keyCode) {
+    public boolean func_231042_a_(final char typedChar, final int keyCode) {
         if (!this.isFocused) {
             return false;
         }
-        if (SharedConstants.isAllowedCharacter(typedChar)) {
+        if (SharedConstants.func_71566_a(typedChar)) {
             final String writeChar = this.charInputTransformer.apply(Character.toString(typedChar));
             if (this.isWritable) {
                 this.writeText(writeChar);
@@ -515,20 +515,20 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     @Override
-    public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
-        final boolean hovered = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+    public boolean func_231044_a_(final double mouseX, final double mouseY, final int button) {
+        final boolean hovered = mouseX >= this.field_230690_l_ && mouseX < this.field_230690_l_ + this.field_230688_j_ && mouseY >= this.field_230691_m_ && mouseY < this.field_230691_m_ + this.field_230689_k_;
         if (this.isBlurable) {
-            this.setFocused(hovered);
+            this.func_230996_d_(hovered);
         } else if (!hovered) {
             this.setCaret(Math.min(this.caret, this.selectionEnd));
         }
         if (this.isFocused && hovered && button == 0) {
-            int relativeX = MathHelper.floor(mouseX - this.x);
+            int relativeX = MathHelper.func_76128_c(mouseX - this.field_230690_l_);
             if (this.hasBackground) {
                 relativeX -= 2;
             }
             final int idx = this.getIndexInTextByX(relativeX);
-            final long now = Util.milliTime();
+            final long now = Util.func_211177_b();
             if (now - this.lastClickTime <= this.multiClickInterval) {
                 this.multiClicks++;
                 if (this.multiClicks > 3) {
@@ -538,7 +538,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 this.multiClicks = 1;
             }
             this.lastClickTime = now;
-            if (Screen.hasShiftDown()) {
+            if (Screen.func_231173_s_()) {
                 final int end = this.selectionEnd;
                 this.setCaret(idx);
                 this.setSelectionPos(end);
@@ -608,13 +608,13 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     @Override
-    public boolean mouseReleased(final double mouseX, final double mouseY, final int button) {
+    public boolean func_231048_c_(final double mouseX, final double mouseY, final int button) {
         if (button == 0) {
             this.isPressed = false;
             if (this.isDraggingSelection) {
-                final boolean hovered = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+                final boolean hovered = mouseX >= this.field_230690_l_ && mouseX < this.field_230690_l_ + this.field_230688_j_ && mouseY >= this.field_230691_m_ && mouseY < this.field_230691_m_ + this.field_230689_k_;
                 if (hovered) {
-                    int relativeX = MathHelper.floor(mouseX - this.x);
+                    int relativeX = MathHelper.func_76128_c(mouseX - this.field_230690_l_);
                     if (this.hasBackground) {
                         relativeX -= 2;
                     }
@@ -645,9 +645,9 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
 
 
     @Override
-    public boolean mouseDragged(final double mouseX, final double mouseY, final int button, final double dx, final double dy) {
+    public boolean func_231045_a_(final double mouseX, final double mouseY, final int button, final double dx, final double dy) {
         if (this.isFocused && this.isPressed && button == 0) {
-            int relativeX = MathHelper.floor(mouseX - this.x);
+            int relativeX = MathHelper.func_76128_c(mouseX - this.field_230690_l_);
             if (this.hasBackground) {
                 relativeX -= 2;
             }
@@ -821,13 +821,13 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     @Override
-    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+    public void func_230431_b_(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
         if (!this.isVisible) {
             return;
         }
         if (this.hasBackground) {
-            fill(stack, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, 0xAAA0A0A0);
-            fill(stack, this.x, this.y, this.x + this.width, this.y + this.height, 0xFF000000);
+            func_238467_a_(stack, this.field_230690_l_ - 1, this.field_230691_m_ - 1, this.field_230690_l_ + this.field_230688_j_ + 1, this.field_230691_m_ + this.field_230689_k_ + 1, 0xAAA0A0A0);
+            func_238467_a_(stack, this.field_230690_l_, this.field_230691_m_, this.field_230690_l_ + this.field_230688_j_, this.field_230691_m_ + this.field_230689_k_, 0xFF000000);
         }
         final int textColor = this.isWritable ? this.writableTextColor : this.readonlyTextColor;
         final int visibleCaret = this.caret - this.lineScrollOffset;
@@ -836,8 +836,8 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         final boolean isCaretVisible = visibleCaret >= 0 && visibleCaret <= visibleText.length();
         final boolean drawSelection = visibleSelectionEnd != visibleCaret;
         final boolean drawCaret = !drawSelection && this.isFocused && this.tick / 6 % 2 == 0 && isCaretVisible;
-        final int offsetX = this.hasBackground ? this.x + 4 : this.x;
-        final int offsetY = this.hasBackground ? this.y + (this.height - 8) / 2 : this.y;
+        final int offsetX = this.hasBackground ? this.field_230690_l_ + 4 : this.field_230690_l_;
+        final int offsetY = this.hasBackground ? this.field_230691_m_ + (this.field_230689_k_ - 8) / 2 : this.field_230691_m_;
         int textX = offsetX;
         if (visibleSelectionEnd > visibleText.length()) {
             visibleSelectionEnd = visibleText.length();
@@ -850,7 +850,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         if (isCaretVisible) {
             caretX = --textX;
         } else {
-            caretX = visibleCaret > 0 ? offsetX + this.width - 6 : offsetX;
+            caretX = visibleCaret > 0 ? offsetX + this.field_230688_j_ - 6 : offsetX;
         }
         if (visibleText.length() > 0 && isCaretVisible && visibleCaret < visibleText.length()) {
             textX = this.font.func_243246_a(stack, visibleText.substring(visibleCaret).toTextComponent(), textX, offsetY, textColor);
@@ -861,18 +861,18 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 final float r = (rgb >> 16 & 0xFF) / 255F;
                 final float g = (rgb >> 8 & 0xFF) / 255F;
                 final float b = (rgb & 0xFF) / 255F;
-                final Tessellator tes = Tessellator.getInstance();
-                final BufferBuilder buf = tes.getBuffer();
-                buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-                buf.pos(caretX + 2, offsetY - 2, 0).color(r, g, b, 1.0F).endVertex();
-                buf.pos(caretX + 1, offsetY - 2, 0).color(r, g, b, 1.0F).endVertex();
-                buf.pos(caretX - 1, offsetY + 1 + this.font.FONT_HEIGHT, 0).color(r, g, b, 1.0F).endVertex();
-                buf.pos(caretX, offsetY + 1 + this.font.FONT_HEIGHT, 0).color(r, g, b, 1.0F).endVertex();
+                final Tessellator tes = Tessellator.func_178181_a();
+                final BufferBuilder buf = tes.func_178180_c();
+                buf.func_181668_a(GL11.GL_QUADS, DefaultVertexFormats.field_181706_f);
+                buf.func_225582_a_(caretX + 2, offsetY - 2, 0).func_227885_a_(r, g, b, 1.0F).func_181675_d();
+                buf.func_225582_a_(caretX + 1, offsetY - 2, 0).func_227885_a_(r, g, b, 1.0F).func_181675_d();
+                buf.func_225582_a_(caretX - 1, offsetY + 1 + this.font.field_78288_b, 0).func_227885_a_(r, g, b, 1.0F).func_181675_d();
+                buf.func_225582_a_(caretX, offsetY + 1 + this.font.field_78288_b, 0).func_227885_a_(r, g, b, 1.0F).func_181675_d();
                 RenderSystem.disableTexture();
-                tes.draw();
+                tes.func_78381_a();
                 RenderSystem.enableTexture();
             } else {
-                fill(stack, caretX, offsetY - 2, caretX + 1, offsetY + 1 + this.font.FONT_HEIGHT, 0xFF000000 | rgb);
+                func_238467_a_(stack, caretX, offsetY - 2, caretX + 1, offsetY + 1 + this.font.field_78288_b, 0xFF000000 | rgb);
             }
         }
         if (drawSelection) {
@@ -883,11 +883,11 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 start = end;
                 end = t;
             }
-            this.drawSelectionHighlight(start - 1, offsetY - 2, end, offsetY + 1 + this.font.FONT_HEIGHT);
+            this.drawSelectionHighlight(start - 1, offsetY - 2, end, offsetY + 1 + this.font.field_78288_b);
         }
         if (this.hasDraggedSelecton) {
-            if (this.isHovered) {
-                int relativeX = mouseX - this.x;
+            if (this.field_230692_n_) {
+                int relativeX = mouseX - this.field_230690_l_;
                 if (this.hasBackground) {
                     relativeX -= 2;
                 }
@@ -895,7 +895,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 if (pos >= 0 && pos <= visibleText.length()) {
                     final int x = getWidth(visibleText.substring(0, pos), this.font);
                     final int rgb = StyledString.getColor(this.currentStyle.getColor());
-                    fill(stack, offsetX + x, offsetY - 2, offsetX + x + 1, offsetY + 1 + this.font.FONT_HEIGHT, 0xFF000000 | rgb);
+                    func_238467_a_(stack, offsetX + x, offsetY - 2, offsetX + x + 1, offsetY + 1 + this.font.field_78288_b, 0xFF000000 | rgb);
                 }
             }
             RenderSystem.enableBlend();
@@ -916,38 +916,38 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             startY = endY;
             endY = j;
         }
-        if (endX > this.x + this.width) {
-            endX = this.x + this.width;
+        if (endX > this.field_230690_l_ + this.field_230688_j_) {
+            endX = this.field_230690_l_ + this.field_230688_j_;
         }
-        if (startX > this.x + this.width) {
-            startX = this.x + this.width;
+        if (startX > this.field_230690_l_ + this.field_230688_j_) {
+            startX = this.field_230690_l_ + this.field_230688_j_;
         }
-        final Tessellator tes = Tessellator.getInstance();
-        final BufferBuilder buf = tes.getBuffer();
+        final Tessellator tes = Tessellator.func_178181_a();
+        final BufferBuilder buf = tes.func_178180_c();
         RenderSystem.disableTexture();
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        buf.pos(startX, endY, 0).endVertex();
-        buf.pos(endX, endY, 0).endVertex();
-        buf.pos(endX, endY + 1, 0).endVertex();
-        buf.pos(startX, endY + 1, 0).endVertex();
-        buf.pos(startX, startY - 1, 0).endVertex();
-        buf.pos(endX, startY - 1, 0).endVertex();
-        buf.pos(endX, startY, 0).endVertex();
-        buf.pos(startX, startY, 0).endVertex();
-        buf.pos(startX, endY, 0).endVertex();
-        buf.pos(startX - 1, endY, 0).endVertex();
-        buf.pos(startX - 1, startY, 0).endVertex();
-        buf.pos(startX, startY, 0).endVertex();
-        buf.pos(endX + 1, endY, 0).endVertex();
-        buf.pos(endX, endY, 0).endVertex();
-        buf.pos(endX, startY, 0).endVertex();
-        buf.pos(endX + 1, startY, 0).endVertex();
-        tes.draw();
+        buf.func_181668_a(GL11.GL_QUADS, DefaultVertexFormats.field_181705_e);
+        buf.func_225582_a_(startX, endY, 0).func_181675_d();
+        buf.func_225582_a_(endX, endY, 0).func_181675_d();
+        buf.func_225582_a_(endX, endY + 1, 0).func_181675_d();
+        buf.func_225582_a_(startX, endY + 1, 0).func_181675_d();
+        buf.func_225582_a_(startX, startY - 1, 0).func_181675_d();
+        buf.func_225582_a_(endX, startY - 1, 0).func_181675_d();
+        buf.func_225582_a_(endX, startY, 0).func_181675_d();
+        buf.func_225582_a_(startX, startY, 0).func_181675_d();
+        buf.func_225582_a_(startX, endY, 0).func_181675_d();
+        buf.func_225582_a_(startX - 1, endY, 0).func_181675_d();
+        buf.func_225582_a_(startX - 1, startY, 0).func_181675_d();
+        buf.func_225582_a_(startX, startY, 0).func_181675_d();
+        buf.func_225582_a_(endX + 1, endY, 0).func_181675_d();
+        buf.func_225582_a_(endX, endY, 0).func_181675_d();
+        buf.func_225582_a_(endX, startY, 0).func_181675_d();
+        buf.func_225582_a_(endX + 1, startY, 0).func_181675_d();
+        tes.func_78381_a();
         RenderSystem.enableTexture();
     }
 
     public StyledString getClipboardString() {
-        final String str = Minecraft.getInstance().keyboardListener.getClipboardString();
+        final String str = Minecraft.func_71410_x().field_195559_v.func_197965_a();
         if (str.indexOf('\u00a7') == -1) {
             return new StyledString(str, this.currentStyle);
         } else {
@@ -956,7 +956,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     private void setClipboardString(final StyledString value) {
-        Minecraft.getInstance().keyboardListener.setClipboardString(value.toString());
+        Minecraft.func_71410_x().field_195559_v.func_197960_a(value.toString());
     }
 
     private static int getMultiClickInterval() {
@@ -973,7 +973,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         final Style[] styling = styledString.getStyling();
         int w = 0;
         for (int i = 0, len = styledString.length(); i < len; i++) {
-            w += font.getStringWidth(Character.toString(chars[i]));
+            w += font.func_78256_a(Character.toString(chars[i]));
             if (styling[i].isBold()) {
                 w++;
             }
@@ -993,7 +993,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         final int start = reverse ? len - 1 : 0;
         final int step = reverse ? -1 : 1;
         for (int i = start, w = 0; i >= 0 && i < len && w < width; i += step) {
-            w += font.getStringWidth(Character.toString(chars[i]));
+            w += font.func_78256_a(Character.toString(chars[i]));
             if (styling[i].isBold()) {
                 w++;
             }

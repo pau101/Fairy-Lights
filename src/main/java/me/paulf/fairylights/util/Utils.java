@@ -18,7 +18,7 @@ public final class Utils {
     }
 
     public static ITextComponent formatRecipeTooltip(final String key) {
-        return formatRecipeTooltipValue(I18n.format(key));
+        return formatRecipeTooltipValue(I18n.func_135052_a(key));
     }
 
     private static ITextComponent formatRecipeTooltipValue(final String value) {
@@ -30,8 +30,8 @@ public final class Utils {
         if ((antecedent == null) != (consequent == null)) return false;
         if (!antecedent.getClass().equals(consequent.getClass())) return false;
         if (antecedent instanceof CompoundNBT) {
-            for (String key : ((CompoundNBT) antecedent).keySet()) {
-                if (!impliesNbt(((CompoundNBT) antecedent).get(key), ((CompoundNBT) consequent).get(key))) {
+            for (String key : ((CompoundNBT) antecedent).func_150296_c()) {
+                if (!impliesNbt(((CompoundNBT) antecedent).func_74781_a(key), ((CompoundNBT) consequent).func_74781_a(key))) {
                     return false;
                 }
             }

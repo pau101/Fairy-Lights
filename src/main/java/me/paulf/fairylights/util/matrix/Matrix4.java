@@ -74,8 +74,8 @@ public final class Matrix4 {
 
     public void asRotation(final float x, final float y, final float z, final float angle) {
         this.asIdentity();
-        final float c = MathHelper.cos(angle);
-        final float s = MathHelper.sin(angle);
+        final float c = MathHelper.func_76134_b(angle);
+        final float s = MathHelper.func_76126_a(angle);
         final float t = 1.0F - c;
         this.m00 = c + x * x * t;
         this.m11 = c + y * y * t;
@@ -149,9 +149,9 @@ public final class Matrix4 {
     public Vector3d transform(final Vector3d point) {
         Objects.requireNonNull(point, "point");
         return new Vector3d(
-            this.m00 * point.x + this.m01 * point.y + this.m02 * point.z + this.m03,
-            this.m10 * point.x + this.m11 * point.y + this.m12 * point.z + this.m13,
-            this.m20 * point.x + this.m21 * point.y + this.m22 * point.z + this.m23
+            this.m00 * point.field_72450_a + this.m01 * point.field_72448_b + this.m02 * point.field_72449_c + this.m03,
+            this.m10 * point.field_72450_a + this.m11 * point.field_72448_b + this.m12 * point.field_72449_c + this.m13,
+            this.m20 * point.field_72450_a + this.m21 * point.field_72448_b + this.m22 * point.field_72449_c + this.m23
         );
     }
 }

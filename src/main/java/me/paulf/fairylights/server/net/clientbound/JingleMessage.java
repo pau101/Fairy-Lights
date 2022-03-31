@@ -28,14 +28,14 @@ public final class JingleMessage extends ConnectionMessage {
     @Override
     public void encode(final PacketBuffer buf) {
         super.encode(buf);
-        buf.writeVarInt(this.lightOffset);
+        buf.func_150787_b(this.lightOffset);
         this.jingle.write(buf);
     }
 
     @Override
     public void decode(final PacketBuffer buf) {
         super.decode(buf);
-        this.lightOffset = buf.readVarInt();
+        this.lightOffset = buf.func_150792_a();
         this.jingle = Jingle.read(buf);
     }
 
@@ -44,7 +44,7 @@ public final class JingleMessage extends ConnectionMessage {
         public void accept(final JingleMessage message, final ClientMessageContext context) {
             final Jingle jingle = message.jingle;
             if (jingle != null) {
-                ConnectionMessage.<HangingLightsConnection>getConnection(message, c -> c instanceof HangingLightsConnection, Minecraft.getInstance().world).ifPresent(connection ->
+                ConnectionMessage.<HangingLightsConnection>getConnection(message, c -> c instanceof HangingLightsConnection, Minecraft.func_71410_x().field_71441_e).ifPresent(connection ->
                     connection.play(jingle, message.lightOffset));
             }
         }

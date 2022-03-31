@@ -76,11 +76,11 @@ public final class FLItems {
     public static final RegistryObject<Item> SQUARE_PENNANT = REG.register("square_pennant", () -> new PennantItem(defaultProperties()));
 
     private static Item.Properties defaultProperties() {
-        return new Item.Properties().group(FairyLights.ITEM_GROUP);
+        return new Item.Properties().func_200916_a(FairyLights.ITEM_GROUP);
     }
 
     private static Supplier<LightItem> createLight(final RegistryObject<LightBlock> block, final BiFunction<LightBlock, Item.Properties, LightItem> factory) {
-        return () -> factory.apply(block.get(), defaultProperties().maxStackSize(16));
+        return () -> factory.apply(block.get(), defaultProperties().func_200917_a(16));
     }
 
     private static Supplier<LightItem> createColorLight(final RegistryObject<LightBlock> block) {

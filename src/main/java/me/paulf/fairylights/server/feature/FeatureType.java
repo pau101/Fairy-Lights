@@ -10,7 +10,7 @@ import net.minecraft.util.registry.Registry;
 public final class FeatureType {
     private static final DefaultedRegistry<FeatureType> REGISTRY = new DefaultedRegistry<>(
         "default",
-        RegistryKey.getOrCreateRootKey(new ResourceLocation(FairyLights.ID, "feature")),
+        RegistryKey.func_240904_a_(new ResourceLocation(FairyLights.ID, "feature")),
         Lifecycle.experimental()
     );
 
@@ -19,14 +19,14 @@ public final class FeatureType {
     private FeatureType() {}
 
     public int getId() {
-        return REGISTRY.getId(this);
+        return REGISTRY.func_148757_b(this);
     }
 
     public static FeatureType register(final String name) {
-        return Registry.register(REGISTRY, new ResourceLocation(name), new FeatureType());
+        return Registry.func_218322_a(REGISTRY, new ResourceLocation(name), new FeatureType());
     }
 
     public static FeatureType fromId(final int id) {
-        return REGISTRY.getByValue(id);
+        return REGISTRY.func_148745_a(id);
     }
 }

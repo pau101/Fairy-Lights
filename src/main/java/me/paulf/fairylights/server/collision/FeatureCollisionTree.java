@@ -34,10 +34,10 @@ public final class FeatureCollisionTree implements Collidable {
     @Nullable
     private Intersection intersect(final Vector3d origin, final Vector3d end, final int node) {
         final Vector3d result;
-        if (this.tree[node].contains(origin)) {
+        if (this.tree[node].func_72318_a(origin)) {
             result = origin;
         } else {
-            result = this.tree[node].rayTrace(origin, end).orElse(null);
+            result = this.tree[node].func_216365_b(origin, end).orElse(null);
         }
         // If there is no intersection then there is no child intersection
         if (result == null) {
@@ -84,6 +84,6 @@ public final class FeatureCollisionTree implements Collidable {
         final int mid = min + (max - min) / 2;
         final int nL = node * 2 + 1;
         final int nR = node * 2 + 2;
-        return (tree[nL] = build(features, mapper, tree, treeFeatures, min, mid, nL)).union(tree[nR] = build(features, mapper, tree, treeFeatures, mid + 1, max, nR));
+        return (tree[nL] = build(features, mapper, tree, treeFeatures, min, mid, nL)).func_111270_a(tree[nR] = build(features, mapper, tree, treeFeatures, mid + 1, max, nR));
     }
 }

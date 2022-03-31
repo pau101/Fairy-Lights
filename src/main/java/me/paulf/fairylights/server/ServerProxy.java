@@ -60,7 +60,7 @@ public class ServerProxy {
     }
 
     public static void sendToPlayersWatchingChunk(final Object message, final World world, final BlockPos pos) {
-        FairyLights.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
+        FairyLights.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.func_175726_f(pos)), message);
     }
 
     public static void sendToPlayersWatchingEntity(final Object message, final Entity entity) {

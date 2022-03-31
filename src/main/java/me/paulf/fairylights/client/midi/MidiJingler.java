@@ -39,7 +39,7 @@ public final class MidiJingler implements Receiver {
         final int offset = lights.length / 2 - 12;
         final int idx = note + offset;
         if (idx >= 0 && idx < lights.length) {
-            Minecraft.getInstance().execute(() -> lights[idx].jingle(this.connection.getWorld(), this.connection.getFastener().getConnectionPoint(), note));
+            Minecraft.func_71410_x().execute(() -> lights[idx].jingle(this.connection.getWorld(), this.connection.getFastener().getConnectionPoint(), note));
         }
     }
 

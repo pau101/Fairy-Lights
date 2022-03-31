@@ -19,11 +19,11 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
 
     public MeteorLightModel() {
         this.connector = new ModelRenderer(this, 77, 0);
-        this.connector.addBox(-1, -0.5F, -1, 2, 2, 2, -0.05F);
-        this.unlit.addChild(this.connector);
+        this.connector.func_228301_a_(-1, -0.5F, -1, 2, 2, 2, -0.05F);
+        this.unlit.func_78792_a(this.connector);
         this.cap = new ModelRenderer(this, 77, 0);
-        this.cap.addBox(-1, -25.45F + 0.05F, -1, 2, 1, 2, 0);
-        this.unlit.addChild(this.cap);
+        this.cap.func_228301_a_(-1, -25.45F + 0.05F, -1, 2, 1, 2, 0);
+        this.unlit.func_78792_a(this.cap);
         final int lightCount = 12;
         this.lights = new BulbBuilder[lightCount];
         final float rodScale = 0.8F;
@@ -31,12 +31,12 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
         for (int i = 0; i < lightCount; i++) {
             final BulbBuilder light = bulb.createChild(37, 72, (m, u, v) -> new ModelRenderer(m, u, v) {
                 @Override
-                public void translateRotate(final MatrixStack stack) {
-                    super.translateRotate(stack);
-                    stack.scale(rodScale, 1.0F, rodScale);
+                public void func_228307_a_(final MatrixStack stack) {
+                    super.func_228307_a_(stack);
+                    stack.func_227862_a_(rodScale, 1.0F, rodScale);
                 }
             });
-            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, MathHelper.sin(i * Mth.PI / lightCount) * 0.1F);
+            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, MathHelper.func_76126_a(i * Mth.PI / lightCount) * 0.1F);
             this.lights[i] = light;
         }
     }
@@ -51,19 +51,19 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
     }
 
     private float computeBrightness(final float t) {
-        return MathHelper.clamp(t - this.stage > 0.0F ? 1.0F - Math.abs(t - this.stage) * 4.0F : 1.0F - Math.abs(t - this.stage), 0.0F, 1.0F);
+        return MathHelper.func_76131_a(t - this.stage > 0.0F ? 1.0F - Math.abs(t - this.stage) * 4.0F : 1.0F - Math.abs(t - this.stage), 0.0F, 1.0F);
     }
 
     @Override
-    public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+    public void func_225598_a_(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         for (int i = 0; i < this.lights.length; i++) {
             this.brightness = this.computeBrightness((float) i / this.lights.length);
             for (int n = 0; n < this.lights.length; n++) {
                 this.lights[n].setVisible(i == n);
             }
-            this.connector.showModel = i == 0;
-            this.cap.showModel = i == this.lights.length - 1;
-            super.render(matrix, builder, light, overlay, r, g, b, a);
+            this.connector.field_78806_j = i == 0;
+            this.cap.field_78806_j = i == this.lights.length - 1;
+            super.func_225598_a_(matrix, builder, light, overlay, r, g, b, a);
         }
     }
 

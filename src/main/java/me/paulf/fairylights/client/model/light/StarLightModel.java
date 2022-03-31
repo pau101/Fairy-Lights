@@ -3,7 +3,7 @@ package me.paulf.fairylights.client.model.light;
 public class StarLightModel extends ColorLightModel {
     public StarLightModel() {
         final int u = 101, v = 73;
-        this.unlit.setTextureOffset(u + 12, v + 0).addBox(-0.5F, 5.0F-7.0f, -0.5F, 1.0F, 3.0F, 1.0F);
+        this.unlit.func_78784_a(u + 12, v + 0).func_228300_a_(-0.5F, 5.0F-7.0f, -0.5F, 1.0F, 3.0F, 1.0F);
         final BulbBuilder bulb = this.createBulb();
         bulb.setPosition(0.0F, 1.0F-7.0f, 0.0F);
         final BulbBuilder center = bulb.createChild(u, v);

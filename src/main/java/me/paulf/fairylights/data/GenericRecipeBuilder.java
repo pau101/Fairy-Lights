@@ -19,30 +19,30 @@ import java.util.function.Supplier;
 public class GenericRecipeBuilder {
     private final IRecipeSerializer<?> serializer;
 
-    private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+    private final Advancement.Builder advancementBuilder = Advancement.Builder.func_200278_a();
 
     public GenericRecipeBuilder(final IRecipeSerializer<?> serializer) {
         this.serializer = Objects.requireNonNull(serializer, "serializer");
     }
 
     public GenericRecipeBuilder addCriterion(final String name, final ICriterionInstance criterion) {
-        this.advancementBuilder.withCriterion(name, criterion);
+        this.advancementBuilder.func_200275_a(name, criterion);
         return this;
     }
 
     public void build(final Consumer<IFinishedRecipe> consumer, final ResourceLocation id) {
         final Supplier<JsonObject> advancementBuilder;
         final ResourceLocation advancementId;
-        if (this.advancementBuilder.getCriteria().isEmpty()) {
+        if (this.advancementBuilder.func_200277_c().isEmpty()) {
             advancementBuilder = () -> null;
             advancementId = new ResourceLocation("");
         } else {
-            advancementBuilder = this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-                .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, id))
-                .withRewards(AdvancementRewards.Builder.recipe(id))
-                .withRequirementsStrategy(IRequirementsStrategy.OR)
-                ::serialize;
-            advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + FairyLights.ID + "/" + id.getPath());
+            advancementBuilder = this.advancementBuilder.func_200272_a(new ResourceLocation("recipes/root"))
+                .func_200275_a("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.field_234582_a_, id))
+                .func_200271_a(AdvancementRewards.Builder.func_200280_c(id))
+                .func_200270_a(IRequirementsStrategy.field_223215_b_)
+                ::func_200273_b;
+            advancementId = new ResourceLocation(id.func_110624_b(), "recipes/" + FairyLights.ID + "/" + id.func_110623_a());
         }
         consumer.accept(new Result(this.serializer, id, advancementBuilder, advancementId));
     }
@@ -68,26 +68,26 @@ public class GenericRecipeBuilder {
         }
 
         @Override
-        public void serialize(final JsonObject json) {
+        public void func_218610_a(final JsonObject json) {
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer() {
+        public IRecipeSerializer<?> func_218609_c() {
             return this.serializer;
         }
 
         @Override
-        public ResourceLocation getID() {
+        public ResourceLocation func_200442_b() {
             return this.id;
         }
 
         @Override
-        public JsonObject getAdvancementJson() {
+        public JsonObject func_200440_c() {
             return this.advancementJson.get();
         }
 
         @Override
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation func_200443_d() {
             return this.advancementId;
         }
     }

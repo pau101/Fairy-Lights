@@ -61,9 +61,9 @@ public final class ClientEventHandler {
 
     @Nullable
     public static Connection getHitConnection() {
-        final RayTraceResult result = Minecraft.getInstance().objectMouseOver;
+        final RayTraceResult result = Minecraft.func_71410_x().field_71476_x;
         if (result instanceof EntityRayTraceResult) {
-            final Entity entity = ((EntityRayTraceResult) result).getEntity();
+            final Entity entity = ((EntityRayTraceResult) result).func_216348_a();
             if (entity instanceof HitConnection) {
                 return ((HitConnection) entity).result.connection;
             }
@@ -73,9 +73,9 @@ public final class ClientEventHandler {
 
     @SubscribeEvent
     public void onClientTick(final TickEvent.ClientTickEvent event) {
-        final Minecraft mc = Minecraft.getInstance();
-        if (event.phase == TickEvent.Phase.END && mc.world != null && !mc.isGamePaused()) {
-            this.getBlockEntities(mc.world).stream()
+        final Minecraft mc = Minecraft.func_71410_x();
+        if (event.phase == TickEvent.Phase.END && mc.field_71441_e != null && !mc.func_147113_T()) {
+            this.getBlockEntities(mc.field_71441_e).stream()
                 .filter(FastenerBlockEntity.class::isInstance)
                 .map(FastenerBlockEntity.class::cast)
                 .flatMap(f -> f.getCapability(CapabilityHandler.FASTENER_CAP).map(Stream::of).orElse(Stream.empty()))
@@ -85,7 +85,7 @@ public final class ClientEventHandler {
 
     private Collection<TileEntity> getBlockEntities(final World world) {
         try {
-            return new ArrayList<>(world.loadedTileEntityList);
+            return new ArrayList<>(world.field_147482_g);
         } catch (final ConcurrentModificationException e) {
             // RenderChunk's may find an invalid block entity while building and trigger a remove not on main thread
             return Collections.emptyList();
@@ -110,15 +110,15 @@ public final class ClientEventHandler {
     }
 
     public static void updateHitConnection() {
-        final Minecraft mc = Minecraft.getInstance();
-        final Entity viewer = mc.getRenderViewEntity();
-        if (mc.objectMouseOver != null && mc.world != null && viewer != null) {
-            final HitResult result = getHitConnection(mc.world, viewer);
+        final Minecraft mc = Minecraft.func_71410_x();
+        final Entity viewer = mc.func_175606_aa();
+        if (mc.field_71476_x != null && mc.field_71441_e != null && viewer != null) {
+            final HitResult result = getHitConnection(mc.field_71441_e, viewer);
             if (result != null) {
-                final Vector3d eyes = viewer.getEyePosition(1.0F);
-                if (result.intersection.getResult().distanceTo(eyes) < mc.objectMouseOver.getHitVec().distanceTo(eyes)) {
-                    mc.objectMouseOver = new EntityRayTraceResult(new HitConnection(mc.world, result));
-                    mc.pointedEntity = null;
+                final Vector3d eyes = viewer.func_174824_e(1.0F);
+                if (result.intersection.getResult().func_72438_d(eyes) < mc.field_71476_x.func_216347_e().func_72438_d(eyes)) {
+                    mc.field_71476_x = new EntityRayTraceResult(new HitConnection(mc.field_71441_e, result));
+                    mc.field_147125_j = null;
                 }
             }
         }
@@ -126,7 +126,7 @@ public final class ClientEventHandler {
 
     @Nullable
     private static HitResult getHitConnection(final World world, final Entity viewer) {
-        final AxisAlignedBB bounds = new AxisAlignedBB(viewer.getPosition()).grow(Connection.MAX_LENGTH + 1.0D);
+        final AxisAlignedBB bounds = new AxisAlignedBB(viewer.func_233580_cy_()).func_186662_g(Connection.MAX_LENGTH + 1.0D);
         final Set<Fastener<?>> fasteners = collectFasteners(world, bounds);
         return getHitConnection(viewer, bounds, fasteners);
     }
@@ -134,16 +134,16 @@ public final class ClientEventHandler {
     private static Set<Fastener<?>> collectFasteners(final World world, final AxisAlignedBB bounds) {
         final Set<Fastener<?>> fasteners = Sets.newLinkedHashSet();
         final CollectFastenersEvent event = new CollectFastenersEvent(world, bounds, fasteners);
-        world.getEntitiesWithinAABB(FenceFastenerEntity.class, bounds)
+        world.func_217357_a(FenceFastenerEntity.class, bounds)
             .forEach(event::accept);
-        final int minX = MathHelper.floor(bounds.minX / 16.0D);
-        final int maxX = MathHelper.ceil(bounds.maxX / 16.0D);
-        final int minZ = MathHelper.floor(bounds.minZ / 16.0D);
-        final int maxZ = MathHelper.ceil(bounds.maxZ / 16.0D);
-        final AbstractChunkProvider provider = world.getChunkProvider();
+        final int minX = MathHelper.func_76128_c(bounds.field_72340_a / 16.0D);
+        final int maxX = MathHelper.func_76143_f(bounds.field_72336_d / 16.0D);
+        final int minZ = MathHelper.func_76128_c(bounds.field_72339_c / 16.0D);
+        final int maxZ = MathHelper.func_76143_f(bounds.field_72334_f / 16.0D);
+        final AbstractChunkProvider provider = world.func_72863_F();
         for (int x = minX; x < maxX; x++) {
             for (int z = minZ; z < maxZ; z++) {
-                final Chunk chunk = provider.getChunk(x, z, false);
+                final Chunk chunk = provider.func_217205_a(x, z, false);
                 if (chunk != null) {
                     event.accept(chunk);
                 }
@@ -158,10 +158,10 @@ public final class ClientEventHandler {
         if (fasteners.isEmpty()) {
             return null;
         }
-        final Vector3d origin = viewer.getEyePosition(1);
-        final Vector3d look = viewer.getLook(1);
-        final double reach = Minecraft.getInstance().playerController.getBlockReachDistance();
-        final Vector3d end = origin.add(look.x * reach, look.y * reach, look.z * reach);
+        final Vector3d origin = viewer.func_174824_e(1);
+        final Vector3d look = viewer.func_70676_i(1);
+        final double reach = Minecraft.func_71410_x().field_71442_b.func_78757_d();
+        final Vector3d end = origin.func_72441_c(look.field_72450_a * reach, look.field_72448_b * reach, look.field_72449_c * reach);
         Connection found = null;
         Intersection rayTrace = null;
         double distance = Double.MAX_VALUE;
@@ -173,7 +173,7 @@ public final class ClientEventHandler {
                 final Collidable collision = connection.getCollision();
                 final Intersection result = collision.intersect(origin, end);
                 if (result != null) {
-                    final double dist = result.getResult().distanceTo(origin);
+                    final double dist = result.getResult().func_72438_d(origin);
                     if (dist < distance) {
                         distance = dist;
                         found = connection;
@@ -190,33 +190,33 @@ public final class ClientEventHandler {
 
     @SubscribeEvent
     public void drawBlockHighlight(final DrawHighlightEvent.HighlightEntity event) {
-        final Entity entity = event.getTarget().getEntity();
-        final Vector3d pos = event.getInfo().getProjectedView();
+        final Entity entity = event.getTarget().func_216348_a();
+        final Vector3d pos = event.getInfo().func_216785_c();
         final IRenderTypeBuffer buf = event.getBuffers();
         if (entity instanceof FenceFastenerEntity) {
-            this.drawFenceFastenerHighlight((FenceFastenerEntity) entity, event.getMatrix(), buf.getBuffer(RenderType.getLines()), event.getPartialTicks(), pos.x, pos.y, pos.z);
+            this.drawFenceFastenerHighlight((FenceFastenerEntity) entity, event.getMatrix(), buf.getBuffer(RenderType.func_228659_m_()), event.getPartialTicks(), pos.field_72450_a, pos.field_72448_b, pos.field_72449_c);
         } else if (entity instanceof HitConnection) {
             final HitConnection hit = (HitConnection) entity;
             if (hit.result.intersection.getFeatureType() == Connection.CORD_FEATURE) {
                 final MatrixStack matrix = event.getMatrix();
-                matrix.push();
+                matrix.func_227860_a_();
                 final Vector3d p = hit.result.connection.getFastener().getConnectionPoint();
-                matrix.translate(p.x - pos.x, p.y - pos.y, p.z - pos.z);
-                this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.getLines()));
-                matrix.pop();
+                matrix.func_227861_a_(p.field_72450_a - pos.field_72450_a, p.field_72448_b - pos.field_72448_b, p.field_72449_c - pos.field_72449_c);
+                this.renderHighlight(hit.result.connection, matrix, buf.getBuffer(RenderType.func_228659_m_()));
+                matrix.func_227865_b_();
             } else {
-                final AxisAlignedBB bb = hit.result.intersection.getHitBox().offset(-pos.x, -pos.y, -pos.z).grow(0.002D);
-                WorldRenderer.drawBoundingBox(event.getMatrix(), buf.getBuffer(RenderType.getLines()), bb, 0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA);
+                final AxisAlignedBB bb = hit.result.intersection.getHitBox().func_72317_d(-pos.field_72450_a, -pos.field_72448_b, -pos.field_72449_c).func_186662_g(0.002D);
+                WorldRenderer.func_228430_a_(event.getMatrix(), buf.getBuffer(RenderType.func_228659_m_()), bb, 0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA);
             }
         }
     }
 
     private void drawFenceFastenerHighlight(final FenceFastenerEntity fence, final MatrixStack matrix, final IVertexBuilder buf, final float delta, final double dx, final double dy, final double dz) {
-        final PlayerEntity player = Minecraft.getInstance().player;
+        final PlayerEntity player = Minecraft.func_71410_x().field_71439_g;
         // Check if the server will allow interaction
-        if (player != null && (player.canEntityBeSeen(fence) || player.getDistanceSq(fence) <= 9.0D)) {
-            final AxisAlignedBB selection = fence.getBoundingBox().offset(-dx, -dy, -dz).grow(0.002D);
-            WorldRenderer.drawBoundingBox(matrix, buf, selection, 0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA);
+        if (player != null && (player.func_70685_l(fence) || player.func_70068_e(fence) <= 9.0D)) {
+            final AxisAlignedBB selection = fence.func_174813_aQ().func_72317_d(-dx, -dy, -dz).func_186662_g(0.002D);
+            WorldRenderer.func_228430_a_(matrix, buf, selection, 0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA);
         }
     }
 
@@ -230,24 +230,24 @@ public final class ClientEventHandler {
         final Vector3f v2 = new Vector3f();
         final float r = connection.getRadius() + 0.01F;
         for (int edge = 0; edge < 4; edge++) {
-            p.set(cat.getX(0), cat.getY(0), cat.getZ(0));
-            v1.set(cat.getDx(0), cat.getDy(0), cat.getDz(0));
-            v1.normalize();
-            v2.set(-v1.getX(), -v1.getY(), -v1.getZ());
+            p.func_195905_a(cat.getX(0), cat.getY(0), cat.getZ(0));
+            v1.func_195905_a(cat.getDx(0), cat.getDy(0), cat.getDz(0));
+            v1.func_229194_d_();
+            v2.func_195905_a(-v1.func_195899_a(), -v1.func_195900_b(), -v1.func_195902_c());
             for (int n = 0; edge == 0 && n < 8; n++) {
                 this.addVertex(matrix, buf, (n + 1) / 2 % 4, p, v1, v2, r);
             }
             this.addVertex(matrix, buf, edge, p, v1, v2, r);
             for (int i = 1; i < cat.getCount() - 1; i++) {
-                p.set(cat.getX(i), cat.getY(i), cat.getZ(i));
-                v2.set(-cat.getDx(i), -cat.getDy(i), -cat.getDz(i));
-                v2.normalize();
+                p.func_195905_a(cat.getX(i), cat.getY(i), cat.getZ(i));
+                v2.func_195905_a(-cat.getDx(i), -cat.getDy(i), -cat.getDz(i));
+                v2.func_229194_d_();
                 this.addVertex(matrix, buf, edge, p, v1, v2, r);
                 this.addVertex(matrix, buf, edge, p, v1, v2, r);
-                v1.set(-v2.getX(), -v2.getY(), -v2.getZ());
+                v1.func_195905_a(-v2.func_195899_a(), -v2.func_195900_b(), -v2.func_195902_c());
             }
-            p.set(cat.getX(), cat.getY(), cat.getZ());
-            v2.set(-v1.getX(), -v1.getY(), -v1.getZ());
+            p.func_195905_a(cat.getX(), cat.getY(), cat.getZ());
+            v2.func_195905_a(-v1.func_195899_a(), -v1.func_195900_b(), -v1.func_195902_c());
             this.addVertex(matrix, buf, edge, p, v1, v2, r);
             for (int n = 0; edge == 0 && n < 8; n++) {
                 this.addVertex(matrix, buf, (n + 1) / 2 % 4, p, v1, v2, r);
@@ -259,41 +259,41 @@ public final class ClientEventHandler {
         final Vector3f up = new Vector3f();
         final Vector3f side = new Vector3f();
         // if collinear
-        if (v1.dot(v2) < -(1.0F - 1.0e-2F)) {
-            final float h = MathHelper.sqrt(v1.getX() * v1.getX() + v1.getZ() * v1.getZ());
+        if (v1.func_195903_b(v2) < -(1.0F - 1.0e-2F)) {
+            final float h = MathHelper.func_76129_c(v1.func_195899_a() * v1.func_195899_a() + v1.func_195902_c() * v1.func_195902_c());
             // if vertical
             if (h < 1.0e-2F) {
-                up.set(-1.0F, 0.0F, 0.0F);
+                up.func_195905_a(-1.0F, 0.0F, 0.0F);
             } else {
-                up.set(-v1.getX() / h * -v1.getY(), -h, -v1.getZ() / h * -v1.getY());
+                up.func_195905_a(-v1.func_195899_a() / h * -v1.func_195900_b(), -h, -v1.func_195902_c() / h * -v1.func_195900_b());
             }
         } else {
-            up.set(v2.getX(), v2.getY(), v2.getZ());
-            up.lerp(v1, 0.5F);
+            up.func_195905_a(v2.func_195899_a(), v2.func_195900_b(), v2.func_195902_c());
+            up.func_229190_a_(v1, 0.5F);
         }
-        up.normalize();
-        side.set(v1.getX(), v1.getY(), v1.getZ());
-        side.cross(up);
-        side.normalize();
-        side.mul(edge == 0 || edge == 3 ? -r : r);
-        up.mul(edge < 2 ? -r : r);
-        up.add(side);
-        up.add(p);
-        buf.pos(matrix.getLast().getMatrix(), up.getX(), up.getY(), up.getZ()).color(0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA).endVertex();
+        up.func_229194_d_();
+        side.func_195905_a(v1.func_195899_a(), v1.func_195900_b(), v1.func_195902_c());
+        side.func_195896_c(up);
+        side.func_229194_d_();
+        side.func_195898_a(edge == 0 || edge == 3 ? -r : r);
+        up.func_195898_a(edge < 2 ? -r : r);
+        up.func_229189_a_(side);
+        up.func_229189_a_(p);
+        buf.func_227888_a_(matrix.func_227866_c_().func_227870_a_(), up.func_195899_a(), up.func_195900_b(), up.func_195902_c()).func_227885_a_(0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA).func_181675_d();
     }
 
     static class HitConnection extends Entity {
         final HitResult result;
 
         HitConnection(final World world, final HitResult result) {
-            super(EntityType.ITEM, world);
-            this.setEntityId(-1);
+            super(EntityType.field_200765_E, world);
+            this.func_145769_d(-1);
             this.result = result;
         }
 
         @Override
-        public boolean attackEntityFrom(final DamageSource source, final float amount) {
-            if (source.getTrueSource() == Minecraft.getInstance().player) {
+        public boolean func_70097_a(final DamageSource source, final float amount) {
+            if (source.func_76346_g() == Minecraft.func_71410_x().field_71439_g) {
                 this.processAction(PlayerAction.ATTACK);
                 return true;
             }
@@ -301,16 +301,16 @@ public final class ClientEventHandler {
         }
 
         @Override
-        public ActionResultType processInitialInteract(final PlayerEntity player, final Hand hand) {
-            if (player == Minecraft.getInstance().player) {
+        public ActionResultType func_184230_a(final PlayerEntity player, final Hand hand) {
+            if (player == Minecraft.func_71410_x().field_71439_g) {
                 this.processAction(PlayerAction.INTERACT);
                 return ActionResultType.SUCCESS;
             }
-            return super.processInitialInteract(player, hand);
+            return super.func_184230_a(player, hand);
         }
 
         private void processAction(final PlayerAction action) {
-            this.result.connection.processClientAction(Minecraft.getInstance().player, action, this.result.intersection);
+            this.result.connection.processClientAction(Minecraft.func_71410_x().field_71439_g, action, this.result.intersection);
         }
 
         @Override
@@ -319,27 +319,27 @@ public final class ClientEventHandler {
         }
 
         @Override
-        protected void registerData() {}
+        protected void func_70088_a() {}
 
         @Override
-        protected void writeAdditional(final CompoundNBT compound) {}
+        protected void func_213281_b(final CompoundNBT compound) {}
 
         @Override
-        protected void readAdditional(final CompoundNBT compound) {}
+        protected void func_70037_a(final CompoundNBT compound) {}
 
         @Override
-        public IPacket<?> createSpawnPacket() {
+        public IPacket<?> func_213297_N() {
             return new IPacket<INetHandler>() {
                 @Override
-                public void readPacketData(final PacketBuffer buf) {
+                public void func_148837_a(final PacketBuffer buf) {
                 }
 
                 @Override
-                public void writePacketData(final PacketBuffer buf) {
+                public void func_148840_b(final PacketBuffer buf) {
                 }
 
                 @Override
-                public void processPacket(final INetHandler handler) {
+                public void func_148833_a(final INetHandler handler) {
                 }
             };
         }

@@ -54,10 +54,10 @@ import java.util.Random;
 
 public final class ClientProxy extends ServerProxy {
     @SuppressWarnings("deprecation")
-    public static final RenderMaterial SOLID_TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(FairyLights.ID, "entity/connections"));
+    public static final RenderMaterial SOLID_TEXTURE = new RenderMaterial(AtlasTexture.field_110575_b, new ResourceLocation(FairyLights.ID, "entity/connections"));
 
     @SuppressWarnings("deprecation")
-    public static final RenderMaterial TRANSLUCENT_TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(FairyLights.ID, "entity/connections"));
+    public static final RenderMaterial TRANSLUCENT_TEXTURE = new RenderMaterial(AtlasTexture.field_110575_b, new ResourceLocation(FairyLights.ID, "entity/connections"));
 
     private final ImmutableList<ResourceLocation> entityModels = new ImmutableList.Builder<ResourceLocation>()
         .addAll(PennantBuntingRenderer.MODELS)
@@ -76,22 +76,22 @@ public final class ClientProxy extends ServerProxy {
             .register(MinecraftForge.EVENT_BUS);
         JinglerCommand.register(MinecraftForge.EVENT_BUS);
         modBus.<TextureStitchEvent.Pre>addListener(e -> {
-            if (SOLID_TEXTURE.getAtlasLocation().equals(e.getMap().getTextureLocation())) {
-                e.addSprite(SOLID_TEXTURE.getTextureLocation());
+            if (SOLID_TEXTURE.func_229310_a_().equals(e.getMap().func_229223_g_())) {
+                e.addSprite(SOLID_TEXTURE.func_229313_b_());
             }
         });
         // Undo sprite uv contraction
         modBus.<ModelBakeEvent>addListener(e -> {
             this.entityModels.forEach(path -> {
-                final IBakedModel model = Minecraft.getInstance().getModelManager().getModel(path);
-                if (model == Minecraft.getInstance().getModelManager().getMissingModel()) {
+                final IBakedModel model = Minecraft.func_71410_x().func_209506_al().getModel(path);
+                if (model == Minecraft.func_71410_x().func_209506_al().func_174951_a()) {
                     return;
                 }
                 final TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
-                final int w = (int) (sprite.getWidth() / (sprite.getMaxU() - sprite.getMinU()));
-                final int h = (int) (sprite.getHeight() / (sprite.getMaxV() - sprite.getMinV()));
+                final int w = (int) (sprite.func_94211_a() / (sprite.func_94212_f() - sprite.func_94209_e()));
+                final int h = (int) (sprite.func_94216_b() / (sprite.func_94210_h() - sprite.func_94206_g()));
                 for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
-                    final int[] data = quad.getVertexData();
+                    final int[] data = quad.func_178209_a();
                     for (int n = 0; n < 4; n++) {
                         data[n * 8 + 4] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 4]) * w) / w);
                         data[n * 8 + 5] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[n * 8 + 5]) * h) / h);
@@ -108,7 +108,7 @@ public final class ClientProxy extends ServerProxy {
         ClientRegistry.bindTileEntityRenderer(FLBlockEntities.FASTENER.get(), dispatcher -> new FastenerBlockEntityRenderer(dispatcher, ServerProxy.buildBlockView()));
         ClientRegistry.bindTileEntityRenderer(FLBlockEntities.LIGHT.get(), LightBlockEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FLEntities.FASTENER.get(), FenceFastenerRenderer::new);
-        RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.func_228641_d_());
         /*final LightRenderer r = new LightRenderer();
         final StringBuilder bob = new StringBuilder();
         FLItems.lights().forEach(l -> {
@@ -126,7 +126,7 @@ public final class ClientProxy extends ServerProxy {
 
     private void setupColors(final ColorHandlerEvent.Item event) {
         final ItemColors colors = event.getItemColors();
-        colors.register((stack, index) -> {
+        colors.func_199877_a((stack, index) -> {
             if (index == 1) {
                 if (ColorChangingBehavior.exists(stack)) {
                     return ColorChangingBehavior.animate(stack);
@@ -153,8 +153,8 @@ public final class ClientProxy extends ServerProxy {
             FLItems.ICICLE_LIGHTS.get(),
             FLItems.METEOR_LIGHT.get()
         );
-        colors.register((stack, index) -> {
-            final CompoundNBT tag = stack.getTag();
+        colors.func_199877_a((stack, index) -> {
+            final CompoundNBT tag = stack.func_77978_p();
             if (index == 0) {
                 if (tag != null) {
                     return HangingLightsConnectionItem.getString(tag).getColor();
@@ -162,9 +162,9 @@ public final class ClientProxy extends ServerProxy {
                 return StringTypes.BLACK_STRING.get().getColor();
             }
             if (tag != null) {
-                final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
+                final ListNBT tagList = tag.func_150295_c("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    final ItemStack item = ItemStack.read(tagList.getCompound((index - 1) % tagList.size()));
+                    final ItemStack item = ItemStack.func_199557_a(tagList.func_150305_b((index - 1) % tagList.size()));
                     if (ColorChangingBehavior.exists(item)) {
                         return ColorChangingBehavior.animate(item);
                     }
@@ -172,36 +172,36 @@ public final class ClientProxy extends ServerProxy {
                 }
             }
             if (FairyLights.CHRISTMAS.isOccurringNow()) {
-                return (index + Util.milliTime() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
+                return (index + Util.func_211177_b() / 2000) % 2 == 0 ? 0x993333 : 0x7FCC19;
             }
             if (FairyLights.HALLOWEEN.isOccurringNow()) {
                 return index % 2 == 0 ? 0xf9801d : 0x8932b8;
             }
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());
-        colors.register((stack, index) -> index == 0 ? DyeableItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());
-        colors.register((stack, index) -> {
+        colors.func_199877_a((stack, index) -> index == 0 ? DyeableItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());
+        colors.func_199877_a((stack, index) -> {
             if (index == 0) {
                 return 0xFFFFFFFF;
             }
-            final CompoundNBT tag = stack.getTag();
+            final CompoundNBT tag = stack.func_77978_p();
             if (tag != null) {
-                final ListNBT tagList = tag.getList("pattern", NBT.TAG_COMPOUND);
+                final ListNBT tagList = tag.func_150295_c("pattern", NBT.TAG_COMPOUND);
                 if (tagList.size() > 0) {
-                    final ItemStack light = ItemStack.read(tagList.getCompound((index - 1) % tagList.size()));
+                    final ItemStack light = ItemStack.func_199557_a(tagList.func_150305_b((index - 1) % tagList.size()));
                     return DyeableItem.getColor(light);
                 }
             }
             return 0xFFFFFFFF;
         }, FLItems.PENNANT_BUNTING.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.TRIANGLE_PENNANT.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.SPEARHEAD_PENNANT.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.get());
-        colors.register((stack, index) -> {
-            final CompoundNBT tag = stack.getTag();
+        colors.func_199877_a(ClientProxy::secondLayerColor, FLItems.TRIANGLE_PENNANT.get());
+        colors.func_199877_a(ClientProxy::secondLayerColor, FLItems.SPEARHEAD_PENNANT.get());
+        colors.func_199877_a(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.get());
+        colors.func_199877_a(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.get());
+        colors.func_199877_a((stack, index) -> {
+            final CompoundNBT tag = stack.func_77978_p();
             if (index > 0 && tag != null) {
-                final StyledString str = StyledString.deserialize(tag.getCompound("text"));
+                final StyledString str = StyledString.deserialize(tag.func_74775_l("text"));
                 if (str.length() > 0) {
                     TextFormatting lastColor = null, color = null;
                     int n = (index - 1) % str.length();

@@ -30,13 +30,13 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(final IRecipeRegistration registration) {
-        final ClientWorld world = Minecraft.getInstance().world;
-        final RecipeManager recipeManager = world.getRecipeManager();
+        final ClientWorld world = Minecraft.func_71410_x().field_71441_e;
+        final RecipeManager recipeManager = world.func_199532_z();
         registration.addRecipes(
-            recipeManager.getRecipes().stream()
+            recipeManager.func_199510_b().stream()
                 .filter(GenericRecipe.class::isInstance)
                 .map(GenericRecipe.class::cast)
-                .filter(GenericRecipe::isDynamic)
+                .filter(GenericRecipe::func_192399_d)
                 .collect(Collectors.toList()),
             VanillaRecipeCategoryUid.CRAFTING
         );

@@ -52,11 +52,11 @@ public final class ClientCommandProvider {
 
     private void onKeyPressedEvent(final GuiScreenEvent.KeyboardKeyPressedEvent.Pre event) {
         if (event.getGui() instanceof ChatScreen) {
-            final ClientPlayNetHandler net = Minecraft.getInstance().getConnection();
+            final ClientPlayNetHandler net = Minecraft.func_71410_x().func_147114_u();
             if (net == null) {
                 return;
             }
-            final RootCommandNode<ISuggestionProvider> root = net.getCommandDispatcher().getRoot();
+            final RootCommandNode<ISuggestionProvider> root = net.func_195515_i().getRoot();
             for (final ImmutableMap.Entry<String, CommandBuilder> e : this.builders.entrySet()) {
                 if (root.getChild(e.getKey()) == null) {
                     root.addChild(e.getValue().build(new SuggestionHelper()).build());
@@ -69,17 +69,17 @@ public final class ClientCommandProvider {
         final String message = event.getMessage();
         if (this.chatPredicate.matcher(message).matches()) {
             event.setCanceled(true);
-            Minecraft.getInstance().ingameGUI.getChatGUI().addToSentMessages(message);
-            final ClientPlayerEntity user = Minecraft.getInstance().player;
+            Minecraft.func_71410_x().field_71456_v.func_146158_b().func_146239_a(message);
+            final ClientPlayerEntity user = Minecraft.func_71410_x().field_71439_g;
             if (user != null) {
-                this.commands.handleCommand(this.createSource(user), message);
+                this.commands.func_197059_a(this.createSource(user), message);
             }
         }
     }
 
     private CommandSource createSource(final Entity entity) {
         //noinspection ConstantConditions
-        return new CommandSource(new NoLoggingSource(entity), entity.getPositionVec(), entity.getPitchYaw(), null, 4, entity.getName().getString(), entity.getDisplayName(), DummyServer.INSTANCE, entity);
+        return new CommandSource(new NoLoggingSource(entity), entity.func_213303_ch(), entity.func_189653_aC(), null, 4, entity.func_200200_C_().getString(), entity.func_145748_c_(), DummyServer.INSTANCE, entity);
     }
 
     public void register(final IEventBus bus) {
@@ -156,8 +156,8 @@ public final class ClientCommandProvider {
         }
 
         @Override
-        public IProfiler getProfiler() {
-            return EmptyProfiler.INSTANCE;
+        public IProfiler func_213185_aS() {
+            return EmptyProfiler.field_219906_a;
         }
     }
 
@@ -169,22 +169,22 @@ public final class ClientCommandProvider {
         }
 
         @Override
-        public void sendMessage(final ITextComponent component, final UUID sender) {
-            this.entity.sendMessage(component, sender);
+        public void func_145747_a(final ITextComponent component, final UUID sender) {
+            this.entity.func_145747_a(component, sender);
         }
 
         @Override
-        public boolean shouldReceiveFeedback() {
+        public boolean func_195039_a() {
             return true;
         }
 
         @Override
-        public boolean shouldReceiveErrors() {
+        public boolean func_195040_b() {
             return true;
         }
 
         @Override
-        public boolean allowLogging() {
+        public boolean func_195041_r_() {
             return false;
         }
     }

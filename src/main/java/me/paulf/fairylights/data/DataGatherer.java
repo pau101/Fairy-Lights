@@ -43,8 +43,8 @@ public final class DataGatherer {
     @SubscribeEvent
     public static void onGatherData(final GatherDataEvent event) {
         final DataGenerator gen = event.getGenerator();
-        gen.addProvider(new RecipeGenerator(gen));
-        gen.addProvider(new LootTableGenerator(gen));
+        gen.func_200390_a(new RecipeGenerator(gen));
+        gen.func_200390_a(new LootTableGenerator(gen));
     }
 
     static class RecipeGenerator extends RecipeProvider {
@@ -53,69 +53,69 @@ public final class DataGatherer {
         }
 
         @Override
-        protected void registerRecipes(final Consumer<IFinishedRecipe> consumer) {
+        protected void func_200404_a(final Consumer<IFinishedRecipe> consumer) {
             final CompoundNBT nbt = new CompoundNBT();
-            nbt.put("text", StyledString.serialize(new StyledString()));
-            ShapedRecipeBuilder.shapedRecipe(FLItems.LETTER_BUNTING.get())
-                .patternLine("I-I")
-                .patternLine("PBF")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('-', Tags.Items.STRING)
-                .key('P', Items.PAPER)
-                .key('B', Items.INK_SAC)
-                .key('F', Tags.Items.FEATHERS)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", hasItem(Tags.Items.STRING))
-                .build(addNbt(consumer, nbt));
-            ShapedRecipeBuilder.shapedRecipe(FLItems.GARLAND.get(), 2)
-                .patternLine("I-I")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('-', Items.VINE)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_vine", hasItem(Items.VINE))
-                .build(consumer);
-            ShapedRecipeBuilder.shapedRecipe(FLItems.OIL_LANTERN.get(), 4)
-                .patternLine(" I ")
-                .patternLine("STS")
-                .patternLine("IGI")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('S', Items.STICK)
-                .key('T', Items.TORCH)
-                .key('G', Tags.Items.GLASS_PANES_COLORLESS)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", hasItem(Items.TORCH))
-                .build(consumer);
-            ShapedRecipeBuilder.shapedRecipe(FLItems.CANDLE_LANTERN.get(), 4)
-                .patternLine(" I ")
-                .patternLine("GTG")
-                .patternLine("IGI")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('G', Tags.Items.NUGGETS_GOLD)
-                .key('T', Items.TORCH)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", hasItem(Items.TORCH))
-                .build(consumer);
-            ShapedRecipeBuilder.shapedRecipe(FLItems.INCANDESCENT_LIGHT.get(), 4)
-                .patternLine(" I ")
-                .patternLine("ITI")
-                .patternLine(" G ")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('G', Tags.Items.GLASS_PANES_COLORLESS)
-                .key('T', Items.TORCH)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", hasItem(Items.TORCH))
-                .build(consumer);
+            nbt.func_218657_a("text", StyledString.serialize(new StyledString()));
+            ShapedRecipeBuilder.func_200470_a(FLItems.LETTER_BUNTING.get())
+                .func_200472_a("I-I")
+                .func_200472_a("PBF")
+                .func_200469_a('I', Tags.Items.INGOTS_IRON)
+                .func_200469_a('-', Tags.Items.STRING)
+                .func_200462_a('P', Items.field_151121_aF)
+                .func_200462_a('B', Items.field_196136_br)
+                .func_200469_a('F', Tags.Items.FEATHERS)
+                .func_200465_a("has_iron", func_200409_a(Tags.Items.INGOTS_IRON))
+                .func_200465_a("has_string", func_200409_a(Tags.Items.STRING))
+                .func_200464_a(addNbt(consumer, nbt));
+            ShapedRecipeBuilder.func_200468_a(FLItems.GARLAND.get(), 2)
+                .func_200472_a("I-I")
+                .func_200469_a('I', Tags.Items.INGOTS_IRON)
+                .func_200462_a('-', Items.field_221796_dh)
+                .func_200465_a("has_iron", func_200409_a(Tags.Items.INGOTS_IRON))
+                .func_200465_a("has_vine", func_200403_a(Items.field_221796_dh))
+                .func_200464_a(consumer);
+            ShapedRecipeBuilder.func_200468_a(FLItems.OIL_LANTERN.get(), 4)
+                .func_200472_a(" I ")
+                .func_200472_a("STS")
+                .func_200472_a("IGI")
+                .func_200469_a('I', Tags.Items.INGOTS_IRON)
+                .func_200462_a('S', Items.field_151055_y)
+                .func_200462_a('T', Items.field_221657_bQ)
+                .func_200469_a('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .func_200465_a("has_iron", func_200409_a(Tags.Items.INGOTS_IRON))
+                .func_200465_a("has_torch", func_200403_a(Items.field_221657_bQ))
+                .func_200464_a(consumer);
+            ShapedRecipeBuilder.func_200468_a(FLItems.CANDLE_LANTERN.get(), 4)
+                .func_200472_a(" I ")
+                .func_200472_a("GTG")
+                .func_200472_a("IGI")
+                .func_200469_a('I', Tags.Items.INGOTS_IRON)
+                .func_200469_a('G', Tags.Items.NUGGETS_GOLD)
+                .func_200462_a('T', Items.field_221657_bQ)
+                .func_200465_a("has_iron", func_200409_a(Tags.Items.INGOTS_IRON))
+                .func_200465_a("has_torch", func_200403_a(Items.field_221657_bQ))
+                .func_200464_a(consumer);
+            ShapedRecipeBuilder.func_200468_a(FLItems.INCANDESCENT_LIGHT.get(), 4)
+                .func_200472_a(" I ")
+                .func_200472_a("ITI")
+                .func_200472_a(" G ")
+                .func_200469_a('I', Tags.Items.INGOTS_IRON)
+                .func_200469_a('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .func_200462_a('T', Items.field_221657_bQ)
+                .func_200465_a("has_iron", func_200409_a(Tags.Items.INGOTS_IRON))
+                .func_200465_a("has_torch", func_200403_a(Items.field_221657_bQ))
+                .func_200464_a(consumer);
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS.get())
-                .addCriterion("has_lights", hasItem(FLCraftingRecipes.LIGHTS))
+                .addCriterion("has_lights", func_200409_a(FLCraftingRecipes.LIGHTS))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS_AUGMENTATION.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights_augmentation"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.TINSEL_GARLAND.get())
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", hasItem(Tags.Items.STRING))
+                .addCriterion("has_iron", func_200409_a(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_string", func_200409_a(Tags.Items.STRING))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "tinsel_garland"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING.get())
-                .addCriterion("has_pennants", hasItem(FLCraftingRecipes.PENNANTS))
+                .addCriterion("has_pennants", func_200409_a(FLCraftingRecipes.PENNANTS))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING_AUGMENTATION.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting_augmentation"));
@@ -173,14 +173,14 @@ public final class DataGatherer {
 
         GenericRecipeBuilder lightRecipe(final IRecipeSerializer<?> serializer) {
             return GenericRecipeBuilder.customRecipe(serializer)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_dye", hasItem(Tags.Items.DYES));
+                .addCriterion("has_iron", func_200409_a(Tags.Items.INGOTS_IRON))
+                .addCriterion("has_dye", func_200409_a(Tags.Items.DYES));
         }
 
         GenericRecipeBuilder pennantRecipe(final IRecipeSerializer<?> serializer) {
             return GenericRecipeBuilder.customRecipe(serializer)
-                .addCriterion("has_paper", hasItem(Items.PAPER))
-                .addCriterion("has_string", hasItem(Tags.Items.STRING));
+                .addCriterion("has_paper", func_200403_a(Items.field_151121_aF))
+                .addCriterion("has_string", func_200409_a(Tags.Items.STRING));
         }
     }
 
@@ -191,7 +191,7 @@ public final class DataGatherer {
 
         @Override
         protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
-            return ImmutableList.of(Pair.of(BlockLootTableGenerator::new, LootParameterSets.BLOCK));
+            return ImmutableList.of(Pair.of(BlockLootTableGenerator::new, LootParameterSets.field_216267_h));
         }
 
         @Override
@@ -200,7 +200,7 @@ public final class DataGatherer {
             /*for (final ResourceLocation name : Sets.difference(MyBuiltInLootTables.getAll(), map.keySet())) {
                 tracker.addProblem("Missing built-in table: " + name);
             }*/
-            map.forEach((name, table) -> LootTableManager.validateLootTable(tracker, name, table));
+            map.forEach((name, table) -> LootTableManager.func_227508_a_(tracker, name, table));
         }
     }
 
@@ -223,8 +223,8 @@ public final class DataGatherer {
             }
 
             @Override
-            public void serialize(final JsonObject json) {
-                super.serialize(json);
+            public void func_218610_a(final JsonObject json) {
+                super.func_218610_a(json);
                 json.getAsJsonObject("result").addProperty("nbt", nbt.toString());
             }
         });
@@ -234,30 +234,30 @@ public final class DataGatherer {
         protected abstract IFinishedRecipe delegate();
 
         @Override
-        public void serialize(final JsonObject json) {
-            this.delegate().serialize(json);
+        public void func_218610_a(final JsonObject json) {
+            this.delegate().func_218610_a(json);
         }
 
         @Override
-        public ResourceLocation getID() {
-            return this.delegate().getID();
+        public ResourceLocation func_200442_b() {
+            return this.delegate().func_200442_b();
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer() {
-            return this.delegate().getSerializer();
-        }
-
-        @Nullable
-        @Override
-        public JsonObject getAdvancementJson() {
-            return this.delegate().getAdvancementJson();
+        public IRecipeSerializer<?> func_218609_c() {
+            return this.delegate().func_218609_c();
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
-            return this.delegate().getAdvancementID();
+        public JsonObject func_200440_c() {
+            return this.delegate().func_200440_c();
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation func_200443_d() {
+            return this.delegate().func_200443_d();
         }
     }
 }

@@ -36,7 +36,7 @@ public final class Style implements Comparable<Style> {
     }
 
     public TextFormatting getColor() {
-        return TextFormatting.fromColorIndex(this.value & COLOR_MASK);
+        return TextFormatting.func_175744_a(this.value & COLOR_MASK);
     }
 
     public boolean isObfuscated() {
@@ -64,10 +64,10 @@ public final class Style implements Comparable<Style> {
     }
 
     public Style withColor(final TextFormatting color) {
-        if (!color.isColor()) {
-            throw new IllegalArgumentException("Invalid color formatting: " + color.getFriendlyName());
+        if (!color.func_96302_c()) {
+            throw new IllegalArgumentException("Invalid color formatting: " + color.func_96297_d());
         }
-        return new Style(color.getColorIndex() | this.value & FANCY_MASK);
+        return new Style(color.func_175746_b() | this.value & FANCY_MASK);
     }
 
     public Style withBold(final boolean isBold) {
@@ -91,7 +91,7 @@ public final class Style implements Comparable<Style> {
     }
 
     public Style withStyling(final TextFormatting formatting, final boolean state) {
-        if (formatting.isColor()) {
+        if (formatting.func_96302_c()) {
             return this.withColor(formatting);
         }
         switch (formatting) {
@@ -106,7 +106,7 @@ public final class Style implements Comparable<Style> {
             case OBFUSCATED:
                 return this.withObfuscated(state);
             default:
-                throw new IllegalArgumentException("Invalid fancy formatting: " + formatting.getFriendlyName());
+                throw new IllegalArgumentException("Invalid fancy formatting: " + formatting.func_96297_d());
         }
     }
 
@@ -129,10 +129,10 @@ public final class Style implements Comparable<Style> {
     }
 
     private static int pack(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
-        if (!color.isColor()) {
-            throw new IllegalArgumentException("Invalid color formatting: " + color.getFriendlyName());
+        if (!color.func_96302_c()) {
+            throw new IllegalArgumentException("Invalid color formatting: " + color.func_96297_d());
         }
-        int value = color.getColorIndex();
+        int value = color.func_175746_b();
         if (isObfuscated) value |= OBFUSCATED_MASK;
         if (isBold) value |= BOLD_MASK;
         if (isStrikethrough) value |= STRIKETHROUGH_MASK;

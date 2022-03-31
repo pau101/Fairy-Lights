@@ -18,17 +18,17 @@ public class WitchLightModel extends ColorLightModel {
         rim.setPosition(0, -1, 0);
         rim.addBox(-4.0F, 0, -4.0F, 8, 1, 8, 0);
         final ModelRenderer belt = new ModelRenderer(this, 62, 1);
-        belt.setRotationPoint(0, -4.5F, 0);
-        belt.addBox(-2.5F, 0, -2.5F, 5, 1, 5, 0);
-        this.unlit.addChild(belt);
+        belt.func_78793_a(0, -4.5F, 0);
+        belt.func_228301_a_(-2.5F, 0, -2.5F, 5, 1, 5, 0);
+        this.unlit.func_78792_a(belt);
         final ModelRenderer buckle = new ModelRenderer(this, 0, 27);
-        buckle.setRotationPoint(0, -0.6F, -2.9F);
-        buckle.rotateAngleY = -Mth.HALF_PI;
-        buckle.addBox(0, 0, -1, 1, 2, 2, 0);
-        belt.addChild(buckle);
+        buckle.func_78793_a(0, -0.6F, -2.9F);
+        buckle.field_78796_g = -Mth.HALF_PI;
+        buckle.func_228301_a_(0, 0, -1, 1, 2, 2, 0);
+        belt.func_78792_a(buckle);
         final ModelRenderer beltPoke = new ModelRenderer(this, 66, 4);
-        beltPoke.setRotationPoint(0.2F, 0.5F, -0.5F);
-        beltPoke.addBox(0, 0, 0, 1, 1, 1, 0);
-        buckle.addChild(beltPoke);
+        beltPoke.func_78793_a(0.2F, 0.5F, -0.5F);
+        beltPoke.func_228301_a_(0, 0, 0, 1, 1, 1, 0);
+        buckle.func_78792_a(beltPoke);
     }
 }

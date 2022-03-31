@@ -33,16 +33,16 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
     protected void render(final GarlandVineConnection conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
         super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
         final int hash = conn.getUUID().hashCode();
-        final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+        final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.func_229311_a_(source, RenderType::func_228638_b_);
         catenary.visitPoints(0.25F, false, (index, x, y, z, yaw, pitch) -> {
-            matrix.push();
-            matrix.translate(x, y, z);
-            matrix.rotate(Vector3f.YP.rotation(-yaw));
-            matrix.rotate(Vector3f.ZP.rotation(pitch));
-            matrix.rotate(Vector3f.ZP.rotationDegrees(RAND.get(index + hash) * 45.0F));
-            matrix.rotate(Vector3f.YP.rotationDegrees(RAND.get(index + 8 + hash) * 60.F + 90.0F));
-            this.rings[index % RING_COUNT].render(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
-            matrix.pop();
+            matrix.func_227860_a_();
+            matrix.func_227861_a_(x, y, z);
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(-yaw));
+            matrix.func_227863_a_(Vector3f.field_229183_f_.func_229193_c_(pitch));
+            matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(RAND.get(index + hash) * 45.0F));
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(RAND.get(index + 8 + hash) * 60.F + 90.0F));
+            this.rings[index % RING_COUNT].func_225598_a_(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+            matrix.func_227865_b_();
         });
     }
 
@@ -50,22 +50,22 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
         final ModelRenderer root;
 
         RingModel(final int u, final int v) {
-            super(RenderType::getEntityCutout);
-            this.textureWidth = 128;
-            this.textureHeight = 128;
+            super(RenderType::func_228638_b_);
+            this.field_78090_t = 128;
+            this.field_78089_u = 128;
             this.root = new ModelRenderer(this, 14, 91);
             final float size = 4.0F;
-            this.root.addBox(-size / 2.0F, -size / 2.0F, -size / 2.0F, size, size, size);
+            this.root.func_228300_a_(-size / 2.0F, -size / 2.0F, -size / 2.0F, size, size, size);
             final ModelRenderer cross = new ModelRenderer(this, u, v);
-            cross.rotateAngleZ = Mth.HALF_PI;
-            cross.addBox(-4.0F, -4.0F, 0.0F, 8.0F, 8.0F, 0.0F);
-            cross.addBox(-4.0F, 0.0F, -4.0F, 8.0F, 0.0F, 8.0F);
-            this.root.addChild(cross);
+            cross.field_78808_h = Mth.HALF_PI;
+            cross.func_228300_a_(-4.0F, -4.0F, 0.0F, 8.0F, 8.0F, 0.0F);
+            cross.func_228300_a_(-4.0F, 0.0F, -4.0F, 8.0F, 0.0F, 8.0F);
+            this.root.func_78792_a(cross);
         }
 
         @Override
-        public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-            this.root.render(matrix, builder, light, overlay, r, g, b, a);
+        public void func_225598_a_(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+            this.root.func_228309_a_(matrix, builder, light, overlay, r, g, b, a);
         }
     }
 }
