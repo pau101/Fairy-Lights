@@ -12,14 +12,19 @@ buildscript {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+// you can edit below this line
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 version = '4.0.5'
 group = 'me.paulf.fairylights'
 archivesBaseName = 'fairylights'
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+sourceCompatibility = targetCompatibility = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    mappings channel: "${mappings_channel}", version: "${mc_version}"
     runs {
         client {
             workingDirectory project.file('run')
@@ -57,7 +62,7 @@ minecraft {
 }
 
 jar {
-    classifier '1.16.5'
+    classifier "${mc_version}"
     exclude '.cache'
 }
 
@@ -81,9 +86,9 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
-    compileOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.1.68:api')
-    runtimeOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.1.68')
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 }
 
 processResources {

@@ -1,35 +1,37 @@
 package me.paulf.fairylights.client.command;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.internal.UnsafeAllocator;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.RootCommandNode;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.network.play.ClientPlayNetHandler;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.entity.Entity;
-import net.minecraft.profiler.EmptyProfiler;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.profiling.InactiveProfiler;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 /**
  * @author Paul Fulham
@@ -50,13 +52,13 @@ public final class ClientCommandProvider {
         this.chatPredicate = chatPredicate;
     }
 
-    private void onKeyPressedEvent(final GuiScreenEvent.KeyboardKeyPressedEvent.Pre event) {
-        if (event.getGui() instanceof ChatScreen) {
-            final ClientPlayNetHandler net = Minecraft.func_71410_x().func_147114_u();
+    private void onKeyPressedEvent(final ScreenEvent.KeyboardKeyPressedEvent.Pre event) {
+        if (event.getScreen() instanceof ChatScreen) {
+            final ClientPacketListener net = Minecraft.getInstance().getConnection();
             if (net == null) {
                 return;
             }
-            final RootCommandNode<ISuggestionProvider> root = net.func_195515_i().getRoot();
+            final RootCommandNode<SharedSuggestionProvider> root = net.getCommands().getRoot();
             for (final ImmutableMap.Entry<String, CommandBuilder> e : this.builders.entrySet()) {
                 if (root.getChild(e.getKey()) == null) {
                     root.addChild(e.getValue().build(new SuggestionHelper()).build());
@@ -69,17 +71,17 @@ public final class ClientCommandProvider {
         final String message = event.getMessage();
         if (this.chatPredicate.matcher(message).matches()) {
             event.setCanceled(true);
-            Minecraft.func_71410_x().field_71456_v.func_146158_b().func_146239_a(message);
-            final ClientPlayerEntity user = Minecraft.func_71410_x().field_71439_g;
+            Minecraft.getInstance().gui.getChat().addRecentChat(message);
+            final LocalPlayer user = Minecraft.getInstance().player;
             if (user != null) {
-                this.commands.func_197059_a(this.createSource(user), message);
+                this.commands.performCommand(this.createSource(user), message);
             }
         }
     }
 
-    private CommandSource createSource(final Entity entity) {
+    private CommandSourceStack createSource(final Entity entity) {
         //noinspection ConstantConditions
-        return new CommandSource(new NoLoggingSource(entity), entity.func_213303_ch(), entity.func_189653_aC(), null, 4, entity.func_200200_C_().getString(), entity.func_145748_c_(), DummyServer.INSTANCE, entity);
+        return new CommandSourceStack(new NoLoggingSource(entity), entity.position(), entity.getRotationVector(), null, 4, entity.getName().getString(), entity.getDisplayName(), DummyServer.INSTANCE, entity);
     }
 
     public void register(final IEventBus bus) {
@@ -140,9 +142,9 @@ public final class ClientCommandProvider {
         }
     }
 
-    private static final class SuggestionHelper implements Helper<ISuggestionProvider> {
+    private static final class SuggestionHelper implements Helper<SuggestionProvider> {
         @Override
-        public <T extends ArgumentBuilder<ISuggestionProvider, T>> T executes(final T builder, final Command<CommandSource> command) {
+        public <T extends ArgumentBuilder<SuggestionProvider, T>> T executes(final T builder, final Command<CommandSource> command) {
             return builder;
         }
     }
@@ -156,12 +158,12 @@ public final class ClientCommandProvider {
         }
 
         @Override
-        public IProfiler func_213185_aS() {
-            return EmptyProfiler.field_219906_a;
+        public ProfilerFiller getProfiler() {
+            return InactiveProfiler.INSTANCE;
         }
     }
 
-    private static final class NoLoggingSource implements ICommandSource {
+    private static final class NoLoggingSource implements CommandSource {
         private final Entity entity;
 
         public NoLoggingSource(final Entity entity) {
@@ -169,22 +171,22 @@ public final class ClientCommandProvider {
         }
 
         @Override
-        public void func_145747_a(final ITextComponent component, final UUID sender) {
-            this.entity.func_145747_a(component, sender);
+        public void sendMessage(final Component component, final UUID sender) {
+            this.entity.sendMessage(component, sender);
         }
 
         @Override
-        public boolean func_195039_a() {
+        public boolean acceptsSuccess() {
             return true;
         }
 
         @Override
-        public boolean func_195040_b() {
+        public boolean acceptsFailure() {
             return true;
         }
 
         @Override
-        public boolean func_195041_r_() {
+        public boolean shouldInformAdmins() {
             return false;
         }
     }

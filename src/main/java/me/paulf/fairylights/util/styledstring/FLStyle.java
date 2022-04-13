@@ -1,8 +1,8 @@
 package me.paulf.fairylights.util.styledstring;
 
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
 
-public final class Style implements Comparable<Style> {
+public final class FLStyle implements Comparable<FLStyle> {
     private static final int COLOR_MASK = 0xF;
 
     private static final int OBFUSCATED_MASK = 0x10;
@@ -19,15 +19,15 @@ public final class Style implements Comparable<Style> {
 
     private final int value;
 
-    public Style() {
-        this(TextFormatting.WHITE, false, false, false, false, false);
+    public FLStyle() {
+        this(ChatFormatting.WHITE , false, false, false, false, false);
     }
 
-    public Style(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
-        this(Style.pack(color, isBold, isStrikethrough, isUnderline, isItalic, isObfuscated));
+    public FLStyle(final ChatFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
+        this(FLStyle.pack(color, isBold, isStrikethrough, isUnderline, isItalic, isObfuscated));
     }
 
-    public Style(final int value) {
+    public FLStyle(final int value) {
         this.value = value;
     }
 
@@ -35,8 +35,8 @@ public final class Style implements Comparable<Style> {
         return this.value;
     }
 
-    public TextFormatting getColor() {
-        return TextFormatting.func_175744_a(this.value & COLOR_MASK);
+    public ChatFormatting getColor() {
+        return ChatFormatting.getById(this.value & COLOR_MASK);
     }
 
     public boolean isObfuscated() {
@@ -63,35 +63,35 @@ public final class Style implements Comparable<Style> {
         return (this.value & FANCY_MASK) == 0;
     }
 
-    public Style withColor(final TextFormatting color) {
-        if (!color.func_96302_c()) {
-            throw new IllegalArgumentException("Invalid color formatting: " + color.func_96297_d());
+    public FLStyle withColor(final ChatFormatting color) {
+        if (!color.isColor()) {
+            throw new IllegalArgumentException("Invalid color formatting: " + color.getName());
         }
-        return new Style(color.func_175746_b() | this.value & FANCY_MASK);
+        return new FLStyle(color.getId() | this.value & FANCY_MASK);
     }
 
-    public Style withBold(final boolean isBold) {
-        return new Style(isBold ? this.value | BOLD_MASK : this.value & ~BOLD_MASK);
+    public FLStyle withBold(final boolean isBold) {
+        return new FLStyle(isBold ? this.value | BOLD_MASK : this.value & ~BOLD_MASK);
     }
 
-    public Style withStrikethrough(final boolean isStrikethrough) {
-        return new Style(isStrikethrough ? this.value | STRIKETHROUGH_MASK : this.value & ~STRIKETHROUGH_MASK);
+    public FLStyle withStrikethrough(final boolean isStrikethrough) {
+        return new FLStyle(isStrikethrough ? this.value | STRIKETHROUGH_MASK : this.value & ~STRIKETHROUGH_MASK);
     }
 
-    public Style withUnderline(final boolean isUnderline) {
-        return new Style(isUnderline ? this.value | UNDERLINE_MASK : this.value & ~UNDERLINE_MASK);
+    public FLStyle withUnderline(final boolean isUnderline) {
+        return new FLStyle(isUnderline ? this.value | UNDERLINE_MASK : this.value & ~UNDERLINE_MASK);
     }
 
-    public Style withItalic(final boolean isItalic) {
-        return new Style(isItalic ? this.value | ITALIC_MASK : this.value & ~ITALIC_MASK);
+    public FLStyle withItalic(final boolean isItalic) {
+        return new FLStyle(isItalic ? this.value | ITALIC_MASK : this.value & ~ITALIC_MASK);
     }
 
-    public Style withObfuscated(final boolean isObfuscated) {
-        return new Style(isObfuscated ? this.value | OBFUSCATED_MASK : this.value & ~OBFUSCATED_MASK);
+    public FLStyle withObfuscated(final boolean isObfuscated) {
+        return new FLStyle(isObfuscated ? this.value | OBFUSCATED_MASK : this.value & ~OBFUSCATED_MASK);
     }
 
-    public Style withStyling(final TextFormatting formatting, final boolean state) {
-        if (formatting.func_96302_c()) {
+    public FLStyle withStyling(final ChatFormatting formatting, final boolean state) {
+        if (formatting.isColor()) {
             return this.withColor(formatting);
         }
         switch (formatting) {
@@ -106,7 +106,7 @@ public final class Style implements Comparable<Style> {
             case OBFUSCATED:
                 return this.withObfuscated(state);
             default:
-                throw new IllegalArgumentException("Invalid fancy formatting: " + formatting.func_96297_d());
+                throw new IllegalArgumentException("Invalid fancy formatting: " + formatting.getName());
         }
     }
 
@@ -117,22 +117,22 @@ public final class Style implements Comparable<Style> {
 
     @Override
     public boolean equals(final Object obj) {
-        return this == obj || obj instanceof Style && this.value == ((Style) obj).value;
+        return this == obj || obj instanceof FLStyle && this.value == ((FLStyle) obj).value;
     }
 
     @Override
-    public int compareTo(final Style other) {
+    public int compareTo(final FLStyle other) {
         if (this == other) {
             return 0;
         }
         return this.value - other.value;
     }
 
-    private static int pack(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
-        if (!color.func_96302_c()) {
-            throw new IllegalArgumentException("Invalid color formatting: " + color.func_96297_d());
+    private static int pack(final ChatFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
+        if (!color.isColor()) {
+            throw new IllegalArgumentException("Invalid color formatting: " + color.getName());
         }
-        int value = color.func_175746_b();
+        int value = color.getId();
         if (isObfuscated) value |= OBFUSCATED_MASK;
         if (isBold) value |= BOLD_MASK;
         if (isStrikethrough) value |= STRIKETHROUGH_MASK;

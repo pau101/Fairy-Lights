@@ -1,17 +1,17 @@
 package me.paulf.fairylights.server.net;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class NetBuilder {
     private final NetworkRegistry.ChannelBuilder builder;
@@ -85,7 +85,7 @@ public final class NetBuilder {
 
     @SuppressWarnings("Convert2MethodRef")
     public <T extends Message> MessageBuilder<T, ClientMessageContext> clientbound(final Supplier<T> factory) {
-        return new MessageBuilder<>(factory, DistExecutor.runForDist(() -> () -> new HandlerConsumerFactory<>(LogicalSide.CLIENT, ClientMessageContext::new), () -> () -> new NoopConsumerFactory<>()));
+        return new MessageBuilder<>(factory, DistExecutor.runForDist(() -> () -> new HandlerConsumerFactory<T, ClientMessageContext>(LogicalSide.CLIENT, ClientMessageContext::new), () -> () -> new NoopConsumerFactory<>()));
     }
 
     public SimpleChannel build() {

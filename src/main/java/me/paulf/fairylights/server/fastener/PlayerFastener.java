@@ -1,18 +1,15 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
-import me.paulf.fairylights.server.connection.Connection;
-import me.paulf.fairylights.util.Mth;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SEntityVelocityPacket;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3d;
+import com.mojang.math.Vector3d;
 
-public final class PlayerFastener extends EntityFastener<PlayerEntity> {
-    public PlayerFastener(final PlayerEntity entity) {
+import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
+import me.paulf.fairylights.util.FLMath;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+public final class PlayerFastener extends EntityFastener<Player> {
+    public PlayerFastener(final Player entity) {
         super(entity);
     }
 
@@ -22,7 +19,7 @@ public final class PlayerFastener extends EntityFastener<PlayerEntity> {
         if (this.entity.func_184613_cA()) {
             return point;
         }
-        final double angle = (this.entity.field_70761_aq - 90) * Mth.DEG_TO_RAD;
+        final double angle = (this.entity.field_70761_aq - 90) * FLMath.DEG_TO_RAD;
         final double perpAngle = angle - Math.PI / 2;
         final boolean sneaking = this.entity.func_225608_bj_();
         final double perpDist = 0.4 * (this.matchesStack(this.entity.func_184614_ca()) ? 1 : -1);

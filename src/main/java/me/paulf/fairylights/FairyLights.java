@@ -1,5 +1,7 @@
 package me.paulf.fairylights;
 
+import java.time.Month;
+
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.server.ServerProxy;
 import me.paulf.fairylights.server.block.FLBlocks;
@@ -22,20 +24,16 @@ import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.CalendarEvent;
 import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.client.ClientModLoader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
-
-import java.time.Month;
 
 @Mod(FairyLights.ID)
 public final class FairyLights {
@@ -51,7 +49,7 @@ public final class FairyLights {
         .serverbound(EditLetteredConnectionMessage::new).consumer(() -> new EditLetteredConnectionMessage.Handler())
         .build();
 
-    public static final ItemGroup ITEM_GROUP = new FairyLightsItemGroup();
+    public static final CreativeModeTab ITEM_GROUP = new FairyLightsItemGroup();
 
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 

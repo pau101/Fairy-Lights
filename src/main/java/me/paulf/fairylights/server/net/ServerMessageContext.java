@@ -1,12 +1,12 @@
 package me.paulf.fairylights.server.net;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
-
 import java.util.Objects;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.network.NetworkEvent;
 
 public class ServerMessageContext extends MessageContext {
     public ServerMessageContext(final NetworkEvent.Context context) {
@@ -19,14 +19,14 @@ public class ServerMessageContext extends MessageContext {
     }
 
     public MinecraftServer getServer() {
-        return this.getPlayer().field_71133_b;
+        return this.getPlayer().server;
     }
 
-    public ServerWorld getWorld() {
-        return this.getPlayer().func_71121_q();
+    public ServerLevel getWorld() {
+        return this.getPlayer().getLevel();
     }
 
-    public ServerPlayerEntity getPlayer() {
+    public ServerPlayer getPlayer() {
         return Objects.requireNonNull(this.context.getSender());
     }
 }

@@ -1,6 +1,7 @@
 package me.paulf.fairylights.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import org.lwjgl.glfw.GLFW;
+
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.gui.component.ColorButton;
 import me.paulf.fairylights.client.gui.component.PaletteButton;
@@ -9,18 +10,16 @@ import me.paulf.fairylights.client.gui.component.ToggleButton;
 import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.connection.Lettered;
 import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage;
+import me.paulf.fairylights.util.matrix.MatrixStack;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import me.paulf.fairylights.util.styledstring.StylingPresence;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.chat.NarratorChatListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public final class EditLetteredConnectionScreen<C extends Connection & Lettered> extends Screen {
     public static final ResourceLocation WIDGETS_TEXTURE = new ResourceLocation(FairyLights.ID, "textures/gui/widgets.png");
@@ -46,40 +45,40 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     private PaletteButton paletteBtn;
 
     public EditLetteredConnectionScreen(final C connection) {
-        super(NarratorChatListener.field_216868_a);
+        super(NarratorChatListener.NO_TITLE);
         this.connection = connection;
     }
 
     @Override
-    public void func_231160_c_() {
-        this.field_230706_i_.field_195559_v.func_197967_a(true);
+    public void init() {
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         final int pad = 4;
         final int buttonWidth = 150;
-        this.doneBtn = this.func_230480_a_(new Button(this.field_230708_k_ / 2 - pad - buttonWidth, this.field_230709_l_ / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.done"), b -> {
+        this.doneBtn = this.addButton(new Button(this.width / 2 - pad - buttonWidth, this.height / 4 + 120 + 12, buttonWidth, 20, new TranslatableComponent("gui.done"), b -> {
             FairyLights.NETWORK.sendToServer(new EditLetteredConnectionMessage<>(this.connection, this.textField.getValue()));
-            this.func_231175_as__();
+            this.onClose();
         }));
-        this.cancelBtn = this.func_230480_a_(new Button(this.field_230708_k_ / 2 + pad, this.field_230709_l_ / 4 + 120 + 12, buttonWidth, 20, new TranslationTextComponent("gui.cancel"), b -> this.func_231175_as__()));
-        final int textFieldX = this.field_230708_k_ / 2 - 150;
-        final int textFieldY = this.field_230709_l_ / 2 - 10;
+        this.cancelBtn = this.addButton(new Button(this.width / 2 + pad, this.height / 4 + 120 + 12, buttonWidth, 20, new TranslatableComponent("gui.cancel"), b -> this.onClose()));
+        final int textFieldX = this.width / 2 - 150;
+        final int textFieldY = this.height / 2 - 10;
         int buttonX = textFieldX;
         final int buttonY = textFieldY - 25;
         final int bInc = 24;
-        this.colorBtn = this.func_230480_a_(new ColorButton(buttonX, buttonY, StringTextComponent.field_240750_d_, b -> this.paletteBtn.field_230694_p_ = !this.paletteBtn.field_230694_p_));
-        this.paletteBtn = this.func_230480_a_(new PaletteButton(buttonX - 4, buttonY - 30, this.colorBtn, new TranslationTextComponent("fairylights.color"), b -> this.textField.updateStyling(this.colorBtn.getDisplayColor(), true)));
-        this.boldBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 40, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.BOLD, this.boldBtn)));
-        this.italicBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 60, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.ITALIC, this.italicBtn)));
-        this.underlineBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 80, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.UNDERLINE, this.underlineBtn)));
-        this.strikethroughBtn = this.func_230480_a_(new ToggleButton(buttonX += bInc, buttonY, 100, 0, StringTextComponent.field_240750_d_, b -> this.updateStyleButton(TextFormatting.STRIKETHROUGH, this.strikethroughBtn)));
-        this.textField = new StyledTextFieldWidget(this.field_230712_o_, this.colorBtn, this.boldBtn, this.italicBtn, this.underlineBtn, this.strikethroughBtn, textFieldX, textFieldY, 300, 20, new TranslationTextComponent("fairylights.letteredText"));
+        this.colorBtn = this.addButton(new ColorButton(buttonX, buttonY, StringTextComponent.field_240750_d_, b -> this.paletteBtn.field_230694_p_ = !this.paletteBtn.field_230694_p_));
+        this.paletteBtn = this.addButton(new PaletteButton(buttonX - 4, buttonY - 30, this.colorBtn, new TranslatableComponent("fairylights.color"), b -> this.textField.updateStyling(this.colorBtn.getDisplayColor(), true)));
+        this.boldBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 40, 0, TextComponent.EMPTY, b -> this.updateStyleButton(ChatFormatting.BOLD, this.boldBtn)));
+        this.italicBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 60, 0, TextComponent.EMPTY, b -> this.updateStyleButton(ChatFormatting.ITALIC, this.italicBtn)));
+        this.underlineBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 80, 0, TextComponent.EMPTY, b -> this.updateStyleButton(ChatFormatting.UNDERLINE, this.underlineBtn)));
+        this.strikethroughBtn = this.addButton(new ToggleButton(buttonX += bInc, buttonY, 100, 0, TextComponent.EMPTY, b -> this.updateStyleButton(ChatFormatting.STRIKETHROUGH, this.strikethroughBtn)));
+        this.textField = new StyledTextFieldWidget(this.font, this.colorBtn, this.boldBtn, this.italicBtn, this.underlineBtn, this.strikethroughBtn, textFieldX, textFieldY, 300, 20, new TranslatableComponent("fairylights.letteredText"));
         this.textField.setValue(this.connection.getText());
         this.textField.setCaretStart();
         this.textField.setIsBlurable(false);
         this.textField.registerChangeListener(this::validateText);
         this.textField.setCharInputTransformer(this.connection.getInputTransformer());
         this.textField.func_230996_d_(true);
-        this.field_230705_e_.add(this.textField);
-        this.paletteBtn.field_230694_p_ = false;
+        this.children.add(this.textField);
+        this.paletteBtn.visible = false;
         final StylingPresence ss = this.connection.getSupportedStyling();
         this.colorBtn.field_230694_p_ = ss.hasColor();
         this.boldBtn.field_230694_p_ = ss.hasBold();

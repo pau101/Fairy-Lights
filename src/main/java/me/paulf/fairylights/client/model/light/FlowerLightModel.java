@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -11,10 +11,10 @@ public class FlowerLightModel extends ColorLightModel {
         final BulbBuilder bulb = this.createBulb();
         final Vector3f vec = new Vector3f(-1.0F, 0.0F, 1.0F);
         vec.func_229194_d_();
-        final Quaternion droop = vec.func_229193_c_(-Mth.PI / 6.0F);
+        final Quaternion droop = vec.func_229193_c_(-FLMath.PI / 6.0F);
         final int peddleCount = 5;
         for (int p = 0; p < peddleCount; p++) {
-            final Quaternion q = Vector3f.field_229181_d_.func_229193_c_(p * Mth.TAU / peddleCount);
+            final Quaternion q = Vector3f.field_229181_d_.func_229193_c_(p * FLMath.TAU / peddleCount);
             q.func_195890_a(droop);
             final float[] magicAngles = toEuler(q);
             final BulbBuilder peddleModel = bulb.createChild(24, 0);

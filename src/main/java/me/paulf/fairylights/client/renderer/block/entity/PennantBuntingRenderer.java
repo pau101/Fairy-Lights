@@ -10,7 +10,7 @@ import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.server.feature.Pennant;
 import me.paulf.fairylights.server.connection.PennantBuntingConnection;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.util.styledstring.Style;
+import me.paulf.fairylights.util.styledstring.FLStyle;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -89,7 +89,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
     }
 
     private void drawLetter(final MatrixStack matrix, final IRenderTypeBuffer source, final Pennant pennant, final int packedLight, final FontRenderer font, final StyledString text, final int index, final int side, final float delta) {
-        final Style style = text.styleAt(index);
+        final FLStyle style = text.styleAt(index);
         final StringBuilder bob = new StringBuilder();
         if (style.isObfuscated()) bob.append(TextFormatting.OBFUSCATED);
         if (style.isBold()) bob.append(TextFormatting.BOLD);

@@ -1,26 +1,5 @@
 package me.paulf.fairylights.util.crafting;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.math.IntMath;
-import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.EmptyRegularIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
-import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,12 +10,35 @@ import java.util.Set;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
-public final class GenericRecipe implements ICraftingRecipe {
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.math.IntMath;
+
+import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.EmptyRegularIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
+import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+
+public final class GenericRecipe implements CraftingRecipe {
     private final ResourceLocation id;
 
     public static final EmptyRegularIngredient EMPTY = new EmptyRegularIngredient();
 
-    private final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer;
+    private final Supplier<? extends RecipeSerializer<GenericRecipe>> serializer;
 
     private final ItemStack output;
 
@@ -50,13 +52,13 @@ public final class GenericRecipe implements ICraftingRecipe {
 
     private final int outputIngredient;
 
-    private final ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.field_190927_a);
+    private final ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.EMPTY);
 
     private final ImmutableList<IntUnaryOperator> xFunctions = ImmutableList.of(IntUnaryOperator.identity(), i -> this.getWidth() - 1 - i);
 
     private int room;
 
-    GenericRecipe(final ResourceLocation id, final Supplier<? extends IRecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height, final int outputIngredient) {
+    GenericRecipe(final ResourceLocation id, final Supplier<? extends RecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height, final int outputIngredient) {
         Preconditions.checkArgument(width > 0, "width must be greater than zero");
         Preconditions.checkArgument(height > 0, "height must be greater than zero");
         this.id = Objects.requireNonNull(id, "name");
@@ -89,21 +91,21 @@ public final class GenericRecipe implements ICraftingRecipe {
     }
 
     private NonNullList<Ingredient> getDisplayIngredients() {
-        final NonNullList<Ingredient> ingredients = NonNullList.func_191197_a(9, Ingredient.field_193370_a);
+        final NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
         for (int i = 0; i < this.ingredients.length; i++) {
             final int x = i % this.width;
             final int y = i / this.width;
             final ItemStack[] stacks = this.ingredients[i].getInputs().toArray(new ItemStack[0]);
-            ingredients.set(x + y * 3, Ingredient.func_193369_a(stacks));
+            ingredients.set(x + y * 3, Ingredient.of(stacks));
         }
         for (int i = 0, slot = 0; slot < ingredients.size(); slot++) {
             final Ingredient ing = ingredients.get(slot);
-            if (ing.func_203189_d()) {
+            if (ing.isEmpty()) {
                 while (i < this.auxiliaryIngredients.length) {
                     final AuxiliaryIngredient<?> aux = this.auxiliaryIngredients[i++];
                     if (aux.isRequired()) {
                         final ItemStack[] stacks = aux.getInputs().toArray(new ItemStack[0]);
-                        ingredients.set(slot, Ingredient.func_193369_a(stacks));
+                        ingredients.set(slot, Ingredient.of(stacks));
                         break;
                     }
                 }
@@ -113,22 +115,22 @@ public final class GenericRecipe implements ICraftingRecipe {
     }
 
     @Override
-    public ResourceLocation func_199560_c() {
+    public ResourceLocation getId() {
         return this.id;
     }
 
     @Override
-    public boolean func_192399_d() {
-        return this.output.func_190926_b();
+    public boolean isSpecial() {
+        return this.output.isEmpty();
     }
 
     @Override
-    public IRecipeSerializer<?> func_199559_b() {
+    public RecipeSerializer<?> getSerializer() {
         return this.serializer.get();
     }
 
     public ItemStack getOutput() {
-        return this.output.func_77946_l();
+        return this.output.copy();
     }
 
     public RegularIngredient[] getGenericIngredients() {
@@ -148,72 +150,72 @@ public final class GenericRecipe implements ICraftingRecipe {
     }
 
     @Override
-    public NonNullList<Ingredient> func_192400_c() {
+    public NonNullList<Ingredient> getIngredients() {
         return this.getDisplayIngredients();
     }
 
     @Override
-    public boolean func_194133_a(final int width, final int height) {
+    public boolean canCraftInDimensions(final int width, final int height) {
         return this.width <= width && this.height <= height && (this.getRoom() >= 0 || width * height - this.width * this.height + this.getRoom() >= 0);
     }
 
     @Override
-    public boolean func_77569_a(final CraftingInventory inventory, @Nullable final World world) {
-        if (!this.func_194133_a(inventory.func_174922_i(), inventory.func_174923_h())) {
+    public boolean matches(final CraftingContainer inventory, @Nullable final Level world) {
+        if (!this.canCraftInDimensions(inventory.getWidth(), inventory.getHeight())) {
             return false;
         }
-        final int scanWidth = inventory.func_174922_i() + 1 - this.width;
-        final int scanHeight = inventory.func_174923_h() + 1 - this.height;
+        final int scanWidth = inventory.getWidth() + 1 - this.width;
+        final int scanHeight = inventory.getHeight() + 1 - this.height;
         for (int i = 0, end = scanWidth * scanHeight; i < end; i++) {
             final int x = i % scanWidth;
             final int y = i / scanWidth;
             for (final IntUnaryOperator func : this.xFunctions) {
                 final ItemStack result = this.getResult(inventory, x, y, func);
-                if (!result.func_190926_b()) {
+                if (!result.isEmpty()) {
                     this.result.set(result);
                     return true;
                 }
             }
         }
-        this.result.set(ItemStack.field_190927_a);
+        this.result.set(ItemStack.EMPTY);
         return false;
     }
 
-    private ItemStack getResult(final CraftingInventory inventory, final int originX, final int originY, final IntUnaryOperator funcX) {
+    private ItemStack getResult(final CraftingContainer inventory, final int originX, final int originY, final IntUnaryOperator funcX) {
         final MatchResultRegular[] match = new MatchResultRegular[this.ingredients.length];
         final Multimap<AuxiliaryIngredient<?>, MatchResultAuxiliary> auxMatchResults = LinkedListMultimap.create();
         final Map<AuxiliaryIngredient<?>, Integer> auxMatchTotals = new HashMap<>();
         final Set<GenericIngredient<?, ?>> presentCalled = new HashSet<>();
         final List<MatchResultAuxiliary> auxResults = new ArrayList<>();
-        Item item = this.output.func_77973_b();
-        final CompoundNBT tag = new CompoundNBT();
-        for (int i = 0, w = inventory.func_174922_i(), size = w * inventory.func_174923_h(); i < size; i++) {
+        Item item = this.output.getItem();
+        final CompoundTag tag = new CompoundTag();
+        for (int i = 0, w = inventory.getWidth(), size = w * inventory.getHeight(); i < size; i++) {
             final int x = i % w;
             final int y = i / w;
             final int ingX = x - originX;
             final int ingY = y - originY;
-            final ItemStack input = inventory.func_70301_a(i);
+            final ItemStack input = inventory.getItem(i);
             if (this.contains(ingX, ingY)) {
                 final int index = funcX.applyAsInt(ingX) + ingY * this.width;
                 final RegularIngredient ingredient = this.ingredients[index];
                 final MatchResultRegular result = ingredient.matches(input);
                 if (!result.doesMatch()) {
-                    return ItemStack.field_190927_a;
+                    return ItemStack.EMPTY;
                 }
                 match[index] = result;
                 result.forMatch(presentCalled, tag);
                 if (index == this.outputIngredient) {
-                    final CompoundNBT inputTag = input.func_77978_p();
+                    final CompoundTag inputTag = input.getTag();
                     if (inputTag != null) {
                         if (tag.isEmpty()) {
-                            tag.func_197643_a(inputTag);
+                            tag.merge(inputTag);
                         } else {
-                            final CompoundNBT temp = inputTag.func_74737_b();
-                            temp.func_197643_a(tag);
-                            tag.func_197643_a(temp);
+                            final CompoundTag temp = inputTag.copy();
+                            temp.merge(tag);
+                            tag.merge(temp);
                         }
                     }
-                    item = input.func_77973_b();
+                    item = input.getItem();
                 }
             } else if (!EMPTY.matches(input).doesMatch()) {
                 boolean nonAuxiliary = true;
@@ -221,7 +223,7 @@ public final class GenericRecipe implements ICraftingRecipe {
                     final MatchResultAuxiliary result = auxiliaryIngredient.matches(input);
                     if (result.doesMatch()) {
                         if (result.isAtLimit(auxMatchTotals.getOrDefault(result.ingredient, 0))) {
-                            return ItemStack.field_190927_a;
+                            return ItemStack.EMPTY;
                         }
                         result.forMatch(presentCalled, tag);
                         auxMatchTotals.merge(result.ingredient, 1, IntMath::checkedAdd);
@@ -231,7 +233,7 @@ public final class GenericRecipe implements ICraftingRecipe {
                     auxResults.add(result);
                 }
                 if (nonAuxiliary) {
-                    return ItemStack.field_190927_a;
+                    return ItemStack.EMPTY;
                 }
             }
         }
@@ -244,12 +246,12 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
         for (final AuxiliaryIngredient<?> ingredient : this.auxiliaryIngredients) {
             if (ingredient.process(auxMatchResults, tag)) {
-                return ItemStack.field_190927_a;
+                return ItemStack.EMPTY;
             }
         }
-        final ItemStack output = this.output.func_190926_b() ? new ItemStack(item) : this.output.func_77946_l();
+        final ItemStack output = this.output.isEmpty() ? new ItemStack(item) : this.output.copy();
         if (!tag.isEmpty()) {
-            output.func_77982_d(tag);
+            output.setTag(tag);
         }
         return output;
     }
@@ -259,13 +261,13 @@ public final class GenericRecipe implements ICraftingRecipe {
     }
 
     @Override
-    public ItemStack func_77572_b(final CraftingInventory inventory) {
+    public ItemStack assemble(final CraftingContainer inventory) {
         final ItemStack result = this.result.get();
-        return result.func_190926_b() ? result : result.func_77946_l();
+        return result.isEmpty() ? result : result.copy();
     }
 
     @Override
-    public ItemStack func_77571_b() {
+    public ItemStack getResultItem() {
         return this.output;
     }
 
@@ -276,9 +278,9 @@ public final class GenericRecipe implements ICraftingRecipe {
 
         boolean doesMatch();
 
-        void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundNBT nbt);
+        void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundTag nbt);
 
-        void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundNBT nbt);
+        void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundTag nbt);
 
         M withParent(final M parent);
     }
@@ -315,7 +317,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
 
         @Override
-        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundNBT nbt) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundTag nbt) {
             this.ingredient.matched(this.input, nbt);
             if (called.add(this.ingredient)) {
                 this.ingredient.present(nbt);
@@ -323,7 +325,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
 
         @Override
-        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundNBT nbt) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundTag nbt) {
             if (!presentCalled.contains(this.ingredient) && !absentCalled.contains(this.ingredient)) {
                 this.ingredient.absent(nbt);
                 absentCalled.add(this.ingredient);
@@ -348,13 +350,13 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
 
         @Override
-        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundNBT nbt) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundTag nbt) {
             super.forMatch(called, nbt);
             this.parent.forMatch(called, nbt);
         }
 
         @Override
-        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundNBT nbt) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundTag nbt) {
             super.notifyAbsence(presentCalled, absentCalled, nbt);
             this.parent.notifyAbsence(presentCalled, absentCalled, nbt);
         }
@@ -397,7 +399,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
 
         @Override
-        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundNBT nbt) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundTag nbt) {
             if (!called.contains(this.ingredient)) {
                 this.ingredient.present(nbt);
                 called.add(this.ingredient);
@@ -405,7 +407,7 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
 
         @Override
-        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundNBT nbt) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundTag nbt) {
             if (!presentCalled.contains(this.ingredient) && !absentCalled.contains(this.ingredient)) {
                 this.ingredient.absent(nbt);
                 absentCalled.add(this.ingredient);
@@ -438,13 +440,13 @@ public final class GenericRecipe implements ICraftingRecipe {
         }
 
         @Override
-        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundNBT nbt) {
+        public void forMatch(final Set<GenericIngredient<?, ?>> called, final CompoundTag nbt) {
             super.forMatch(called, nbt);
             this.parent.forMatch(called, nbt);
         }
 
         @Override
-        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundNBT nbt) {
+        public void notifyAbsence(final Set<GenericIngredient<?, ?>> presentCalled, final Set<GenericIngredient<?, ?>> absentCalled, final CompoundTag nbt) {
             super.notifyAbsence(presentCalled, absentCalled, nbt);
             this.parent.notifyAbsence(presentCalled, absentCalled, nbt);
         }

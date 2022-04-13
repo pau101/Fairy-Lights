@@ -1,10 +1,10 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-
 import javax.annotation.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class InertBasicAuxiliaryIngredient extends BasicAuxiliaryIngredient<Void> {
     public InertBasicAuxiliaryIngredient(final Ingredient ingredient, final boolean isRequired, final int limit) {
@@ -25,7 +25,7 @@ public class InertBasicAuxiliaryIngredient extends BasicAuxiliaryIngredient<Void
     public final void consume(final Void v, final ItemStack ingredient) {}
 
     @Override
-    public final boolean finish(final Void v, final CompoundNBT stack) {
+    public final boolean finish(final Void v, final CompoundTag stack) {
         return false;
     }
 }

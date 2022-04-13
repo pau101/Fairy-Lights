@@ -1,12 +1,13 @@
 package me.paulf.fairylights.util.crafting.ingredient;
 
-import com.google.common.collect.ImmutableList;
-import me.paulf.fairylights.util.crafting.GenericRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-
 import java.util.Collections;
 import java.util.Objects;
+
+import com.google.common.collect.ImmutableList;
+
+import me.paulf.fairylights.util.crafting.GenericRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class BasicRegularIngredient implements RegularIngredient {
     protected final Ingredient ingredient;

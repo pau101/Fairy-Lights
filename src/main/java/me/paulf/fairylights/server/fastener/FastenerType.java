@@ -1,15 +1,15 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
-import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.fastener.accessor.FenceFastenerAccessor;
-import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
-import net.minecraft.nbt.CompoundNBT;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
+import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
+import me.paulf.fairylights.server.fastener.accessor.FenceFastenerAccessor;
+import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
+import net.minecraft.nbt.CompoundTag;
 
 public enum FastenerType {
     BLOCK(BlockFastenerAccessor::new),
@@ -37,16 +37,16 @@ public enum FastenerType {
         return this.supplier.get();
     }
 
-    public static CompoundNBT serialize(final FastenerAccessor accessor) {
-        final CompoundNBT compound = new CompoundNBT();
-        compound.func_74778_a("type", accessor.getType().name);
-        compound.func_218657_a("data", accessor.serialize());
+    public static CompoundTag serialize(final FastenerAccessor accessor) {
+        final CompoundTag compound = new CompoundTag();
+        compound.putString("type", accessor.getType().name);
+        compound.put("data", accessor.serialize());
         return compound;
     }
 
-    public static FastenerAccessor deserialize(final CompoundNBT compound) {
-        final FastenerAccessor accessor = NAME_TO_TYPE.get(compound.func_74779_i("type")).createAccessor();
-        accessor.deserialize(compound.func_74775_l("data"));
+    public static FastenerAccessor deserialize(final CompoundTag compound) {
+        final FastenerAccessor accessor = NAME_TO_TYPE.get(compound.getString("type")).createAccessor();
+        accessor.deserialize(compound.getCompound("data"));
         return accessor;
     }
 }

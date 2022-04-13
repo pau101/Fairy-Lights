@@ -1,12 +1,5 @@
 package me.paulf.fairylights.util.styledstring;
 
-import com.google.common.base.Preconditions;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -15,26 +8,35 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Preconditions;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+
 public final class StyledString implements Comparable<StyledString>, CharSequence {
     private final String value;
 
-    private final Style[] styling;
+    private final FLStyle[] styling;
 
     private int hash;
 
     public StyledString() {
-        this("", new Style());
+        this("", new FLStyle());
     }
 
-    public StyledString(final String value, final Style style) {
+    public StyledString(final String value, final FLStyle style) {
         Objects.requireNonNull(value, "value");
         Objects.requireNonNull(style, "style");
         this.value = value;
-        this.styling = new Style[value.length()];
+        this.styling = new FLStyle[value.length()];
         Arrays.fill(this.styling, style);
     }
 
-    public StyledString(final String value, final Style[] styling) {
+    public StyledString(final String value, final FLStyle[] styling) {
         this.value = value;
         this.styling = Objects.requireNonNull(styling, "styling");
     }
@@ -53,7 +55,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value.charAt(index);
     }
 
-    public Style styleAt(final int index) {
+    public FLStyle styleAt(final int index) {
         return this.styling[index];
     }
 
@@ -73,7 +75,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value.getBytes();
     }
 
-    public Style[] getStyling() {
+    public FLStyle[] getStyling() {
         return this.styling.clone();
     }
 
@@ -111,9 +113,9 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         final int len2 = anotherString.value.length();
         final int lim = Math.min(len1, len2);
         final char[] v1 = this.toCharArray();
-        final Style[] st1 = this.styling;
+        final FLStyle[] st1 = this.styling;
         final char[] v2 = anotherString.toCharArray();
-        final Style[] st2 = anotherString.styling;
+        final FLStyle[] st2 = anotherString.styling;
         int k = 0;
         while (k < lim) {
             final char c1 = v1[k];
@@ -121,8 +123,8 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
             if (c1 != c2) {
                 return c1 - c2;
             }
-            final Style s1 = st1[k];
-            final Style s2 = st2[k];
+            final FLStyle s1 = st1[k];
+            final FLStyle s2 = st2[k];
             final int c = s1.compareTo(s2);
             if (c != 0) {
                 return c;
@@ -137,9 +139,9 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         final int len2 = anotherString.value.length();
         final int lim = Math.min(len1, len2);
         final char[] v1 = this.toCharArray();
-        final Style[] st1 = this.styling;
+        final FLStyle[] st1 = this.styling;
         final char[] v2 = anotherString.toCharArray();
-        final Style[] st2 = anotherString.styling;
+        final FLStyle[] st2 = anotherString.styling;
         int k = 0;
         while (k < lim) {
             char c1 = v1[k];
@@ -155,8 +157,8 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
                     }
                 }
             }
-            final Style s1 = st1[k];
-            final Style s2 = st2[k];
+            final FLStyle s1 = st1[k];
+            final FLStyle s2 = st2[k];
             final int c = s1.compareTo(s2);
             if (c != 0) {
                 return c;
@@ -192,10 +194,10 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     public boolean startsWith(final StyledString prefix, final int toffset) {
         final char[] ta = this.toCharArray();
-        final Style[] s1 = this.styling;
+        final FLStyle[] s1 = this.styling;
         int to = toffset;
         final char[] pa = prefix.toCharArray();
-        final Style[] s2 = prefix.styling;
+        final FLStyle[] s2 = prefix.styling;
         int po = 0;
         int pc = prefix.value.length();
         if (toffset < 0 || toffset > this.value.length() - pc) {
@@ -241,11 +243,11 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value.indexOf(chr, fromIndex);
     }
 
-    public int indexOf(final char chr, final Style style) {
+    public int indexOf(final char chr, final FLStyle style) {
         return this.indexOf(chr, 0, style);
     }
 
-    public int indexOf(final char chr, int fromIndex, final Style style) {
+    public int indexOf(final char chr, int fromIndex, final FLStyle style) {
         final int max = this.length();
         if (fromIndex < 0) {
             fromIndex = 0;
@@ -269,11 +271,11 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value.lastIndexOf(chr, fromIndex);
     }
 
-    public int lastIndexOf(final char chr, final Style style) {
+    public int lastIndexOf(final char chr, final FLStyle style) {
         return this.lastIndexOf(chr, this.length() - 1, style);
     }
 
-    public int lastIndexOf(final char chr, final int fromIndex, final Style style) {
+    public int lastIndexOf(final char chr, final int fromIndex, final FLStyle style) {
         final char[] value = this.toCharArray();
         int i = Math.min(fromIndex, this.length() - 1);
         for (; i >= 0; i--) {
@@ -298,9 +300,9 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     public int indexOf(final StyledString str, int fromIndex) {
         final char[] source = this.toCharArray();
-        final Style[] sourceStyling = this.styling;
+        final FLStyle[] sourceStyling = this.styling;
         final char[] target = str.toCharArray();
-        final Style[] targetStyling = str.styling;
+        final FLStyle[] targetStyling = str.styling;
         final int sourceCount = this.length();
         final int targetCount = str.length();
         if (fromIndex >= sourceCount) {
@@ -313,7 +315,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
             return fromIndex;
         }
         final char first = target[0];
-        final Style firstStyling = targetStyling[0];
+        final FLStyle firstStyling = targetStyling[0];
         final int max = fromIndex + sourceCount - targetCount;
         for (int i = fromIndex + fromIndex; i <= max; i++) {
             if (source[i] != first) {
@@ -346,9 +348,9 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     public int lastIndexOf(final StyledString str, int fromIndex) {
         final char[] source = this.toCharArray();
-        final Style[] sourceStyling = this.styling;
+        final FLStyle[] sourceStyling = this.styling;
         final char[] target = str.toCharArray();
-        final Style[] targetStyling = str.styling;
+        final FLStyle[] targetStyling = str.styling;
         final int sourceCount = this.length();
         final int targetCount = str.length();
         final int rightIndex = sourceCount - targetCount;
@@ -363,7 +365,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         }
         final int strLastIndex = targetCount - 1;
         final char strLastChar = target[strLastIndex];
-        final Style strLastStyling = targetStyling[strLastIndex];
+        final FLStyle strLastStyling = targetStyling[strLastIndex];
         final int min = fromIndex + targetCount - 1;
         int i = min + fromIndex;
                 startSearchForLastChar:
@@ -396,7 +398,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
 
     public StyledString substring(final int beginIndex, final int endIndex) {
         final String value = this.value.substring(beginIndex, endIndex);
-        final Style[] styling = new Style[endIndex - beginIndex];
+        final FLStyle[] styling = new FLStyle[endIndex - beginIndex];
         System.arraycopy(this.styling, beginIndex, styling, 0, styling.length);
         return new StyledString(value, styling);
     }
@@ -411,7 +413,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
             return this;
         }
         final String value = this.value.concat(str.value);
-        final Style[] styling = new Style[this.styling.length + str.styling.length];
+        final FLStyle[] styling = new FLStyle[this.styling.length + str.styling.length];
         System.arraycopy(this.styling, 0, styling, 0, this.styling.length);
         System.arraycopy(str.styling, 0, styling, this.styling.length, str.styling.length);
         return new StyledString(value, styling);
@@ -470,11 +472,11 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return st > 0 || len < this.value.length() ? this.substring(st, len) : this;
     }
 
-    public StyledString withStyling(final Style style) {
+    public StyledString withStyling(final FLStyle style) {
         return this.withStyling(0, this.length(), style);
     }
 
-    public StyledString withStyling(final int beginIndex, final int endIndex, final Style style) {
+    public StyledString withStyling(final int beginIndex, final int endIndex, final FLStyle style) {
         if (beginIndex < 0) {
             throw new StringIndexOutOfBoundsException(beginIndex);
         }
@@ -486,19 +488,19 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
             throw new StringIndexOutOfBoundsException(subLen);
         }
         final String value = this.value;
-        final Style[] styling = this.styling;
-        final Style[] newStyling = new Style[styling.length];
+        final FLStyle[] styling = this.styling;
+        final FLStyle[] newStyling = new FLStyle[styling.length];
         System.arraycopy(styling, 0, newStyling, 0, beginIndex);
         System.arraycopy(styling, endIndex, newStyling, endIndex, styling.length - endIndex);
         Arrays.fill(newStyling, beginIndex, endIndex, style);
         return new StyledString(value, newStyling);
     }
 
-    public StyledString withStyling(final TextFormatting formatting, final boolean state) {
+    public StyledString withStyling(final ChatFormatting formatting, final boolean state) {
         return this.withStyling(0, this.length(), formatting, state);
     }
 
-    public StyledString withStyling(final int beginIndex, final int endIndex, final TextFormatting formatting, final boolean state) {
+    public StyledString withStyling(final int beginIndex, final int endIndex, final ChatFormatting formatting, final boolean state) {
         if (beginIndex < 0) {
             throw new StringIndexOutOfBoundsException(beginIndex);
         }
@@ -510,8 +512,8 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
             throw new StringIndexOutOfBoundsException(subLen);
         }
         final String value = this.value;
-        final Style[] styling = this.styling;
-        final Style[] newStyling = new Style[styling.length];
+        final FLStyle[] styling = this.styling;
+        final FLStyle[] newStyling = new FLStyle[styling.length];
         System.arraycopy(styling, 0, newStyling, 0, beginIndex);
         System.arraycopy(styling, endIndex, newStyling, endIndex, styling.length - endIndex);
         for (int i = beginIndex; i < endIndex; i++) {
@@ -525,29 +527,29 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value;
     }
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         final String value = this.value;
         if (value.length() == 0) {
-            return new StringTextComponent("");
+            return new TextComponent("");
         }
-        IFormattableTextComponent text = null;
-        final Style[] styling = this.styling;
+        TextComponent text = null;
+        final FLStyle[] styling = this.styling;
         final StringBuilder bob = new StringBuilder();
-        Style currentStyle = styling[0];
+        FLStyle currentStyle = styling[0];
         for (int i = 0; ; ) {
-            final Style style = i < value.length() ? styling[i] : null;
+            final FLStyle style = i < value.length() ? styling[i] : null;
             if (!currentStyle.equals(style)) {
-                final IFormattableTextComponent t = new StringTextComponent(bob.toString());
-                t.func_240699_a_(currentStyle.getColor());
-                if (currentStyle.isObfuscated()) t.func_240699_a_(TextFormatting.OBFUSCATED);
-                if (currentStyle.isBold()) t.func_240699_a_(TextFormatting.BOLD);
-                if (currentStyle.isStrikethrough()) t.func_240699_a_(TextFormatting.STRIKETHROUGH);
-                if (currentStyle.isUnderline()) t.func_240699_a_(TextFormatting.UNDERLINE);
-                if (currentStyle.isItalic()) t.func_240699_a_(TextFormatting.ITALIC);
+                TextComponent t = new TextComponent(bob.toString());
+                t = (TextComponent) ComponentUtils.mergeStyles(t, Style.EMPTY.withColor(currentStyle.getColor()));
+                if (currentStyle.isObfuscated()) t = (TextComponent) ComponentUtils.mergeStyles(t, Style.EMPTY.withObfuscated(true));
+                if (currentStyle.isBold()) t = (TextComponent) ComponentUtils.mergeStyles(t, Style.EMPTY.withBold(true));
+                if (currentStyle.isStrikethrough()) t = (TextComponent) ComponentUtils.mergeStyles(t, Style.EMPTY.withStrikethrough(true));
+                if (currentStyle.isUnderline()) t = (TextComponent) ComponentUtils.mergeStyles(t, Style.EMPTY.withUnderlined(true));
+                if (currentStyle.isItalic()) t = (TextComponent) ComponentUtils.mergeStyles(t, Style.EMPTY.withItalic(true));
                 if (text == null) {
                     text = t;
                 } else {
-                    text.func_230529_a_(t);
+                    text.append(t);
                 }
                 bob.setLength(0);
             }
@@ -569,30 +571,30 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value.toCharArray();
     }
 
-    public static CompoundNBT serialize(final StyledString str) {
-        final CompoundNBT compound = new CompoundNBT();
-        compound.func_74778_a("value", str.value);
-        compound.func_74783_a("styling", Arrays.stream(str.styling).mapToInt(Style::packed).toArray());
+    public static CompoundTag serialize(final StyledString str) {
+        final CompoundTag compound = new CompoundTag();
+        compound.putString("value", str.value);
+        compound.putIntArray("styling", Arrays.stream(str.styling).mapToInt(FLStyle::packed).toArray());
         return compound;
     }
 
-    public static StyledString deserialize(final CompoundNBT compound) {
-        final String value = compound.func_74779_i("value");
-        Style[] styling = Arrays.stream(compound.func_74759_k("styling"))
-            .mapToObj(Style::new)
-            .toArray(Style[]::new);
+    public static StyledString deserialize(final CompoundTag compound) {
+        final String value = compound.getString("value");
+        FLStyle[] styling = Arrays.stream(compound.getIntArray("styling"))
+            .mapToObj(FLStyle::new)
+            .toArray(FLStyle[]::new);
         if (styling.length != value.length()) {
             styling = Arrays.stream(Arrays.copyOf(styling, value.length()))
-                .map(s -> Optional.ofNullable(s).orElseGet(Style::new))
-                .toArray(Style[]::new);
+                .map(s -> Optional.ofNullable(s).orElseGet(FLStyle::new))
+                .toArray(FLStyle[]::new);
         }
         return new StyledString(value, styling);
     }
 
     public static StyledString valueOf(final String str) {
         final StyledStringBuilder bldr = new StyledStringBuilder(str.length());
-        final Style plainStyle = new Style();
-        Style style = plainStyle;
+        final FLStyle plainStyle = new FLStyle();
+        FLStyle style = plainStyle;
         final char[] chars = str.toCharArray();
         boolean hasFToken = false;
         for (final char chr : chars) {
@@ -602,7 +604,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
                 final char ch = Character.toLowerCase(chr);
                 final int colorIndex = "0123456789abcdef".indexOf(ch);
                 if (colorIndex != -1) {
-                    final TextFormatting color = TextFormatting.func_175744_a(colorIndex);
+                    final ChatFormatting color = ChatFormatting.getById(colorIndex);
                     if (color != null) {
                         style = style.withColor(color);
                     }
@@ -630,8 +632,8 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return bldr.toStyledString();
     }
 
-    public static int getColor(final TextFormatting color) {
-        final Integer rgb = color.func_211163_e();
+    public static int getColor(final ChatFormatting color) {
+        final Integer rgb = color.getColor();
         Preconditions.checkNotNull(rgb, "Must be a color");
         return rgb;
     }

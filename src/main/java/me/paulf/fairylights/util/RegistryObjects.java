@@ -1,6 +1,6 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public final class RegistryObjects {
@@ -12,7 +12,7 @@ public final class RegistryObjects {
 
     public static boolean namespaceEquals(final IForgeRegistryEntry<?> entry, final String namespace) {
         final ResourceLocation name = entry.getRegistryName();
-        return name != null && namespace.equals(name.func_110624_b());
+        return name != null && namespace.equals(name.getNamespace());
     }
 
     public static ResourceLocation getName(final IForgeRegistryEntry<?> type) {

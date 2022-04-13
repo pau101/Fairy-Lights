@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class WitchLightModel extends ColorLightModel {
@@ -23,7 +23,7 @@ public class WitchLightModel extends ColorLightModel {
         this.unlit.func_78792_a(belt);
         final ModelRenderer buckle = new ModelRenderer(this, 0, 27);
         buckle.func_78793_a(0, -0.6F, -2.9F);
-        buckle.field_78796_g = -Mth.HALF_PI;
+        buckle.field_78796_g = -FLMath.HALF_PI;
         buckle.func_228301_a_(0, 0, -1, 1, 2, 2, 0);
         belt.func_78792_a(buckle);
         final ModelRenderer beltPoke = new ModelRenderer(this, 66, 4);

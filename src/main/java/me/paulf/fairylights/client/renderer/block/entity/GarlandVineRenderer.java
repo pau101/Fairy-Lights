@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.server.connection.GarlandVineConnection;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import me.paulf.fairylights.util.RandomArray;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -57,7 +57,7 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
             final float size = 4.0F;
             this.root.func_228300_a_(-size / 2.0F, -size / 2.0F, -size / 2.0F, size, size, size);
             final ModelRenderer cross = new ModelRenderer(this, u, v);
-            cross.field_78808_h = Mth.HALF_PI;
+            cross.field_78808_h = FLMath.HALF_PI;
             cross.func_228300_a_(-4.0F, -4.0F, 0.0F, 8.0F, 8.0F, 0.0F);
             cross.func_228300_a_(-4.0F, 0.0F, -4.0F, 8.0F, 0.0F, 8.0F);
             this.root.func_78792_a(cross);

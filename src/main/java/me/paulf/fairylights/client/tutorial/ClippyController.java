@@ -1,36 +1,35 @@
 package me.paulf.fairylights.client.tutorial;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import me.paulf.fairylights.client.FLClientConfig;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.LazyItemStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.toasts.IToast;
-import net.minecraft.client.gui.toasts.ToastGui;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.config.ModConfig;
-
-import javax.annotation.Nullable;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import net.minecraft.client.gui.toasts.IToast.Visibility;
+import net.minecraftforge.fml.config.IConfigEvent;
 
 public class ClippyController {
     private final ImmutableMap<String, Supplier<State>> states = Stream.<Supplier<State>>of(
@@ -43,18 +42,18 @@ public class ClippyController {
 
     public void init(final IEventBus modBus) {
         MinecraftForge.EVENT_BUS.addListener((final WorldEvent.Load event) -> {
-            if (event.getWorld() instanceof ClientWorld) {
+            if (event.getWorld() instanceof ClientLevel) {
                 this.reload();
             }
         });
         MinecraftForge.EVENT_BUS.addListener((final TickEvent.ClientTickEvent event) -> {
-            final Minecraft mc = Minecraft.func_71410_x();
-            if (event.phase == TickEvent.Phase.END && !mc.func_147113_T() && mc.field_71439_g != null) {
-                this.state.tick(mc.field_71439_g, this);
+            final Minecraft mc = Minecraft.getInstance();
+            if (event.phase == TickEvent.Phase.END && !mc.isPaused() && mc.player != null) {
+                this.state.tick(mc.player, this);
             }
         });
-        modBus.<ModConfig.Loading>addListener(e -> {
-            if (e.getConfig().getSpec() == FLClientConfig.SPEC && Minecraft.func_71410_x().field_71439_g != null) {
+        modBus.<IConfigEvent>addListener(e -> {
+            if (e.getConfig().getSpec() == FLClientConfig.SPEC && Minecraft.getInstance().player != null) {
                 this.reload();
             }
         });
@@ -81,7 +80,7 @@ public class ClippyController {
 
         default void start() {}
 
-        default void tick(final ClientPlayerEntity player, final ClippyController controller) {}
+        default void tick(final LocalPlayer player, final ClippyController controller) {}
 
         default void stop() {}
     }
@@ -93,8 +92,8 @@ public class ClippyController {
         }
 
         @Override
-        public void tick(final ClientPlayerEntity player, final ClippyController controller) {
-            if (player.field_71071_by.func_199712_a(FLCraftingRecipes.LIGHTS)) {
+        public void tick(final LocalPlayer player, final ClippyController controller) {
+            if (player.getInventory().hasTag(FLCraftingRecipes.LIGHTS)) {
                 controller.setState(new CraftHangingLightsState());
             }
         }
@@ -104,9 +103,9 @@ public class ClippyController {
         final Balloon balloon;
 
         CraftHangingLightsState() {
-            this.balloon = new Balloon(new LazyItemStack(FLItems.HANGING_LIGHTS, Item::func_190903_i),
-                new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.title"),
-                new TranslationTextComponent("tutorial.fairylights.craft_hanging_lights.description")
+            this.balloon = new Balloon(new LazyItemStack(FLItems.HANGING_LIGHTS, Item::getDefaultInstance),
+                new TranslatableComponent("tutorial.fairylights.craft_hanging_lights.title"),
+                new TranslatableComponent("tutorial.fairylights.craft_hanging_lights.description")
             );
         }
 
@@ -117,18 +116,18 @@ public class ClippyController {
 
         @Override
         public void start() {
-            Minecraft.func_71410_x().func_193033_an().func_192988_a(this.balloon);
+            Minecraft.getInstance().getToasts().addToast(this.balloon);
         }
 
         @Override
-        public void tick(final ClientPlayerEntity player, final ClippyController controller) {
-            if (!player.field_71071_by.func_199712_a(FLCraftingRecipes.LIGHTS) &&
-                    !player.field_71071_by.func_70445_o().func_77973_b().func_206844_a(FLCraftingRecipes.LIGHTS)) {
+        public void tick(final LocalPlayer player, final ClippyController controller) {
+            if (!player.getInventory().hasTag(FLCraftingRecipes.LIGHTS) &&
+                    !player.getInventory().getItemStack().getItem().isIn(FLCraftingRecipes.LIGHTS)) {
                 controller.setState(new NoProgressState());
             } else if (FLItems.HANGING_LIGHTS.filter(i ->
-                    player.field_71071_by.func_70445_o().func_77973_b() == i ||
-                    player.field_71071_by.func_70431_c(new ItemStack(i)) ||
-                    player.func_146107_m().func_77444_a(Stats.field_188066_af.func_199076_b(i)) > 0).isPresent()) {
+                    player.getInventory().getItemStack().getItem() == i ||
+                    player.getInventory().hasItemStack(new ItemStack(i)) ||
+                    player.getStats().getValue(Stats.ITEM_CRAFTED.get(i)) > 0).isPresent()) {
                 controller.setState(new CompleteState());
             }
         }
@@ -146,14 +145,14 @@ public class ClippyController {
         }
     }
 
-    static class Balloon implements IToast {
+    static class Balloon implements Toast {
         final LazyItemStack stack;
-        final ITextComponent title;
+        final Component title;
         @Nullable
-        final ITextComponent subtitle;
-        IToast.Visibility visibility;
+        final Component subtitle;
+        Toast.Visibility visibility;
 
-        Balloon(final LazyItemStack stack, final ITextComponent title, @Nullable final ITextComponent subtitle) {
+        Balloon(final LazyItemStack stack, final Component title, @Nullable final Component subtitle) {
             this.stack = stack;
             this.title = title;
             this.subtitle = subtitle;
@@ -161,20 +160,23 @@ public class ClippyController {
         }
 
         void hide() {
-            this.visibility = IToast.Visibility.HIDE;
+            this.visibility = Toast.Visibility.HIDE;
         }
 
+        /**
+         *  We might have to rewrite this using the new shader system.
+         * */
         @Override
-        public Visibility func_230444_a_(final MatrixStack stack, final ToastGui toastGui, final long delta) {
-            toastGui.func_192989_b().func_110434_K().func_110577_a(field_193654_a);
+        public Visibility render(final PoseStack stack, final ToastComponent toastGui, final long delta) {
+            toastGui.getMinecraft().getTextureManager().bindForSetup(Toast.TEXTURE);
             RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-            toastGui.func_238474_b_(stack, 0, 0, 0, 96, 160, 32);
-            toastGui.func_192989_b().func_175599_af().func_184391_a(null, this.stack.get(), 6 + 2, 6 + 2);
+            toastGui.blit(stack, 0, 0, 0, 96, 160, 32);
+            toastGui.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(this.stack.get(), 6 + 2, 6 + 2);
             if (this.subtitle == null) {
-                toastGui.func_192989_b().field_71466_p.func_243248_b(stack, this.title, 30.0F, 12.0F, 0xFF500050);
+                toastGui.getMinecraft().font.draw(stack, this.title, 30.0F, 12.0F, 0xFF500050);
             } else {
-                toastGui.func_192989_b().field_71466_p.func_243248_b(stack, this.title, 30.0F, 7.0F, 0xFF500050);
-                toastGui.func_192989_b().field_71466_p.func_243248_b(stack, this.subtitle, 30.0F, 18.0F, 0xFF000000);
+                toastGui.getMinecraft().font.draw(stack, this.title, 30.0F, 7.0F, 0xFF500050);
+                toastGui.getMinecraft().font.draw(stack, this.subtitle, 30.0F, 18.0F, 0xFF000000);
             }
             return this.visibility;
         }

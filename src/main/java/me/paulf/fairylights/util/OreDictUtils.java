@@ -1,37 +1,37 @@
 package me.paulf.fairylights.util;
 
+import java.util.stream.Collectors;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
-import net.minecraftforge.common.Tags;
 
-import java.util.stream.Collectors;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.Tags;
 
 public final class OreDictUtils {
     private OreDictUtils() {}
 
     public static boolean isDye(final ItemStack stack) {
-        if (!stack.func_190926_b()) {
-            if (stack.func_77973_b() instanceof DyeItem) {
+        if (!stack.isEmpty()) {
+            if (stack.getItem() instanceof DyeItem) {
                 return true;
             }
-            return stack.func_77973_b().func_206844_a(Tags.Items.DYES);
+            return Tags.Items.DYES.contains(stack.getItem());
         }
         return false;
     }
 
     public static DyeColor getDyeColor(final ItemStack stack) {
-        if (!stack.func_190926_b()) {
-            if (stack.func_77973_b() instanceof DyeItem) {
-                return ((DyeItem) stack.func_77973_b()).func_195962_g();
+        if (!stack.isEmpty()) {
+            if (stack.getItem() instanceof DyeItem) {
+                return ((DyeItem) stack.getItem()).getDyeColor();
             }
             for (final Dye dye : Dye.values()) {
-                if (stack.func_77973_b().func_206844_a(dye.getName())) {
+                if (dye.getName().contains(stack.getItem())) {
                     return dye.getColor();
                 }
             }
@@ -50,7 +50,7 @@ public final class OreDictUtils {
     private static ImmutableMultimap<DyeColor, ItemStack> getDyeItemStacks() {
         final ImmutableMultimap.Builder<DyeColor, ItemStack> bob = ImmutableMultimap.builder();
         for (final Dye dye : Dye.values()) {
-            bob.putAll(dye.getColor(), dye.getName().func_230236_b_().stream().map(ItemStack::new).collect(Collectors.toList()));
+            bob.putAll(dye.getColor(), dye.getName().getValues().stream().map(ItemStack::new).collect(Collectors.toList()));
         }
         return bob.build();
     }
@@ -73,16 +73,16 @@ public final class OreDictUtils {
         RED(Tags.Items.DYES_RED, DyeColor.RED),
         BLACK(Tags.Items.DYES_BLACK, DyeColor.BLACK);
 
-        private final ITag<Item> name;
+        private final Tag<Item> name;
 
         private final DyeColor color;
 
-        Dye(final ITag<Item> name, final DyeColor color) {
+        Dye(final Tag<Item> name, final DyeColor color) {
             this.name = name;
             this.color = color;
         }
 
-        private ITag<Item> getName() {
+        private Tag<Item> getName() {
             return this.name;
         }
 

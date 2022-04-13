@@ -1,11 +1,11 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.Direction;
+import javax.annotation.Nullable;
+
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nullable;
 
 public final class EmptyProvider implements ICapabilityProvider {
     @Override

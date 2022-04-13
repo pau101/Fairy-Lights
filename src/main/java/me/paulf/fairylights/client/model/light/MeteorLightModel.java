@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.MeteorLightBehavior;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
@@ -36,7 +36,7 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
                     stack.func_227862_a_(rodScale, 1.0F, rodScale);
                 }
             });
-            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, MathHelper.func_76126_a(i * Mth.PI / lightCount) * 0.1F);
+            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, MathHelper.func_76126_a(i * FLMath.PI / lightCount) * 0.1F);
             this.lights[i] = light;
         }
     }

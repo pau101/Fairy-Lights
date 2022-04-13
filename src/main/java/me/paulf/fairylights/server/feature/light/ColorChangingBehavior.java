@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.feature.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -44,7 +44,7 @@ public class ColorChangingBehavior implements ColorLightBehavior {
     }
 
     private float get(final float[] values, final float delta) {
-        final float p = this.powered ? Mth.mod(Util.func_211177_b() * (20.0F / 1000.0F) * this.rate, values.length) : 0.0F;
+        final float p = this.powered ? FLMath.mod(Util.func_211177_b() * (20.0F / 1000.0F) * this.rate, values.length) : 0.0F;
         final int i = (int) p;
         return MathHelper.func_219799_g(p - i, values[i % values.length], values[(i + 1) % values.length]);
     }
@@ -88,7 +88,7 @@ public class ColorChangingBehavior implements ColorLightBehavior {
         if (list.size() == 1) {
             return list.func_186858_c(0);
         }
-        final float p = Mth.mod(Util.func_211177_b() * (20.0F / 1000.0F) * (list.size() / 960.0F), list.size());
+        final float p = FLMath.mod(Util.func_211177_b() * (20.0F / 1000.0F) * (list.size() / 960.0F), list.size());
         final int i = (int) p;
         final int c0 = list.func_186858_c(i % list.size());
         final float r0 = (c0 >> 16 & 0xFF) / 255.0F;

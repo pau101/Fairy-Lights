@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.model.light;
 
 import me.paulf.fairylights.server.feature.light.BrightnessLightBehavior;
 import me.paulf.fairylights.server.feature.light.Light;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class CandleLanternModel extends LightModel<BrightnessLightBehavior> {
@@ -21,8 +21,8 @@ public class CandleLanternModel extends LightModel<BrightnessLightBehavior> {
             final ModelRenderer frame = new ModelRenderer(this, 4 * i + 47, 27);
             frame.func_228300_a_(-0.5F, 0, -0.5F, 1, 6, 1);
             frame.func_78793_a(2.1F * ((i & 2) == 0 ? 1 : -1), -8F, 2.1F * ((i + 1 & 2) == 0 ? 1 : -1));
-            frame.field_78795_f = 5 * Mth.DEG_TO_RAD;
-            frame.field_78796_g = (90 * i + 45) * Mth.DEG_TO_RAD;
+            frame.field_78795_f = 5 * FLMath.DEG_TO_RAD;
+            frame.field_78796_g = (90 * i + 45) * FLMath.DEG_TO_RAD;
             this.unlit.func_78792_a(frame);
         }
         this.lit.func_78784_a(63, 26);

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.server.connection.Connection;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
@@ -35,7 +35,7 @@ public abstract class ConnectionRenderer<C extends Connection> {
                 this.model.root.field_78800_c = it.getX(0.0F) * 16.0F;
                 this.model.root.field_78797_d = it.getY(0.0F) * 16.0F;
                 this.model.root.field_78798_e = it.getZ(0.0F) * 16.0F;
-                this.model.root.field_78796_g = Mth.PI / 2.0F - it.getYaw();
+                this.model.root.field_78796_g = FLMath.PI / 2.0F - it.getYaw();
                 this.model.root.field_78795_f = -it.getPitch();
                 this.model.root.field_78808_h = 0.0F;
                 this.model.length = it.getLength() * 16.0F;

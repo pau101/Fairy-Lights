@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -40,7 +40,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
             }
             matrix.func_227863_a_(Vector3f.field_229179_b_.func_229193_c_(light.getRoll(delta)));
             if (light.getVariant() != SimpleLightVariant.FAIRY_LIGHT) { // FIXME
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
+                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229193_c_(FLMath.mod(FLMath.hash(i) * FLMath.DEG_TO_RAD, FLMath.TAU) + FLMath.PI / 4.0F));
             }
             matrix.func_227861_a_(0.0D, -light.getDescent(), 0.0D);
             this.lights.render(matrix, data, light, i, delta, packedLight, packedOverlay);

@@ -1,10 +1,10 @@
 package me.paulf.fairylights.util.matrix;
 
-import net.minecraft.util.math.vector.Vector3d;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Objects;
+
+import com.mojang.math.Vector3d;
 
 public final class MatrixStack implements Matrix {
     private final Deque<Matrix4> stack;

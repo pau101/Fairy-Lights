@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class PaperLanternModel extends ColorLightModel {
@@ -15,7 +15,7 @@ public class PaperLanternModel extends ColorLightModel {
             final boolean straight = (i & 1) == 0;
             final ModelRenderer hSupport = new ModelRenderer(this, 28, 34);
             hSupport.func_228300_a_(0, 0, -0.5F, straight ? 4 : 5, 7, 1);
-            hSupport.field_78796_g = 45 * i * Mth.DEG_TO_RAD;
+            hSupport.field_78796_g = 45 * i * FLMath.DEG_TO_RAD;
             hSupport.field_78797_d = -7;
             this.unlit.func_78792_a(hSupport);
         }

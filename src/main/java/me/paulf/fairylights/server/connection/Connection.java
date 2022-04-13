@@ -1,10 +1,17 @@
 package me.paulf.fairylights.server.connection;
 
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
+import com.mojang.math.Vector3d;
+
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.collision.Collidable;
 import me.paulf.fairylights.server.collision.CollidableList;
 import me.paulf.fairylights.server.collision.FeatureCollisionTree;
 import me.paulf.fairylights.server.collision.Intersection;
+import me.paulf.fairylights.server.connection.Connection.Segment;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
@@ -17,25 +24,22 @@ import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.NBTSerializable;
 import me.paulf.fairylights.util.Utils;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.core.Direction;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.util.Constants.NBT;
-
-import javax.annotation.Nullable;
-import java.util.UUID;
 
 public abstract class Connection implements NBTSerializable {
     public static final int MAX_LENGTH = 32;
@@ -59,7 +63,7 @@ public abstract class Connection implements NBTSerializable {
     @Nullable
     private FastenerAccessor prevDestination;
 
-    protected World world;
+    protected Level world;
 
     @Nullable
     private Catenary catenary;
@@ -79,7 +83,7 @@ public abstract class Connection implements NBTSerializable {
 
     private boolean drop;
 
-    public Connection(final ConnectionType<?> type, final World world, final Fastener<?> fastener, final UUID uuid) {
+    public Connection(final ConnectionType<?> type, final Level world, final Fastener<?> fastener, final UUID uuid) {
         this.type = type;
         this.world = world;
         this.fastener = fastener;
@@ -101,11 +105,11 @@ public abstract class Connection implements NBTSerializable {
         return this.prevCatenary == null ? this.catenary : this.prevCatenary;
     }
 
-    public void setWorld(final World world) {
+    public void setWorld(final Level world) {
         this.world = world;
     }
 
-    public final World getWorld() {
+    public final Level getWorld() {
         return this.world;
     }
 
@@ -149,9 +153,9 @@ public abstract class Connection implements NBTSerializable {
 
     public ItemStack getItemStack() {
         final ItemStack stack = new ItemStack(this.getType().getItem());
-        final CompoundNBT tagCompound = this.serializeLogic();
+        final CompoundTag tagCompound = this.serializeLogic();
         if (!tagCompound.isEmpty()) {
-            stack.func_77982_d(tagCompound);
+            stack.setTag(tagCompound);
         }
         return stack;
     }
@@ -164,8 +168,8 @@ public abstract class Connection implements NBTSerializable {
         return this.fastener.isMoving() || this.destination.get(this.world, false).filter(Fastener::isMoving).isPresent();
     }
 
-    public final boolean isModifiable(final PlayerEntity player) {
-        return this.world.func_175660_a(player, this.fastener.getPos());
+    public final boolean isModifiable(final Player player) {
+        return this.world.mayInteract(player, this.fastener.getPos());
     }
 
     public final void remove() {
@@ -328,7 +332,7 @@ public abstract class Connection implements NBTSerializable {
         }
         final float r = this.getRadius();
         final Catenary.SegmentIterator it = this.catenary.iterator();
-        final AxisAlignedBB[] bounds = new AxisAlignedBB[count - 1];
+        final AABB[] bounds = new AABB[count - 1];
         int index = 0;
         while (it.next()) {
             final float x0 = it.getX(0.0F);
@@ -337,44 +341,44 @@ public abstract class Connection implements NBTSerializable {
             final float x1 = it.getX(1.0F);
             final float y1 = it.getY(1.0F);
             final float z1 = it.getZ(1.0F);
-            bounds[index++] = new AxisAlignedBB(
-                origin.field_72450_a + x0, origin.field_72448_b + y0, origin.field_72449_c + z0,
-                origin.field_72450_a + x1, origin.field_72448_b + y1, origin.field_72449_c + z1
-            ).func_186662_g(r);
+            bounds[index++] = new AABB(
+                origin.x + x0, origin.y + y0, origin.z + z0,
+                origin.x + x1, origin.y + y1, origin.z + z1
+            ).inflate(r);
         }
         collision.add(FeatureCollisionTree.build(CORD_FEATURE, i -> Segment.INSTANCE, i -> bounds[i], 1, bounds.length - 2));
     }
 
-    public void deserialize(final Fastener<?> destination, final CompoundNBT compound, final boolean drop) {
+    public void deserialize(final Fastener<?> destination, final CompoundTag compound, final boolean drop) {
         this.destination = destination.createAccessor();
         this.drop = drop;
         this.deserializeLogic(compound);
     }
 
     @Override
-    public CompoundNBT serialize() {
-        final CompoundNBT compound = new CompoundNBT();
-        compound.func_218657_a("destination", FastenerType.serialize(this.destination));
-        compound.func_218657_a("logic", this.serializeLogic());
-        compound.func_74776_a("slack", this.slack);
-        if (!this.drop) compound.func_74757_a("drop", false);
+    public CompoundTag serialize() {
+        final CompoundTag compound = new CompoundTag();
+        compound.put("destination", FastenerType.serialize(this.destination));
+        compound.put("logic", this.serializeLogic());
+        compound.putFloat("slack", this.slack);
+        if (!this.drop) compound.putBoolean("drop", false);
         return compound;
     }
 
     @Override
-    public void deserialize(final CompoundNBT compound) {
-        this.destination = FastenerType.deserialize(compound.func_74775_l("destination"));
-        this.deserializeLogic(compound.func_74775_l("logic"));
-        this.slack = compound.func_150297_b("slack", NBT.TAG_ANY_NUMERIC) ? compound.func_74760_g("slack") : 1;
-        this.drop = !compound.func_150297_b("drop", NBT.TAG_ANY_NUMERIC) || compound.func_74767_n("drop");
+    public void deserialize(final CompoundTag compound) {
+        this.destination = FastenerType.deserialize(compound.getCompound("destination"));
+        this.deserializeLogic(compound.getCompound("logic"));
+        this.slack = compound.contains("slack", CompoundTag.TAG_ANY_NUMERIC) ? compound.getFloat("slack") : 1;
+        this.drop = !compound.contains("drop", CompoundTag.TAG_ANY_NUMERIC) || compound.getBoolean("drop");
         this.updateCatenary = true;
     }
 
-    public CompoundNBT serializeLogic() {
-        return new CompoundNBT();
+    public CompoundTag serializeLogic() {
+        return new CompoundTag();
     }
 
-    public void deserializeLogic(final CompoundNBT compound) {}
+    public void deserializeLogic(final CompoundTag compound) {}
 
     static class Segment implements Feature {
         static final Segment INSTANCE = new Segment();

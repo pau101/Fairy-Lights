@@ -1,14 +1,15 @@
 package me.paulf.fairylights.util;
 
-import com.google.common.base.Preconditions;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+
+import com.google.common.base.Preconditions;
+import com.mojang.math.Vector3d;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.AABB;
 
 public final class AABBBuilder {
     private double minX;
@@ -27,15 +28,15 @@ public final class AABBBuilder {
 
     public AABBBuilder(final BlockPos pos) {
         Objects.requireNonNull(pos, "pos");
-        this.maxX = (this.minX = pos.func_177958_n()) + 1;
-        this.maxY = (this.minY = pos.func_177956_o()) + 1;
-        this.maxZ = (this.minZ = pos.func_177952_p()) + 1;
+        this.maxX = (this.minX = pos.getX()) + 1;
+        this.maxY = (this.minY = pos.getY()) + 1;
+        this.maxZ = (this.minZ = pos.getZ()) + 1;
     }
 
     public AABBBuilder(final Vector3d min, final Vector3d max) {
         this(
-            Objects.requireNonNull(min, "min").field_72450_a, min.field_72448_b, min.field_72449_c,
-            Objects.requireNonNull(max, "max").field_72450_a, max.field_72448_b, max.field_72449_c
+            Objects.requireNonNull(min, "min").x, min.y, min.z,
+            Objects.requireNonNull(max, "max").x, max.y, max.z
         );
     }
 
@@ -49,11 +50,11 @@ public final class AABBBuilder {
     }
 
     public AABBBuilder add(final Vector3d point) {
-        return this.add(Objects.requireNonNull(point, "point").field_72450_a, point.field_72448_b, point.field_72449_c);
+        return this.add(Objects.requireNonNull(point, "point").x, point.y, point.z);
     }
 
-    public AABBBuilder add(final Vector3i point) {
-        return this.add(Objects.requireNonNull(point, "point").func_177958_n(), point.func_177956_o(), point.func_177952_p());
+    public AABBBuilder add(final Vec3i point) {
+        return this.add(Objects.requireNonNull(point, "point").getX(), point.getY(), point.getZ());
     }
 
     public AABBBuilder add(final double x, final double y, final double z) {
@@ -67,7 +68,7 @@ public final class AABBBuilder {
     }
 
     public AABBBuilder include(final Vector3d point) {
-        return this.include(Objects.requireNonNull(point, "point").field_72450_a, point.field_72448_b, point.field_72449_c);
+        return this.include(Objects.requireNonNull(point, "point").x, point.y, point.z);
     }
 
     public AABBBuilder include(final double x, final double y, final double z) {
@@ -90,34 +91,34 @@ public final class AABBBuilder {
         return this;
     }
 
-    public AxisAlignedBB build() {
-        return new AxisAlignedBB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+    public AABB build() {
+        return new AABB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
-    public static AxisAlignedBB union(final List<AxisAlignedBB> aabbs) {
+    public static AABB union(final List<AABB> aabbs) {
         Objects.requireNonNull(aabbs, "AABBs");
         return union(aabbs, aabb -> aabb);
     }
 
-    public static <T> AxisAlignedBB union(final List<T> aabbs, final Function<T, AxisAlignedBB> mapper) {
+    public static <T> AABB union(final List<T> aabbs, final Function<T, AABB> mapper) {
         Objects.requireNonNull(aabbs, "AABBs");
         Objects.requireNonNull(mapper, "mapper");
         Preconditions.checkArgument(aabbs.size() > 0, "Must have more than zero AABBs");
-        AxisAlignedBB bounds = mapper.apply(aabbs.get(0));
+        AABB bounds = mapper.apply(aabbs.get(0));
         if (aabbs.size() == 1) {
             return Objects.requireNonNull(bounds, "mapper returned bounds");
         }
-        double minX = bounds.field_72340_a, minY = bounds.field_72338_b, minZ = bounds.field_72339_c,
-            maxX = bounds.field_72336_d, maxY = bounds.field_72337_e, maxZ = bounds.field_72334_f;
+        double minX = bounds.minX, minY = bounds.minY, minZ = bounds.minZ,
+        		maxX = bounds.maxX, maxY = bounds.maxY, maxZ = bounds.maxZ;
         for (int i = 1, size = aabbs.size(); i < size; i++) {
             bounds = Objects.requireNonNull(mapper.apply(aabbs.get(i)), "mapper returned bounds");
-            minX = Mth.min(minX, bounds.field_72340_a, bounds.field_72336_d);
-            minY = Mth.min(minY, bounds.field_72338_b, bounds.field_72337_e);
-            minZ = Mth.min(minZ, bounds.field_72339_c, bounds.field_72334_f);
-            maxX = Mth.max(maxX, bounds.field_72340_a, bounds.field_72336_d);
-            maxY = Mth.max(maxY, bounds.field_72338_b, bounds.field_72337_e);
-            maxZ = Mth.max(maxZ, bounds.field_72339_c, bounds.field_72334_f);
+            minX = FLMath.min(minX, bounds.minX, bounds.maxX);
+            minY = FLMath.min(minY, bounds.minY, bounds.maxY);
+            minZ = FLMath.min(minZ, bounds.minZ, bounds.maxZ);
+            maxX = FLMath.max(maxX, bounds.minX, bounds.maxX);
+            maxY = FLMath.max(maxY, bounds.minY, bounds.maxY);
+            maxZ = FLMath.max(maxZ, bounds.minZ, bounds.maxZ);
         }
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

@@ -8,9 +8,9 @@ import java.util.Objects;
 public final class StyledStringBuilder implements Appendable, CharSequence {
     private final StringBuilder strBldr;
 
-    private final List<Style> styling;
+    private final List<FLStyle> styling;
 
-    private Style currentStyle;
+    private FLStyle currentStyle;
 
     public StyledStringBuilder(final String str) {
         this();
@@ -22,16 +22,16 @@ public final class StyledStringBuilder implements Appendable, CharSequence {
     }
 
     public StyledStringBuilder(final int capacity) {
-        this(new StringBuilder(capacity), new ArrayList<>(capacity), new Style());
+        this(new StringBuilder(capacity), new ArrayList<>(capacity), new FLStyle());
     }
 
-    private StyledStringBuilder(final StringBuilder strBldr, final List<Style> styling, final Style currentStyle) {
+    private StyledStringBuilder(final StringBuilder strBldr, final List<FLStyle> styling, final FLStyle currentStyle) {
         this.strBldr = strBldr;
         this.styling = styling;
         this.currentStyle = currentStyle;
     }
 
-    public StyledStringBuilder setStyle(final Style style) {
+    public StyledStringBuilder setStyle(final FLStyle style) {
         this.currentStyle = Objects.requireNonNull(style);
         return this;
     }
@@ -61,7 +61,7 @@ public final class StyledStringBuilder implements Appendable, CharSequence {
 
     public StyledStringBuilder insert(final int index, final StyledString str) {
         this.strBldr.insert(0, str.toUnstyledString());
-        final Style[] styling = str.getStyling();
+        final FLStyle[] styling = str.getStyling();
         for (int i = styling.length - 1; i >= 0; i--) {
             this.styling.add(index, styling[i]);
         }
@@ -74,7 +74,7 @@ public final class StyledStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
-    public StyledStringBuilder append(final CharSequence csq, Style style) {
+    public StyledStringBuilder append(final CharSequence csq, FLStyle style) {
         this.strBldr.append(csq);
         for (int i = 0; i < csq.length(); i++) {
             this.styling.add(style);
@@ -101,7 +101,7 @@ public final class StyledStringBuilder implements Appendable, CharSequence {
         return this.append(c, this.currentStyle);
     }
 
-    public StyledStringBuilder append(final char c, final Style s) {
+    public StyledStringBuilder append(final char c, final FLStyle s) {
         this.strBldr.append(c);
         this.styling.add(s);
         return this;
@@ -113,6 +113,6 @@ public final class StyledStringBuilder implements Appendable, CharSequence {
     }
 
     public StyledString toStyledString() {
-        return new StyledString(this.strBldr.toString(), this.styling.toArray(new Style[0]));
+        return new StyledString(this.strBldr.toString(), this.styling.toArray(new FLStyle[0]));
     }
 }

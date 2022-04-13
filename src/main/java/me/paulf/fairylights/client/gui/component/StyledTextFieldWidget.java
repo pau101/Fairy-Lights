@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
-import me.paulf.fairylights.util.styledstring.Style;
+import me.paulf.fairylights.util.styledstring.FLStyle;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import me.paulf.fairylights.util.styledstring.StyledStringBuilder;
 import net.minecraft.client.Minecraft;
@@ -90,7 +90,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
 
     private final List<ChangeListener> changeListeners = new ArrayList<>();
 
-    private Style currentStyle;
+    private FLStyle currentStyle;
 
     public StyledTextFieldWidget(
         final FontRenderer font,
@@ -110,7 +110,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         this.underlineBtn = underlineBtn;
         this.strikethroughBtn = strikethroughBtn;
         this.setValue0(new StyledString());
-        this.setStyle(new Style());
+        this.setStyle(new FLStyle());
     }
 
     public void setIsBlurable(final boolean isBlurable) {
@@ -145,7 +145,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         this.setStyle(this.currentStyle.withStyling(styling, state));
     }
 
-    public void setStyle(final Style style) {
+    public void setStyle(final FLStyle style) {
         this.currentStyle = style;
         this.colorBtn.setDisplayColor(this.currentStyle.getColor());
         this.boldBtn.setValue(style.isBold());
@@ -236,7 +236,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         return this.selectionEnd;
     }
 
-    public Style getStyle() {
+    public FLStyle getStyle() {
         return this.currentStyle;
     }
 
@@ -313,7 +313,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
         boolean consistantColor = true;
         boolean bold = true, italic = true, underline = true, strikethrough = true;
         for (int i = 0; i < selected.length(); i++) {
-            final Style s = selected.styleAt(i);
+            final FLStyle s = selected.styleAt(i);
             if (color != null && color != s.getColor()) {
                 color = null;
                 consistantColor = false;
@@ -334,7 +334,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 strikethrough = false;
             }
         }
-        this.setStyle(new Style(color == null ? this.currentStyle.getColor() : color, bold, strikethrough, underline, italic, false));
+        this.setStyle(new FLStyle(color == null ? this.currentStyle.getColor() : color, bold, strikethrough, underline, italic, false));
         if (!consistantColor) {
             this.colorBtn.removeDisplayColor();
         }
@@ -731,7 +731,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
                 final int endIdx = reverse ? this.caret + num : this.caret;
                 final int startIdx = reverse ? this.caret : this.caret + num;
                 final StyledStringBuilder val = new StyledStringBuilder();
-                Style style = null;
+                FLStyle style = null;
                 if (endIdx > 0) {
                     if (endIdx < this.value.length()) {
                         style = this.value.styleAt(endIdx);
@@ -806,7 +806,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
     }
 
     private void resetCurrentFormatting() {
-        this.setStyle(new Style());
+        this.setStyle(new FLStyle());
         this.tick = 0;
     }
 
@@ -817,7 +817,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
             start = end;
             end = t;
         }
-        this.setValue0(this.value.withStyling(start, end, new Style()));
+        this.setValue0(this.value.withStyling(start, end, new FLStyle()));
     }
 
     @Override
@@ -970,7 +970,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
 
     private static int getWidth(final StyledString styledString, final FontRenderer font) {
         final char[] chars = styledString.toCharArray();
-        final Style[] styling = styledString.getStyling();
+        final FLStyle[] styling = styledString.getStyling();
         int w = 0;
         for (int i = 0, len = styledString.length(); i < len; i++) {
             w += font.func_78256_a(Character.toString(chars[i]));
@@ -987,7 +987,7 @@ public final class StyledTextFieldWidget extends Widget implements IRenderable, 
 
     private static StyledString trimToWidth(final StyledString styledString, final FontRenderer font, final int width, final boolean reverse) {
         final char[] chars = styledString.toCharArray();
-        final Style[] styling = styledString.getStyling();
+        final FLStyle[] styling = styledString.getStyling();
         final int len = styledString.length();
         final StyledStringBuilder str = new StyledStringBuilder();
         final int start = reverse ? len - 1 : 0;

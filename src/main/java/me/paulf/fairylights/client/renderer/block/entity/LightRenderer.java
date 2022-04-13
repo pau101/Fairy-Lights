@@ -30,7 +30,7 @@ import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.LightBehavior;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 
@@ -63,7 +63,7 @@ public class LightRenderer {
         .put(SimpleLightVariant.STAR_LIGHT, LightModelProvider.of(new StarLightModel()))
         .put(SimpleLightVariant.ICICLE_LIGHTS, LightModelProvider.of(
             IntStream.rangeClosed(0, 4).mapToObj(IcicleLightsModel::new).toArray(IcicleLightsModel[]::new),
-            (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
+            (models, i) -> models[i < 0 ? 4 : FLMath.mod(FLMath.hash(i), 4) + 1]
         ))
         .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel()))
         .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new OilLanternModel()))

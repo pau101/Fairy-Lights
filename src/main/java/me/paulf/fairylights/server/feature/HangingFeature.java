@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.feature;
 
 import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
@@ -65,15 +65,15 @@ public abstract class HangingFeature implements Feature {
     }
 
     public final float getYaw(final float t) {
-        return Mth.lerpAngle(this.prevYaw, this.yaw, t);
+        return FLMath.lerpAngle(this.prevYaw, this.yaw, t);
     }
 
     public final float getPitch(final float t) {
-        return Mth.lerpAngle(this.prevPitch, this.pitch, t);
+        return FLMath.lerpAngle(this.prevPitch, this.pitch, t);
     }
 
     public final float getRoll(final float t) {
-        return Mth.lerpAngle(this.prevRoll, this.roll, t);
+        return FLMath.lerpAngle(this.prevRoll, this.roll, t);
     }
 
     public float getDescent() {

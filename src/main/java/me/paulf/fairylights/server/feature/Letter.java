@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.feature;
 
 import me.paulf.fairylights.server.connection.SymbolSet;
-import me.paulf.fairylights.util.styledstring.Style;
+import me.paulf.fairylights.util.styledstring.FLStyle;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -10,16 +10,16 @@ public final class Letter extends HangingFeature {
 
     private char letter;
 
-    private Style style;
+    private FLStyle style;
 
-    public Letter(final int index, final Vector3d point, final float yaw, final float pitch, final SymbolSet symbols, final char letter, final Style style) {
+    public Letter(final int index, final Vector3d point, final float yaw, final float pitch, final SymbolSet symbols, final char letter, final FLStyle style) {
         super(index, point, yaw, pitch, 0.0F, 0.0F);
         this.symbols = symbols;
         this.letter = letter;
         this.style = style;
     }
 
-    public void set(final char letter, final Style style) {
+    public void set(final char letter, final FLStyle style) {
         this.letter = letter;
         this.style = style;
     }
@@ -28,7 +28,7 @@ public final class Letter extends HangingFeature {
         return this.letter;
     }
 
-    public Style getStyle() {
+    public FLStyle getStyle() {
         return this.style;
     }
 

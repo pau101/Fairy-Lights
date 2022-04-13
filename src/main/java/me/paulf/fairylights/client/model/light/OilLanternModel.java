@@ -2,11 +2,11 @@ package me.paulf.fairylights.client.model.light;
 
 import me.paulf.fairylights.server.feature.light.BrightnessLightBehavior;
 import me.paulf.fairylights.server.feature.light.Light;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 
 public class OilLanternModel extends LightModel<BrightnessLightBehavior> {
     public OilLanternModel() {
-        this.unlit.field_78796_g = -Mth.PI / 2.0F;
+        this.unlit.field_78796_g = -FLMath.PI / 2.0F;
         this.unlit.func_78784_a(10, 6);
         this.unlit.func_228301_a_(-1, -0.5F, -1, 2, 2, 2, -0.05F);
         this.unlit.func_78784_a(0, 8);

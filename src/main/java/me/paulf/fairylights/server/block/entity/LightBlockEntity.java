@@ -5,7 +5,7 @@ import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.LightVariant;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMath;
 import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,9 +72,9 @@ public class LightBlockEntity extends TileEntity {
         matrix.rotate((float) Math.toRadians(180.0F - rotation), 0.0F, 1.0F, 0.0F);
         if (this.light.getVariant().isOrientable()) {
             if (face == AttachFace.WALL) {
-                matrix.rotate(Mth.HALF_PI, 1.0F, 0.0F, 0.0F);
+                matrix.rotate(FLMath.HALF_PI, 1.0F, 0.0F, 0.0F);
             } else if (face == AttachFace.FLOOR) {
-                matrix.rotate(-Mth.PI, 1.0F, 0.0F, 0.0F);
+                matrix.rotate(-FLMath.PI, 1.0F, 0.0F, 0.0F);
             }
             matrix.translate(0.0F, 0.5F, 0.0F);
         } else {

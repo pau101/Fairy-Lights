@@ -1,12 +1,13 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.Direction;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nullable;
-import java.util.Objects;
 
 public final class SimpleProvider<T> implements ICapabilityProvider {
     private final Capability<T> capability;
