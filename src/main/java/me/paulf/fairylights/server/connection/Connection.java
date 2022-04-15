@@ -267,7 +267,7 @@ public abstract class Connection implements NBTSerializable {
         return true;
     }
 
-    public void onConnect(final World world, final PlayerEntity user, final ItemStack heldStack) {}
+    public void onConnect(final Level world, final Player user, final ItemStack heldStack) {}
 
     protected void onRemove() {}
 

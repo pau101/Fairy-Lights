@@ -1,5 +1,9 @@
 package me.paulf.fairylights.server.entity;
 
+import java.io.IOException;
+
+import javax.annotation.Nullable;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import me.paulf.fairylights.server.ServerProxy;
@@ -8,65 +12,49 @@ import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.item.ConnectionItem;
 import me.paulf.fairylights.server.net.clientbound.UpdateEntityFastenerMessage;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.item.HangingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 public final class FenceFastenerEntity extends HangingEntity implements IEntityAdditionalSpawnData {
     private int surfaceCheckTime;
 
-    public FenceFastenerEntity(final EntityType<? extends FenceFastenerEntity> type, final World world) {
+    public FenceFastenerEntity(final EntityType<? extends FenceFastenerEntity> type, final Level world) {
         super(type, world);
     }
 
-    public FenceFastenerEntity(final World world) {
+    public FenceFastenerEntity(final Level world) {
         this(FLEntities.FASTENER.get(), world);
     }
 
-    public FenceFastenerEntity(final World world, final BlockPos pos) {
+    public FenceFastenerEntity(final Level world, final BlockPos pos) {
         this(world);
-        this.func_70107_b(pos.func_177958_n(), pos.func_177956_o(), pos.func_177952_p());
+        this.setPos(pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
-    public int func_82329_d() {
+    public int getWidthPixels() {
         return 9;
     }
 
     @Override
-    public int func_82330_g() {
+    public int getHeightPixels() {
         return 9;
     }
 
     @Override
-    public float func_213316_a(final Pose pose, final EntitySize size) {
+    public float getEyeHeight(final Pose pose, final EntitySize size) {
         /*
          * Because this entity is inside of a block when
          * EntityLivingBase#canEntityBeSeen performs its
@@ -87,59 +75,59 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 
     @SuppressWarnings("deprecation")
     @Override
-    public float func_70013_c() {
-        final BlockPos pos = this.func_233580_cy_();
-        if (this.field_70170_p.func_195588_v(pos)) {
-            return this.field_70170_p.func_205052_D(pos);
+    public float getBrightness() {
+        final BlockPos pos = this.getPos();
+        if (this.level.isLoaded(pos)) {
+            return this.level.getBrightness(pos);
         }
         return 0;
     }
 
     @Override
-    public boolean func_70112_a(final double distance) {
+    public boolean isInRangeToRenderDist(final double distance) {
         return distance < 4096;
     }
 
     @Override
-    public boolean func_180427_aV() {
+    public boolean isImmuneToExplosions() {
         return true;
     }
 
     @Override
-    public boolean func_70518_d() {
-        return !this.field_70170_p.func_195588_v(this.field_174861_a) || ConnectionItem.isFence(this.field_70170_p.func_180495_p(this.field_174861_a));
+    public boolean onValidSurface() {
+        return !this.level.isBlockPresent(this.hangingPosition) || ConnectionItem.isFence(this.field_70170_p.func_180495_p(this.field_174861_a));
     }
 
     @Override
-    public void func_70106_y() {
+    public void remove() {
         this.getFastener().ifPresent(Fastener::remove);
-        super.func_70106_y();
+        super.remove();
     }
 
     // Copy from super but remove() moved to after onBroken()
     @Override
-    public boolean func_70097_a(final DamageSource source, final float amount) {
-        if (this.func_180431_b(source)) {
+    public boolean attackEntityFrom(final DamageSource source, final float amount) {
+        if (this.isInvulnerableTo(source)) {
             return false;
         }
-        if (!this.field_70170_p.field_72995_K && this.func_70089_S()) {
-            this.func_70018_K();
-            this.func_110128_b(source.func_76346_g());
-            this.func_70106_y();
+        if (!this.level.isClientSide && this.isAlive()) {
+            this.markVelocityChanged();
+            this.onBroken(source.getTrueSource());
+            this.remove();
         }
         return true;
     }
 
     @Override
-    public boolean func_184222_aU() {
+    public boolean isNonBoss() {
         return false;
     }
 
     @Override
-    public void func_110128_b(@Nullable final Entity breaker) {
-        this.getFastener().ifPresent(fastener -> fastener.dropItems(this.field_70170_p, this.field_174861_a));
+    public void onBroken(@Nullable final Entity breaker) {
+        this.getFastener().ifPresent(fastener -> fastener.dropItems(this.level, this.hangingPosition));
         if (breaker != null) {
-            this.field_70170_p.func_217379_c(2001, this.field_174861_a, Block.func_196246_j(FLBlocks.FASTENER.get().func_176223_P()));
+            this.level.playEvent(2001, this.hangingPosition, Block.getStateId(FLBlocks.FASTENER.get().getDefaultState()));
         }
     }
 
@@ -254,7 +242,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
         return this.getCapability(CapabilityHandler.FASTENER_CAP);
     }
 
-    public static FenceFastenerEntity create(final World world, final BlockPos fence) {
+    public static FenceFastenerEntity create(final Level world, final BlockPos fence) {
         final FenceFastenerEntity fastener = new FenceFastenerEntity(world, fence);
         fastener.field_98038_p = true;
         world.func_217376_c(fastener);
@@ -263,7 +251,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     }
 
     @Nullable
-    public static FenceFastenerEntity find(final World world, final BlockPos pos) {
+    public static FenceFastenerEntity find(final Level world, final BlockPos pos) {
         final HangingEntity entity = findHanging(world, pos);
         if (entity instanceof FenceFastenerEntity) {
             return (FenceFastenerEntity) entity;
@@ -272,7 +260,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     }
 
     @Nullable
-    public static HangingEntity findHanging(final World world, final BlockPos pos) {
+    public static HangingEntity findHanging(final Level world, final BlockPos pos) {
         for (final HangingEntity e : world.func_217357_a(HangingEntity.class, new AxisAlignedBB(pos).func_186662_g(2))) {
             if (e.func_174857_n().equals(pos)) {
                 return e;

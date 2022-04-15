@@ -1,24 +1,23 @@
 package me.paulf.fairylights.server.item;
 
+import java.util.List;
+
 import me.paulf.fairylights.server.connection.ConnectionTypes;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
-
-import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class PennantBuntingConnectionItem extends ConnectionItem {
     public PennantBuntingConnectionItem(final Item.Properties properties) {
@@ -26,34 +25,34 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
     }
 
     @Override
-    public void func_77624_a(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-        final CompoundNBT compound = stack.func_77978_p();
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> tooltip, final TooltipFlag flag) {
+    	final CompoundTag compound = stack.getTag();
         if (compound == null) {
             return;
         }
-        if (compound.func_150297_b("text", NBT.TAG_COMPOUND)) {
-            final CompoundNBT text = compound.func_74775_l("text");
+        if (compound.contains("text", CompoundTag.TAG_COMPOUND)) {
+            final CompoundTag text = compound.getCompound("text");
             final StyledString s = StyledString.deserialize(text);
             if (s.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).func_240699_a_(TextFormatting.GRAY));
+                tooltip.add(new TranslatableComponent("format.fairylights.text", s.toTextComponent()).withStyle(ChatFormatting.GRAY));
             }
         }
-        if (compound.func_150297_b("pattern", NBT.TAG_LIST)) {
-            final ListNBT tagList = compound.func_150295_c("pattern", NBT.TAG_COMPOUND);
+        if (compound.contains("pattern", CompoundTag.TAG_LIST)) {
+            final ListTag tagList = compound.getList("pattern", CompoundTag.TAG_COMPOUND);
             final int tagCount = tagList.size();
             if (tagCount > 0) {
-                tooltip.add(new StringTextComponent(""));
+                tooltip.add(new TextComponent(""));
             }
             for (int i = 0; i < tagCount; i++) {
-                final ItemStack item = ItemStack.func_199557_a(tagList.func_150305_b(i));
-                tooltip.add(item.func_200301_q());
+                final ItemStack item = ItemStack.of(tagList.getCompound(i));
+                tooltip.add(item.getDisplayName());
             }
         }
     }
 
     @Override
-    public void func_150895_a(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
-        if (this.func_194125_a(tab)) {
+    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> subItems) {
+        if (this.allowdedIn(tab)) {
             for (final DyeColor color : DyeColor.values()) {
                 final ItemStack stack = new ItemStack(this);
                 DyeableItem.setColor(stack, color);

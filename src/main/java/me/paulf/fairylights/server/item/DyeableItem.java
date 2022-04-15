@@ -1,20 +1,20 @@
 package me.paulf.fairylights.server.item;
 
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.util.Constants;
-
 import java.util.Arrays;
 import java.util.Optional;
+
+import me.paulf.fairylights.util.Utils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 
 public final class DyeableItem {
     private DyeableItem() {}
 
-    public static IFormattableTextComponent getColorName(final int color) {
+    public static BaseComponent getColorName(final int color) {
         final int r = color >> 16 & 0xFF;
         final int g = color >> 8 & 0xFF;
         final int b = color & 0xFF;
@@ -36,12 +36,12 @@ public final class DyeableItem {
                 closestDist = dist;
             }
         }
-        final IFormattableTextComponent colorName = new TranslationTextComponent("color.fairylights." + closest.func_176762_d());
-        return closestDist == 0 ? colorName : new TranslationTextComponent("format.fairylights.dyed_colored", colorName);
+        final BaseComponent colorName = new TranslatableComponent("color.fairylights." + closest.getName());
+        return closestDist == 0 ? colorName : new TranslatableComponent("format.fairylights.dyed_colored", colorName);
     }
 
-    public static ITextComponent getDisplayName(final ItemStack stack, final ITextComponent name) {
-        return new TranslationTextComponent("format.fairylights.colored", getColorName(getColor(stack)), name);
+    public static BaseComponent getDisplayName(final ItemStack stack, final Component name) {
+        return new TranslatableComponent("format.fairylights.colored", getColorName(getColor(stack)), name);
     }
 
     public static int getColor(final DyeColor color) {
@@ -51,7 +51,7 @@ public final class DyeableItem {
         if (color == DyeColor.GRAY) {
             return 0x606060;
         }
-        return color.getColorValue();
+        return Utils.convertDyeToHex(color);
     }
 
     public static Optional<DyeColor> getDyeColor(final ItemStack stack) {
@@ -64,25 +64,25 @@ public final class DyeableItem {
     }
 
     public static ItemStack setColor(final ItemStack stack, final int color) {
-        setColor(stack.func_196082_o(), color);
+        setColor(stack.getOrCreateTag(), color);
         return stack;
     }
 
-    public static CompoundNBT setColor(final CompoundNBT tag, final DyeColor dye) {
+    public static CompoundTag setColor(final CompoundTag tag, final DyeColor dye) {
         return setColor(tag, getColor(dye));
     }
 
-    public static CompoundNBT setColor(final CompoundNBT tag, final int color) {
-        tag.func_74768_a("color", color);
+    public static CompoundTag setColor(final CompoundTag tag, final int color) {
+        tag.putInt("color", color);
         return tag;
     }
 
     public static int getColor(final ItemStack stack) {
-        final CompoundNBT tag = stack.func_77978_p();
+        final CompoundTag tag = stack.getTag();
         return tag != null ? getColor(tag) : 0xFFFFFF;
     }
 
-    public static int getColor(final CompoundNBT tag) {
-        return tag.func_150297_b("color", Constants.NBT.TAG_INT) ? tag.func_74762_e("color") : 0xFFFFFF;
+    public static int getColor(final CompoundTag tag) {
+        return tag.contains("color", CompoundTag.TAG_INT) ? tag.getInt("color") : 0xFFFFFF;
     }
 }

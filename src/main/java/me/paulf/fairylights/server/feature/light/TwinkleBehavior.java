@@ -1,11 +1,12 @@
 package me.paulf.fairylights.server.feature.light;
 
+import com.mojang.math.Vector3d;
+
 import me.paulf.fairylights.util.CubicBezier;
 import me.paulf.fairylights.util.FLMath;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class TwinkleBehavior implements BrightnessLightBehavior {
     private static final CubicBezier EASE_IN_OUT = new CubicBezier(0.4F, 0, 0.6F, 1);
@@ -33,12 +34,12 @@ public class TwinkleBehavior implements BrightnessLightBehavior {
     }
 
     @Override
-    public void tick(final World world, final Vector3d origin, final Light<?> light) {
+    public void tick(final Level world, final Vector3d origin, final Light<?> light) {
         this.logic.tick(world.field_73012_v, this.powered);
     }
 
     public static boolean exists(final ItemStack stack) {
-        final CompoundNBT tag = stack.func_77978_p();
+        final CompoundTag tag = stack.func_77978_p();
         return tag != null && tag.func_74767_n("twinkle");
     }
 }

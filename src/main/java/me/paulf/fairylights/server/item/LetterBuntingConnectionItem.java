@@ -1,20 +1,19 @@
 package me.paulf.fairylights.server.item;
 
+import java.util.List;
+
 import me.paulf.fairylights.server.connection.ConnectionTypes;
 import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
-
-import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class LetterBuntingConnectionItem extends ConnectionItem {
     public LetterBuntingConnectionItem(final Item.Properties properties) {
@@ -22,25 +21,25 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
     }
 
     @Override
-    public void func_77624_a(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-        if (!stack.func_77942_o()) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> tooltip, final TooltipFlag flag) {
+        if (!stack.hasTag()) {
             return;
         }
-        final CompoundNBT compound = stack.func_77978_p();
-        if (compound.func_150297_b("text", NBT.TAG_COMPOUND)) {
-            final CompoundNBT text = compound.func_74775_l("text");
+        final CompoundTag compound = stack.getTag();
+        if (compound.contains("text", CompoundTag.TAG_COMPOUND)) {
+            final CompoundTag text = compound.getCompound("text");
             final StyledString s = StyledString.deserialize(text);
             if (s.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).func_240699_a_(TextFormatting.GRAY));
+                tooltip.add(new TranslatableComponent("format.fairylights.text", s.toTextComponent()).withStyle(ChatFormatting.GRAY));
             }
         }
     }
 
     @Override
-    public void func_150895_a(final ItemGroup tab, final NonNullList<ItemStack> items) {
-        if (this.func_194125_a(tab)) {
+    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> items) {
+        if (this.allowdedIn(tab)) {
             final ItemStack bunting = new ItemStack(this, 1);
-            bunting.func_196082_o().func_218657_a("text", StyledString.serialize(new StyledString()));
+            bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
             items.add(bunting);
         }
     }

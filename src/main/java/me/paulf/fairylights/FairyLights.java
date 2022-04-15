@@ -23,7 +23,6 @@ import me.paulf.fairylights.server.string.StringType;
 import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.CalendarEvent;
 import me.paulf.fairylights.util.RegistryObjects;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -84,6 +83,6 @@ public final class FairyLights {
     }
 
     public static boolean ingredientMatches(final boolean equalsExact, final ItemStack ingredient, final ItemStack stack) {
-        return equalsExact || RegistryObjects.namespaceEquals(ingredient.func_77973_b(), FairyLights.ID) && RegistryObjects.namespaceEquals(stack.func_77973_b(), FairyLights.ID);
+        return equalsExact || RegistryObjects.namespaceEquals(ingredient.getItem(), FairyLights.ID) && RegistryObjects.namespaceEquals(stack.getItem(), FairyLights.ID);
     }
 }

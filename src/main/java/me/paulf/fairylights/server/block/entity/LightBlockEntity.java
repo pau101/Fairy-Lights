@@ -1,5 +1,7 @@
 package me.paulf.fairylights.server.block.entity;
 
+import com.mojang.math.Vector3d;
+
 import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.LightVariant;
@@ -7,23 +9,22 @@ import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.FLMath;
 import me.paulf.fairylights.util.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.state.properties.AttachFace;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 
-public class LightBlockEntity extends TileEntity {
+public class LightBlockEntity extends BlockEntity {
     private Light<?> light;
 
     private boolean on = true;

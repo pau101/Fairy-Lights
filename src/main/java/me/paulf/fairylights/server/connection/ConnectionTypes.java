@@ -2,8 +2,8 @@ package me.paulf.fairylights.server.connection;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.item.FLItems;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 public final class ConnectionTypes {
     private ConnectionTypes() {}

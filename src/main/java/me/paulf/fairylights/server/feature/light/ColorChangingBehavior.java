@@ -1,14 +1,10 @@
 package me.paulf.fairylights.server.feature.light;
 
+import com.mojang.math.Vector3d;
+
 import me.paulf.fairylights.util.FLMath;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.Util;
+import net.minecraft.world.item.ItemStack;
 
 public class ColorChangingBehavior implements ColorLightBehavior {
     private final float[] red;

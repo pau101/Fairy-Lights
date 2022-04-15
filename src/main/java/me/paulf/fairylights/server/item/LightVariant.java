@@ -3,10 +3,9 @@ package me.paulf.fairylights.server.item;
 import me.paulf.fairylights.server.feature.light.LightBehavior;
 import me.paulf.fairylights.util.EmptyProvider;
 import me.paulf.fairylights.util.SimpleProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -20,7 +19,7 @@ public interface LightVariant<T extends LightBehavior> {
 
     float getSpacing();
 
-    AxisAlignedBB getBounds();
+    AABB getBounds();
 
     double getFloorOffset();
 

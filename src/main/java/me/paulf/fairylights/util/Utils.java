@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.DyeColor;
 
 public final class Utils {
     private Utils() {}
@@ -39,5 +40,12 @@ public final class Utils {
             return true;
         }
         return antecedent.equals(consequent);
+    }
+    
+    public static int convertDyeToHex(DyeColor color) {
+    	float[] diffuseColors = color.getTextureDiffuseColors();
+    	
+    	
+    	return 0;
     }
 }

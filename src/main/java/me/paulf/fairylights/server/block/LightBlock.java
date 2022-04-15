@@ -1,47 +1,47 @@
 package me.paulf.fairylights.server.block;
 
-import me.paulf.fairylights.server.block.entity.LightBlockEntity;
-import me.paulf.fairylights.server.item.DyeableItem;
-import me.paulf.fairylights.server.item.LightVariant;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFaceBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.AttachFace;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import javax.annotation.Nullable;
 
-public class LightBlock extends HorizontalFaceBlock {
+import me.paulf.fairylights.server.block.entity.LightBlockEntity;
+import me.paulf.fairylights.server.item.DyeableItem;
+import me.paulf.fairylights.server.item.LightVariant;
+import net.minecraft.block.HorizontalFaceBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+public class LightBlock extends HorizontalDirectionalBlock {
     public static final BooleanProperty LIT = BlockStateProperties.field_208190_q;
 
     private static final VoxelShape MIN_ANCHOR_SHAPE = Block.func_208617_a(7.0D, 0.0D, 7.0D, 9.0D, 16.0D, 9.0D);
@@ -53,7 +53,7 @@ public class LightBlock extends HorizontalFaceBlock {
     public LightBlock(final Properties properties, final LightVariant<?> variant) {
         super(properties.func_222380_e());
         this.variant = variant;
-        final AxisAlignedBB bb = this.variant.getBounds();
+        final AABB bb = this.variant.getBounds();
         final double w = Math.max(bb.func_216364_b(), bb.func_216362_d());
         final double w0 = 0.5D - w * 0.5D;
         final double w1 = 0.5D + w * 0.5D;

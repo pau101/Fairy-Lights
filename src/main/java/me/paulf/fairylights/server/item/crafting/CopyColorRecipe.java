@@ -1,25 +1,25 @@
 package me.paulf.fairylights.server.item.crafting;
 
 import me.paulf.fairylights.server.item.DyeableItem;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 
-public class CopyColorRecipe extends SpecialRecipe {
+public class CopyColorRecipe extends CustomRecipe {
     public CopyColorRecipe(final ResourceLocation id) {
         super(id);
     }
 
     @Override
-    public boolean func_77569_a(final CraftingInventory inv, final World world) {
+    public boolean matches(final CraftingContainer inv, final Level world) {
         int count = 0;
-        for (int i = 0; i < inv.func_70302_i_(); i++) {
-            final ItemStack stack = inv.func_70301_a(i);
-            if (!stack.func_190926_b() && (!stack.func_77973_b().func_206844_a(FLCraftingRecipes.DYEABLE) || count++ >= 2)) {
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            final ItemStack stack = inv.getItem(i);
+            if (!stack.isEmpty() && (!FLCraftingRecipes.DYEABLE.contains(stack.getItem()) || count++ >= 2)) {
                 return false;
             }
         }
@@ -27,17 +27,17 @@ public class CopyColorRecipe extends SpecialRecipe {
     }
 
     @Override
-    public ItemStack func_77572_b(final CraftingInventory inv) {
-        ItemStack original = ItemStack.field_190927_a;
-        for (int i = 0; i < inv.func_70302_i_(); i++) {
-            final ItemStack stack = inv.func_70301_a(i);
-            if (!stack.func_190926_b()) {
-                if (stack.func_77973_b().func_206844_a(FLCraftingRecipes.DYEABLE)) {
-                    if (original.func_190926_b()) {
+    public ItemStack assemble(final CraftingContainer inv) {
+        ItemStack original = ItemStack.EMPTY;
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            final ItemStack stack = inv.getItem(i);
+            if (!stack.isEmpty()) {
+                if (FLCraftingRecipes.DYEABLE.contains(stack.getItem())) {
+                    if (original.isEmpty()) {
                         original = stack;
                     } else {
-                        final ItemStack copy = stack.func_77946_l();
-                        copy.func_190920_e(1);
+                        final ItemStack copy = stack.copy();
+                        copy.setCount(1);
                         DyeableItem.setColor(copy, DyeableItem.getColor(original));
                         return copy;
                     }
@@ -46,20 +46,20 @@ public class CopyColorRecipe extends SpecialRecipe {
                 }
             }
         }
-        return ItemStack.field_190927_a;
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public NonNullList<ItemStack> func_179532_b(final CraftingInventory inv) {
-        ItemStack original = ItemStack.field_190927_a;
-        final NonNullList<ItemStack> remaining = NonNullList.func_191197_a(inv.func_70302_i_(), ItemStack.field_190927_a);
+    public NonNullList<ItemStack> getRemainingItems(final CraftingContainer inv) {
+        ItemStack original = ItemStack.EMPTY;
+        final NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
         for (int i = 0; i < remaining.size(); i++) {
-            final ItemStack stack = inv.func_70301_a(i);
+            final ItemStack stack = inv.getItem(i);
             if (stack.hasContainerItem()) {
                 remaining.set(i, stack.getContainerItem());
-            } else if (original.func_190926_b() && !stack.func_190926_b() && stack.func_77973_b().func_206844_a(FLCraftingRecipes.DYEABLE)) {
-                final ItemStack rem = stack.func_77946_l();
-                rem.func_190920_e(1);
+            } else if (original.isEmpty() && !stack.isEmpty() && FLCraftingRecipes.DYEABLE.contains(stack.getItem())) {
+                final ItemStack rem = stack.copy();
+                rem.setCount(1);
                 remaining.set(i, rem);
                 original = stack;
             }
@@ -68,12 +68,12 @@ public class CopyColorRecipe extends SpecialRecipe {
     }
 
     @Override
-    public boolean func_194133_a(final int width, final int height) {
+    public boolean canCraftInDimensions(final int width, final int height) {
         return width * height >= 2;
     }
 
     @Override
-    public IRecipeSerializer<?> func_199559_b() {
+    public RecipeSerializer<?> getSerializer() {
         return FLCraftingRecipes.COPY_COLOR.get();
     }
 }

@@ -1,11 +1,11 @@
 package me.paulf.fairylights.server.item;
 
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class PennantItem extends Item {
     public PennantItem(final Item.Properties properties) {
@@ -13,13 +13,13 @@ public class PennantItem extends Item {
     }
 
     @Override
-    public ITextComponent func_200295_i(final ItemStack stack) {
-        return DyeableItem.getDisplayName(stack, super.func_200295_i(stack));
+    public Component getName(final ItemStack stack) {
+        return DyeableItem.getDisplayName(stack, super.getName(stack));
     }
 
     @Override
-    public void func_150895_a(final ItemGroup tab, final NonNullList<ItemStack> subItems) {
-        if (this.func_194125_a(tab)) {
+    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> subItems) {
+        if (this.allowdedIn(tab)) {
             for (final DyeColor dye : DyeColor.values()) {
                 subItems.add(DyeableItem.setColor(new ItemStack(this), dye));
             }

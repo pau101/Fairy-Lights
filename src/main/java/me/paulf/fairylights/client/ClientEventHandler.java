@@ -1,53 +1,5 @@
 package me.paulf.fairylights.client;
 
-import com.google.common.collect.Sets;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
-import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.entity.FenceFastenerEntity;
-import me.paulf.fairylights.server.fastener.CollectFastenersEvent;
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.fastener.FastenerType;
-import me.paulf.fairylights.util.Catenary;
-import me.paulf.fairylights.server.connection.PlayerAction;
-import me.paulf.fairylights.server.collision.Collidable;
-import me.paulf.fairylights.server.collision.Intersection;
-import me.paulf.fairylights.server.connection.Connection;
-import me.paulf.fairylights.server.connection.HangingLightsConnection;
-import me.paulf.fairylights.server.jingle.Jingle;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.client.event.DrawHighlightEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,14 +8,58 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import javax.annotation.Nullable;
+
+import com.google.common.collect.Sets;
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
+
+import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
+import me.paulf.fairylights.server.capability.CapabilityHandler;
+import me.paulf.fairylights.server.collision.Collidable;
+import me.paulf.fairylights.server.collision.Intersection;
+import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.connection.HangingLightsConnection;
+import me.paulf.fairylights.server.connection.PlayerAction;
+import me.paulf.fairylights.server.entity.FenceFastenerEntity;
+import me.paulf.fairylights.server.fastener.CollectFastenersEvent;
+import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.FastenerType;
+import me.paulf.fairylights.server.jingle.Jingle;
+import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.util.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketListener;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
 public final class ClientEventHandler {
     private static final float HIGHLIGHT_ALPHA = 0.4F;
 
     @Nullable
     public static Connection getHitConnection() {
-        final RayTraceResult result = Minecraft.func_71410_x().field_71476_x;
-        if (result instanceof EntityRayTraceResult) {
-            final Entity entity = ((EntityRayTraceResult) result).func_216348_a();
+        final HitResult result = Minecraft.getInstance().hitResult;
+        if (result instanceof EntityHitResult) {
+            final Entity entity = ((EntityHitResult) result).getEntity();
             if (entity instanceof HitConnection) {
                 return ((HitConnection) entity).result.connection;
             }
@@ -73,9 +69,9 @@ public final class ClientEventHandler {
 
     @SubscribeEvent
     public void onClientTick(final TickEvent.ClientTickEvent event) {
-        final Minecraft mc = Minecraft.func_71410_x();
-        if (event.phase == TickEvent.Phase.END && mc.field_71441_e != null && !mc.func_147113_T()) {
-            this.getBlockEntities(mc.field_71441_e).stream()
+        final Minecraft mc = Minecraft.getInstance();
+        if (event.phase == TickEvent.Phase.END && mc.level != null && !mc.isPaused()) {
+            this.getBlockEntities(mc.level).stream()
                 .filter(FastenerBlockEntity.class::isInstance)
                 .map(FastenerBlockEntity.class::cast)
                 .flatMap(f -> f.getCapability(CapabilityHandler.FASTENER_CAP).map(Stream::of).orElse(Stream.empty()))
@@ -83,9 +79,9 @@ public final class ClientEventHandler {
         }
     }
 
-    private Collection<TileEntity> getBlockEntities(final World world) {
+    private Collection<BlockEntity> getBlockEntities(final Level world) {
         try {
-            return new ArrayList<>(world.field_147482_g);
+            return new ArrayList<>(world.blockEntityTickers);
         } catch (final ConcurrentModificationException e) {
             // RenderChunk's may find an invalid block entity while building and trigger a remove not on main thread
             return Collections.emptyList();
@@ -110,28 +106,28 @@ public final class ClientEventHandler {
     }
 
     public static void updateHitConnection() {
-        final Minecraft mc = Minecraft.func_71410_x();
-        final Entity viewer = mc.func_175606_aa();
-        if (mc.field_71476_x != null && mc.field_71441_e != null && viewer != null) {
-            final HitResult result = getHitConnection(mc.field_71441_e, viewer);
+        final Minecraft mc = Minecraft.getInstance();
+        final Entity viewer = mc.getCameraEntity();
+        if (mc.hitResult != null && mc.level != null && viewer != null) {
+            final HitResultConnectionIntersection result = getHitConnection(mc.level, viewer);
             if (result != null) {
-                final Vector3d eyes = viewer.func_174824_e(1.0F);
-                if (result.intersection.getResult().func_72438_d(eyes) < mc.field_71476_x.func_216347_e().func_72438_d(eyes)) {
-                    mc.field_71476_x = new EntityRayTraceResult(new HitConnection(mc.field_71441_e, result));
-                    mc.field_147125_j = null;
+                final Vec3 eyes = viewer.getEyePosition(1.0F);
+                if (result.intersection.getResult().distanceTo(eyes) < mc.hitResult.getLocation().distanceTo(eyes)) {
+                    mc.hitResult = new EntityHitResult(new HitConnection(mc.level, result));
+                    mc.crosshairPickEntity = null;
                 }
             }
         }
     }
 
     @Nullable
-    private static HitResult getHitConnection(final World world, final Entity viewer) {
-        final AxisAlignedBB bounds = new AxisAlignedBB(viewer.func_233580_cy_()).func_186662_g(Connection.MAX_LENGTH + 1.0D);
+    private static HitResultConnectionIntersection getHitConnection(final Level world, final Entity viewer) {
+        final AABB bounds = new AABB(viewer.blockPosition()).inflate(Connection.MAX_LENGTH + 1.0D);
         final Set<Fastener<?>> fasteners = collectFasteners(world, bounds);
         return getHitConnection(viewer, bounds, fasteners);
     }
 
-    private static Set<Fastener<?>> collectFasteners(final World world, final AxisAlignedBB bounds) {
+    private static Set<Fastener<?>> collectFasteners(final Level world, final AABB bounds) {
         final Set<Fastener<?>> fasteners = Sets.newLinkedHashSet();
         final CollectFastenersEvent event = new CollectFastenersEvent(world, bounds, fasteners);
         world.func_217357_a(FenceFastenerEntity.class, bounds)
@@ -154,7 +150,7 @@ public final class ClientEventHandler {
     }
 
     @Nullable
-    private static HitResult getHitConnection(final Entity viewer, final AxisAlignedBB bounds, final Set<Fastener<?>> fasteners) {
+    private static HitResultConnectionIntersection getHitConnection(final Entity viewer, final AxisAlignedBB bounds, final Set<Fastener<?>> fasteners) {
         if (fasteners.isEmpty()) {
             return null;
         }
@@ -185,7 +181,7 @@ public final class ClientEventHandler {
         if (found == null) {
             return null;
         }
-        return new HitResult(found, rayTrace);
+        return new HitResultConnectionIntersection(found, rayTrace);
     }
 
     @SubscribeEvent
@@ -283,17 +279,17 @@ public final class ClientEventHandler {
     }
 
     static class HitConnection extends Entity {
-        final HitResult result;
+        final HitResultConnectionIntersection result;
 
-        HitConnection(final World world, final HitResult result) {
-            super(EntityType.field_200765_E, world);
-            this.func_145769_d(-1);
+        HitConnection(final Level world, final HitResultConnectionIntersection result) {
+            super(EntityType.ITEM, world);
+            this.setId(-1);
             this.result = result;
         }
 
         @Override
-        public boolean func_70097_a(final DamageSource source, final float amount) {
-            if (source.func_76346_g() == Minecraft.func_71410_x().field_71439_g) {
+        public boolean hurt(final DamageSource source, final float amount) {
+            if (source.getDirectEntity() == Minecraft.getInstance().player) {
                 this.processAction(PlayerAction.ATTACK);
                 return true;
             }
@@ -301,56 +297,56 @@ public final class ClientEventHandler {
         }
 
         @Override
-        public ActionResultType func_184230_a(final PlayerEntity player, final Hand hand) {
-            if (player == Minecraft.func_71410_x().field_71439_g) {
+        public InteractionResult interact(final Player player, final InteractionHand hand) {
+            if (player == Minecraft.getInstance().player) {
                 this.processAction(PlayerAction.INTERACT);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return super.func_184230_a(player, hand);
+            return super.interact(player, hand);
         }
 
         private void processAction(final PlayerAction action) {
-            this.result.connection.processClientAction(Minecraft.func_71410_x().field_71439_g, action, this.result.intersection);
+            this.result.connection.processClientAction(Minecraft.getInstance().player, action, this.result.intersection);
         }
 
         @Override
-        public ItemStack getPickedResult(final RayTraceResult target) {
+        public ItemStack getPickedResult(final HitResult target) {
             return this.result.connection.getItemStack();
         }
 
         @Override
-        protected void func_70088_a() {}
+        protected void defineSynchedData() {}
 
         @Override
-        protected void func_213281_b(final CompoundNBT compound) {}
+        protected void readAdditionalSaveData(final CompoundTag compound) {}
 
         @Override
-        protected void func_70037_a(final CompoundNBT compound) {}
+        protected void addAdditionalSaveData(final CompoundTag compound) {}
 
         @Override
-        public IPacket<?> func_213297_N() {
-            return new IPacket<INetHandler>() {
+        public Packet<?> getAddEntityPacket() {
+            return new Packet<PacketListener>() {
                 @Override
-                public void func_148837_a(final PacketBuffer buf) {
+                public void write(final FriendlyByteBuf buf) {
                 }
 
-                @Override
-                public void func_148840_b(final PacketBuffer buf) {
-                }
+//                @Override
+//                public void func_148840_b(final FriendlyByteBuf buf) {
+//                }
 
                 @Override
-                public void func_148833_a(final INetHandler handler) {
+                public void handle(final PacketListener handler) {
                 }
             };
         }
     }
 
-    private static final class HitResult {
+    private static final class HitResultConnectionIntersection {
         private final Connection connection;
 
         private final Intersection intersection;
 
-        public HitResult(final Connection connection, final Intersection intersection) {
+        public HitResultConnectionIntersection(final Connection connection, final Intersection intersection) {
             this.connection = connection;
             this.intersection = intersection;
         }
