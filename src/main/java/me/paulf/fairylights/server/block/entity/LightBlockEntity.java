@@ -7,30 +7,28 @@ import me.paulf.fairylights.server.item.SimpleLightVariant;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.state.properties.AttachFace;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
-public class LightBlockEntity extends TileEntity {
+public class LightBlockEntity extends BlockEntity {
     private Light<?> light;
 
     private boolean on = true;
 
-    public LightBlockEntity() {
-        super(FLBlockEntities.LIGHT.get());
-        this.light = new Light<>(0, Vector3d.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, SimpleLightVariant.FAIRY_LIGHT, 0.0F);
+    public LightBlockEntity(BlockPos pos, BlockState state) {
+        super(FLBlockEntities.LIGHT.get(), pos, state);
+        this.light = new Light<>(0, Vec3.ZERO, 0.0F, 0.0F, ItemStack.EMPTY, SimpleLightVariant.FAIRY_LIGHT, 0.0F);
     }
 
     public Light<?> getLight() {
@@ -38,19 +36,19 @@ public class LightBlockEntity extends TileEntity {
     }
 
     public void setItemStack(final ItemStack stack) {
-        this.light = new Light<>(0, Vector3d.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).orElse(SimpleLightVariant.FAIRY_LIGHT), 0.0F);
-        this.markDirty();
+        this.light = new Light<>(0, Vec3.ZERO, 0.0F, 0.0F, stack, LightVariant.get(stack).orElse(SimpleLightVariant.FAIRY_LIGHT), 0.0F);
+        this.setChanged();
     }
 
     private void setOn(final boolean on) {
         this.on = on;
         this.light.power(on, true);
-        this.markDirty();
+        this.setChanged();
     }
 
-    public void interact(final World world, final BlockPos pos, final BlockState state, final PlayerEntity player, final Hand hand, final BlockRayTraceResult hit) {
+    public void interact(final Level world, final BlockPos pos, final BlockState state, final Player player, final InteractionHand hand, final BlockHitResult hit) {
         this.setOn(!this.on);
-        world.setBlockState(pos, state.with(LightBlock.LIT, this.on));
+        world.setBlockAndUpdate(pos, state.setValue(LightBlock.LIT, this.on));
         final SoundEvent lightSnd;
         final float pitch;
         if (this.on) {
@@ -60,13 +58,13 @@ public class LightBlockEntity extends TileEntity {
             lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.get();
             pitch = 0.5F;
         }
-        this.world.playSound(null, pos, lightSnd, SoundCategory.BLOCKS, 1.0F, pitch);
+        this.level.playSound(null, pos, lightSnd, SoundSource.BLOCKS, 1.0F, pitch);
     }
 
     public void animateTick() {
         final BlockState state = this.getBlockState();
-        final AttachFace face = state.get(LightBlock.FACE);
-        final float rotation = state.get(LightBlock.HORIZONTAL_FACING).getHorizontalAngle();
+        final AttachFace face = state.getValue(LightBlock.FACE);
+        final float rotation = state.getValue(LightBlock.FACING).toYRot();
         final MatrixStack matrix = new MatrixStack();
         matrix.translate(0.5F, 0.5F, 0.5F);
         matrix.rotate((float) Math.toRadians(180.0F - rotation), 0.0F, 1.0F, 0.0F);
@@ -86,36 +84,25 @@ public class LightBlockEntity extends TileEntity {
                 matrix.translate(0.0F, -(float) this.light.getVariant().getBounds().minY - 0.5F, 0.0F);
             }
         }
-        this.light.getBehavior().animateTick(this.world, Vector3d.copy(this.getPos()).add(matrix.transform(Vector3d.ZERO)), this.light);
+        this.light.getBehavior().animateTick(this.level, Vec3.atLowerCornerOf(this.worldPosition).add(matrix.transform(Vec3.ZERO)), this.light);
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    public CompoundTag getUpdateTag() {
+        return this.saveWithoutMetadata();
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
-    }
-
-    @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
-        this.read(this.world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
-    }
-
-    @Override
-    public CompoundNBT write(final CompoundNBT compound) {
-        super.write(compound);
-        compound.put("item", this.light.getItem().write(new CompoundNBT()));
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+        compound.put("item", this.light.getItem().save(new CompoundTag()));
         compound.putBoolean("on", this.on);
-        return compound;
     }
 
     @Override
-    public void read(final BlockState state, final CompoundNBT compound) {
-        super.read(state, compound);
-        this.setItemStack(ItemStack.read(compound.getCompound("item")));
+    public void load(CompoundTag compound) {
+        super.load(compound);
+        this.setItemStack(ItemStack.of(compound.getCompound("item")));
         this.setOn(compound.getBoolean("on"));
     }
 }

@@ -1,14 +1,13 @@
 package me.paulf.fairylights.server.feature.light;
 
 import me.paulf.fairylights.util.Mth;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class ColorChangingBehavior implements ColorLightBehavior {
     private final float[] red;
@@ -44,9 +43,9 @@ public class ColorChangingBehavior implements ColorLightBehavior {
     }
 
     private float get(final float[] values, final float delta) {
-        final float p = this.powered ? Mth.mod(Util.milliTime() * (20.0F / 1000.0F) * this.rate, values.length) : 0.0F;
+        final float p = this.powered ? Mth.mod(Util.getMillis() * (20.0F / 1000.0F) * this.rate, values.length) : 0.0F;
         final int i = (int) p;
-        return MathHelper.lerp(p - i, values[i % values.length], values[(i + 1) % values.length]);
+        return net.minecraft.util.Mth.lerp(p - i, values[i % values.length], values[(i + 1) % values.length]);
     }
 
     @Override
@@ -55,15 +54,15 @@ public class ColorChangingBehavior implements ColorLightBehavior {
     }
 
     @Override
-    public void tick(final World world, final Vector3d origin, final Light<?> light) {
+    public void tick(final Level world, final Vec3 origin, final Light<?> light) {
     }
 
     public static ColorLightBehavior create(final ItemStack stack) {
-        final CompoundNBT tag = stack.getTag();
+        final CompoundTag tag = stack.getTag();
         if (tag == null) {
             return new FixedColorBehavior(1.0F, 1.0F, 1.0F);
         }
-        final ListNBT list = tag.getList("colors", Constants.NBT.TAG_INT);
+        final ListTag list = tag.getList("colors", Tag.TAG_INT);
         final float[] red = new float[list.size()];
         final float[] green = new float[list.size()];
         final float[] blue = new float[list.size()];
@@ -77,18 +76,18 @@ public class ColorChangingBehavior implements ColorLightBehavior {
     }
 
     public static int animate(final ItemStack stack) {
-        final CompoundNBT tag = stack.getTag();
+        final CompoundTag tag = stack.getTag();
         if (tag == null) {
             return 0xFFFFFF;
         }
-        final ListNBT list = tag.getList("colors", Constants.NBT.TAG_INT);
+        final ListTag list = tag.getList("colors", Tag.TAG_INT);
         if (list.isEmpty()) {
             return 0xFFFFFF;
         }
         if (list.size() == 1) {
             return list.getInt(0);
         }
-        final float p = Mth.mod(Util.milliTime() * (20.0F / 1000.0F) * (list.size() / 960.0F), list.size());
+        final float p = Mth.mod(Util.getMillis() * (20.0F / 1000.0F) * (list.size() / 960.0F), list.size());
         final int i = (int) p;
         final int c0 = list.getInt(i % list.size());
         final float r0 = (c0 >> 16 & 0xFF) / 255.0F;
@@ -98,13 +97,13 @@ public class ColorChangingBehavior implements ColorLightBehavior {
         final float r1 = (c1 >> 16 & 0xFF) / 255.0F;
         final float g1 = (c1 >> 8 & 0xFF) / 255.0F;
         final float b1 = (c1 & 0xFF) / 255.0F;
-        return (int) (MathHelper.lerp(p - i, r0, r1) * 255.0F) << 16 |
-            (int) (MathHelper.lerp(p - i, g0, g1) * 255.0F) << 8 |
-            (int) (MathHelper.lerp(p - i, b0, b1) * 255.0F);
+        return (int) (net.minecraft.util.Mth.lerp(p - i, r0, r1) * 255.0F) << 16 |
+            (int) (net.minecraft.util.Mth.lerp(p - i, g0, g1) * 255.0F) << 8 |
+            (int) (net.minecraft.util.Mth.lerp(p - i, b0, b1) * 255.0F);
     }
 
     public static boolean exists(final ItemStack stack) {
-        final CompoundNBT tag = stack.getTag();
-        return tag != null && tag.contains("colors", Constants.NBT.TAG_LIST);
+        final CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains("colors", Tag.TAG_LIST);
     }
 }

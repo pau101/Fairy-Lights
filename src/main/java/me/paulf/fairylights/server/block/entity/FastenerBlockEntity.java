@@ -4,79 +4,74 @@ import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.FastenerBlock;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.Fastener;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 
-public final class FastenerBlockEntity extends TileEntity implements ITickableTileEntity {
-    public FastenerBlockEntity() {
-        super(FLBlockEntities.FASTENER.get());
+public final class FastenerBlockEntity extends BlockEntity {
+    public FastenerBlockEntity(final BlockPos pos, final BlockState state) {
+        super(FLBlockEntities.FASTENER.get(), pos ,state);
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return this.getFastener().map(fastener -> fastener.getBounds().grow(1)).orElseGet(super::getRenderBoundingBox);
+    public AABB getRenderBoundingBox() {
+        return this.getFastener().map(fastener -> fastener.getBounds().inflate(1)).orElseGet(super::getRenderBoundingBox);
     }
 
-    public Vector3d getOffset() {
+    public Vec3 getOffset() {
         return FLBlocks.FASTENER.get().getOffset(this.getFacing(), 0.125F);
     }
 
     public Direction getFacing() {
-        final BlockState state = this.world.getBlockState(this.pos);
+        final BlockState state = this.level.getBlockState(this.worldPosition);
         if (state.getBlock() != FLBlocks.FASTENER.get()) {
             return Direction.UP;
         }
-        return state.get(FastenerBlock.FACING);
+        return state.getValue(FastenerBlock.FACING);
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.saveWithoutMetadata();
     }
 
     @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
-        this.read(this.world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
-    }
-
-    @Override
-    public void setWorldAndPos(final World world, final BlockPos pos) {
-        super.setWorldAndPos(world, pos);
+    public void setLevel(final Level world) {
+        super.setLevel(world);
         this.getFastener().ifPresent(fastener -> fastener.setWorld(world));
     }
 
-    @Override
-    public void tick() {
-        this.getFastener().ifPresent(fastener -> {
-            if (!this.world.isRemote && fastener.hasNoConnections()) {
-                this.world.removeBlock(this.pos, false);
-            } else if (!this.world.isRemote && fastener.update()) {
-                this.markDirty();
-                final BlockState state = this.world.getBlockState(this.pos);
-                this.world.notifyBlockUpdate(this.pos, state, state, 3);
+    public static void tick(Level level, BlockPos pos, BlockState state, FastenerBlockEntity be) {
+        be.getFastener().ifPresent(fastener -> {
+            if (!level.isClientSide() && fastener.hasNoConnections()) {
+                level.removeBlock(pos, false);
+            } else if (!level.isClientSide() && fastener.update()) {
+                be.setChanged();
+                level.sendBlockUpdated(pos, state, state, 3);
             }
         });
     }
 
+    public static void tickClient(Level level, BlockPos pos, BlockState state, FastenerBlockEntity be) {
+        be.getFastener().ifPresent(Fastener::update);
+    }
+
     @Override
-    public void remove() {
+    public void setRemoved() {
         this.getFastener().ifPresent(Fastener::remove);
-        super.remove();
+        super.setRemoved();
     }
 
     private LazyOptional<Fastener<?>> getFastener() {

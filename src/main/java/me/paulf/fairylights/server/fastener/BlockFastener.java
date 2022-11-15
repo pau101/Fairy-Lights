@@ -2,11 +2,10 @@ package me.paulf.fairylights.server.fastener;
 
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor> {
     private final FastenerBlockEntity fastener;
@@ -16,8 +15,8 @@ public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor>
     public BlockFastener(final FastenerBlockEntity fastener, final BlockView view) {
         this.fastener = fastener;
         this.view = view;
-        this.bounds = new AxisAlignedBB(fastener.getPos());
-        this.setWorld(fastener.getWorld());
+        this.bounds = new AABB(fastener.getBlockPos());
+        this.setWorld(fastener.getLevel());
     }
 
     @Override
@@ -27,17 +26,17 @@ public final class BlockFastener extends AbstractFastener<BlockFastenerAccessor>
 
     @Override
     public boolean isMoving() {
-        return this.view.isMoving(this.getWorld(), this.fastener.getPos());
+        return this.view.isMoving(this.getWorld(), this.fastener.getBlockPos());
     }
 
     @Override
     public BlockPos getPos() {
-        return this.fastener.getPos();
+        return this.fastener.getBlockPos();
     }
 
     @Override
-    public Vector3d getConnectionPoint() {
-        return this.view.getPosition(this.getWorld(), this.fastener.getPos(), Vector3d.copy(this.getPos()).add(this.fastener.getOffset()));
+    public Vec3 getConnectionPoint() {
+        return this.view.getPosition(this.getWorld(), this.fastener.getBlockPos(), Vec3.atLowerCornerOf(this.getPos()).add(this.fastener.getOffset()));
     }
 
     @Override

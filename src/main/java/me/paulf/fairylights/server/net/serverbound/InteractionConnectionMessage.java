@@ -1,18 +1,18 @@
 package me.paulf.fairylights.server.net.serverbound;
 
-import me.paulf.fairylights.server.feature.FeatureType;
-import me.paulf.fairylights.server.connection.PlayerAction;
 import me.paulf.fairylights.server.collision.Intersection;
 import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.connection.PlayerAction;
+import me.paulf.fairylights.server.feature.FeatureType;
 import me.paulf.fairylights.server.net.ConnectionMessage;
 import me.paulf.fairylights.server.net.ServerMessageContext;
 import me.paulf.fairylights.util.Utils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.function.BiConsumer;
@@ -24,7 +24,7 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
 
     private PlayerAction type;
 
-    private Vector3d hit;
+    private Vec3 hit;
 
     private FeatureType featureType;
 
@@ -41,7 +41,7 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
     }
 
     @Override
-    public void encode(final PacketBuffer buf) {
+    public void encode(final FriendlyByteBuf buf) {
         super.encode(buf);
         buf.writeByte(this.type.ordinal());
         buf.writeDouble(this.hit.x);
@@ -52,10 +52,10 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
     }
 
     @Override
-    public void decode(final PacketBuffer buf) {
+    public void decode(final FriendlyByteBuf buf) {
         super.decode(buf);
         this.type = Utils.getEnumValue(PlayerAction.class, buf.readUnsignedByte());
-        this.hit = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        this.hit = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.featureType = FeatureType.fromId(buf.readVarInt());
         this.featureId = buf.readVarInt();
     }
@@ -63,11 +63,11 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
     public static final class Handler implements BiConsumer<InteractionConnectionMessage, ServerMessageContext> {
         @Override
         public void accept(final InteractionConnectionMessage message, final ServerMessageContext context) {
-            final ServerPlayerEntity player = context.getPlayer();
-            getConnection(message, c -> true, player.world).ifPresent(connection -> {
+            final ServerPlayer player = context.getPlayer();
+            getConnection(message, c -> true, player.level).ifPresent(connection -> {
                 if (connection.isModifiable(player) &&
-                    player.getPositionVec().squareDistanceTo(Vector3d.copy(connection.getFastener().getPos())) < RANGE &&
-                    player.getDistanceSq(message.hit.x, message.hit.y, message.hit.z) < REACH
+                    player.distanceToSqr(Vec3.atLowerCornerOf(connection.getFastener().getPos())) < RANGE &&
+                    player.distanceToSqr(message.hit.x, message.hit.y, message.hit.z) < REACH
                 ) {
                     if (message.type == PlayerAction.ATTACK) {
                         connection.disconnect(player, message.hit);
@@ -78,9 +78,9 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
             });
         }
 
-        private void interact(final InteractionConnectionMessage message, final PlayerEntity player, final Connection connection, final Vector3d hit) {
-            for (final Hand hand : Hand.values()) {
-                final ItemStack stack = player.getHeldItem(hand);
+        private void interact(final InteractionConnectionMessage message, final Player player, final Connection connection, final Vec3 hit) {
+            for (final InteractionHand hand : InteractionHand.values()) {
+                final ItemStack stack = player.getItemInHand(hand);
                 final ItemStack oldStack = stack.copy();
                 if (connection.interact(player, hit, message.featureType, message.featureId, stack, hand)) {
                     this.updateItem(player, oldStack, stack, hand);
@@ -89,11 +89,11 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
             }
         }
 
-        private void updateItem(final PlayerEntity player, final ItemStack oldStack, final ItemStack stack, final Hand hand) {
-            if (stack.getCount() <= 0 && !player.abilities.isCreativeMode) {
+        private void updateItem(final Player player, final ItemStack oldStack, final ItemStack stack, final InteractionHand hand) {
+            if (stack.getCount() <= 0 && !player.getAbilities().instabuild) {
                 ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
-                player.setHeldItem(hand, ItemStack.EMPTY);
-            } else if (stack.getCount() < oldStack.getCount() && player.abilities.isCreativeMode) {
+                player.setItemInHand(hand, ItemStack.EMPTY);
+            } else if (stack.getCount() < oldStack.getCount() && player.getAbilities().instabuild) {
                 stack.setCount(oldStack.getCount());
             }
         }

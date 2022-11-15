@@ -4,7 +4,7 @@ import me.paulf.fairylights.server.fastener.accessor.BlockFastenerAccessor;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
 import me.paulf.fairylights.server.fastener.accessor.FenceFastenerAccessor;
 import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -37,14 +37,14 @@ public enum FastenerType {
         return this.supplier.get();
     }
 
-    public static CompoundNBT serialize(final FastenerAccessor accessor) {
-        final CompoundNBT compound = new CompoundNBT();
+    public static CompoundTag serialize(final FastenerAccessor accessor) {
+        final CompoundTag compound = new CompoundTag();
         compound.putString("type", accessor.getType().name);
         compound.put("data", accessor.serialize());
         return compound;
     }
 
-    public static FastenerAccessor deserialize(final CompoundNBT compound) {
+    public static FastenerAccessor deserialize(final CompoundTag compound) {
         final FastenerAccessor accessor = NAME_TO_TYPE.get(compound.getString("type")).createAccessor();
         accessor.deserialize(compound.getCompound("data"));
         return accessor;

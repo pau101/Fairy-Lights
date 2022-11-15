@@ -2,23 +2,23 @@ package me.paulf.fairylights.server.connection;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
-import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.server.collision.Intersection;
+import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.feature.Letter;
 import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
+import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import me.paulf.fairylights.util.styledstring.StylingPresence;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
 
     private Letter[] letters = new Letter[0];
 
-    public LetterBuntingConnection(final ConnectionType<? extends LetterBuntingConnection> type, final World world, final Fastener<?> fastener, final UUID uuid) {
+    public LetterBuntingConnection(final ConnectionType<? extends LetterBuntingConnection> type, final Level world, final Fastener<?> fastener, final UUID uuid) {
         super(type, world, fastener, uuid);
         this.text = new StyledString();
     }
@@ -57,16 +57,16 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    public void processClientAction(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
+    public void processClientAction(final Player player, final PlayerAction action, final Intersection intersection) {
         if (this.openTextGui(player, action, intersection)) {
             super.processClientAction(player, action, intersection);
         }
     }
 
     @Override
-    public void onConnect(final World world, final PlayerEntity user, final ItemStack heldStack) {
+    public void onConnect(final Level world, final Player user, final ItemStack heldStack) {
         if (this.text.isEmpty()) {
-            FairyLights.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) user), new OpenEditLetteredConnectionScreenMessage<>(this));
+            FairyLights.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) user), new OpenEditLetteredConnectionScreenMessage<>(this));
         }
     }
 
@@ -115,7 +115,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
                     final float pointOffset = pointOffsets[n];
                     if (pointOffset < distance + length) {
                         final float t = (pointOffset - distance) / length;
-                        final Vector3d point = new Vector3d(it.getX(t), it.getY(t), it.getZ(t));
+                        final Vec3 point = new Vec3(it.getX(t), it.getY(t), it.getZ(t));
                         final Letter letter;
                         if (prevLetters != null && pointIdx < prevLetters.length) {
                             letter = prevLetters[pointIdx];
@@ -194,14 +194,14 @@ public final class LetterBuntingConnection extends Connection implements Lettere
     }
 
     @Override
-    public CompoundNBT serializeLogic() {
-        final CompoundNBT compound = super.serializeLogic();
+    public CompoundTag serializeLogic() {
+        final CompoundTag compound = super.serializeLogic();
         compound.put("text", StyledString.serialize(this.text));
         return compound;
     }
 
     @Override
-    public void deserializeLogic(final CompoundNBT compound) {
+    public void deserializeLogic(final CompoundTag compound) {
         super.deserializeLogic(compound);
         this.text = StyledString.deserialize(compound.getCompound("text"));
     }

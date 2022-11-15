@@ -8,27 +8,27 @@ import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.LootTableProvider;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.loot.LootParameterSet;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTableManager;
-import net.minecraft.loot.ValidationTracker;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.ValidationContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -53,69 +53,69 @@ public final class DataGatherer {
         }
 
         @Override
-        protected void registerRecipes(final Consumer<IFinishedRecipe> consumer) {
-            final CompoundNBT nbt = new CompoundNBT();
+        protected void buildCraftingRecipes(final Consumer<FinishedRecipe> consumer) {
+            final CompoundTag nbt = new CompoundTag();
             nbt.put("text", StyledString.serialize(new StyledString()));
-            ShapedRecipeBuilder.shapedRecipe(FLItems.LETTER_BUNTING.get())
-                .patternLine("I-I")
-                .patternLine("PBF")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('-', Tags.Items.STRING)
-                .key('P', Items.PAPER)
-                .key('B', Items.INK_SAC)
-                .key('F', Tags.Items.FEATHERS)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", hasItem(Tags.Items.STRING))
-                .build(addNbt(consumer, nbt));
-            ShapedRecipeBuilder.shapedRecipe(FLItems.GARLAND.get(), 2)
-                .patternLine("I-I")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('-', Items.VINE)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_vine", hasItem(Items.VINE))
-                .build(consumer);
-            ShapedRecipeBuilder.shapedRecipe(FLItems.OIL_LANTERN.get(), 4)
-                .patternLine(" I ")
-                .patternLine("STS")
-                .patternLine("IGI")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('S', Items.STICK)
-                .key('T', Items.TORCH)
-                .key('G', Tags.Items.GLASS_PANES_COLORLESS)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", hasItem(Items.TORCH))
-                .build(consumer);
-            ShapedRecipeBuilder.shapedRecipe(FLItems.CANDLE_LANTERN.get(), 4)
-                .patternLine(" I ")
-                .patternLine("GTG")
-                .patternLine("IGI")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('G', Tags.Items.NUGGETS_GOLD)
-                .key('T', Items.TORCH)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", hasItem(Items.TORCH))
-                .build(consumer);
-            ShapedRecipeBuilder.shapedRecipe(FLItems.INCANDESCENT_LIGHT.get(), 4)
-                .patternLine(" I ")
-                .patternLine("ITI")
-                .patternLine(" G ")
-                .key('I', Tags.Items.INGOTS_IRON)
-                .key('G', Tags.Items.GLASS_PANES_COLORLESS)
-                .key('T', Items.TORCH)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_torch", hasItem(Items.TORCH))
-                .build(consumer);
+            ShapedRecipeBuilder.shaped(FLItems.LETTER_BUNTING.get())
+                .pattern("I-I")
+                .pattern("PBF")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('-', Tags.Items.STRING)
+                .define('P', Items.PAPER)
+                .define('B', Items.INK_SAC)
+                .define('F', Tags.Items.FEATHERS)
+                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+                .unlockedBy("has_string", has(Tags.Items.STRING))
+                .save(addNbt(consumer, nbt));
+            ShapedRecipeBuilder.shaped(FLItems.GARLAND.get(), 2)
+                .pattern("I-I")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('-', Items.VINE)
+                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+                .unlockedBy("has_vine", has(Items.VINE))
+                .save(consumer);
+            ShapedRecipeBuilder.shaped(FLItems.OIL_LANTERN.get(), 4)
+                .pattern(" I ")
+                .pattern("STS")
+                .pattern("IGI")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('S', Items.STICK)
+                .define('T', Items.TORCH)
+                .define('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+                .unlockedBy("has_torch", has(Items.TORCH))
+                .save(consumer);
+            ShapedRecipeBuilder.shaped(FLItems.CANDLE_LANTERN.get(), 4)
+                .pattern(" I ")
+                .pattern("GTG")
+                .pattern("IGI")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('G', Tags.Items.NUGGETS_GOLD)
+                .define('T', Items.TORCH)
+                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+                .unlockedBy("has_torch", has(Items.TORCH))
+                .save(consumer);
+            ShapedRecipeBuilder.shaped(FLItems.INCANDESCENT_LIGHT.get(), 4)
+                .pattern(" I ")
+                .pattern("ITI")
+                .pattern(" G ")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .define('T', Items.TORCH)
+                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+                .unlockedBy("has_torch", has(Items.TORCH))
+                .save(consumer);
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS.get())
-                .addCriterion("has_lights", hasItem(FLCraftingRecipes.LIGHTS))
+                .unlockedBy("has_lights", has(FLCraftingRecipes.LIGHTS))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.HANGING_LIGHTS_AUGMENTATION.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "hanging_lights_augmentation"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.TINSEL_GARLAND.get())
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_string", hasItem(Tags.Items.STRING))
+                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+                .unlockedBy("has_string", has(Tags.Items.STRING))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "tinsel_garland"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING.get())
-                .addCriterion("has_pennants", hasItem(FLCraftingRecipes.PENNANTS))
+                .unlockedBy("has_pennants", has(FLCraftingRecipes.PENNANTS))
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting"));
             GenericRecipeBuilder.customRecipe(FLCraftingRecipes.PENNANT_BUNTING_AUGMENTATION.get())
                 .build(consumer, new ResourceLocation(FairyLights.ID, "pennant_bunting_augmentation"));
@@ -171,16 +171,16 @@ public final class DataGatherer {
                 .build(consumer, new ResourceLocation(FairyLights.ID, "color_changing_light"));
         }
 
-        GenericRecipeBuilder lightRecipe(final IRecipeSerializer<?> serializer) {
+        GenericRecipeBuilder lightRecipe(final RecipeSerializer<?> serializer) {
             return GenericRecipeBuilder.customRecipe(serializer)
-                .addCriterion("has_iron", hasItem(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_dye", hasItem(Tags.Items.DYES));
+                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+                .unlockedBy("has_dye", has(Tags.Items.DYES));
         }
 
-        GenericRecipeBuilder pennantRecipe(final IRecipeSerializer<?> serializer) {
+        GenericRecipeBuilder pennantRecipe(final RecipeSerializer<?> serializer) {
             return GenericRecipeBuilder.customRecipe(serializer)
-                .addCriterion("has_paper", hasItem(Items.PAPER))
-                .addCriterion("has_string", hasItem(Tags.Items.STRING));
+                .unlockedBy("has_paper", has(Items.PAPER))
+                .unlockedBy("has_string", has(Tags.Items.STRING));
         }
     }
 
@@ -190,21 +190,21 @@ public final class DataGatherer {
         }
 
         @Override
-        protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
-            return ImmutableList.of(Pair.of(BlockLootTableGenerator::new, LootParameterSets.BLOCK));
+        protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
+            return ImmutableList.of(Pair.of(BlockLootTableGenerator::new, LootContextParamSets.BLOCK));
         }
 
         @Override
-        protected void validate(final Map<ResourceLocation, LootTable> map, final ValidationTracker tracker) {
+        protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext tracker) {
             // For built-in mod loot tables
-            /*for (final ResourceLocation name : Sets.difference(MyBuiltInLootTables.getAll(), map.keySet())) {
+            /*for (final ResourceLocation name : Sets.difference(MyBuiltInLootTables.getAll(), map.defineSet())) {
                 tracker.addProblem("Missing built-in table: " + name);
             }*/
-            map.forEach((name, table) -> LootTableManager.validateLootTable(tracker, name, table));
+            map.forEach((name, table) -> LootTables.validate(tracker, name, table));
         }
     }
 
-    static class BlockLootTableGenerator extends BlockLootTables {
+    static class BlockLootTableGenerator extends BlockLoot {
         @Override
         protected Iterable<Block> getKnownBlocks() {
             return FLBlocks.REG.getEntries().stream().map(RegistryObject::get).collect(Collectors.toList());
@@ -215,49 +215,49 @@ public final class DataGatherer {
         }
     }
 
-    static Consumer<IFinishedRecipe> addNbt(final Consumer<IFinishedRecipe> consumer, final CompoundNBT nbt) {
+    static Consumer<FinishedRecipe> addNbt(final Consumer<FinishedRecipe> consumer, final CompoundTag nbt) {
         return recipe -> consumer.accept(new ForwardingFinishedRecipe() {
             @Override
-            protected IFinishedRecipe delegate() {
+            protected FinishedRecipe delegate() {
                 return recipe;
             }
 
             @Override
-            public void serialize(final JsonObject json) {
-                super.serialize(json);
+            public void serializeRecipeData(final JsonObject json) {
+                super.serializeRecipeData(json);
                 json.getAsJsonObject("result").addProperty("nbt", nbt.toString());
             }
         });
     }
 
-    abstract static class ForwardingFinishedRecipe implements IFinishedRecipe {
-        protected abstract IFinishedRecipe delegate();
+    abstract static class ForwardingFinishedRecipe implements FinishedRecipe {
+        protected abstract FinishedRecipe delegate();
 
         @Override
-        public void serialize(final JsonObject json) {
-            this.delegate().serialize(json);
+        public void serializeRecipeData(final JsonObject json) {
+            this.delegate().serializeRecipeData(json);
         }
 
         @Override
-        public ResourceLocation getID() {
-            return this.delegate().getID();
+        public ResourceLocation getId() {
+            return this.delegate().getId();
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer() {
-            return this.delegate().getSerializer();
-        }
-
-        @Nullable
-        @Override
-        public JsonObject getAdvancementJson() {
-            return this.delegate().getAdvancementJson();
+        public RecipeSerializer<?> getType() {
+            return this.delegate().getType();
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
-            return this.delegate().getAdvancementID();
+        public JsonObject serializeAdvancement() {
+            return this.delegate().serializeAdvancement();
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return this.delegate().getAdvancementId();
         }
     }
 }

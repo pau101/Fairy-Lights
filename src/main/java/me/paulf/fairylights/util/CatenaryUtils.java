@@ -1,6 +1,6 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /*
  * Based off of
@@ -39,21 +39,21 @@ public final class CatenaryUtils {
         final float d = x2 - x1;
         final float h = y2 - y1;
         linspace(x1, x2, pointCount, x, 0);
-        if (MathHelper.abs(d) < MIN_HORIZ || length <= MathHelper.sqrt(d * d + h * h)) {
+        if (Mth.abs(d) < MIN_HORIZ || length <= Mth.sqrt(d * d + h * h)) {
             linspace(y1, y2, pointCount, y, 0);
             return;
         }
         for (int iter = 0; iter < MAX_ITER; iter++) {
             final float val = g(sag, d, length, h);
             final float grad = dg(sag, d);
-            if (MathHelper.abs(val) < MIN_VAL || MathHelper.abs(grad) < MIN_GRAD) {
+            if (Mth.abs(val) < MIN_VAL || Mth.abs(grad) < MIN_GRAD) {
                 break;
             }
             final float search = -g(sag, d, length, h) / dg(sag, d);
             float alpha = 1;
             float sagNew = sag + alpha * search;
-            final float valAbs = MathHelper.abs(val);
-            while (sagNew < 0 || MathHelper.abs(g(sagNew, d, length, h)) > valAbs) {
+            final float valAbs = Mth.abs(val);
+            while (sagNew < 0 || Mth.abs(g(sagNew, d, length, h)) > valAbs) {
                 alpha = STEP_DEC * alpha;
                 if (alpha < MIN_STEP) {
                     break;
@@ -75,7 +75,7 @@ public final class CatenaryUtils {
     }
 
     private static float g(final float s, final float d, final float length, final float h) {
-        return 2 * (float) Math.sinh(s * d / 2) / s - MathHelper.sqrt(length * length - h * h);
+        return 2 * (float) Math.sinh(s * d / 2) / s - Mth.sqrt(length * length - h * h);
     }
 
     private static void linspace(final float base, final float limit, final int n, final float[] elements, final int offset) {

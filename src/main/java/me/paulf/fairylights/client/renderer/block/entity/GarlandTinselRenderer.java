@@ -1,27 +1,34 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import me.paulf.fairylights.client.ClientProxy;
-import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.GarlandTinselConnection;
+import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.RandomArray;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.Mth;
+
+import java.util.function.Function;
 
 public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConnection> {
     private static final RandomArray RAND = new RandomArray(9171, 128);
 
     private final StripModel strip;
 
-    public GarlandTinselRenderer() {
-        super(62, 0, 1.0F);
-        this.strip = new StripModel();
+    public GarlandTinselRenderer(final Function<ModelLayerLocation, ModelPart> baker) {
+        super(baker, FLModelLayers.TINSEL_WIRE);
+        this.strip = new StripModel(baker.apply(FLModelLayers.TINSEL_STRIP));
     }
 
     @Override
@@ -30,57 +37,60 @@ public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConne
     }
 
     @Override
-    protected void renderSegment(final GarlandTinselConnection connection, final Catenary.SegmentView it, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
-        super.renderSegment(connection, it, delta, matrix, source, packedLight, packedOverlay);
+    protected void renderSegment(final GarlandTinselConnection connection, final Catenary.SegmentView it, final float delta, final PoseStack matrix, final int packedLight, final MultiBufferSource source, final int packedOverlay) {
+        super.renderSegment(connection, it, delta, matrix, packedLight, source, packedOverlay);
         final int color = connection.getColor();
         final float r = ((color >> 16) & 0xFF) / 255.0F;
         final float g = ((color >> 8) & 0xFF) / 255.0F;
         final float b = (color & 0xFF) / 255.0F;
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(it.getX(0.0F), it.getY(0.0F), it.getZ(0.0F));
-        matrix.rotate(Vector3f.YP.rotation(-it.getYaw()));
-        matrix.rotate(Vector3f.ZP.rotation(it.getPitch()));
+        matrix.mulPose(Vector3f.YP.rotation(-it.getYaw()));
+        matrix.mulPose(Vector3f.ZP.rotation(it.getPitch()));
         final float length = it.getLength();
-        final int rings = MathHelper.ceil(length * 64);
+        final int rings = Mth.ceil(length * 64);
         final int hash = connection.getUUID().hashCode();
         final int index = it.getIndex();
-        final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+        final VertexConsumer buf = ClientProxy.SOLID_TEXTURE.buffer(source, RenderType::entityCutout);
         for (int i = 0; i < rings; i++) {
             final double t = i / (float) rings * length;
-            matrix.push();
+            matrix.pushPose();
             matrix.translate(t, 0.0F, 0.0F);
             final float rotX = RAND.get(31 * (index + 31 * i) + hash) * 22;
             final float rotY = RAND.get(31 * (index + 3 + 31 * i) + hash) * 180;
             final float rotZ = RAND.get(31 * (index + 7 + 31 * i) + hash) * 180;
-            matrix.rotate(Vector3f.XP.rotationDegrees(rotZ));
-            matrix.rotate(Vector3f.YP.rotationDegrees(rotY));
-            matrix.rotate(Vector3f.ZP.rotationDegrees(rotX));
-            matrix.scale(1.0F, RAND.get(i * 63) * 0.1F + 1.0F, 1.0F);
-            this.strip.render(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
-            matrix.pop();
+            matrix.mulPose(Vector3f.XP.rotationDegrees(rotZ));
+            matrix.mulPose(Vector3f.YP.rotationDegrees(rotY));
+            matrix.mulPose(Vector3f.ZP.rotationDegrees(rotX));
+            matrix.scale(1.0F, RAND.get(i * 63) * 0.1F + 1.0F, 0.5F);
+            this.strip.renderToBuffer(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
+            matrix.popPose();
         }
-        matrix.pop();
+        matrix.popPose();
     }
 
-    private static class StripModel extends Model {
-        final ModelRenderer root;
+    public static LayerDefinition wireLayer() {
+        return WireModel.createLayer(62, 0, 1);
+    }
 
-        StripModel() {
-            super(RenderType::getEntityCutout);
-            this.textureWidth = 128;
-            this.textureHeight = 128;
-            this.root = new ModelRenderer(this, 62, 0) {
-                @Override
-                public void translateRotate(final MatrixStack stack) {
-                    super.translateRotate(stack);
-                    stack.getLast().getMatrix().mul(Matrix4f.makeScale(1.0F, 1.0F, 0.5F));
-                }
-            };
-            this.root.addBox(-0.5F, -3.0F, 0.0F, 1.0F, 6.0F, 0.0F);
+    public static class StripModel extends Model {
+        final ModelPart root;
+
+        StripModel(final ModelPart root) {
+            super(RenderType::entityCutout);
+            this.root = root;
+        }
+
+        public static LayerDefinition createLayer() {
+            MeshDefinition mesh = new MeshDefinition();
+            mesh.getRoot().addOrReplaceChild("root", CubeListBuilder.create()
+                .texOffs(62, 0)
+                .addBox(-0.5F, -3.0F, 0.0F, 1.0F, 6.0F, 0.0F), PartPose.ZERO);
+            return LayerDefinition.create(mesh, 128, 128);
         }
 
         @Override
-        public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+        public void renderToBuffer(final PoseStack matrix, final VertexConsumer builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
             this.root.render(matrix, builder, light, overlay, r, g, b, a);
         }
     }

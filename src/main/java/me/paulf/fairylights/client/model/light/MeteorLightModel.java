@@ -1,44 +1,42 @@
 package me.paulf.fairylights.client.model.light;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.MeteorLightBehavior;
 import me.paulf.fairylights.util.Mth;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 
 public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
-    private final BulbBuilder[] lights;
+    private static final int LIGHT_COUNT = 12;
 
-    private final ModelRenderer connector;
+    private final PartPair[] lights;
 
-    private final ModelRenderer cap;
+    private final ModelPart connector;
+
+    private final ModelPart cap;
 
     private float stage;
 
-    public MeteorLightModel() {
-        this.connector = new ModelRenderer(this, 77, 0);
-        this.connector.addBox(-1, -0.5F, -1, 2, 2, 2, -0.05F);
-        this.unlit.addChild(this.connector);
-        this.cap = new ModelRenderer(this, 77, 0);
-        this.cap.addBox(-1, -25.45F + 0.05F, -1, 2, 1, 2, 0);
-        this.unlit.addChild(this.cap);
-        final int lightCount = 12;
-        this.lights = new BulbBuilder[lightCount];
-        final float rodScale = 0.8F;
-        final BulbBuilder bulb = this.createBulb();
-        for (int i = 0; i < lightCount; i++) {
-            final BulbBuilder light = bulb.createChild(37, 72, (m, u, v) -> new ModelRenderer(m, u, v) {
+    public MeteorLightModel(final ModelPart root) {
+        super(root);
+        this.connector = this.unlit.getChild("connector");
+        this.cap = this.unlit.getChild("cap");
+        this.lights = new PartPair[LIGHT_COUNT];
+        for (int i = 0; i < LIGHT_COUNT; i++) {
+            String key = "light_" + i;
+            this.lights[i] = new PartPair(this.litTint.getChild(key), this.litTintGlow.getChild(key));
+        }
+        /*
+        (m, u, v) -> new ModelPart(m, u, v) {
                 @Override
                 public void translateRotate(final MatrixStack stack) {
                     super.translateRotate(stack);
                     stack.scale(rodScale, 1.0F, rodScale);
                 }
-            });
-            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, MathHelper.sin(i * Mth.PI / lightCount) * 0.1F);
-            this.lights[i] = light;
-        }
+            }
+         */
     }
 
     @Override
@@ -51,30 +49,54 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
     }
 
     private float computeBrightness(final float t) {
-        return MathHelper.clamp(t - this.stage > 0.0F ? 1.0F - Math.abs(t - this.stage) * 4.0F : 1.0F - Math.abs(t - this.stage), 0.0F, 1.0F);
+        return net.minecraft.util.Mth.clamp(t - this.stage > 0.0F ? 1.0F - Math.abs(t - this.stage) * 4.0F : 1.0F - Math.abs(t - this.stage), 0.0F, 1.0F);
     }
 
     @Override
-    public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+    public void renderToBuffer(final PoseStack matrix, final VertexConsumer builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         for (int i = 0; i < this.lights.length; i++) {
             this.brightness = this.computeBrightness((float) i / this.lights.length);
             for (int n = 0; n < this.lights.length; n++) {
                 this.lights[n].setVisible(i == n);
             }
-            this.connector.showModel = i == 0;
-            this.cap.showModel = i == this.lights.length - 1;
-            super.render(matrix, builder, light, overlay, r, g, b, a);
+            this.connector.visible = i == 0;
+            this.cap.visible = i == this.lights.length - 1;
+            super.renderToBuffer(matrix, builder, light, overlay, r, g, b, a);
         }
     }
 
     @Override
-    public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+    public void renderTranslucent(final PoseStack matrix, final VertexConsumer builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         for (int i = 0; i < this.lights.length; i++) {
             this.brightness = this.computeBrightness((float) i / this.lights.length);
             for (int n = 0; n < this.lights.length; n++) {
                 this.lights[n].setVisible(i == n);
             }
             super.renderTranslucent(matrix, builder, light, overlay, r, g, b, a);
+        }
+    }
+
+    public static LayerDefinition createLayer() {
+        final LightMeshHelper helper = LightMeshHelper.create();
+        final EasyMeshBuilder connector = new EasyMeshBuilder("connector", 77, 0);
+        connector.addBox(-1, -0.5F, -1, 2, 2, 2, -0.05F);
+        helper.unlit().addChild(connector);
+        final EasyMeshBuilder cap = new EasyMeshBuilder("cap", 77, 0);
+        cap.addBox(-1, -25.45F + 0.05F, -1, 2, 1, 2, 0);
+        helper.unlit().addChild(cap);
+        final float rodScale = 0.8F;
+        final BulbBuilder bulb = helper.createBulb();
+        for (int i = 0; i < LIGHT_COUNT; i++) {
+            final BulbBuilder light = bulb.createChild("light_" + i, 37, 72);
+            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, net.minecraft.util.Mth.sin(i * Mth.PI / LIGHT_COUNT) * 0.1F);
+        }
+        return helper.build();
+    }
+
+    private record PartPair(ModelPart first, ModelPart second) {
+        void setVisible(final boolean visible) {
+            this.first().visible = visible;
+            this.second().visible = visible;
         }
     }
 }

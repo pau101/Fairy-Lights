@@ -1,8 +1,8 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Function;
 

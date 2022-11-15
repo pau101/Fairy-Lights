@@ -1,15 +1,15 @@
 package me.paulf.fairylights.server.feature;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class Pennant extends HangingFeature {
     private final int color;
 
     private final Item item;
 
-    public Pennant(final int index, final Vector3d point, final float yaw, final float pitch, final int color, final Item item) {
+    public Pennant(final int index, final Vec3 point, final float yaw, final float pitch, final int color, final Item item) {
         super(index, point, yaw, pitch, 0.0F, 0.0F);
         this.color = color;
         this.item = item;
@@ -24,8 +24,8 @@ public class Pennant extends HangingFeature {
     }
 
     @Override
-    public AxisAlignedBB getBounds() {
-        return new AxisAlignedBB(-0.22D, -0.5D, -0.02D, 0.22D, 0.0D, 0.02D);
+    public AABB getBounds() {
+        return new AABB(-0.22D, -0.5D, -0.02D, 0.22D, 0.0D, 0.02D);
     }
 
     @Override

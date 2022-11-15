@@ -1,46 +1,57 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import me.paulf.fairylights.client.ClientProxy;
-import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.Mth;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
+
+import java.util.function.Function;
 
 public abstract class ConnectionRenderer<C extends Connection> {
     private final WireModel model;
+    private final float wireInflate;
 
-    protected ConnectionRenderer(final int wireU, final int wireV, final float wireSize) {
-        this.model = new WireModel(wireU, wireV, wireSize);
+    protected ConnectionRenderer(final Function<ModelLayerLocation, ModelPart> baker, final ModelLayerLocation wireModelLocation) {
+        this(baker, wireModelLocation, 0.0F);
     }
 
-    public void render(final C conn, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {
+    protected ConnectionRenderer(final Function<ModelLayerLocation, ModelPart> baker, final ModelLayerLocation wireModelLocation, final float wireInflate) {
+        this.model = new WireModel(baker.apply(wireModelLocation));
+        this.wireInflate = wireInflate;
+    }
+
+    public void render(final C conn, final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight, final int packedOverlay) {
         final Catenary currCat = conn.getCatenary();
         final Catenary prevCat = conn.getPrevCatenary();
         if (currCat != null && prevCat != null) {
             final Catenary cat = prevCat.lerp(currCat, delta);
             final Catenary.SegmentIterator it = cat.iterator();
-            final IVertexBuilder buf = ClientProxy.SOLID_TEXTURE.getBuffer(source, RenderType::getEntityCutout);
+            final VertexConsumer buf = ClientProxy.SOLID_TEXTURE.buffer(source, RenderType::entityCutout);
             final int color = this.getWireColor(conn);
             final float r = ((color >> 16) & 0xFF) / 255.0F;
             final float g = ((color >> 8) & 0xFF) / 255.0F;
             final float b = (color & 0xFF) / 255.0F;
             while (it.next()) {
-                this.model.root.rotationPointX = it.getX(0.0F) * 16.0F;
-                this.model.root.rotationPointY = it.getY(0.0F) * 16.0F;
-                this.model.root.rotationPointZ = it.getZ(0.0F) * 16.0F;
-                this.model.root.rotateAngleY = Mth.PI / 2.0F - it.getYaw();
-                this.model.root.rotateAngleX = -it.getPitch();
-                this.model.root.rotateAngleZ = 0.0F;
-                this.model.length = it.getLength() * 16.0F;
-                this.model.render(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
-                this.renderSegment(conn, it, delta, matrix, source, packedLight, packedOverlay);
+                matrix.pushPose();
+                matrix.translate(it.getX(0.0F), it.getY(0.0F),  it.getZ(0.0F));
+                matrix.mulPose(Vector3f.YP.rotation(Mth.PI / 2.0F - it.getYaw()));
+                matrix.mulPose(Vector3f.XP.rotation(-it.getPitch()));
+                matrix.scale(1.0F + this.wireInflate, 1.0F, it.getLength() * 16.0F);
+                this.model.renderToBuffer(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
+                matrix.popPose();
+                this.renderSegment(conn, it, delta, matrix, packedLight, source, packedOverlay);
             }
             this.render(conn, cat, delta, matrix, source, packedLight, packedOverlay);
         }
@@ -50,33 +61,29 @@ public abstract class ConnectionRenderer<C extends Connection> {
         return 0xFFFFFF;
     }
 
-    protected void render(final C conn, final Catenary catenary, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}
+    protected void render(final C conn, final Catenary catenary, final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight, final int packedOverlay) {}
 
-    protected void renderSegment(final C connection, final Catenary.SegmentView it, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight, final int packedOverlay) {}
+    protected void renderSegment(final C connection, final Catenary.SegmentView it, final float delta, final PoseStack matrix, final int packedLight, final MultiBufferSource source, final int packedOverlay) {}
 
-    private static class WireModel extends Model {
-        final ModelRenderer root;
-        float length;
+    public static class WireModel extends Model {
+        final ModelPart root;
 
-        WireModel(final int u, final int v, final float size) {
-            super(RenderType::getEntityCutout);
-            this.textureWidth = 128;
-            this.textureHeight = 128;
-            this.root = new ModelRenderer(this, u, v) {
-                @Override
-                public void translateRotate(final MatrixStack stack) {
-                    super.translateRotate(stack);
-                    // Don't scale normal matrix
-                    stack.getLast().getMatrix().mul(Matrix4f.makeScale(1.0F + (size % 1.0F), 1.0F, WireModel.this.length));
-                }
-            };
-            final int s = MathHelper.floor(size);
-            this.root.addBox(-s * 0.5F, -s * 0.5F, 0.0F, s, s, 1.0F);
+        WireModel(final ModelPart root) {
+            super(RenderType::entityCutout);
+            this.root = root;
         }
 
         @Override
-        public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+        public void renderToBuffer(final PoseStack matrix, final VertexConsumer builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
             this.root.render(matrix, builder, light, overlay, r, g, b, a);
+        }
+
+        public static LayerDefinition createLayer(final int u, final int v, final int size) {
+            MeshDefinition mesh = new MeshDefinition();
+            mesh.getRoot().addOrReplaceChild("root", CubeListBuilder.create()
+                .texOffs(u, v)
+                .addBox(-size * 0.5F, -size * 0.5F, 0.0F, size, size, 1.0F), PartPose.ZERO);
+            return LayerDefinition.create(mesh, 128, 128);
         }
     }
 }

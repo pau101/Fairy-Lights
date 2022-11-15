@@ -1,9 +1,7 @@
 package me.paulf.fairylights.client.command;
 
-import com.google.common.collect.ImmutableList;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -12,16 +10,14 @@ import me.paulf.fairylights.client.ClientEventHandler;
 import me.paulf.fairylights.client.midi.MidiJingler;
 import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +26,6 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Transmitter;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
@@ -39,23 +34,21 @@ public final class JinglerCommand {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(new TranslationTextComponent("commands.jingler.open.failure.no_hanging_lights"));
+    private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(new TranslatableComponent("commands.jingler.open.failure.no_hanging_lights"));
 
-    private static final DynamicCommandExceptionType DEVICE_UNAVAILABLE = new DynamicCommandExceptionType(name -> new TranslationTextComponent("commands.jingler.open.failure.device_unavailable", name));
+    private static final DynamicCommandExceptionType DEVICE_UNAVAILABLE = new DynamicCommandExceptionType(name -> new TranslatableComponent("commands.jingler.open.failure.device_unavailable", name));
 
-    private static final DynamicCommandExceptionType DEVICE_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslationTextComponent("commands.jingler.open.failure.not_found", name));
+    private static final DynamicCommandExceptionType DEVICE_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslatableComponent("commands.jingler.open.failure.not_found", name));
 
-    private static final SimpleCommandExceptionType CLOSE_FAILURE = new SimpleCommandExceptionType(new TranslationTextComponent("commands.jingler.close.failure"));
+    private static final SimpleCommandExceptionType CLOSE_FAILURE = new SimpleCommandExceptionType(new TranslatableComponent("commands.jingler.close.failure"));
 
-    public static <S> LiteralArgumentBuilder<S> register(final ClientCommandProvider.Helper<S> helper) {
-        return LiteralArgumentBuilder.<S>literal("jingler")
-            .then(LiteralArgumentBuilder.<S>literal("open").then(helper.executes(
-                RequiredArgumentBuilder.<S, String>argument("device", StringArgumentType.greedyString())
-                    .suggests((context, builder) -> getDevices()
-                        .reduce(builder, (b, device) -> b.suggest(device.getDeviceInfo().getName(), createDeviceText(device)), SuggestionsBuilder::add)
-                        .buildFuture()
-                    ),
-                ctx -> {
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("jingler")
+            .then(Commands.literal("open").then(Commands.argument("device", StringArgumentType.greedyString())
+                .suggests((context, builder) -> getDevices()
+                    .reduce(builder, (b, device) -> b.suggest(device.getDeviceInfo().getName(), createDeviceText(device)), SuggestionsBuilder::add)
+                    .buildFuture()
+                ).executes(ctx -> {
                     final Connection conn = ClientEventHandler.getHitConnection();
                     if (!(conn instanceof HangingLightsConnection)) {
                         throw NO_HANGING_LIGHTS.create();
@@ -76,27 +69,25 @@ public final class JinglerCommand {
                         }
                     }
                     transmitter.setReceiver(new MidiJingler((HangingLightsConnection) conn));
-                    ctx.getSource().sendFeedback(new TranslationTextComponent("commands.jingler.open.success", name), false);
+                    ctx.getSource().sendSuccess(new TranslatableComponent("commands.jingler.open.success", name), false);
                     USED_COMMAND.compareAndSet(false, true);
                     return 1;
                 })))
-            .then(LiteralArgumentBuilder.<S>literal("close").then(helper.executes(
-                RequiredArgumentBuilder.<S, String>argument("device", StringArgumentType.greedyString())
-                    .suggests((context, builder) -> getDevices()
-                        .filter(device -> device.getTransmitters().stream().anyMatch(t -> t.getReceiver() instanceof MidiJingler))
-                        .reduce(builder, (b, device) -> builder.suggest(device.getDeviceInfo().getName(), createDeviceText(device)), SuggestionsBuilder::add)
-                        .buildFuture()
-                    ),
-                ctx -> {
+            .then(Commands.literal("close").then(Commands.argument("device", StringArgumentType.greedyString())
+                .suggests((context, builder) -> getDevices()
+                    .filter(device -> device.getTransmitters().stream().anyMatch(t -> t.getReceiver() instanceof MidiJingler))
+                    .reduce(builder, (b, device) -> builder.suggest(device.getDeviceInfo().getName(), createDeviceText(device)), SuggestionsBuilder::add)
+                    .buildFuture()
+                ).executes(ctx -> {
                     final String name = StringArgumentType.getString(ctx, "device");
                     final MidiDevice device = getMidiDevice(name);
                     final int closed = close(device);
                     if (closed == 0) {
                         throw CLOSE_FAILURE.create();
                     }
-                    ctx.getSource().sendFeedback(new TranslationTextComponent(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
+                    ctx.getSource().sendSuccess(new TranslatableComponent(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
                     return closed;
-                }
+                })
             )));
     }
 
@@ -145,12 +136,12 @@ public final class JinglerCommand {
         return closed;
     }
 
-    private static ITextComponent createDeviceText(final MidiDevice device) {
+    private static Component createDeviceText(final MidiDevice device) {
         final MidiDevice.Info info = device.getDeviceInfo();
-        return new StringTextComponent("")
-            .append(new TranslationTextComponent("commands.jingler.device.vendor", new StringTextComponent(info.getVendor()).mergeStyle(TextFormatting.GOLD)))
-            .appendString("\n")
-            .append(new TranslationTextComponent("commands.jingler.device.description", new StringTextComponent(info.getDescription()).mergeStyle(TextFormatting.GOLD)));
+        return new TextComponent("")
+            .append(new TranslatableComponent("commands.jingler.device.vendor", new TextComponent(info.getVendor()).withStyle(ChatFormatting.GOLD)))
+            .append("\n")
+            .append(new TranslatableComponent("commands.jingler.device.description", new TextComponent(info.getDescription()).withStyle(ChatFormatting.GOLD)));
     }
 
     public static void register(final IEventBus bus) {
@@ -174,7 +165,7 @@ public final class JinglerCommand {
             );
         });*/
         bus.<WorldEvent.Unload>addListener(e -> {
-            if (e.getWorld().isRemote() && USED_COMMAND.compareAndSet(true, false)) {
+            if (e.getWorld().isClientSide() && USED_COMMAND.compareAndSet(true, false)) {
                 getDevices().forEach(JinglerCommand::close);
             }
         });

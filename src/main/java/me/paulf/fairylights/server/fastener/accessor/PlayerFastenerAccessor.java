@@ -2,15 +2,15 @@ package me.paulf.fairylights.server.fastener.accessor;
 
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.fastener.PlayerFastener;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
-public final class PlayerFastenerAccessor extends EntityFastenerAccessor<PlayerEntity> {
+public final class PlayerFastenerAccessor extends EntityFastenerAccessor<Player> {
     public PlayerFastenerAccessor() {
-        super(PlayerEntity.class);
+        super(Player.class);
     }
 
     public PlayerFastenerAccessor(final PlayerFastener fastener) {
-        super(PlayerEntity.class, fastener);
+        super(Player.class, fastener);
     }
 
     @Override

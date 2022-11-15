@@ -1,14 +1,14 @@
 package me.paulf.fairylights.server.fastener;
 
-import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.connection.ConnectionType;
 import me.paulf.fairylights.server.connection.Connection;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import me.paulf.fairylights.server.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 import javax.annotation.Nullable;
@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<CompoundNBT> {
+public interface Fastener<F extends FastenerAccessor> extends ICapabilitySerializable<CompoundTag> {
     @Override
-    CompoundNBT serializeNBT();
+    CompoundTag serializeNBT();
 
     Optional<Connection> get(final UUID id);
 
@@ -30,30 +30,30 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
         return this.getAllConnections().stream().findFirst();
     }
 
-    AxisAlignedBB getBounds();
+    AABB getBounds();
 
-    Vector3d getConnectionPoint();
+    Vec3 getConnectionPoint();
 
     BlockPos getPos();
 
     Direction getFacing();
 
-    void setWorld(World world);
+    void setWorld(Level world);
 
     @Nullable
-    World getWorld();
+    Level getWorld();
 
     F createAccessor();
 
     boolean isMoving();
 
-    default void resistSnap(final Vector3d from) {}
+    default void resistSnap(final Vec3 from) {}
 
     boolean update();
 
     void setDirty();
 
-    void dropItems(World world, BlockPos pos);
+    void dropItems(Level world, BlockPos pos);
 
     void remove();
 
@@ -68,11 +68,11 @@ public interface Fastener<F extends FastenerAccessor> extends ICapabilitySeriali
 
     boolean removeConnection(Connection connection);
 
-    boolean reconnect(final World world, Connection connection, Fastener<?> newDestination);
+    boolean reconnect(final Level world, Connection connection, Fastener<?> newDestination);
 
-    Connection connect(World world, Fastener<?> destination, ConnectionType<?> type, CompoundNBT compound, final boolean drop);
+    Connection connect(Level world, Fastener<?> destination, ConnectionType<?> type, CompoundTag compound, final boolean drop);
 
-    Connection createOutgoingConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType<?> type, CompoundNBT compound, final boolean drop);
+    Connection createOutgoingConnection(Level world, UUID uuid, Fastener<?> destination, ConnectionType<?> type, CompoundTag compound, final boolean drop);
 
-    void createIncomingConnection(World world, UUID uuid, Fastener<?> destination, ConnectionType<?> type);
+    void createIncomingConnection(Level world, UUID uuid, Fastener<?> destination, ConnectionType<?> type);
 }

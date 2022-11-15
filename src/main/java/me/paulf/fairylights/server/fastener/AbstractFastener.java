@@ -3,26 +3,26 @@ package me.paulf.fairylights.server.fastener;
 import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.util.Catenary;
-import me.paulf.fairylights.server.connection.ConnectionType;
 import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.connection.ConnectionType;
+import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
 import me.paulf.fairylights.util.AABBBuilder;
+import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.RegistryObjects;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -40,10 +40,10 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     private final Map<UUID, Incoming> incoming = new HashMap<>();
 
-    protected AxisAlignedBB bounds = TileEntity.INFINITE_EXTENT_AABB;
+    protected AABB bounds = BlockEntity.INFINITE_EXTENT_AABB;
 
     @Nullable
-    private World world;
+    private Level world;
 
     private boolean dirty;
 
@@ -68,7 +68,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public AxisAlignedBB getBounds() {
+    public AABB getBounds() {
         return this.bounds;
     }
 
@@ -76,21 +76,21 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     public abstract BlockPos getPos();
 
     @Override
-    public void setWorld(final World world) {
+    public void setWorld(final Level world) {
         this.world = world;
         this.outgoing.values().forEach(c -> c.setWorld(world));
     }
 
     @Nullable
     @Override
-    public World getWorld() {
+    public Level getWorld() {
         return this.world;
     }
 
     @Override
     public boolean update() {
         final Iterator<Connection> it = this.outgoing.values().iterator();
-        final Vector3d fromOffset = this.getConnectionPoint();
+        final Vec3 fromOffset = this.getConnectionPoint();
         boolean dirty = this.dirty;
         this.dirty = false;
         while (it.hasNext()) {
@@ -123,7 +123,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
 
     protected void calculateBoundingBox() {
         if (this.outgoing.isEmpty()) {
-            this.bounds = new AxisAlignedBB(this.getPos());
+            this.bounds = new AABB(this.getPos());
             return;
         }
         final AABBBuilder builder = new AABBBuilder();
@@ -144,26 +144,26 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public void dropItems(final World world, final BlockPos pos) {
+    public void dropItems(final Level world, final BlockPos pos) {
         for (final Connection connection : this.getAllConnections()) {
             this.drop(world, pos, connection);
         }
     }
 
-    private void drop(final World world, final BlockPos pos, final Connection connection) {
+    private void drop(final Level world, final BlockPos pos, final Connection connection) {
         if (!connection.shouldDrop()) return;
-        final float offsetX = world.rand.nextFloat() * 0.8F + 0.1F;
-        final float offsetY = world.rand.nextFloat() * 0.8F + 0.1F;
-        final float offsetZ = world.rand.nextFloat() * 0.8F + 0.1F;
+        final float offsetX = world.random.nextFloat() * 0.8F + 0.1F;
+        final float offsetY = world.random.nextFloat() * 0.8F + 0.1F;
+        final float offsetZ = world.random.nextFloat() * 0.8F + 0.1F;
         final ItemStack stack = connection.getItemStack();
         final ItemEntity entityItem = new ItemEntity(world, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, stack);
         final float scale = 0.05F;
-        entityItem.setMotion(
-            world.rand.nextGaussian() * scale,
-            world.rand.nextGaussian() * scale + 0.2F,
-            world.rand.nextGaussian() * scale
+        entityItem.setDeltaMovement(
+            world.random.nextGaussian() * scale,
+            world.random.nextGaussian() * scale + 0.2F,
+            world.random.nextGaussian() * scale
         );
-        world.addEntity(entityItem);
+        world.addFreshEntity(entityItem);
         connection.noDrop();
     }
 
@@ -213,7 +213,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public boolean reconnect(final World world, final Connection connection, final Fastener<?> newDestination) {
+    public boolean reconnect(final Level world, final Connection connection, final Fastener<?> newDestination) {
         if (this.equals(newDestination) || newDestination.hasConnectionWith(this)) {
             return false;
         }
@@ -232,15 +232,15 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public Connection connect(final World world, final Fastener<?> destination, final ConnectionType<?> type, final CompoundNBT compound, final boolean drop) {
-        final UUID uuid = MathHelper.getRandomUUID();
+    public Connection connect(final Level world, final Fastener<?> destination, final ConnectionType<?> type, final CompoundTag compound, final boolean drop) {
+        final UUID uuid = Mth.createInsecureUUID();
         final Connection connection = this.createOutgoingConnection(world, uuid, destination, type, compound, drop);
         destination.createIncomingConnection(world, uuid, this, type);
         return connection;
     }
 
     @Override
-    public Connection createOutgoingConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType<?> type, final CompoundNBT compound, final boolean drop) {
+    public Connection createOutgoingConnection(final Level world, final UUID uuid, final Fastener<?> destination, final ConnectionType<?> type, final CompoundTag compound, final boolean drop) {
         final Connection c = type.create(world, this, uuid);
         c.deserialize(destination, compound, drop);
         this.outgoing.put(uuid, c);
@@ -249,29 +249,29 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public void createIncomingConnection(final World world, final UUID uuid, final Fastener<?> destination, final ConnectionType<?> type) {
+    public void createIncomingConnection(final Level world, final UUID uuid, final Fastener<?> destination, final ConnectionType<?> type) {
         this.incoming.put(uuid, new Incoming(destination.createAccessor(), uuid));
         this.setDirty();
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        final CompoundNBT compound = new CompoundNBT();
-        final ListNBT outgoing = new ListNBT();
+    public CompoundTag serializeNBT() {
+        final CompoundTag compound = new CompoundTag();
+        final ListTag outgoing = new ListTag();
         for (final Entry<UUID, Connection> connectionEntry : this.outgoing.entrySet()) {
             final UUID uuid = connectionEntry.getKey();
             final Connection connection = connectionEntry.getValue();
-            final CompoundNBT connectionCompound = new CompoundNBT();
+            final CompoundTag connectionCompound = new CompoundTag();
             connectionCompound.put("connection", connection.serialize());
             connectionCompound.putString("type", RegistryObjects.getName(connection.getType()).toString());
-            connectionCompound.putUniqueId("uuid", uuid);
+            connectionCompound.putUUID("uuid", uuid);
             outgoing.add(connectionCompound);
         }
         compound.put("outgoing", outgoing);
-        final ListNBT incoming = new ListNBT();
+        final ListTag incoming = new ListTag();
         for (final Entry<UUID, Incoming> e : this.incoming.entrySet()) {
-            final CompoundNBT tag = new CompoundNBT();
-            tag.putUniqueId("uuid", e.getKey());
+            final CompoundTag tag = new CompoundTag();
+            tag.putUUID("uuid", e.getKey());
             tag.put("fastener", FastenerType.serialize(e.getValue().fastener));
             incoming.add(tag);
         }
@@ -280,23 +280,23 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
     }
 
     @Override
-    public void deserializeNBT(final CompoundNBT compound) {
-        final ListNBT listConnections = compound.getList("outgoing", NBT.TAG_COMPOUND);
+    public void deserializeNBT(final CompoundTag compound) {
+        final ListTag listConnections = compound.getList("outgoing", Tag.TAG_COMPOUND);
         final List<UUID> nbtUUIDs = new ArrayList<>();
         for (int i = 0; i < listConnections.size(); i++) {
-            final CompoundNBT connectionCompound = listConnections.getCompound(i);
+            final CompoundTag connectionCompound = listConnections.getCompound(i);
             final UUID uuid;
-            if (connectionCompound.hasUniqueId("uuid")) {
-                uuid = connectionCompound.getUniqueId("uuid");
+            if (connectionCompound.hasUUID("uuid")) {
+                uuid = connectionCompound.getUUID("uuid");
             } else {
-                uuid = MathHelper.getRandomUUID();
+                uuid = Mth.createInsecureUUID();
             }
             nbtUUIDs.add(uuid);
             if (this.outgoing.containsKey(uuid)) {
                 final Connection connection = this.outgoing.get(uuid);
                 connection.deserialize(connectionCompound.getCompound("connection"));
             } else {
-                final ConnectionType<?> type = FairyLights.CONNECTION_TYPES.getValue(ResourceLocation.tryCreate(connectionCompound.getString("type")));
+                final ConnectionType<?> type = FairyLights.CONNECTION_TYPES.get().getValue(ResourceLocation.tryParse(connectionCompound.getString("type")));
                 if (type != null) {
                     final Connection connection = type.create(this.world, this, uuid);
                     connection.deserialize(connectionCompound.getCompound("connection"));
@@ -313,10 +313,10 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             }
         }
         this.incoming.clear();
-        final ListNBT incoming = compound.getList("incoming", NBT.TAG_COMPOUND);
+        final ListTag incoming = compound.getList("incoming", Tag.TAG_COMPOUND);
         for (int i = 0; i < incoming.size(); i++) {
-            final CompoundNBT incomingNbt = incoming.getCompound(i);
-            final UUID uuid = incomingNbt.getUniqueId("uuid");
+            final CompoundTag incomingNbt = incoming.getCompound(i);
+            final UUID uuid = incomingNbt.getUUID("uuid");
             final FastenerAccessor fastener = FastenerType.deserialize(incomingNbt.getCompound("fastener"));
             this.incoming.put(uuid, new Incoming(fastener, uuid));
         }
@@ -340,11 +340,11 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             this.id = id;
         }
 
-        boolean gone(final World world) {
+        boolean gone(final Level world) {
             return this.fastener.isGone(world);
         }
 
-        Optional<Connection> get(final World world) {
+        Optional<Connection> get(final Level world) {
             return this.fastener.get(world, false).map(Optional::of).orElse(Optional.empty()).flatMap(f -> f.get(this.id));
         }
     }

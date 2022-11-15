@@ -1,6 +1,6 @@
 package me.paulf.fairylights.util.styledstring;
 
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
 
 public final class Style implements Comparable<Style> {
     private static final int COLOR_MASK = 0xF;
@@ -20,10 +20,10 @@ public final class Style implements Comparable<Style> {
     private final int value;
 
     public Style() {
-        this(TextFormatting.WHITE, false, false, false, false, false);
+        this(ChatFormatting.WHITE, false, false, false, false, false);
     }
 
-    public Style(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
+    public Style(final ChatFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
         this(Style.pack(color, isBold, isStrikethrough, isUnderline, isItalic, isObfuscated));
     }
 
@@ -35,8 +35,8 @@ public final class Style implements Comparable<Style> {
         return this.value;
     }
 
-    public TextFormatting getColor() {
-        return TextFormatting.fromColorIndex(this.value & COLOR_MASK);
+    public ChatFormatting getColor() {
+        return ChatFormatting.getById(this.value & COLOR_MASK);
     }
 
     public boolean isObfuscated() {
@@ -63,11 +63,11 @@ public final class Style implements Comparable<Style> {
         return (this.value & FANCY_MASK) == 0;
     }
 
-    public Style withColor(final TextFormatting color) {
+    public Style withColor(final ChatFormatting color) {
         if (!color.isColor()) {
-            throw new IllegalArgumentException("Invalid color formatting: " + color.getFriendlyName());
+            throw new IllegalArgumentException("Invalid color formatting: " + color.getName());
         }
-        return new Style(color.getColorIndex() | this.value & FANCY_MASK);
+        return new Style(color.getId() | this.value & FANCY_MASK);
     }
 
     public Style withBold(final boolean isBold) {
@@ -90,7 +90,7 @@ public final class Style implements Comparable<Style> {
         return new Style(isObfuscated ? this.value | OBFUSCATED_MASK : this.value & ~OBFUSCATED_MASK);
     }
 
-    public Style withStyling(final TextFormatting formatting, final boolean state) {
+    public Style withStyling(final ChatFormatting formatting, final boolean state) {
         if (formatting.isColor()) {
             return this.withColor(formatting);
         }
@@ -106,7 +106,7 @@ public final class Style implements Comparable<Style> {
             case OBFUSCATED:
                 return this.withObfuscated(state);
             default:
-                throw new IllegalArgumentException("Invalid fancy formatting: " + formatting.getFriendlyName());
+                throw new IllegalArgumentException("Invalid fancy formatting: " + formatting.getName());
         }
     }
 
@@ -128,11 +128,11 @@ public final class Style implements Comparable<Style> {
         return this.value - other.value;
     }
 
-    private static int pack(final TextFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
+    private static int pack(final ChatFormatting color, final boolean isBold, final boolean isStrikethrough, final boolean isUnderline, final boolean isItalic, final boolean isObfuscated) {
         if (!color.isColor()) {
-            throw new IllegalArgumentException("Invalid color formatting: " + color.getFriendlyName());
+            throw new IllegalArgumentException("Invalid color formatting: " + color.getName());
         }
-        int value = color.getColorIndex();
+        int value = color.getId();
         if (isObfuscated) value |= OBFUSCATED_MASK;
         if (isBold) value |= BOLD_MASK;
         if (isStrikethrough) value |= STRIKETHROUGH_MASK;

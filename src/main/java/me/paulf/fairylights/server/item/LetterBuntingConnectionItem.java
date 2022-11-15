@@ -2,17 +2,17 @@ package me.paulf.fairylights.server.item;
 
 import me.paulf.fairylights.server.connection.ConnectionTypes;
 import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -22,23 +22,23 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
     }
 
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> tooltip, final ITooltipFlag flag) {
-        if (!stack.hasTag()) {
+    public void appendHoverText(final ItemStack stack, final Level world, final List<Component> tooltip, final TooltipFlag flag) {
+        final CompoundTag compound = stack.getTag();
+        if (compound == null) {
             return;
         }
-        final CompoundNBT compound = stack.getTag();
-        if (compound.contains("text", NBT.TAG_COMPOUND)) {
-            final CompoundNBT text = compound.getCompound("text");
+        if (compound.contains("text", Tag.TAG_COMPOUND)) {
+            final CompoundTag text = compound.getCompound("text");
             final StyledString s = StyledString.deserialize(text);
             if (s.length() > 0) {
-                tooltip.add(new TranslationTextComponent("format.fairylights.text", s.toTextComponent()).mergeStyle(TextFormatting.GRAY));
+                tooltip.add(new TranslatableComponent("format.fairylights.text", s.toTextComponent()).withStyle(ChatFormatting.GRAY));
             }
         }
     }
 
     @Override
-    public void fillItemGroup(final ItemGroup tab, final NonNullList<ItemStack> items) {
-        if (this.isInGroup(tab)) {
+    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> items) {
+        if (this.allowdedIn(tab)) {
             final ItemStack bunting = new ItemStack(this, 1);
             bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
             items.add(bunting);

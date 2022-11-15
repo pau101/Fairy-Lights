@@ -1,10 +1,10 @@
 package me.paulf.fairylights.server.fastener;
 
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -12,29 +12,29 @@ import java.util.ConcurrentModificationException;
 import java.util.Set;
 
 public class CollectFastenersEvent extends Event {
-    private final World world;
+    private final Level world;
 
-    private final AxisAlignedBB region;
+    private final AABB region;
 
     private final Set<Fastener<?>> fasteners;
 
-    public CollectFastenersEvent(final World world, final AxisAlignedBB region, final Set<Fastener<?>> fasteners) {
+    public CollectFastenersEvent(final Level world, final AABB region, final Set<Fastener<?>> fasteners) {
         this.world = world;
         this.region = region;
         this.fasteners = fasteners;
     }
 
-    public World getWorld() {
+    public Level getWorld() {
         return this.world;
     }
 
-    public AxisAlignedBB getRegion() {
+    public AABB getRegion() {
         return this.region;
     }
 
-    public void accept(final Chunk chunk) {
+    public void accept(final LevelChunk chunk) {
         try {
-            for (final TileEntity entity : chunk.getTileEntityMap().values()) {
+            for (final BlockEntity entity : chunk.getBlockEntities().values()) {
                 this.accept(entity);
             }
         } catch (final ConcurrentModificationException e) {

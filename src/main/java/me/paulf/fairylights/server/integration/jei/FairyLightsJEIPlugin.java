@@ -5,14 +5,15 @@ import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.stream.Collectors;
 
@@ -30,25 +31,24 @@ public final class FairyLightsJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(final IRecipeRegistration registration) {
-        final ClientWorld world = Minecraft.getInstance().world;
+        final ClientLevel world = Minecraft.getInstance().level;
         final RecipeManager recipeManager = world.getRecipeManager();
         registration.addRecipes(
+            RecipeTypes.CRAFTING,
             recipeManager.getRecipes().stream()
                 .filter(GenericRecipe.class::isInstance)
                 .map(GenericRecipe.class::cast)
-                .filter(GenericRecipe::isDynamic)
-                .collect(Collectors.toList()),
-            VanillaRecipeCategoryUid.CRAFTING
-        );
+                .filter(GenericRecipe::isSpecial)
+                .collect(Collectors.toList()));
     }
 
     @Override
     public void registerItemSubtypes(final ISubtypeRegistration registry) {
-        registry.registerSubtypeInterpreter(FLItems.TINSEL.get(), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.TRIANGLE_PENNANT.get(), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.SPEARHEAD_PENNANT.get(), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.SWALLOWTAIL_PENNANT.get(), new ColorSubtypeInterpreter());
-        registry.registerSubtypeInterpreter(FLItems.SQUARE_PENNANT.get(), new ColorSubtypeInterpreter());
-        FLItems.lights().forEach(i -> registry.registerSubtypeInterpreter(i, new ColorSubtypeInterpreter()));
+        registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, FLItems.TINSEL.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, FLItems.TRIANGLE_PENNANT.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, FLItems.SPEARHEAD_PENNANT.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, FLItems.SWALLOWTAIL_PENNANT.get(), new ColorSubtypeInterpreter());
+        registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, FLItems.SQUARE_PENNANT.get(), new ColorSubtypeInterpreter());
+        FLItems.lights().forEach(i -> registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, i, new ColorSubtypeInterpreter()));
     }
 }

@@ -3,31 +3,31 @@ package me.paulf.fairylights.server.item;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.FastenerBlock;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
+import me.paulf.fairylights.server.connection.Connection;
+import me.paulf.fairylights.server.connection.ConnectionType;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
 import me.paulf.fairylights.server.fastener.Fastener;
-import me.paulf.fairylights.server.connection.ConnectionType;
-import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.sound.FLSounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.item.HangingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Optional;
 
@@ -44,82 +44,82 @@ public abstract class ConnectionItem extends Item {
     }
 
     @Override
-    public ActionResultType onItemUse(final ItemUseContext context) {
-        final PlayerEntity user = context.getPlayer();
+    public InteractionResult useOn(final UseOnContext context) {
+        final Player user = context.getPlayer();
         if (user == null) {
-            return super.onItemUse(context);
+            return super.useOn(context);
         }
-        final World world = context.getWorld();
-        final Direction side = context.getFace();
-        final BlockPos clickPos = context.getPos();
+        final Level world = context.getLevel();
+        final Direction side = context.getClickedFace();
+        final BlockPos clickPos = context.getClickedPos();
         final Block fastener = FLBlocks.FASTENER.get();
-        final ItemStack stack = context.getItem();
+        final ItemStack stack = context.getItemInHand();
         if (this.isConnectionInOtherHand(world, user, stack)) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
-        final BlockState fastenerState = fastener.getDefaultState().with(FastenerBlock.FACING, side);
+        final BlockState fastenerState = fastener.defaultBlockState().setValue(FastenerBlock.FACING, side);
         final BlockState currentBlockState = world.getBlockState(clickPos);
-        final BlockItemUseContext blockContext = new BlockItemUseContext(context);
-        final BlockPos placePos = blockContext.getPos();
+        final BlockPlaceContext blockContext = new BlockPlaceContext(context);
+        final BlockPos placePos = blockContext.getClickedPos();
         if (currentBlockState.getBlock() == fastener) {
-            if (!world.isRemote) {
+            if (!world.isClientSide()) {
                 this.connect(stack, user, world, clickPos);
             }
-            return ActionResultType.SUCCESS;
-        } else if (blockContext.canPlace() && fastenerState.isValidPosition(world, placePos)) {
-            if (!world.isRemote) {
+            return InteractionResult.SUCCESS;
+        } else if (blockContext.canPlace() && fastenerState.canSurvive(world, placePos)) {
+            if (!world.isClientSide()) {
                 this.connect(stack, user, world, placePos, fastenerState);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else if (isFence(currentBlockState)) {
             final HangingEntity entity = FenceFastenerEntity.findHanging(world, clickPos);
             if (entity == null || entity instanceof FenceFastenerEntity) {
-                if (!world.isRemote) {
+                if (!world.isClientSide()) {
                     this.connectFence(stack, user, world, clickPos, (FenceFastenerEntity) entity);
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    private boolean isConnectionInOtherHand(final World world, final PlayerEntity user, final ItemStack stack) {
+    private boolean isConnectionInOtherHand(final Level world, final Player user, final ItemStack stack) {
         final Fastener<?> attacher = user.getCapability(CapabilityHandler.FASTENER_CAP).orElseThrow(IllegalStateException::new);
         return attacher.getFirstConnection().filter(connection -> {
-            final CompoundNBT nbt = connection.serializeLogic();
-            return nbt.isEmpty() ? stack.hasTag() : !NBTUtil.areNBTEquals(nbt, stack.getTag(), true);
+            final CompoundTag nbt = connection.serializeLogic();
+            return nbt.isEmpty() ? stack.hasTag() : !NbtUtils.compareNbt(nbt, stack.getTag(), true);
         }).isPresent();
     }
 
-    private void connect(final ItemStack stack, final PlayerEntity user, final World world, final BlockPos pos) {
-        final TileEntity entity = world.getTileEntity(pos);
+    private void connect(final ItemStack stack, final Player user, final Level world, final BlockPos pos) {
+        final BlockEntity entity = world.getBlockEntity(pos);
         if (entity != null) {
             entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> this.connect(stack, user, world, fastener));
         }
     }
 
-    private void connect(final ItemStack stack, final PlayerEntity user, final World world, final BlockPos pos, final BlockState state) {
-        if (world.setBlockState(pos, state, 3)) {
-            state.getBlock().onBlockPlacedBy(world, pos, state, user, stack);
+    private void connect(final ItemStack stack, final Player user, final Level world, final BlockPos pos, final BlockState state) {
+        if (world.setBlock(pos, state, 3)) {
+            state.getBlock().setPlacedBy(world, pos, state, user, stack);
             final SoundType sound = state.getBlock().getSoundType(state, world, pos, user);
             world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                 sound.getPlaceSound(),
-                SoundCategory.BLOCKS,
+                SoundSource.BLOCKS,
                 (sound.getVolume() + 1) / 2,
                 sound.getPitch() * 0.8F
             );
-            final TileEntity entity = world.getTileEntity(pos);
+            final BlockEntity entity = world.getBlockEntity(pos);
             if (entity != null) {
                 entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(destination -> this.connect(stack, user, world, destination, false));
             }
         }
     }
 
-    public void connect(final ItemStack stack, final PlayerEntity user, final World world, final Fastener<?> fastener) {
+    public void connect(final ItemStack stack, final Player user, final Level world, final Fastener<?> fastener) {
         this.connect(stack, user, world, fastener, true);
     }
 
-    public void connect(final ItemStack stack, final PlayerEntity user, final World world, final Fastener<?> fastener, final boolean playConnectSound) {
+    public void connect(final ItemStack stack, final Player user, final Level world, final Fastener<?> fastener, final boolean playConnectSound) {
         user.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(attacher -> {
             boolean playSound = playConnectSound;
             final Optional<Connection> placing = attacher.getFirstConnection();
@@ -132,17 +132,17 @@ public abstract class ConnectionItem extends Item {
                     playSound = false;
                 }
             } else {
-                final CompoundNBT data = stack.getTag();
-                fastener.connect(world, attacher, this.getConnectionType(), data == null ? new CompoundNBT() : data, false);
+                final CompoundTag data = stack.getTag();
+                fastener.connect(world, attacher, this.getConnectionType(), data == null ? new CompoundTag() : data, false);
             }
             if (playSound) {
-                final Vector3d pos = fastener.getConnectionPoint();
-                world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                final Vec3 pos = fastener.getConnectionPoint();
+                world.playSound(null, pos.x, pos.y, pos.z, FLSounds.CORD_CONNECT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             }
         });
     }
 
-    private void connectFence(final ItemStack stack, final PlayerEntity user, final World world, final BlockPos pos, FenceFastenerEntity fastener) {
+    private void connectFence(final ItemStack stack, final Player user, final Level world, final BlockPos pos, FenceFastenerEntity fastener) {
         final boolean playConnectSound;
         if (fastener == null) {
             fastener = FenceFastenerEntity.create(world, pos);
@@ -154,6 +154,6 @@ public abstract class ConnectionItem extends Item {
     }
 
     public static boolean isFence(final BlockState state) {
-        return state.getMaterial().isSolid() && state.isIn(BlockTags.FENCES);
+        return state.getMaterial().isSolid() && state.is(BlockTags.FENCES);
     }
 }

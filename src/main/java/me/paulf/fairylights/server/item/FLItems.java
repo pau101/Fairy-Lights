@@ -3,10 +3,10 @@ package me.paulf.fairylights.server.item;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.LightBlock;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -76,11 +76,11 @@ public final class FLItems {
     public static final RegistryObject<Item> SQUARE_PENNANT = REG.register("square_pennant", () -> new PennantItem(defaultProperties()));
 
     private static Item.Properties defaultProperties() {
-        return new Item.Properties().group(FairyLights.ITEM_GROUP);
+        return new Item.Properties().tab(FairyLights.ITEM_GROUP);
     }
 
     private static Supplier<LightItem> createLight(final RegistryObject<LightBlock> block, final BiFunction<LightBlock, Item.Properties, LightItem> factory) {
-        return () -> factory.apply(block.get(), defaultProperties().maxStackSize(16));
+        return () -> factory.apply(block.get(), defaultProperties().stacksTo(16));
     }
 
     private static Supplier<LightItem> createColorLight(final RegistryObject<LightBlock> block) {

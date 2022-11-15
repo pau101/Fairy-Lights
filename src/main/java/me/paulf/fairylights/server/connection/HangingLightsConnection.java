@@ -14,33 +14,23 @@ import me.paulf.fairylights.server.jingle.JinglePlayer;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.server.string.StringType;
 import me.paulf.fairylights.server.string.StringTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.SectionPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.LightType;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.lighting.BlockLightEngine;
-import net.minecraft.world.lighting.IWorldLightListener;
-import net.minecraft.world.lighting.WorldLightManager;
-import net.minecraft.world.server.ServerWorldLightManager;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -73,7 +63,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     private int lightUpdateIndex;
 
-    public HangingLightsConnection(final ConnectionType<? extends HangingLightsConnection> type, final World world, final Fastener<?> fastenerOrigin, final UUID uuid) {
+    public HangingLightsConnection(final ConnectionType<? extends HangingLightsConnection> type, final Level world, final Fastener<?> fastenerOrigin, final UUID uuid) {
         super(type, world, fastenerOrigin, uuid);
         this.string = StringTypes.BLACK_STRING.get();
         this.pattern = new ArrayList<>();
@@ -93,16 +83,16 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    public boolean interact(final PlayerEntity player, final Vector3d hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final Hand hand) {
-        if (featureType == FEATURE && heldStack.getItem().isIn(FLCraftingRecipes.LIGHTS)) {
+    public boolean interact(final Player player, final Vec3 hit, final FeatureType featureType, final int feature, final ItemStack heldStack, final InteractionHand hand) {
+        if (featureType == FEATURE && heldStack.is(FLCraftingRecipes.LIGHTS)) {
             final int index = feature % this.pattern.size();
             final ItemStack light = this.pattern.get(index);
-            if (!ItemStack.areItemStacksEqual(light, heldStack)) {
+            if (!ItemStack.matches(light, heldStack)) {
                 final ItemStack placed = heldStack.split(1);
                 this.pattern.set(index, placed);
                 ItemHandlerHelper.giveItemToPlayer(player, light);
                 this.computeCatenary();
-                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundCategory.BLOCKS, 1, 1);
+                this.world.playSound(null, hit.x, hit.y, hit.z, FLSounds.FEATURE_COLOR_CHANGE.get(), SoundSource.BLOCKS, 1, 1);
                 return true;
             }
         }
@@ -119,14 +109,14 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             lightSnd = FLSounds.FEATURE_LIGHT_TURNOFF.get();
             pitch = 0.5F;
         }
-        this.world.playSound(null, hit.x, hit.y, hit.z, lightSnd, SoundCategory.BLOCKS, 1, pitch);
+        this.world.playSound(null, hit.x, hit.y, hit.z, lightSnd, SoundSource.BLOCKS, 1, pitch);
         this.computeCatenary();
         return true;
     }
 
     @Override
     public void onUpdate() {
-        this.jinglePlayer.tick(this.world, this.fastener.getConnectionPoint(), this.features, this.world.isRemote);
+        this.jinglePlayer.tick(this.world, this.fastener.getConnectionPoint(), this.features, this.world.isClientSide());
         final boolean playing = this.jinglePlayer.isPlaying();
         if (playing || this.wasPlaying) {
             this.updateNeighbors(this.fastener);
@@ -142,7 +132,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             if (this.lightUpdateTime > LIGHT_UPDATE_WAIT && this.lightUpdateTime % LIGHT_UPDATE_RATE == 0) {
                 if (this.lightUpdateIndex >= this.features.length) {
                     this.lightUpdateIndex = 0;
-                    this.lightUpdateTime = this.world.rand.nextInt(LIGHT_UPDATE_WAIT / 2);
+                    this.lightUpdateTime = this.world.random.nextInt(LIGHT_UPDATE_WAIT / 2);
                 } else {
                     this.setLight(new BlockPos(this.features[this.lightUpdateIndex++].getAbsolutePoint(this.fastener)));
                 }
@@ -151,7 +141,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     private void updateNeighbors(final Fastener<?> fastener) {
-        this.world.updateComparatorOutputLevel(fastener.getPos(), FLBlocks.FASTENER.get());
+        this.world.updateNeighbourForOutputSignal(fastener.getPos(), FLBlocks.FASTENER.get());
     }
 
     @Override
@@ -161,11 +151,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     @Override
     protected boolean canReuse(final Light<?> feature, final int index) {
-        return ItemStack.areItemStacksEqual(feature.getItem(), this.getPatternStack(index));
+        return ItemStack.matches(feature.getItem(), this.getPatternStack(index));
     }
 
     @Override
-    protected Light<?> createFeature(final int index, final Vector3d point, final float yaw, final float pitch) {
+    protected Light<?> createFeature(final int index, final Vec3 point, final float yaw, final float pitch) {
         final ItemStack lightData = this.getPatternStack(index);
         return this.createLight(index, point, yaw, pitch, lightData, LightVariant.get(lightData).orElse(SimpleLightVariant.FAIRY_LIGHT));
     }
@@ -184,7 +174,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
     }
 
-    private <T extends LightBehavior> Light<T> createLight(final int index, final Vector3d point, final float yaw, final float pitch, final ItemStack stack, final LightVariant<T> variant) {
+    private <T extends LightBehavior> Light<T> createLight(final int index, final Vec3 point, final float yaw, final float pitch, final ItemStack stack, final LightVariant<T> variant) {
         return new Light<>(index, point, yaw, pitch, stack, variant, 0.125F);
     }
 
@@ -221,7 +211,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         this.oldLitBlocks.removeAll(this.litBlocks);
         final Iterator<BlockPos> oldIter = this.oldLitBlocks.iterator();
         while (oldIter.hasNext()) {
-            this.world.getChunkProvider().getLightManager().checkBlock(oldIter.next());
+            this.world.getChunkSource().getLightEngine().checkBlock(oldIter.next());
             oldIter.remove();
         }
     }
@@ -229,11 +219,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     public void onRemove() {
         for (final BlockPos pos : this.litBlocks) {
-            this.world.getChunkProvider().getLightManager().checkBlock(pos);
+            this.world.getChunkSource().getLightEngine().checkBlock(pos);
         }
     }
 
-    private static final Method ADD_TASK;
+    /*private static final Method ADD_TASK;
 
     private static final Object POST_PHASE;
 
@@ -246,15 +236,16 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         }
         ADD_TASK = ObfuscationReflectionHelper.findMethod(ServerWorldLightManager.class, "func_215586_a", int.class, int.class, phaseType, Runnable.class);
         POST_PHASE = phaseType.getEnumConstants()[1];
-    }
+    }*/
 
     private void setLight(final BlockPos pos) {
-        final IChunk chunk = this.world.getChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStatus.FULL, false);
-        if (chunk != null && this.world.isAirBlock(pos) && this.world.getLightFor(LightType.BLOCK, pos) < MAX_LIGHT) {
-            final WorldLightManager manager = this.world.getChunkProvider().getLightManager();
-            final IWorldLightListener light = manager.getLightEngine(LightType.BLOCK);
+        final ChunkAccess chunk = this.world.getChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStatus.FULL, false);
+        if (chunk != null && this.world.isEmptyBlock(pos) && this.world.getBrightness(LightLayer.BLOCK, pos) < MAX_LIGHT) {
+            // TODO: block light
+            /*final LevelLightEngine manager = this.world.getChunkSource().getLightEngine();
+            final LayerLightEventListener light = manager.getLayerListener(LightLayer.BLOCK);
             if (light instanceof BlockLightEngine) {
-                if (manager instanceof ServerWorldLightManager) {
+                if (manager instanceof ThreadedLevelLightEngine) {
                     try {
                         ADD_TASK.invoke(manager, pos.getX() >> 4, pos.getZ() >> 4, POST_PHASE, Util.namedRunnable(() -> {
                             this.setLight(pos, chunk, manager, (BlockLightEngine) light);
@@ -265,11 +256,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
                 } else {
                     this.setLight(pos, chunk, manager, (BlockLightEngine) light);
                 }
-            }
+            }*/
         }
     }
 
-    private void setLight(final BlockPos pos, final IChunk chunk, final WorldLightManager manager, final BlockLightEngine light) {
+    /*private void setLight(final BlockPos pos, final ChunkAccess chunk, final LevelLightEngine manager, final BlockLightEngine light) {
         final ChunkSection[] sections = chunk.getSections();
         final int l = pos.getY() >> 4;
         if (l < 0 || l >= sections.length) return;
@@ -280,7 +271,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         manager.enableLightSources(chunk.getPos(), true);
         light.func_215623_a(pos, MAX_LIGHT);
     }
-
+*/
     public boolean canCurrentlyPlayAJingle() {
         return !this.jinglePlayer.isPlaying();
     }
@@ -290,15 +281,15 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    public CompoundNBT serialize() {
-        final CompoundNBT compound = super.serialize();
+    public CompoundTag serialize() {
+        final CompoundTag compound = super.serialize();
         compound.put("jinglePlayer", this.jinglePlayer.serialize());
         compound.putBoolean("isOn", this.isOn);
         return compound;
     }
 
     @Override
-    public void deserialize(final CompoundNBT compound) {
+    public void deserialize(final CompoundTag compound) {
         super.deserialize(compound);
         if (this.jinglePlayer == null) {
             this.jinglePlayer = new JinglePlayer();
@@ -310,26 +301,26 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     }
 
     @Override
-    public CompoundNBT serializeLogic() {
-        final CompoundNBT compound = super.serializeLogic();
+    public CompoundTag serializeLogic() {
+        final CompoundTag compound = super.serializeLogic();
         HangingLightsConnectionItem.setString(compound, this.string);
-        final ListNBT tagList = new ListNBT();
+        final ListTag tagList = new ListTag();
         for (final ItemStack light : this.pattern) {
-            tagList.add(light.write(new CompoundNBT()));
+            tagList.add(light.save(new CompoundTag()));
         }
         compound.put("pattern", tagList);
         return compound;
     }
 
     @Override
-    public void deserializeLogic(final CompoundNBT compound) {
+    public void deserializeLogic(final CompoundTag compound) {
         super.deserializeLogic(compound);
         this.string = HangingLightsConnectionItem.getString(compound);
-        final ListNBT patternList = compound.getList("pattern", NBT.TAG_COMPOUND);
+        final ListTag patternList = compound.getList("pattern", Tag.TAG_COMPOUND);
         this.pattern = new ArrayList<>();
         for (int i = 0; i < patternList.size(); i++) {
-            final CompoundNBT lightCompound = patternList.getCompound(i);
-            this.pattern.add(ItemStack.read(lightCompound));
+            final CompoundTag lightCompound = patternList.getCompound(i);
+            this.pattern.add(ItemStack.of(lightCompound));
         }
     }
 }

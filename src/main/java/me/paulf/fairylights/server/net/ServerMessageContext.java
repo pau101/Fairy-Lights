@@ -1,10 +1,10 @@
 package me.paulf.fairylights.server.net;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Objects;
 
@@ -22,11 +22,11 @@ public class ServerMessageContext extends MessageContext {
         return this.getPlayer().server;
     }
 
-    public ServerWorld getWorld() {
-        return this.getPlayer().getServerWorld();
+    public ServerLevel getWorld() {
+        return this.getPlayer().getLevel();
     }
 
-    public ServerPlayerEntity getPlayer() {
+    public ServerPlayer getPlayer() {
         return Objects.requireNonNull(this.context.getSender());
     }
 }

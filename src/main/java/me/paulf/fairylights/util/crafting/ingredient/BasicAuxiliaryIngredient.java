@@ -3,8 +3,8 @@ package me.paulf.fairylights.util.crafting.ingredient;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.Collections;
 import java.util.Objects;

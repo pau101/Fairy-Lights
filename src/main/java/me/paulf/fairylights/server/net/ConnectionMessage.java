@@ -1,14 +1,13 @@
 package me.paulf.fairylights.server.net;
 
+import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
-import me.paulf.fairylights.server.connection.Connection;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.Level;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,21 +30,21 @@ public abstract class ConnectionMessage implements Message {
     }
 
     @Override
-    public void encode(final PacketBuffer buf) {
+    public void encode(final FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
-        buf.writeCompoundTag(FastenerType.serialize(this.accessor));
-        buf.writeUniqueId(this.uuid);
+        buf.writeNbt(FastenerType.serialize(this.accessor));
+        buf.writeUUID(this.uuid);
     }
 
     @Override
-    public void decode(final PacketBuffer buf) {
+    public void decode(final FriendlyByteBuf buf) {
         this.pos = buf.readBlockPos();
-        this.accessor = FastenerType.deserialize(Objects.requireNonNull(buf.readCompoundTag(), "tag"));
-        this.uuid = buf.readUniqueId();
+        this.accessor = FastenerType.deserialize(Objects.requireNonNull(buf.readNbt(), "tag"));
+        this.uuid = buf.readUUID();
     }
 
     @SuppressWarnings("unchecked")
-    public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage message, final Predicate<? super Connection> typePredicate, final World world) {
+    public static <C extends Connection> Optional<C> getConnection(final ConnectionMessage message, final Predicate<? super Connection> typePredicate, final Level world) {
         return message.accessor.get(world, false).map(Optional::of).orElse(Optional.empty()).flatMap(f -> (Optional<C>) f.get(message.uuid).filter(typePredicate));
     }
 }

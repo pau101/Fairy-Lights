@@ -1,10 +1,10 @@
 package me.paulf.fairylights.util;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -17,21 +17,21 @@ public final class Utils {
         return values[ordinal < 0 || ordinal >= values.length ? 0 : ordinal];
     }
 
-    public static ITextComponent formatRecipeTooltip(final String key) {
-        return formatRecipeTooltipValue(I18n.format(key));
+    public static Component formatRecipeTooltip(final String key) {
+        return formatRecipeTooltipValue(Language.getInstance().getOrDefault(key));
     }
 
-    private static ITextComponent formatRecipeTooltipValue(final String value) {
-        return new TranslationTextComponent("recipe.ingredient.tooltip", value);
+    private static Component formatRecipeTooltipValue(final String value) {
+        return new TranslatableComponent("recipe.ingredient.tooltip", value);
     }
 
-    public static boolean impliesNbt(@Nullable INBT antecedent, @Nullable INBT consequent) {
+    public static boolean impliesNbt(@Nullable Tag antecedent, @Nullable Tag consequent) {
         if (antecedent == consequent) return true;
         if ((antecedent == null) != (consequent == null)) return false;
         if (!antecedent.getClass().equals(consequent.getClass())) return false;
-        if (antecedent instanceof CompoundNBT) {
-            for (String key : ((CompoundNBT) antecedent).keySet()) {
-                if (!impliesNbt(((CompoundNBT) antecedent).get(key), ((CompoundNBT) consequent).get(key))) {
+        if (antecedent instanceof CompoundTag) {
+            for (String key : ((CompoundTag) antecedent).getAllKeys()) {
+                if (!impliesNbt(((CompoundTag) antecedent).get(key), ((CompoundTag) consequent).get(key))) {
                     return false;
                 }
             }

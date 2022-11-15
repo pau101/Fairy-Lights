@@ -1,48 +1,50 @@
 package me.paulf.fairylights.client.renderer.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.renderer.block.entity.FastenerRenderer;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.LightType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.LightLayer;
 
 public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEntity> {
     public static final ResourceLocation MODEL = new ResourceLocation(FairyLights.ID, "block/fence_fastener");
 
-    private final FastenerRenderer renderer = new FastenerRenderer();
+    private final FastenerRenderer renderer;
 
-    public FenceFastenerRenderer(final EntityRendererManager manager) {
-        super(manager);
+    public FenceFastenerRenderer(final EntityRendererProvider.Context context) {
+        super(context);
+        this.renderer = new FastenerRenderer(context::bakeLayer);
+    }
+
+
+    @Override
+    protected int getBlockLightLevel(final FenceFastenerEntity entity, final BlockPos delta) {
+        return entity.level.getBrightness(LightLayer.BLOCK, entity.blockPosition());
     }
 
     @Override
-    protected int getBlockLight(final FenceFastenerEntity entity, final BlockPos delta) {
-        return entity.world.getLightFor(LightType.BLOCK, entity.getPosition());
-    }
-
-    @Override
-    public void render(final FenceFastenerEntity entity, final float yaw, final float delta, final MatrixStack matrix, final IRenderTypeBuffer source, final int packedLight) {
-        final IVertexBuilder buf = source.getBuffer(Atlases.getCutoutBlockType());
-        matrix.push();
+    public void render(final FenceFastenerEntity entity, final float yaw, final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight) {
+        final VertexConsumer buf = source.getBuffer(Sheets.cutoutBlockSheet());
+        matrix.pushPose();
         FastenerRenderer.renderBakedModel(MODEL, matrix, buf, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
-        matrix.pop();
+        matrix.popPose();
         entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> this.renderer.render(f, delta, matrix, source, packedLight, OverlayTexture.NO_OVERLAY));
         super.render(entity, yaw, delta, matrix, source, packedLight);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public ResourceLocation getEntityTexture(final FenceFastenerEntity entity) {
-        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+    public ResourceLocation getTextureLocation(final FenceFastenerEntity entity) {
+        return TextureAtlas.LOCATION_BLOCKS;
     }
 }

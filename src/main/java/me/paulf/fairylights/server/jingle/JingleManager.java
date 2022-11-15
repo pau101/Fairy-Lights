@@ -7,16 +7,16 @@ import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-public class JingleManager extends JsonReloadListener {
+public class JingleManager extends SimpleJsonResourceReloadListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final Gson GSON = new GsonBuilder().create();
@@ -34,7 +34,7 @@ public class JingleManager extends JsonReloadListener {
     }
 
     @Override
-    protected void apply(final Map<ResourceLocation, JsonElement> elements, final IResourceManager manager, final IProfiler profiler) {
+    protected void apply(final Map<ResourceLocation, JsonElement> elements, final ResourceManager manager, final ProfilerFiller profiler) {
         final Object2ObjectMap<String, JingleLibrary.Builder> builders = new Object2ObjectOpenHashMap<>();
         elements.forEach((file, json) -> {
             final String path = file.getPath();

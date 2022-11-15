@@ -2,16 +2,17 @@ package me.paulf.fairylights.server.feature;
 
 import com.mojang.serialization.Lifecycle;
 import me.paulf.fairylights.FairyLights;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.DefaultedRegistry;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
 public final class FeatureType {
     private static final DefaultedRegistry<FeatureType> REGISTRY = new DefaultedRegistry<>(
         "default",
-        RegistryKey.getOrCreateRootKey(new ResourceLocation(FairyLights.ID, "feature")),
-        Lifecycle.experimental()
+        ResourceKey.createRegistryKey(new ResourceLocation(FairyLights.ID, "feature")),
+        Lifecycle.experimental(),
+        null
     );
 
     public static final FeatureType DEFAULT = register("default");
@@ -27,6 +28,6 @@ public final class FeatureType {
     }
 
     public static FeatureType fromId(final int id) {
-        return REGISTRY.getByValue(id);
+        return REGISTRY.byId(id);
     }
 }

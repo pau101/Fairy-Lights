@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
 
@@ -14,6 +15,7 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 
 version = '5.0.0'
 group = 'me.paulf.fairylights'
@@ -29,7 +31,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', 'fairylights'
-            args '--width', '1280', '--height', '720'
+            args '--width', '1280', '--height', '720', '-mixin.config=fairylights.mixins.json'
             mods {
                 fairylights {
                     source sourceSets.main
@@ -41,6 +43,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', 'fairylights'
+            args '-mixin.config=fairylights.mixins.json'
             mods {
                 fairylights {
                     source sourceSets.main
@@ -87,8 +90,16 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.85'
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
     compileOnly fg.deobf('mezz.jei:jei-1.18.2:9.7.2.281:api')
     runtimeOnly fg.deobf('mezz.jei:jei-1.18.2:9.7.2.281')
+}
+
+mixin {
+    add sourceSets.main, 'fairylights.mixins.refmap.json'
+    config 'fairylights.mixins.json'
 }
 
 jar {
@@ -98,11 +109,12 @@ jar {
         attributes([
                 "Specification-Title"     : "fairylights",
                 "Specification-Vendor"    : "pau101",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "pau101",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "fairylights.mixins.json"
         ])
     }
 }
@@ -111,19 +123,4 @@ jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-}
-
-processResources {
-    def vars = [
-        'version': project.version
-    ]
-    inputs.properties(vars)
-    from (sourceSets.main.resources.srcDirs) {
-        include('META-INF/mods.toml')
-        expand(vars)
-    }
-    from (sourceSets.main.resources.srcDirs) {
-        exclude('META-INF/mods.toml')
-        exclude('**/*.xcf')
-    }
 }

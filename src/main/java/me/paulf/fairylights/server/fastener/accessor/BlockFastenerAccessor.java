@@ -4,11 +4,11 @@ import me.paulf.fairylights.server.capability.CapabilityHandler;
 import me.paulf.fairylights.server.fastener.BlockFastener;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -27,9 +27,9 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
     }
 
     @Override
-    public LazyOptional<Fastener<?>> get(final World world, final boolean load) {
-        if (load || world.isBlockPresent(this.pos)) {
-            final TileEntity entity = world.getTileEntity(this.pos);
+    public LazyOptional<Fastener<?>> get(final Level world, final boolean load) {
+        if (load || world.isLoaded(this.pos)) {
+            final BlockEntity entity = world.getBlockEntity(this.pos);
             if (entity != null) {
                 return entity.getCapability(CapabilityHandler.FASTENER_CAP);
             }
@@ -38,9 +38,9 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
     }
 
     @Override
-    public boolean isGone(final World world) {
-        if (world.isRemote || !world.isBlockPresent(this.pos)) return false;
-        final TileEntity entity = world.getTileEntity(this.pos);
+    public boolean isGone(final Level world) {
+        if (world.isClientSide() || !world.isLoaded(this.pos)) return false;
+        final BlockEntity entity = world.getBlockEntity(this.pos);
         return entity == null || !entity.getCapability(CapabilityHandler.FASTENER_CAP).isPresent();
     }
 
@@ -61,12 +61,12 @@ public final class BlockFastenerAccessor implements FastenerAccessor {
     }
 
     @Override
-    public CompoundNBT serialize() {
-        return NBTUtil.writeBlockPos(this.pos);
+    public CompoundTag serialize() {
+        return NbtUtils.writeBlockPos(this.pos);
     }
 
     @Override
-    public void deserialize(final CompoundNBT nbt) {
-        this.pos = NBTUtil.readBlockPos(nbt);
+    public void deserialize(final CompoundTag nbt) {
+        this.pos = NbtUtils.readBlockPos(nbt);
     }
 }

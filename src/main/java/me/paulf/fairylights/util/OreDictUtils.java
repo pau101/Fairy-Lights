@@ -2,15 +2,14 @@ package me.paulf.fairylights.util;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.Tags;
-
-import java.util.stream.Collectors;
 
 public final class OreDictUtils {
     private OreDictUtils() {}
@@ -20,7 +19,7 @@ public final class OreDictUtils {
             if (stack.getItem() instanceof DyeItem) {
                 return true;
             }
-            return stack.getItem().isIn(Tags.Items.DYES);
+            return stack.is(Tags.Items.DYES);
         }
         return false;
     }
@@ -31,7 +30,7 @@ public final class OreDictUtils {
                 return ((DyeItem) stack.getItem()).getDyeColor();
             }
             for (final Dye dye : Dye.values()) {
-                if (stack.getItem().isIn(dye.getName())) {
+                if (stack.is(dye.getName())) {
                     return dye.getColor();
                 }
             }
@@ -50,7 +49,9 @@ public final class OreDictUtils {
     private static ImmutableMultimap<DyeColor, ItemStack> getDyeItemStacks() {
         final ImmutableMultimap.Builder<DyeColor, ItemStack> bob = ImmutableMultimap.builder();
         for (final Dye dye : Dye.values()) {
-            bob.putAll(dye.getColor(), dye.getName().getAllElements().stream().map(ItemStack::new).collect(Collectors.toList()));
+            for (final Holder<Item> holder : Registry.ITEM.getTagOrEmpty(dye.getName())) {
+                bob.put(dye.getColor(), new ItemStack(holder));
+            }
         }
         return bob.build();
     }
@@ -73,16 +74,16 @@ public final class OreDictUtils {
         RED(Tags.Items.DYES_RED, DyeColor.RED),
         BLACK(Tags.Items.DYES_BLACK, DyeColor.BLACK);
 
-        private final ITag<Item> name;
+        private final TagKey<Item> name;
 
         private final DyeColor color;
 
-        Dye(final ITag<Item> name, final DyeColor color) {
+        Dye(final TagKey<Item> name, final DyeColor color) {
             this.name = name;
             this.color = color;
         }
 
-        private ITag<Item> getName() {
+        private TagKey<Item> getName() {
             return this.name;
         }
 

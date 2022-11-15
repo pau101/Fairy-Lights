@@ -1,20 +1,19 @@
 package me.paulf.fairylights.client.gui.component;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 
 public final class ColorButton extends Button {
     private static final int TEX_U = 0;
 
     private static final int TEX_V = 0;
 
-    private TextFormatting displayColor;
+    private ChatFormatting displayColor;
 
     private float displayColorR;
 
@@ -22,11 +21,11 @@ public final class ColorButton extends Button {
 
     private float displayColorB;
 
-    public ColorButton(final int x, final int y, final ITextComponent msg, final Button.IPressable onPress) {
+    public ColorButton(final int x, final int y, final Component msg, final Button.OnPress onPress) {
         super(x, y, 20, 20, msg, onPress);
     }
 
-    public void setDisplayColor(final TextFormatting color) {
+    public void setDisplayColor(final ChatFormatting color) {
         this.displayColor = color;
         final int rgb = StyledString.getColor(color);
         this.displayColorR = (rgb >> 16 & 0xFF) / 255F;
@@ -34,7 +33,7 @@ public final class ColorButton extends Button {
         this.displayColorB = (rgb & 0xFF) / 255F;
     }
 
-    public TextFormatting getDisplayColor() {
+    public ChatFormatting getDisplayColor() {
         return this.displayColor;
     }
 
@@ -47,16 +46,16 @@ public final class ColorButton extends Button {
     }
 
     @Override
-    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+    public void renderButton(final PoseStack stack, final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderTexture(0, EditLetteredConnectionScreen.WIDGETS_TEXTURE);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             this.blit(stack, this.x, this.y, TEX_U, this.isHovered ? TEX_V + this.height : TEX_V, this.width, this.height);
             if (this.displayColor != null) {
                 this.blit(stack, this.x, this.y, TEX_U + this.width, TEX_V, this.width, this.height);
-                RenderSystem.color4f(this.displayColorR, this.displayColorG, this.displayColorB, 1.0F);
+                RenderSystem.setShaderColor(this.displayColorR, this.displayColorG, this.displayColorB, 1.0F);
                 this.blit(stack, this.x, this.y, TEX_U + this.width, TEX_V + this.height, this.width, this.height);
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }
     }

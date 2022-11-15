@@ -20,26 +20,27 @@ import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.server.string.StringType;
 import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.CalendarEvent;
-import me.paulf.fairylights.util.RegistryObjects;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.client.ClientModLoader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
 import java.time.Month;
+import java.util.function.Supplier;
 
 @Mod(FairyLights.ID)
 public final class FairyLights {
     public static final String ID = "fairylights";
+
+    public static final ResourceLocation STRING_TYPE = new ResourceLocation(ID, "string_type");
+
+    public static final ResourceLocation CONNECTION_TYPE = new ResourceLocation(ID, "connection_type");
 
     @SuppressWarnings("Convert2MethodRef")
     public static final SimpleChannel NETWORK = new NetBuilder(new ResourceLocation(ID, "net"))
@@ -51,28 +52,29 @@ public final class FairyLights {
         .serverbound(EditLetteredConnectionMessage::new).consumer(() -> new EditLetteredConnectionMessage.Handler())
         .build();
 
-    public static final ItemGroup ITEM_GROUP = new FairyLightsItemGroup();
+    public static final CreativeModeTab ITEM_GROUP = new FairyLightsItemGroup();
 
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 
     public static final CalendarEvent HALLOWEEN = new CalendarEvent(Month.OCTOBER, 31, 31);
 
-    @SuppressWarnings("unchecked")
-    public static final IForgeRegistry<ConnectionType<?>> CONNECTION_TYPES = new RegistryBuilder<ConnectionType<?>>()
-        .setType((Class<ConnectionType<?>>) (Class<?>) ConnectionType.class)
-        .setName(new ResourceLocation(ID, "connection_type"))
-        .disableSaving()
-        .create();
+    public static Supplier<IForgeRegistry<ConnectionType<?>>> CONNECTION_TYPES;
 
-    public static final IForgeRegistry<StringType> STRING_TYPES = new RegistryBuilder<StringType>()
-        .setType(StringType.class)
-        .setName(new ResourceLocation(ID, "string_type"))
-        .setDefaultKey(new ResourceLocation(ID, "black_string"))
-        .disableSaving()
-        .create();
+    public static Supplier<IForgeRegistry<StringType>> STRING_TYPES;
 
     public FairyLights() {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.addListener((NewRegistryEvent event) -> {
+            CONNECTION_TYPES = event.create(new RegistryBuilder<ConnectionType<?>>()
+                .setType((Class<ConnectionType<?>>) (Class<?>) ConnectionType.class)
+                .setName(CONNECTION_TYPE)
+                .disableSaving());
+            STRING_TYPES = event.create(new RegistryBuilder<StringType>()
+                .setType(StringType.class)
+                .setName(STRING_TYPE)
+                .setDefaultKey(new ResourceLocation(ID, "black_string"))
+                .disableSaving());
+        });
         FLSounds.REG.register(bus);
         FLBlocks.REG.register(bus);
         FLEntities.REG.register(bus);
@@ -83,9 +85,5 @@ public final class FairyLights {
         StringTypes.REG.register(bus);
         final ServerProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         proxy.init(bus);
-    }
-
-    public static boolean ingredientMatches(final boolean equalsExact, final ItemStack ingredient, final ItemStack stack) {
-        return equalsExact || RegistryObjects.namespaceEquals(ingredient.getItem(), FairyLights.ID) && RegistryObjects.namespaceEquals(stack.getItem(), FairyLights.ID);
     }
 }

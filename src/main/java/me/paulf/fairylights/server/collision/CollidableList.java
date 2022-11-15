@@ -1,8 +1,7 @@
 package me.paulf.fairylights.server.collision;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
@@ -15,7 +14,7 @@ public final class CollidableList implements Collidable {
 
     @Nullable
     @Override
-    public Intersection intersect(final Vector3d origin, final Vector3d end) {
+    public Intersection intersect(final Vec3 origin, final Vec3 end) {
         Intersection result = null;
         double distance = Double.MAX_VALUE;
         for (final Collidable collidable : this.collision) {

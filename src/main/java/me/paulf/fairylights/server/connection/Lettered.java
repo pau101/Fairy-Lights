@@ -4,8 +4,8 @@ import me.paulf.fairylights.server.collision.Intersection;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import me.paulf.fairylights.util.styledstring.StylingPresence;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Function;
 
@@ -41,9 +41,9 @@ public interface Lettered {
 
     Screen createTextGUI();
 
-    default boolean openTextGui(final PlayerEntity player, final PlayerAction action, final Intersection intersection) {
-        if (action == PlayerAction.INTERACT && player.isSneaking()) {
-            Minecraft.getInstance().displayGuiScreen(this.createTextGUI());
+    default boolean openTextGui(final Player player, final PlayerAction action, final Intersection intersection) {
+        if (action == PlayerAction.INTERACT && player.isSecondaryUseActive()) {
+            Minecraft.getInstance().setScreen(this.createTextGUI());
             return false;
         }
         return true;

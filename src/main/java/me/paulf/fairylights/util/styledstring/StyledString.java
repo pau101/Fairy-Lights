@@ -1,11 +1,11 @@
 package me.paulf.fairylights.util.styledstring;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -494,11 +494,11 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return new StyledString(value, newStyling);
     }
 
-    public StyledString withStyling(final TextFormatting formatting, final boolean state) {
+    public StyledString withStyling(final ChatFormatting formatting, final boolean state) {
         return this.withStyling(0, this.length(), formatting, state);
     }
 
-    public StyledString withStyling(final int beginIndex, final int endIndex, final TextFormatting formatting, final boolean state) {
+    public StyledString withStyling(final int beginIndex, final int endIndex, final ChatFormatting formatting, final boolean state) {
         if (beginIndex < 0) {
             throw new StringIndexOutOfBoundsException(beginIndex);
         }
@@ -525,25 +525,25 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value;
     }
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         final String value = this.value;
         if (value.length() == 0) {
-            return new StringTextComponent("");
+            return TextComponent.EMPTY;
         }
-        IFormattableTextComponent text = null;
+        MutableComponent text = null;
         final Style[] styling = this.styling;
         final StringBuilder bob = new StringBuilder();
         Style currentStyle = styling[0];
         for (int i = 0; ; ) {
             final Style style = i < value.length() ? styling[i] : null;
             if (!currentStyle.equals(style)) {
-                final IFormattableTextComponent t = new StringTextComponent(bob.toString());
-                t.mergeStyle(currentStyle.getColor());
-                if (currentStyle.isObfuscated()) t.mergeStyle(TextFormatting.OBFUSCATED);
-                if (currentStyle.isBold()) t.mergeStyle(TextFormatting.BOLD);
-                if (currentStyle.isStrikethrough()) t.mergeStyle(TextFormatting.STRIKETHROUGH);
-                if (currentStyle.isUnderline()) t.mergeStyle(TextFormatting.UNDERLINE);
-                if (currentStyle.isItalic()) t.mergeStyle(TextFormatting.ITALIC);
+                final MutableComponent t = new TextComponent(bob.toString());
+                t.withStyle(currentStyle.getColor());
+                if (currentStyle.isObfuscated()) t.withStyle(ChatFormatting.OBFUSCATED);
+                if (currentStyle.isBold()) t.withStyle(ChatFormatting.BOLD);
+                if (currentStyle.isStrikethrough()) t.withStyle(ChatFormatting.STRIKETHROUGH);
+                if (currentStyle.isUnderline()) t.withStyle(ChatFormatting.UNDERLINE);
+                if (currentStyle.isItalic()) t.withStyle(ChatFormatting.ITALIC);
                 if (text == null) {
                     text = t;
                 } else {
@@ -569,14 +569,14 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return this.value.toCharArray();
     }
 
-    public static CompoundNBT serialize(final StyledString str) {
-        final CompoundNBT compound = new CompoundNBT();
+    public static CompoundTag serialize(final StyledString str) {
+        final CompoundTag compound = new CompoundTag();
         compound.putString("value", str.value);
         compound.putIntArray("styling", Arrays.stream(str.styling).mapToInt(Style::packed).toArray());
         return compound;
     }
 
-    public static StyledString deserialize(final CompoundNBT compound) {
+    public static StyledString deserialize(final CompoundTag compound) {
         final String value = compound.getString("value");
         Style[] styling = Arrays.stream(compound.getIntArray("styling"))
             .mapToObj(Style::new)
@@ -602,7 +602,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
                 final char ch = Character.toLowerCase(chr);
                 final int colorIndex = "0123456789abcdef".indexOf(ch);
                 if (colorIndex != -1) {
-                    final TextFormatting color = TextFormatting.fromColorIndex(colorIndex);
+                    final ChatFormatting color = ChatFormatting.getById(colorIndex);
                     if (color != null) {
                         style = style.withColor(color);
                     }
@@ -630,7 +630,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         return bldr.toStyledString();
     }
 
-    public static int getColor(final TextFormatting color) {
+    public static int getColor(final ChatFormatting color) {
         final Integer rgb = color.getColor();
         Preconditions.checkNotNull(rgb, "Must be a color");
         return rgb;

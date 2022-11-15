@@ -5,8 +5,8 @@ import me.paulf.fairylights.server.connection.Lettered;
 import me.paulf.fairylights.server.net.ConnectionMessage;
 import me.paulf.fairylights.server.net.ServerMessageContext;
 import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.function.BiConsumer;
 
@@ -21,27 +21,27 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
     }
 
     @Override
-    public void encode(final PacketBuffer buf) {
+    public void encode(final FriendlyByteBuf buf) {
         super.encode(buf);
-        buf.writeCompoundTag(StyledString.serialize(this.text));
+        buf.writeNbt(StyledString.serialize(this.text));
     }
 
     @Override
-    public void decode(final PacketBuffer buf) {
+    public void decode(final FriendlyByteBuf buf) {
         super.decode(buf);
-        this.text = StyledString.deserialize(buf.readCompoundTag());
+        this.text = StyledString.deserialize(buf.readNbt());
     }
 
     public static final class Handler implements BiConsumer<EditLetteredConnectionMessage<?>, ServerMessageContext> {
         @Override
         public void accept(final EditLetteredConnectionMessage<?> message, final ServerMessageContext context) {
-            final ServerPlayerEntity player = context.getPlayer();
+            final ServerPlayer player = context.getPlayer();
             this.accept(message, player);
         }
 
-        private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayerEntity player) {
+        private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayer player) {
             if (player != null) {
-                ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, player.world).ifPresent(connection -> {
+                ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, player.level).ifPresent(connection -> {
                     if (connection.isModifiable(player) && connection.isSupportedText(message.text)) {
                         connection.setText(message.text);
                     }

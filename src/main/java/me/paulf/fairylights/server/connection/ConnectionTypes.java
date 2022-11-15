@@ -2,13 +2,13 @@ package me.paulf.fairylights.server.connection;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.item.FLItems;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 public final class ConnectionTypes {
     private ConnectionTypes() {}
 
-    public static final DeferredRegister<ConnectionType<?>> REG = DeferredRegister.create(FairyLights.CONNECTION_TYPES, FairyLights.ID);
+    public static final DeferredRegister<ConnectionType<?>> REG = DeferredRegister.create(FairyLights.CONNECTION_TYPE, FairyLights.ID);
 
     public static final RegistryObject<ConnectionType<HangingLightsConnection>> HANGING_LIGHTS = REG.register("hanging_lights",
         () -> ConnectionType.Builder.create(HangingLightsConnection::new).item(FLItems.HANGING_LIGHTS).build()

@@ -7,20 +7,16 @@ import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
-import mezz.jei.api.gui.ingredient.ITooltipCallback;
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IFocus;
-import mezz.jei.api.recipe.IFocus.Mode;
-import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICustomCraftingCategoryExtension;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Size2i;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
+import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
@@ -30,16 +26,17 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtension {
+public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
     private final GenericRecipe recipe;
 
-    private final ImmutableList<ImmutableList<ItemStack>> allInputs;
+    private final List<List<ItemStack>> allInputs;
 
     // Only minimal stacks, ingredients that support multiple will only have first taken unless dictatesOutputType
-    private final ImmutableList<ImmutableList<ItemStack>> minimalInputStacks;
+    private final List<List<ItemStack>> minimalInputStacks;
 
-    private final ImmutableList<ItemStack> outputs;
+    private final List<ItemStack> outputs;
 
     private final GenericIngredient<?, ?>[] ingredientMatrix;
 
@@ -47,8 +44,8 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
 
     public GenericRecipeWrapper(final GenericRecipe recipe) {
         this.recipe = recipe;
-        final ImmutableList.Builder<ImmutableList<ItemStack>> allInputs = ImmutableList.builder();
-        final ImmutableList.Builder<ImmutableList<ItemStack>> minimalInputStacks = ImmutableList.builder();
+        final List<List<ItemStack>> allInputs = new ArrayList<>();
+        final List<List<ItemStack>> minimalInputStacks = new ArrayList<>();
         final RegularIngredient[] ingredients = recipe.getGenericIngredients();
         final AuxiliaryIngredient<?>[] aux = recipe.getAuxiliaryIngredients();
         this.ingredientMatrix = new GenericIngredient<?, ?>[9];
@@ -97,8 +94,8 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
                 allInputs.add(stacks);
             }
         }
-        this.allInputs = allInputs.build();
-        this.minimalInputStacks = minimalInputStacks.build();
+        this.allInputs = allInputs;
+        this.minimalInputStacks = minimalInputStacks;
         this.subtypeIndex = subtypeIndex;
         final ImmutableList.Builder<ItemStack> outputs = ImmutableList.builder();
         this.forOutputMatches((v, output) -> outputs.add(output));
@@ -106,45 +103,47 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
     }
 
     private void forOutputMatches(final BiConsumer<ItemStack, ItemStack> outputConsumer) {
-        final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
+        final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
-            public boolean canInteractWith(final PlayerEntity player) {
-                return false;
+            public boolean stillValid(Player player) {
+                return true;
             }
-
-            @Override
-            public void onCraftMatrixChanged(final IInventory inventory) {}
-        }, this.getSize().width, this.getSize().height);
+        }, this.getWidth(), this.getHeight());
         if (this.subtypeIndex == -1) {
             for (int i = 0; i < this.minimalInputStacks.size(); i++) {
                 final List<ItemStack> stacks = this.minimalInputStacks.get(i);
-                crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+                crafting.setItem(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
             }
             if (this.recipe.matches(crafting, null)) {
-                outputConsumer.accept(ItemStack.EMPTY, this.recipe.getCraftingResult(crafting));
+                outputConsumer.accept(ItemStack.EMPTY, this.recipe.assemble(crafting));
             }
         } else {
             final List<ItemStack> dictators = this.minimalInputStacks.get(this.subtypeIndex);
             for (final ItemStack subtype : dictators) {
-                crafting.clear();
+                crafting.clearContent();
                 for (int i = 0; i < this.minimalInputStacks.size(); i++) {
                     if (i == this.subtypeIndex) {
-                        crafting.setInventorySlotContents(i, subtype);
+                        crafting.setItem(i, subtype);
                     } else {
                         final List<ItemStack> stacks = this.minimalInputStacks.get(i);
-                        crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+                        crafting.setItem(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
                     }
                 }
                 if (this.recipe.matches(crafting, null)) {
-                    outputConsumer.accept(subtype, this.recipe.getCraftingResult(crafting));
+                    outputConsumer.accept(subtype, this.recipe.assemble(crafting));
                 }
             }
         }
     }
 
     @Override
-    public Size2i getSize() {
-        return new Size2i(3, 3);
+    public int getWidth() {
+        return 3;
+    }
+
+    @Override
+    public int getHeight() {
+        return 3;
     }
 
     public Input getInputsForOutput(final ItemStack output) {
@@ -197,15 +196,12 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
     }
 
     private Input getInputsForIngredient(final ItemStack ingredient) {
-        final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
+        final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
-            public boolean canInteractWith(final PlayerEntity player) {
-                return false;
+            public boolean stillValid(Player player) {
+                return true;
             }
-
-            @Override
-            public void onCraftMatrixChanged(final IInventory inventory) {}
-        }, this.getSize().width, this.getSize().height);
+        }, this.getWidth(), this.getHeight());
         for (int i = 0; i < this.allInputs.size(); i++) {
             final List<ItemStack> options = this.allInputs.get(i);
             ItemStack matched = null;
@@ -219,10 +215,10 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
             if (matched == null) {
                 continue;
             }
-            crafting.clear();
+            crafting.clearContent();
             for (int n = 0; n < this.minimalInputStacks.size(); n++) {
                 final List<ItemStack> stacks = this.minimalInputStacks.get(n);
-                crafting.setInventorySlotContents(n, i == n ? matched : stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
+                crafting.setItem(n, i == n ? matched : stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
             }
             if (this.recipe.matches(crafting, null)) {
                 final List<List<ItemStack>> inputs = new ArrayList<>(this.allInputs.size());
@@ -236,16 +232,13 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         return null;
     }
 
-    public List<List<ItemStack>> getOutput(final List<List<ItemStack>> inputs) {
-        final CraftingInventory crafting = new CraftingInventory(new Container(null, 0) {
+    public List<ItemStack> getOutput(final List<List<ItemStack>> inputs) {
+        final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
-            public boolean canInteractWith(final PlayerEntity player) {
-                return false;
+            public boolean stillValid(Player player) {
+                return true;
             }
-
-            @Override
-            public void onCraftMatrixChanged(final IInventory inventory) {}
-        }, this.getSize().width, this.getSize().height);
+        }, this.getWidth(), this.getHeight());
         int size = 1;
         for (final List<ItemStack> stack : inputs) {
             if (stack.size() > 0) {
@@ -256,51 +249,50 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         for (int n = 0; n < size; n++) {
             for (int i = 0; i < inputs.size(); i++) {
                 final List<ItemStack> stacks = inputs.get(i);
-                crafting.setInventorySlotContents(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(n % stacks.size()));
+                crafting.setItem(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(n % stacks.size()));
             }
             if (this.recipe.matches(crafting, null)) {
-                outputs.add(this.recipe.getCraftingResult(crafting));
+                outputs.add(this.recipe.assemble(crafting));
             } else {
                 LogManager.getLogger().debug("No recipe match for {} using inputs {}",
-                    this.recipe.getRecipeOutput().getItem().getRegistryName(),
+                    this.recipe.getOutput().getItem().getRegistryName(),
                     IntStream.range(0, crafting.getWidth() * crafting.getHeight())
-                        .mapToObj(crafting::getStackInSlot)
+                        .mapToObj(crafting::getItem)
                         .map(s -> Objects.toString(s.getItem().getRegistryName()))
                         .collect(Collectors.joining(", "))
                 );
             }
         }
-        return Collections.singletonList(outputs);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void setIngredients(final IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, (List<List<ItemStack>>) (List<?>) this.allInputs);
-        ingredients.setOutputs(VanillaTypes.ITEM, this.outputs);
+        return outputs;
     }
 
     @Override
-    public void setRecipe(final IRecipeLayout layout, final IIngredients ingredients) {
-        final IFocus<?> focus = layout.getFocus();
-        final IGuiItemStackGroup group = layout.getItemStacks();
-        if (focus != null && focus.getValue() instanceof ItemStack) {
-            final ItemStack stack = (ItemStack) focus.getValue();
-            final Input input;
-            if (focus.getMode() == Mode.OUTPUT) {
-                input = this.getInputsForOutput(stack);
-            } else {
+    public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
+        focuses.getFocuses(VanillaTypes.ITEM_STACK).flatMap(focus -> {
+            ItemStack stack = focus.getTypedValue().getIngredient();
+            Input input = null;
+            if (focus.getRole() == RecipeIngredientRole.INPUT) {
                 input = this.getInputsForIngredient(stack);
+            } else if (focus.getRole() == RecipeIngredientRole.OUTPUT) {
+                input = this.getInputsForOutput(stack);
             }
-            if (input != null) {
-                ingredients.setInputLists(VanillaTypes.ITEM, input.inputs);
-                ingredients.setOutputLists(VanillaTypes.ITEM, this.getOutput(input.inputs));
-                group.addTooltipCallback(new Tooltips(input.ingredients));
-            } else {
-                // Some Ingredient is picky with requirements, should allow a GenericRecipe to have a "smart input provider"
+            return Stream.ofNullable(input);
+        }).findFirst().ifPresentOrElse(input -> {
+            craftingGridHelper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, this.getOutput(input.inputs));
+            List<IRecipeSlotBuilder> slots = craftingGridHelper.createAndSetInputs(builder, VanillaTypes.ITEM_STACK, input.inputs, this.getWidth(), this.getHeight());
+            for (int i = 0; i < 9; i++) {
+                GenericIngredient<?, ?> ingredient = input.ingredients[i];
+                IRecipeSlotBuilder slot = slots.get(i);
+                slot.addTooltipCallback((recipeSlotView, tooltip) -> {
+                    if (recipeSlotView.getRole() == RecipeIngredientRole.INPUT) {
+                        ingredient.addTooltip(tooltip);
+                    }
+                });
             }
-        }
-        group.set(ingredients);
+        }, () -> {
+            craftingGridHelper.createAndSetOutputs(builder, VanillaTypes.ITEM_STACK, this.outputs);
+            craftingGridHelper.createAndSetInputs(builder, VanillaTypes.ITEM_STACK, this.allInputs, this.getWidth(), this.getHeight());
+        });
     }
 
     private static final class Input {
@@ -311,24 +303,6 @@ public final class GenericRecipeWrapper implements ICustomCraftingCategoryExtens
         private Input(final List<List<ItemStack>> inputs, final GenericIngredient<?, ?>[] ingredients) {
             this.inputs = inputs;
             this.ingredients = ingredients;
-        }
-    }
-
-    private static final class Tooltips implements ITooltipCallback<ItemStack> {
-        GenericIngredient<?, ?>[] ingredients;
-
-        public Tooltips(final GenericIngredient<?, ?>[] ingredients) {
-            this.ingredients = ingredients;
-        }
-
-        @Override
-        public void onTooltip(final int slot, final boolean input, final ItemStack ingredient, final List<ITextComponent> tooltip) {
-            if (input) {
-                final GenericIngredient<?, ?> ing = this.ingredients[slot - 1];
-                if (ing != null) {
-                    ing.addTooltip(tooltip);
-                }
-            }
         }
     }
 }

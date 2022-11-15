@@ -23,8 +23,8 @@ public class OpenEditLetteredConnectionScreenMessage<C extends Connection & Lett
         }
 
         private <C extends Connection & Lettered> void accept(final OpenEditLetteredConnectionScreenMessage<C> message) {
-            ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, Minecraft.getInstance().world).ifPresent(connection -> {
-                Minecraft.getInstance().displayGuiScreen(new EditLetteredConnectionScreen<>(connection));
+            ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, Minecraft.getInstance().level).ifPresent(connection -> {
+                Minecraft.getInstance().setScreen(new EditLetteredConnectionScreen<>(connection));
             });
         }
     }

@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.feature.light;
 
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class MeteorLightBehavior implements ColorLightBehavior {
     private final ColorLightBehavior color;
@@ -36,8 +36,8 @@ public class MeteorLightBehavior implements ColorLightBehavior {
     }
 
     @Override
-    public void tick(final World world, final Vector3d origin, final Light<?> light) {
-        this.logic.tick(world.rand, this.powered);
+    public void tick(final Level world, final Vec3 origin, final Light<?> light) {
+        this.logic.tick(world.random, this.powered);
         this.color.tick(world, origin, light);
     }
 

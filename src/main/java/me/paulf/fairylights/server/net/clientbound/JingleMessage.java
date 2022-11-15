@@ -1,15 +1,12 @@
 package me.paulf.fairylights.server.net.clientbound;
 
-import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.EncoderException;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.server.net.ClientMessageContext;
 import me.paulf.fairylights.server.net.ConnectionMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
-import java.io.IOException;
 import java.util.function.BiConsumer;
 
 public final class JingleMessage extends ConnectionMessage {
@@ -26,14 +23,14 @@ public final class JingleMessage extends ConnectionMessage {
     }
 
     @Override
-    public void encode(final PacketBuffer buf) {
+    public void encode(final FriendlyByteBuf buf) {
         super.encode(buf);
         buf.writeVarInt(this.lightOffset);
         this.jingle.write(buf);
     }
 
     @Override
-    public void decode(final PacketBuffer buf) {
+    public void decode(final FriendlyByteBuf buf) {
         super.decode(buf);
         this.lightOffset = buf.readVarInt();
         this.jingle = Jingle.read(buf);
@@ -44,7 +41,7 @@ public final class JingleMessage extends ConnectionMessage {
         public void accept(final JingleMessage message, final ClientMessageContext context) {
             final Jingle jingle = message.jingle;
             if (jingle != null) {
-                ConnectionMessage.<HangingLightsConnection>getConnection(message, c -> c instanceof HangingLightsConnection, Minecraft.getInstance().world).ifPresent(connection ->
+                ConnectionMessage.<HangingLightsConnection>getConnection(message, c -> c instanceof HangingLightsConnection, Minecraft.getInstance().level).ifPresent(connection ->
                     connection.play(jingle, message.lightOffset));
             }
         }

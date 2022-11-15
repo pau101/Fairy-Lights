@@ -1,8 +1,8 @@
 package me.paulf.fairylights.server.feature.light;
 
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class TorchLightBehavior implements BrightnessLightBehavior {
     private final double offset;
@@ -27,23 +27,23 @@ public class TorchLightBehavior implements BrightnessLightBehavior {
     }
 
     @Override
-    public void tick(final World world, final Vector3d origin, final Light<?> light) {
-        if (world.rand.nextFloat() < 0.08F) {
+    public void tick(final Level world, final Vec3 origin, final Light<?> light) {
+        if (world.random.nextFloat() < 0.08F) {
             this.createParticles(world, origin, light);
         }
     }
 
     @Override
-    public void animateTick(final World world, final Vector3d origin, final Light<?> light) {
+    public void animateTick(final Level world, final Vec3 origin, final Light<?> light) {
         this.createParticles(world, origin, light);
     }
 
-    private void createParticles(final World world, final Vector3d origin, final Light<?> light) {
+    private void createParticles(final Level world, final Vec3 origin, final Light<?> light) {
         if (this.powered) {
-            final Vector3d p = light.getTransformedPoint(origin, new Vector3d(0.0D, -this.offset, 0.0D));
-            final double x = p.getX();
-            final double y = p.getY();
-            final double z = p.getZ();
+            final Vec3 p = light.getTransformedPoint(origin, new Vec3(0.0D, -this.offset, 0.0D));
+            final double x = p.x();
+            final double y = p.y();
+            final double z = p.z();
             world.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
             world.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.0D, 0.0D);
         }

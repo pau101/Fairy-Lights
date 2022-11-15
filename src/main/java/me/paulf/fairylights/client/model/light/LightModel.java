@@ -1,27 +1,31 @@
 package me.paulf.fairylights.client.model.light;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.LightBehavior;
 import me.paulf.fairylights.util.AABBBuilder;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class LightModel<T extends LightBehavior> extends Model {
-    protected final ModelRenderer lit;
+    protected final ModelPart lit;
 
-    protected final ModelRenderer litTint;
+    protected final ModelPart litTint;
 
-    protected final ModelRenderer litTintGlow;
+    protected final ModelPart litTintGlow;
 
-    protected final ModelRenderer unlit;
+    protected final ModelPart unlit;
 
     protected float brightness = 1.0F;
 
@@ -32,31 +36,63 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     protected float blue = 1.0F;
 
     @Nullable
-    private AxisAlignedBB bounds;
+    private AABB bounds;
 
     private double floorOffset = Double.NaN;
 
     private boolean powered;
 
-    public LightModel() {
-        super(RenderType::getEntityTranslucent);
-        this.textureWidth = 128;
-        this.textureHeight = 128;
-        this.lit = new ModelRenderer(this);
-        this.litTint = new ModelRenderer(this);
-        this.litTintGlow = new ModelRenderer(this);
-        this.unlit = new ModelRenderer(this);
+    public LightModel(ModelPart root) {
+        super(RenderType::entityTranslucent);
+        this.lit = root.getChild("lit");
+        this.litTint = root.getChild("lit_tint");
+        this.litTintGlow = root.getChild("lit_tint_glow");
+        this.unlit = root.getChild("unlit");
     }
 
-    protected BulbBuilder createBulb() {
-        return new BulbBuilder(this, this.litTint, this.litTintGlow);
+    public record LightMeshHelper(EasyMeshBuilder lit, EasyMeshBuilder litTint, EasyMeshBuilder litTintGlow, EasyMeshBuilder unlit, List<EasyMeshBuilder> extra) {
+        public BulbBuilder createBulb() {
+            return new BulbBuilder(this.litTint(), this.litTintGlow());
+        }
+
+        public LayerDefinition build() {
+            MeshDefinition def = new MeshDefinition();
+            this.lit().build(def.getRoot());
+            this.litTint().build(def.getRoot());
+            this.litTintGlow().build(def.getRoot());
+            this.unlit().build(def.getRoot());
+            for (EasyMeshBuilder builder : this.extra()) {
+                builder.build(def.getRoot());
+            }
+            return LayerDefinition.create(def, 128, 128);
+        }
+
+        public EasyMeshBuilder parented(final String name) {
+            EasyMeshBuilder result = new EasyMeshBuilder(name);
+            result.addChild(this.lit());
+            result.addChild(this.litTint());
+            result.addChild(this.litTintGlow());
+            result.addChild(this.unlit());
+            for (EasyMeshBuilder builder : this.extra()) {
+                result.addChild(builder);
+            }
+            return result;
+        }
+
+        public static LightMeshHelper create() {
+            EasyMeshBuilder lit = new EasyMeshBuilder("lit");
+            EasyMeshBuilder litTint = new EasyMeshBuilder("lit_tint");
+            EasyMeshBuilder litTintGlow = new EasyMeshBuilder("lit_tint_glow");
+            EasyMeshBuilder unlit = new EasyMeshBuilder("unlit");
+            return new LightMeshHelper(lit, litTint, litTintGlow, unlit, new ArrayList<>());
+        }
     }
 
-    public AxisAlignedBB getBounds() {
+    public AABB getBounds() {
         if (this.bounds == null) {
-            final MatrixStack matrix = new MatrixStack();
+            final PoseStack matrix = new PoseStack();
             final AABBVertexBuilder builder = new AABBVertexBuilder();
-            this.render(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.renderToBuffer(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
             this.renderTranslucent(matrix, builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
             this.bounds = builder.build();
         }
@@ -66,7 +102,7 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     public double getFloorOffset() {
         if (Double.isNaN(this.floorOffset)) {
             final AABBVertexBuilder builder = new AABBVertexBuilder();
-            this.render(new MatrixStack(), builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.renderToBuffer(new PoseStack(), builder, 0, 0, 1.0F, 1.0F, 1.0F, 1.0F);
             this.floorOffset = builder.build().minY-this.getBounds().minY;
         }
         return this.floorOffset;
@@ -77,14 +113,14 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     }
 
     @Override
-    public void render(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+    public void renderToBuffer(final PoseStack matrix, final VertexConsumer builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         this.unlit.render(matrix, builder, light, overlay, r, g, b, a);
         final int emissiveLight = this.getLight(light);
         this.lit.render(matrix, builder, emissiveLight, overlay, r, g, b, a);
         this.litTint.render(matrix, builder, emissiveLight, overlay, r * this.red, g * this.green, b * this.blue, a);
     }
 
-    public void renderTranslucent(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
+    public void renderTranslucent(final PoseStack matrix, final VertexConsumer builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
         final float v = this.brightness;
         this.litTintGlow.render(matrix, builder, this.getLight(light), overlay, r * this.red * v + (1.0F - v), g * this.green * v + (1.0F - v), b * this.blue * v + (1.0F - v), v * 0.15F + 0.2F);
     }
@@ -95,49 +131,49 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
 
     // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
     protected static float[] toEuler(final Quaternion q) {
-        final float r11 = 2.0F * (q.getX() * q.getY() + q.getW() * q.getZ());
-        final float r12 = q.getW() * q.getW() + q.getX() * q.getX() - q.getY() * q.getY() - q.getZ() * q.getZ();
-        final float r21 = -2.0F * (q.getX() * q.getZ() - q.getW() * q.getY());
-        final float r31 = 2.0F * (q.getY() * q.getZ() + q.getW() * q.getX());
-        final float r32 = q.getW() * q.getW() - q.getX() * q.getX() - q.getY() * q.getY() + q.getZ() * q.getZ();
+        final float r11 = 2.0F * (q.i() * q.j() + q.r() * q.k());
+        final float r12 = q.r() * q.r() + q.i() * q.i() - q.j() * q.j() - q.k() * q.k();
+        final float r21 = -2.0F * (q.i() * q.k() - q.r() * q.j());
+        final float r31 = 2.0F * (q.j() * q.k() + q.r() * q.i());
+        final float r32 = q.r() * q.r() - q.i() * q.i() - q.j() * q.j() + q.k() * q.k();
         return new float[]{
-            (float) MathHelper.atan2(r31, r32),
+            (float) Mth.atan2(r31, r32),
             (float) Math.asin(r21),
-            (float) MathHelper.atan2(r11, r12)
+            (float) Mth.atan2(r11, r12)
         };
     }
 
-    static class AABBVertexBuilder implements IVertexBuilder {
+    static class AABBVertexBuilder implements VertexConsumer {
         final AABBBuilder builder = new AABBBuilder();
 
         @Override
-        public IVertexBuilder pos(final double x, final double y, final double z) {
+        public VertexConsumer vertex(final double x, final double y, final double z) {
             this.builder.include(x, y, z);
             return this;
         }
 
         @Override
-        public IVertexBuilder color(final int red, final int green, final int blue, final int alpha) {
+        public VertexConsumer color(int r, int g, int b, int a) {
             return this;
         }
 
         @Override
-        public IVertexBuilder tex(final float u, final float v) {
+        public VertexConsumer uv(float u, float v) {
             return this;
         }
 
         @Override
-        public IVertexBuilder overlay(final int u, final int v) {
+        public VertexConsumer overlayCoords(int u, int v) {
             return this;
         }
 
         @Override
-        public IVertexBuilder lightmap(final int u, final int v) {
+        public VertexConsumer uv2(int u, int v) {
             return this;
         }
 
         @Override
-        public IVertexBuilder normal(final float x, final float y, final float z) {
+        public VertexConsumer normal(float x, float y, float z) {
             return this;
         }
 
@@ -145,18 +181,24 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
         public void endVertex() {
         }
 
-        AxisAlignedBB build() {
+        @Override
+        public void defaultColor(int r, int g, int b, int a) {
+        }
+
+        @Override
+        public void unsetDefaultColor() {
+        }
+
+        AABB build() {
             return this.builder.build();
         }
     }
 
     static class BulbBuilder {
-        final LightModel<?> model;
-        ModelRenderer base;
-        ModelRenderer glow;
+        EasyMeshBuilder base;
+        EasyMeshBuilder glow;
 
-        public BulbBuilder(final LightModel<?> model, final ModelRenderer base, final ModelRenderer glow) {
-            this.model = model;
+        public BulbBuilder(final EasyMeshBuilder base, final EasyMeshBuilder glow) {
             this.base = base;
             this.glow = glow;
         }
@@ -180,16 +222,16 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
             this.glow.addBox(x, y, z, width, height, depth, expand + glow);
         }
 
-        BulbBuilder createChild(final int u, final int v) {
-            return this.createChild(u, v, ModelRenderer::new);
+        BulbBuilder createChild(final String name, final int u, final int v) {
+            return this.createChild(name, u, v, EasyMeshBuilder::new);
         }
 
-        BulbBuilder createChild(final int u, final int v, final ModelRendererFactory factory) {
-            final ModelRenderer base = factory.create(this.model, u, v);
-            final ModelRenderer glow = factory.create(this.model, u, v);
+        BulbBuilder createChild(final String name, final int u, final int v, final ModelPartFactory factory) {
+            final EasyMeshBuilder base = factory.create(name, u, v);
+            final EasyMeshBuilder glow = factory.create(name, u, v);
             this.base.addChild(base);
             this.glow.addChild(glow);
-            return new BulbBuilder(this.model, base, glow);
+            return new BulbBuilder(base, glow);
         }
 
         public void setPosition(final float x, final float y, final float z) {
@@ -198,29 +240,16 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
         }
 
         public void setAngles(final float x, final float y, final float z) {
-            this.base.rotateAngleX = x;
-            this.base.rotateAngleY = y;
-            this.base.rotateAngleZ = z;
-            this.glow.rotateAngleX = x;
-            this.glow.rotateAngleY = y;
-            this.glow.rotateAngleZ = z;
-        }
-
-        public void setVisible(final boolean value) {
-            this.base.showModel = value;
-            this.glow.showModel = value;
-        }
-
-        public void renderTint(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-            this.base.render(matrix, builder, light, overlay, r, g, b, a);
-        }
-
-        public void renderGlow(final MatrixStack matrix, final IVertexBuilder builder, final int light, final int overlay, final float r, final float g, final float b, final float a) {
-            this.glow.render(matrix, builder, light, overlay, r, g, b, a);
+            this.base.xRot = x;
+            this.base.yRot = y;
+            this.base.zRot = z;
+            this.glow.xRot = x;
+            this.glow.yRot = y;
+            this.glow.zRot = z;
         }
     }
 
-    interface ModelRendererFactory {
-        ModelRenderer create(final Model model, final int u, final int v);
+    interface ModelPartFactory {
+        EasyMeshBuilder create(final String name, final int u, final int v);
     }
 }

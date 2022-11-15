@@ -1,18 +1,17 @@
 package me.paulf.fairylights.server.fastener;
 
 import me.paulf.fairylights.server.fastener.accessor.EntityFastenerAccessor;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public abstract class EntityFastener<E extends Entity> extends AbstractFastener<EntityFastenerAccessor<E>> {
     protected final E entity;
 
     public EntityFastener(final E entity) {
         this.entity = entity;
-        this.setWorld(entity.world);
+        this.setWorld(entity.level);
     }
 
     @Override
@@ -26,11 +25,11 @@ public abstract class EntityFastener<E extends Entity> extends AbstractFastener<
 
     @Override
     public BlockPos getPos() {
-        return this.entity.getPosition();
+        return this.entity.blockPosition();
     }
 
     @Override
-    public Vector3d getConnectionPoint() {
-        return this.entity.getPositionVec();
+    public Vec3 getConnectionPoint() {
+        return this.entity.position();
     }
 }

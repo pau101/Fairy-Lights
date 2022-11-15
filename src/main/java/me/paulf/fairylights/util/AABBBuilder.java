@@ -1,10 +1,10 @@
 package me.paulf.fairylights.util;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public final class AABBBuilder {
         this.maxZ = (this.minZ = pos.getZ()) + 1;
     }
 
-    public AABBBuilder(final Vector3d min, final Vector3d max) {
+    public AABBBuilder(final Vec3 min, final Vec3 max) {
         this(
             Objects.requireNonNull(min, "min").x, min.y, min.z,
             Objects.requireNonNull(max, "max").x, max.y, max.z
@@ -48,11 +48,11 @@ public final class AABBBuilder {
         this.maxZ = Math.max(minZ, maxZ);
     }
 
-    public AABBBuilder add(final Vector3d point) {
+    public AABBBuilder add(final Vec3 point) {
         return this.add(Objects.requireNonNull(point, "point").x, point.y, point.z);
     }
 
-    public AABBBuilder add(final Vector3i point) {
+    public AABBBuilder add(final Vec3i point) {
         return this.add(Objects.requireNonNull(point, "point").getX(), point.getY(), point.getZ());
     }
 
@@ -66,7 +66,7 @@ public final class AABBBuilder {
         return this;
     }
 
-    public AABBBuilder include(final Vector3d point) {
+    public AABBBuilder include(final Vec3 point) {
         return this.include(Objects.requireNonNull(point, "point").x, point.y, point.z);
     }
 
@@ -90,20 +90,20 @@ public final class AABBBuilder {
         return this;
     }
 
-    public AxisAlignedBB build() {
-        return new AxisAlignedBB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+    public AABB build() {
+        return new AABB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
-    public static AxisAlignedBB union(final List<AxisAlignedBB> aabbs) {
+    public static AABB union(final List<AABB> aabbs) {
         Objects.requireNonNull(aabbs, "AABBs");
         return union(aabbs, aabb -> aabb);
     }
 
-    public static <T> AxisAlignedBB union(final List<T> aabbs, final Function<T, AxisAlignedBB> mapper) {
+    public static <T> AABB union(final List<T> aabbs, final Function<T, AABB> mapper) {
         Objects.requireNonNull(aabbs, "AABBs");
         Objects.requireNonNull(mapper, "mapper");
         Preconditions.checkArgument(aabbs.size() > 0, "Must have more than zero AABBs");
-        AxisAlignedBB bounds = mapper.apply(aabbs.get(0));
+        AABB bounds = mapper.apply(aabbs.get(0));
         if (aabbs.size() == 1) {
             return Objects.requireNonNull(bounds, "mapper returned bounds");
         }
@@ -118,6 +118,6 @@ public final class AABBBuilder {
             maxY = Mth.max(maxY, bounds.minY, bounds.maxY);
             maxZ = Mth.max(maxZ, bounds.minZ, bounds.maxZ);
         }
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

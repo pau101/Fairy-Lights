@@ -1,34 +1,17 @@
 package me.paulf.fairylights.client.gui.component;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.Mth;
 import me.paulf.fairylights.util.styledstring.StyledString;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.ArrayUtils;
 
-import static net.minecraft.util.text.TextFormatting.AQUA;
-import static net.minecraft.util.text.TextFormatting.BLACK;
-import static net.minecraft.util.text.TextFormatting.BLUE;
-import static net.minecraft.util.text.TextFormatting.DARK_AQUA;
-import static net.minecraft.util.text.TextFormatting.DARK_BLUE;
-import static net.minecraft.util.text.TextFormatting.DARK_GRAY;
-import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
-import static net.minecraft.util.text.TextFormatting.DARK_PURPLE;
-import static net.minecraft.util.text.TextFormatting.DARK_RED;
-import static net.minecraft.util.text.TextFormatting.GOLD;
-import static net.minecraft.util.text.TextFormatting.GRAY;
-import static net.minecraft.util.text.TextFormatting.GREEN;
-import static net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
-import static net.minecraft.util.text.TextFormatting.RED;
-import static net.minecraft.util.text.TextFormatting.WHITE;
-import static net.minecraft.util.text.TextFormatting.YELLOW;
+import static net.minecraft.ChatFormatting.*;
 
 public class PaletteButton extends Button {
     private static final int TEX_U = 0;
@@ -47,13 +30,13 @@ public class PaletteButton extends Button {
 
     private static final int COLOR_HEIGHT = 6;
 
-    private static final TextFormatting[] IDX_COLOR = {WHITE, GRAY, DARK_GRAY, BLACK, RED, DARK_RED, YELLOW, GOLD, LIGHT_PURPLE, DARK_PURPLE, GREEN, DARK_GREEN, BLUE, DARK_BLUE, AQUA, DARK_AQUA};
+    private static final ChatFormatting[] IDX_COLOR = {WHITE, GRAY, DARK_GRAY, BLACK, RED, DARK_RED, YELLOW, GOLD, LIGHT_PURPLE, DARK_PURPLE, GREEN, DARK_GREEN, BLUE, DARK_BLUE, AQUA, DARK_AQUA};
 
-    private static final int[] COLOR_IDX = Mth.invertMap(IDX_COLOR, TextFormatting::ordinal);
+    private static final int[] COLOR_IDX = Mth.invertMap(IDX_COLOR, ChatFormatting::ordinal);
 
     private final ColorButton colorBtn;
 
-    public PaletteButton(final int x, final int y, final ColorButton colorBtn, final ITextComponent msg, final Button.IPressable pressable) {
+    public PaletteButton(final int x, final int y, final ColorButton colorBtn, final Component msg, final Button.OnPress pressable) {
         super(x, y, 28, 28, msg, pressable);
         this.colorBtn = colorBtn;
     }
@@ -74,10 +57,10 @@ public class PaletteButton extends Button {
     }
 
     @Override
-    public void renderButton(final MatrixStack stack, final int mouseX, final int mouseY, final float delta) {
+    public void renderButton(final PoseStack stack, final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(EditLetteredConnectionScreen.WIDGETS_TEXTURE);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderTexture(0, EditLetteredConnectionScreen.WIDGETS_TEXTURE);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             this.blit(stack, this.x, this.y, TEX_U, TEX_V, this.width, this.height);
             if (this.colorBtn.hasDisplayColor()) {
                 final int idx = COLOR_IDX[this.colorBtn.getDisplayColor().ordinal()];
@@ -86,31 +69,31 @@ public class PaletteButton extends Button {
                 this.blit(stack, selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             for (int i = 0; i < IDX_COLOR.length; i++) {
-                final TextFormatting color = IDX_COLOR[i];
+                final ChatFormatting color = IDX_COLOR[i];
                 final int rgb = StyledString.getColor(color);
                 final float r = (rgb >> 16 & 0xFF) / 255F;
                 final float g = (rgb >> 8 & 0xFF) / 255F;
                 final float b = (rgb & 0xFF) / 255F;
-                RenderSystem.color4f(r, g, b, 1.0F);
+                RenderSystem.setShaderColor(r, g, b, 1.0F);
                 this.blit(stack, this.x + 2 + (i % 4) * 6, this.y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             final int selectIndex = this.getMouseOverIndex(mouseX, mouseY);
             if (selectIndex > -1) {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                RenderSystem.color4f(1, 1, 1, 0.5F);
+                RenderSystem.setShaderColor(1, 1, 1, 0.5F);
                 final int hoverSelectX = this.x + 2 + selectIndex % 4 * 6;
                 final int hoverSelectY = this.y + 2 + selectIndex / 4 * 6;
                 this.blit(stack, hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
                 RenderSystem.disableBlend();
             }
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
     private int getMouseOverIndex(final double mouseX, final double mouseY) {
-        final int relX = MathHelper.floor(mouseX - this.x - 3);
-        final int relY = MathHelper.floor(mouseY - this.y - 3);
+        final int relX = net.minecraft.util.Mth.floor(mouseX - this.x - 3);
+        final int relY = net.minecraft.util.Mth.floor(mouseY - this.y - 3);
         if (relX < 0 || relY < 0 || relX > 22 || relY > 22) {
             return -1;
         }

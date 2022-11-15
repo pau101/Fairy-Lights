@@ -2,19 +2,19 @@ package me.paulf.fairylights.server.block.entity;
 
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.block.FLBlocks;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public final class FLBlockEntities {
     private FLBlockEntities() {}
 
-    public static final DeferredRegister<TileEntityType<?>> REG = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, FairyLights.ID);
+    public static final DeferredRegister<BlockEntityType<?>> REG = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, FairyLights.ID);
 
-    public static final RegistryObject<TileEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> TileEntityType.Builder.create(FastenerBlockEntity::new, FLBlocks.FASTENER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> BlockEntityType.Builder.of(FastenerBlockEntity::new, FLBlocks.FASTENER.get()).build(null));
 
-    public static final RegistryObject<TileEntityType<LightBlockEntity>> LIGHT = REG.register("light", () -> TileEntityType.Builder.create(LightBlockEntity::new,
+    public static final RegistryObject<BlockEntityType<LightBlockEntity>> LIGHT = REG.register("light", () -> BlockEntityType.Builder.of(LightBlockEntity::new,
         FLBlocks.FAIRY_LIGHT.get(),
         FLBlocks.PAPER_LANTERN.get(),
         FLBlocks.ORB_LANTERN.get(),

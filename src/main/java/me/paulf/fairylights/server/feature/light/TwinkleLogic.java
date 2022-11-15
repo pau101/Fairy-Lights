@@ -1,6 +1,6 @@
 package me.paulf.fairylights.server.feature.light;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import java.util.Random;
 
@@ -19,7 +19,7 @@ public class TwinkleLogic {
     }
 
     public float get(final float delta) {
-        return this.time == -1 ? 0.0F : MathHelper.lerp(delta, this.prevTime, this.time) / this.duration;
+        return this.time == -1 ? 0.0F : Mth.lerp(delta, this.prevTime, this.time) / this.duration;
     }
 
     public void tick(final Random rng, final boolean powered) {
