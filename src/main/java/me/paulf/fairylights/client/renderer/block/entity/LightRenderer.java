@@ -88,7 +88,7 @@ public class LightRenderer {
                     new IcicleLightsModel(baker.apply(FLModelLayers.ICICLE_LIGHTS_3), 3),
                     new IcicleLightsModel(baker.apply(FLModelLayers.ICICLE_LIGHTS_4), 4)
                 },
-                (models, i) -> models[i < 0 ? 4 : Mth.mod(Mth.hash(i), 4) + 1]
+                (models, i) -> models[i < 0 ? 3 : Mth.mod(Mth.hash(i), 4)]
             ))
             .put(SimpleLightVariant.METEOR_LIGHT, LightModelProvider.of(new MeteorLightModel(baker.apply(FLModelLayers.METEOR_LIGHT))))
             .put(SimpleLightVariant.OIL_LANTERN, LightModelProvider.of(new OilLanternModel(baker.apply(FLModelLayers.OIL_LANTERN))))
