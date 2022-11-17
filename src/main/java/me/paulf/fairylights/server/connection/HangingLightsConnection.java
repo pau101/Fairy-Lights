@@ -25,8 +25,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -211,7 +211,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         this.oldLitBlocks.removeAll(this.litBlocks);
         final Iterator<BlockPos> oldIter = this.oldLitBlocks.iterator();
         while (oldIter.hasNext()) {
-            this.world.getChunkSource().getLightEngine().checkBlock(oldIter.next());
+            this.removeLight(oldIter.next());
             oldIter.remove();
         }
     }
@@ -219,59 +219,22 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     @Override
     public void onRemove() {
         for (final BlockPos pos : this.litBlocks) {
-            this.world.getChunkSource().getLightEngine().checkBlock(pos);
+            this.removeLight(pos);
         }
     }
 
-    /*private static final Method ADD_TASK;
-
-    private static final Object POST_PHASE;
-
-    static {
-        final Class<?> phaseType;
-        try {
-            phaseType = Class.forName("net.minecraft.world.server.ServerWorldLightManager$Phase");
-        } catch (final ClassNotFoundException e) {
-            throw new Error(e);
+    private void removeLight(final BlockPos pos) {
+        if (this.world.getBlockState(pos).is(Blocks.LIGHT)) {
+            this.world.removeBlock(pos, false);
         }
-        ADD_TASK = ObfuscationReflectionHelper.findMethod(ServerWorldLightManager.class, "func_215586_a", int.class, int.class, phaseType, Runnable.class);
-        POST_PHASE = phaseType.getEnumConstants()[1];
-    }*/
+    }
 
     private void setLight(final BlockPos pos) {
-        final ChunkAccess chunk = this.world.getChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStatus.FULL, false);
-        if (chunk != null && this.world.isEmptyBlock(pos) && this.world.getBrightness(LightLayer.BLOCK, pos) < MAX_LIGHT) {
-            // TODO: block light
-            /*final LevelLightEngine manager = this.world.getChunkSource().getLightEngine();
-            final LayerLightEventListener light = manager.getLayerListener(LightLayer.BLOCK);
-            if (light instanceof BlockLightEngine) {
-                if (manager instanceof ThreadedLevelLightEngine) {
-                    try {
-                        ADD_TASK.invoke(manager, pos.getX() >> 4, pos.getZ() >> 4, POST_PHASE, Util.namedRunnable(() -> {
-                            this.setLight(pos, chunk, manager, (BlockLightEngine) light);
-                        }, () -> "setLight " + pos));
-                    } catch (final IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    this.setLight(pos, chunk, manager, (BlockLightEngine) light);
-                }
-            }*/
+        if (this.world.isLoaded(pos) && this.world.isEmptyBlock(pos) && this.world.getBrightness(LightLayer.BLOCK, pos) < MAX_LIGHT) {
+            this.world.setBlock(pos, Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, LightBlock.MAX_LEVEL), 2);
         }
     }
 
-    /*private void setLight(final BlockPos pos, final ChunkAccess chunk, final LevelLightEngine manager, final BlockLightEngine light) {
-        final ChunkSection[] sections = chunk.getSections();
-        final int l = pos.getY() >> 4;
-        if (l < 0 || l >= sections.length) return;
-        final ChunkSection section = sections[l];
-        if (!ChunkSection.isEmpty(section)) {
-            manager.updateSectionStatus(SectionPos.from(chunk.getPos(), l), false);
-        }
-        manager.enableLightSources(chunk.getPos(), true);
-        light.func_215623_a(pos, MAX_LIGHT);
-    }
-*/
     public boolean canCurrentlyPlayAJingle() {
         return !this.jinglePlayer.isPlaying();
     }
