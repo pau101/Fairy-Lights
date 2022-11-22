@@ -13,6 +13,7 @@ import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.connection.LetterBuntingConnection;
 import me.paulf.fairylights.server.connection.PennantBuntingConnection;
 import me.paulf.fairylights.server.fastener.Fastener;
+import me.paulf.fairylights.server.fastener.FenceFastener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -23,7 +24,11 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.common.Tags;
 
 import java.util.Random;
 import java.util.function.Function;
@@ -51,15 +56,68 @@ public class FastenerRenderer {
             if (conn.getFastener() == fastener) {
                 this.renderConnection(delta, matrix, source, packedLight, packedOverlay, conn);
             }
-            if (renderBow && conn instanceof GarlandVineConnection && fastener.getFacing().getAxis() != Direction.Axis.Y) {
-                final VertexConsumer buf = ClientProxy.SOLID_TEXTURE.buffer(source, RenderType::entityCutout);
-                matrix.pushPose();
-                matrix.mulPose(Vector3f.YP.rotationDegrees(180.0F - fastener.getFacing().toYRot()));
-                this.bow.renderToBuffer(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
-                matrix.popPose();
+            if (renderBow && conn instanceof GarlandVineConnection &&
+                    this.renderBow(fastener, matrix, source, packedLight, packedOverlay)) {
                 renderBow = false;
             }
         }
+    }
+
+    private boolean renderBow(Fastener<?> fastener, PoseStack matrix, MultiBufferSource source, int packedLight, int packedOverlay) {
+        if (fastener instanceof FenceFastener) {
+            final Level world = fastener.getWorld();
+            if (world == null) {
+                return false;
+            }
+            final BlockState state = world.getBlockState(fastener.getPos());
+            if (!state.is(Tags.Blocks.FENCES)) {
+                return false;
+            }
+            final VertexConsumer buf = ClientProxy.SOLID_TEXTURE.buffer(source, RenderType::entityCutout);
+            final float offset = -1.5F / 16.0F;
+            final boolean north = state.getValue(FenceBlock.NORTH);
+            final boolean east = state.getValue(FenceBlock.EAST);
+            final boolean south = state.getValue(FenceBlock.SOUTH);
+            final boolean west = state.getValue(FenceBlock.WEST);
+            boolean tryDirX = true;
+            boolean bow = false;
+            if (!north && (east || west)) {
+                this.bow(matrix, Direction.NORTH, offset, buf, packedLight, packedOverlay);
+                tryDirX = false;
+                bow = true;
+            }
+            if (!south && (east || west)) {
+                this.bow(matrix, Direction.SOUTH, offset, buf, packedLight, packedOverlay);
+                tryDirX = false;
+                bow = true;
+            }
+            if (tryDirX) {
+                if (!east && (north || south)) {
+                    this.bow(matrix, Direction.EAST, offset, buf, packedLight, packedOverlay);
+                    bow = true;
+                }
+                if (!west && (north || south)) {
+                    this.bow(matrix, Direction.WEST, offset, buf, packedLight, packedOverlay);
+                    bow = true;
+                }
+            }
+            return bow;
+        } else if (fastener.getFacing().getAxis() != Direction.Axis.Y) {
+            final VertexConsumer buf = ClientProxy.SOLID_TEXTURE.buffer(source, RenderType::entityCutout);
+            this.bow(matrix, fastener.getFacing(), 0.0F, buf, packedLight, packedOverlay);
+            return true;
+        }
+        return false;
+    }
+
+    private void bow(PoseStack matrix, Direction dir, float offset, VertexConsumer buf, int packedLight, int packedOverlay) {
+        matrix.pushPose();
+        matrix.mulPose(Vector3f.YP.rotationDegrees(180.0F - dir.toYRot()));
+        if (offset != 0.0F) {
+            matrix.translate(0.0D, 0.0D, offset);
+        }
+        this.bow.renderToBuffer(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrix.popPose();
     }
 
     private void renderConnection(final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight, final int packedOverlay, final Connection conn) {
