@@ -9,13 +9,12 @@ import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.LetterBuntingConnection;
 import me.paulf.fairylights.server.feature.Letter;
-import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.util.Curve;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
@@ -36,7 +35,7 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
     }
 
     @Override
-    protected void render(final LetterBuntingConnection conn, final Catenary catenary, final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight, final int packedOverlay) {
+    protected void render(final LetterBuntingConnection conn, final Curve catenary, final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight, final int packedOverlay) {
         super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
         final Letter[] letters = conn.getLetters();
         if (letters == null) {

@@ -5,7 +5,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.NoSuchElementException;
 
-public final class Catenary {
+public final class Catenary implements Curve {
     private static final int MIN_VERTEX_COUNT = 8;
 
     private final int count;
@@ -32,54 +32,92 @@ public final class Catenary {
         this.length = length;
     }
 
+    @Override
     public int getCount() {
         return this.count;
     }
 
+    @Override
     public float getX() {
         return this.x[this.count - 1] * this.dx;
     }
 
+
+    @Override
     public float getY() {
         return this.y[this.count - 1];
     }
 
+
+    @Override
     public float getZ() {
         return this.x[this.count - 1] * this.dz;
     }
 
+    @Override
     public float getX(final int i) {
         return this.x[i] * this.dx;
     }
 
+    @Override
+    public float getX(final int i, final float t) {
+        return net.minecraft.util.Mth.lerp(t, this.x[i], this.x[i + 1]) * this.dx;
+    }
+
+    @Override
     public float getY(final int i) {
         return this.y[i];
     }
 
+    @Override
+    public float getY(final int i, final float t) {
+        return net.minecraft.util.Mth.lerp(t, this.y[i], this.y[i + 1]);
+    }
+
+    @Override
     public float getZ(final int i) {
         return this.x[i] * this.dz;
     }
 
+    @Override
+    public float getZ(final int i, final float t) {
+        return net.minecraft.util.Mth.lerp(t, this.x[i], this.x[i + 1]) * this.dz;
+    }
+
+    @Override
     public float getDx(final int i) {
         return (this.x[i + 1] - this.x[i]) * this.dx;
     }
 
+    @Override
     public float getDy(final int i) {
         return (this.y[i + 1] - this.y[i]);
     }
 
+    @Override
     public float getDz(final int i) {
         return (this.x[i + 1] - this.x[i]) * this.dz;
     }
 
+    @Override
+    public float getLength() {
+        return this.length;
+    }
+
+    @Override
     public SegmentIterator iterator() {
         return this.iterator(false);
     }
 
-    public Catenary lerp(final Catenary other, final float delta) {
-        if (this == other) {
+    @Override
+    public Curve lerp(final Curve curve, final float delta) {
+        if (this == curve) {
             return this;
         }
+        if (curve.getClass() != this.getClass()) {
+            return curve;
+        }
+        Catenary other = (Catenary) curve;
         if (this.count > other.count) {
             return other.lerp(this, 1.0F - delta);
         }
@@ -114,137 +152,31 @@ public final class Catenary {
         }
     }
 
+    @Override
     public SegmentIterator iterator(final boolean inclusive) {
-        return new SegmentIterator() {
-            private int index = -1;
-
-            public boolean hasNext() {
-                return this.index + 1 + (inclusive ? 0 : 1) < Catenary.this.count;
-            }
-
-            @Override
-            public boolean next() {
-                final int nextIndex = this.index + 1;
-                if (inclusive ? nextIndex > Catenary.this.count : nextIndex >= Catenary.this.count) {
-                    throw new NoSuchElementException();
-                }
-                this.index = nextIndex;
-                return nextIndex + (inclusive ? 0 : 1) < Catenary.this.count;
-            }
-
-            private void checkIndex(final float t) {
-                if (this.index + (inclusive && t == 0.0F ? 0 : 1) >= Catenary.this.count) {
-                    throw new IllegalStateException();
-                }
-            }
-
-            @Override
-            public int getIndex() {
-                this.checkIndex(0.0F);
-                return this.index;
-            }
-
-            @Override
-            public float getX(final float t) {
-                this.checkIndex(t);
-                if (t == 0.0F) {
-                    return Catenary.this.x[this.index] * Catenary.this.dx;
-                }
-                if (t == 1.0F) {
-                    return Catenary.this.x[this.index + 1] * Catenary.this.dx;
-                }
-                return net.minecraft.util.Mth.lerp(t, Catenary.this.x[this.index], Catenary.this.x[this.index + 1]) * Catenary.this.dx;
-            }
-
-            @Override
-            public float getY(final float t) {
-                this.checkIndex(t);
-                if (t == 0.0F) {
-                    return Catenary.this.y[this.index];
-                }
-                if (t == 1.0F) {
-                    return Catenary.this.y[this.index + 1];
-                }
-                return net.minecraft.util.Mth.lerp(t, Catenary.this.y[this.index], Catenary.this.y[this.index + 1]);
-            }
-
-            @Override
-            public float getZ(final float t) {
-                this.checkIndex(t);
-                if (t == 0.0F) {
-                    return Catenary.this.x[this.index] * Catenary.this.dz;
-                }
-                if (t == 1.0F) {
-                    return Catenary.this.x[this.index + 1] * Catenary.this.dz;
-                }
-                return net.minecraft.util.Mth.lerp(t, Catenary.this.x[this.index], Catenary.this.x[this.index + 1]) * Catenary.this.dz;
-            }
-
-            @Override
-            public Vec3 getPos() {
-                return new Vec3(Catenary.this.x[this.index] * Catenary.this.dx, Catenary.this.y[this.index], Catenary.this.x[this.index] * Catenary.this.dz);
-            }
+        return new CurveSegmentIterator<>(this, inclusive) {
 
             @Override
             public float getYaw() {
-                return Catenary.this.yaw;
+                return this.curve.yaw;
             }
 
             @Override
-            public float getPitch() {
-                this.checkIndex(1.0F);
-                if (inclusive) {
-                    throw new IllegalStateException();
-                }
-                final float dx = Catenary.this.x[this.index + 1] - Catenary.this.x[this.index];
-                final float dy = Catenary.this.y[this.index + 1] - Catenary.this.y[this.index];
+            protected float getPitch(int index) {
+                final float dx = this.curve.x[index + 1] - this.curve.x[index];
+                final float dy = this.curve.y[index + 1] - this.curve.y[index];
                 return (float) net.minecraft.util.Mth.atan2(dy, dx);
             }
 
             @Override
-            public float getLength() {
-                this.checkIndex(1.0F);
-                if (inclusive) {
-                    throw new IllegalStateException();
-                }
-                final float dx = Catenary.this.x[this.index + 1] - Catenary.this.x[this.index];
-                final float dy = Catenary.this.y[this.index + 1] - Catenary.this.y[this.index];
+            public float getLength(final int index) {
+                final float dx = this.curve.x[index + 1] - this.curve.x[index];
+                final float dy = this.curve.y[index + 1] - this.curve.y[index];
                 return net.minecraft.util.Mth.sqrt(dx * dx + dy * dy);
             }
         };
     }
 
-    public interface SegmentIterator extends SegmentView {
-        boolean hasNext();
-
-        boolean next();
-    }
-
-    public interface SegmentView {
-        int getIndex();
-
-        float getX(final float t);
-
-        float getY(final float t);
-
-        float getZ(final float t);
-
-        Vec3 getPos();
-
-        float getYaw();
-
-        float getPitch();
-
-        float getLength();
-    }
-
-    public interface PointVisitor {
-        void visit(final int index, final float x, final float y, final float z, final float yaw, final float pitch);
-    }
-
-    public float getLength() {
-        return this.length;
-    }
 
     public static Catenary from(final Vec3 direction, final float verticalYaw, final CubicBezier bezier, final float slack) {
         final float dist = (float) direction.length();

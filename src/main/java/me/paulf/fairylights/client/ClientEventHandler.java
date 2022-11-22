@@ -15,6 +15,7 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.util.Curve;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -189,7 +190,7 @@ public final class ClientEventHandler {
     }
 
     private void renderHighlight(final Connection connection, final PoseStack matrix, final VertexConsumer buf) {
-        final Catenary cat = connection.getCatenary();
+        final Curve cat = connection.getCatenary();
         if (cat == null) {
             return;
         }

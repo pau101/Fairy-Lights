@@ -8,6 +8,7 @@ import me.paulf.fairylights.server.connection.ConnectionType;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
 import me.paulf.fairylights.util.AABBBuilder;
 import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.util.Curve;
 import me.paulf.fairylights.util.RegistryObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -128,11 +129,11 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
         }
         final AABBBuilder builder = new AABBBuilder();
         for (final Connection connection : this.outgoing.values()) {
-            final Catenary catenary = connection.getCatenary();
+            final Curve catenary = connection.getCatenary();
             if (catenary == null) {
                 continue;
             }
-            final Catenary.SegmentIterator it = catenary.iterator();
+            final Curve.SegmentIterator it = catenary.iterator();
             while (it.next()) {
                 builder.include(it.getX(0.0F), it.getY(0.0F), it.getZ(0.0F));
                 if (!it.hasNext()) {

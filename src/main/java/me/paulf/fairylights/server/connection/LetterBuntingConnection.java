@@ -7,6 +7,7 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.feature.Letter;
 import me.paulf.fairylights.server.net.clientbound.OpenEditLetteredConnectionScreenMessage;
 import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.util.Curve;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import me.paulf.fairylights.util.styledstring.StylingPresence;
 import net.minecraft.client.gui.screens.Screen;
@@ -86,7 +87,7 @@ public final class LetterBuntingConnection extends Connection implements Lettere
         if (this.text.isEmpty()) {
             this.letters = new Letter[0];
         } else {
-            final Catenary catenary = this.getCatenary();
+            final Curve catenary = this.getCatenary();
             float textWidth = 0;
             int textLen = 0;
             final float[] pointOffsets = new float[this.text.length()];

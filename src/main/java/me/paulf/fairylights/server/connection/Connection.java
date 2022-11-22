@@ -7,6 +7,7 @@ import me.paulf.fairylights.server.collision.FeatureCollisionTree;
 import me.paulf.fairylights.server.collision.Intersection;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
+import me.paulf.fairylights.server.fastener.FenceFastener;
 import me.paulf.fairylights.server.fastener.accessor.FastenerAccessor;
 import me.paulf.fairylights.server.feature.Feature;
 import me.paulf.fairylights.server.feature.FeatureType;
@@ -15,6 +16,8 @@ import me.paulf.fairylights.server.net.serverbound.InteractionConnectionMessage;
 import me.paulf.fairylights.server.sound.FLSounds;
 import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.CubicBezier;
+import me.paulf.fairylights.util.Curve;
+import me.paulf.fairylights.util.Curve3d;
 import me.paulf.fairylights.util.NBTSerializable;
 import me.paulf.fairylights.util.Utils;
 import net.minecraft.core.Direction;
@@ -62,10 +65,10 @@ public abstract class Connection implements NBTSerializable {
     protected Level world;
 
     @Nullable
-    private Catenary catenary;
+    private Curve catenary;
 
     @Nullable
-    protected Catenary prevCatenary;
+    protected Curve prevCatenary;
 
     protected float slack = 1;
 
@@ -92,12 +95,12 @@ public abstract class Connection implements NBTSerializable {
     }
 
     @Nullable
-    public final Catenary getCatenary() {
+    public final Curve getCatenary() {
         return this.catenary;
     }
 
     @Nullable
-    public final Catenary getPrevCatenary() {
+    public final Curve getPrevCatenary() {
         return this.prevCatenary == null ? this.catenary : this.prevCatenary;
     }
 
@@ -305,7 +308,11 @@ public abstract class Connection implements NBTSerializable {
             final Vec3 vec = point.subtract(from);
             if (vec.length() > 1e-6) {
                 final Direction facing = this.fastener.getFacing();
-                this.catenary = Catenary.from(vec, facing.getAxis() != Direction.Axis.Y ? (float) Math.toRadians(90.0F + facing.toYRot()) : 0.0F, SLACK_CURVE, this.slack);
+                if (this.fastener instanceof FenceFastener && dest instanceof FenceFastener && vec.horizontalDistance() < 1e-2) {
+                    this.catenary = this.verticalHelix(vec);
+                } else {
+                    this.catenary = Catenary.from(vec, facing.getAxis() == Direction.Axis.Y ? 0.0F : (float) Math.toRadians(90.0F + facing.toYRot()), SLACK_CURVE, this.slack);
+                }
                 this.onCalculateCatenary(!this.destination.equals(this.prevDestination));
                 final CollidableList.Builder bob = new CollidableList.Builder();
                 this.addCollision(bob, from);
@@ -316,6 +323,33 @@ public abstract class Connection implements NBTSerializable {
             return true;
         }
         return false;
+    }
+
+    private Curve verticalHelix(final Vec3 vec) {
+        final float length = (float) vec.length();
+        final float height = (float) vec.y;
+        final float stepSize = 0.25F;
+        final float loopsPerBlock = 1.0F;
+        final float radius = 0.33F;
+        final int steps = (int) (Mth.TWO_PI * radius * loopsPerBlock * length / stepSize);
+        final float rad = -Mth.TWO_PI * (loopsPerBlock * length);
+        final float[] x = new float[steps];
+        final float[] y = new float[steps];
+        final float[] z = new float[steps];
+        float helixLength = 0.0F;
+        for (int i = 0; i < steps; i++) {
+            float t = (float) i / (steps - 1);
+            x[i] = radius * Mth.cos(t * rad);
+            y[i] = t * height;
+            z[i] = radius * Mth.sin(t * rad);
+            if (i > 0) {
+                helixLength += Mth.sqrt(
+                    Mth.square(x[i] - x[i - 1]) +
+                    Mth.square(y[i] - y[i - 1]) +
+                    Mth.square(z[i] - z[i - 1]));
+            }
+        }
+        return new Curve3d(steps, x, y, z, helixLength);
     }
 
     public void addCollision(final CollidableList.Builder collision, final Vec3 origin) {

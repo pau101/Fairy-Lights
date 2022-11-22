@@ -12,7 +12,7 @@ import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.PennantBuntingConnection;
 import me.paulf.fairylights.server.feature.Pennant;
 import me.paulf.fairylights.server.item.FLItems;
-import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.util.Curve;
 import me.paulf.fairylights.util.styledstring.Style;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.ChatFormatting;
@@ -22,7 +22,6 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -55,7 +54,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
     }
 
     @Override
-    protected void render(final PennantBuntingConnection conn, final Catenary catenary, final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight, final int packedOverlay) {
+    protected void render(final PennantBuntingConnection conn, final Curve catenary, final float delta, final PoseStack matrix, final MultiBufferSource source, final int packedLight, final int packedOverlay) {
         super.render(conn, catenary, delta, matrix, source, packedLight, packedOverlay);
         final Pennant[] currLights = conn.getFeatures();
         if (currLights != null) {

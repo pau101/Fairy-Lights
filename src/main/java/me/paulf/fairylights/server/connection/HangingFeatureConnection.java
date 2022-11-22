@@ -7,6 +7,7 @@ import me.paulf.fairylights.server.feature.FeatureType;
 import me.paulf.fairylights.server.feature.HangingFeature;
 import me.paulf.fairylights.util.AABBBuilder;
 import me.paulf.fairylights.util.Catenary;
+import me.paulf.fairylights.util.Curve;
 import me.paulf.fairylights.util.matrix.MatrixStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -35,7 +36,7 @@ public abstract class HangingFeatureConnection<F extends HangingFeature> extends
     }
 
     protected void updateFeatures(final boolean relocated) {
-        final Catenary catenary = this.getCatenary();
+        final Curve catenary = this.getCatenary();
         final float spacing = this.getFeatureSpacing();
         final float totalLength = catenary.getLength();
         if (totalLength > 2.0F * Connection.MAX_LENGTH) {
