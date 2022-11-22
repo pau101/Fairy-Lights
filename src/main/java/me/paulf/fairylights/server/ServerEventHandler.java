@@ -48,12 +48,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.Random;
-
 public final class ServerEventHandler {
-    private final Random rng = new Random();
-
-    private boolean eventOccurring = false;
 
     @SubscribeEvent
     public void onEntityJoinWorld(final EntityJoinWorldEvent event) {

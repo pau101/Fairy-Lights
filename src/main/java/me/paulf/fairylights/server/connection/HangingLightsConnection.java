@@ -17,6 +17,7 @@ import me.paulf.fairylights.server.string.StringTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -195,11 +196,9 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
 
     @Override
     protected void onBeforeUpdateFeatures() {
-        final Iterator<BlockPos> litIter = this.litBlocks.iterator();
-        while (litIter.hasNext()) {
-            this.oldLitBlocks.add(litIter.next());
-            litIter.remove();
-        }
+        this.oldLitBlocks.clear();
+        this.oldLitBlocks.addAll(this.litBlocks);
+        this.litBlocks.clear();
     }
 
     @Override
@@ -248,6 +247,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
         final CompoundTag compound = super.serialize();
         compound.put("jinglePlayer", this.jinglePlayer.serialize());
         compound.putBoolean("isOn", this.isOn);
+        final ListTag litBlocks = new ListTag();
+        for (final BlockPos litBlock : this.litBlocks) {
+            litBlocks.add(NbtUtils.writeBlockPos(litBlock));
+        }
+        compound.put("litBlocks", litBlocks);
         return compound;
     }
 
@@ -261,6 +265,11 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
             this.jinglePlayer.deserialize(compound.getCompound("jinglePlayer"));
         }
         this.isOn = compound.getBoolean("isOn");
+        this.litBlocks.clear();
+        final ListTag litBlocks = compound.getList("litBlocks", Tag.TAG_COMPOUND);
+        for (int i = 0; i < litBlocks.size(); i++) {
+            this.litBlocks.add(NbtUtils.readBlockPos(litBlocks.getCompound(i)));
+        }
     }
 
     @Override
