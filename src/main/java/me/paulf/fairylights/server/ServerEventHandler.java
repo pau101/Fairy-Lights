@@ -5,12 +5,9 @@ import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.FastenerBlock;
 import me.paulf.fairylights.server.block.entity.FastenerBlockEntity;
 import me.paulf.fairylights.server.capability.CapabilityHandler;
-import me.paulf.fairylights.server.config.FLConfig;
-import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.entity.FenceFastenerEntity;
 import me.paulf.fairylights.server.fastener.BlockFastener;
-import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FenceFastener;
 import me.paulf.fairylights.server.fastener.PlayerFastener;
 import me.paulf.fairylights.server.feature.light.Light;
@@ -26,7 +23,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBlockEventPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -43,7 +39,6 @@ import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -52,15 +47,7 @@ import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public final class ServerEventHandler {
@@ -167,95 +154,16 @@ public final class ServerEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onWorldTick(final TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START || event.side == LogicalSide.CLIENT || !FLConfig.isJingleEnabled()) {
-            return;
+    public static boolean tryJingle(final Level world, final HangingLightsConnection hangingLights) {
+        String lib;
+        if (FairyLights.CHRISTMAS.isOccurringNow()) {
+            lib = JingleLibrary.CHRISTMAS;
+        } else if (FairyLights.HALLOWEEN.isOccurringNow()) {
+            lib = JingleLibrary.HALLOWEEN;
+        } else {
+            lib = JingleLibrary.RANDOM;
         }
-        if (event.world.getGameTime() % (5 * 60 * 20) == 0) {
-            this.eventOccurring = FairyLights.CHRISTMAS.isOccurringNow() || FairyLights.HALLOWEEN.isOccurringNow();
-        }
-        if (this.eventOccurring && this.rng.nextFloat() < 1.0F / (5 * 60 * 20)) {
-            List<BlockEntity> tileEntities = Collections.emptyList();
-            /*try {
-                tileEntities = new ArrayList<>(event.world.blockEntityTickers); // TODO: reimplement jingling
-            } catch (ConcurrentModificationException ignored) {
-            }*/
-            final List<Vec3> playingSources = new ArrayList<>();
-            final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections = new HashMap<>();
-            for (final BlockEntity tileEntity : tileEntities) {
-                tileEntity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
-                    final List<Vec3> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
-                    if (!newPlayingSources.isEmpty()) {
-                        playingSources.addAll(newPlayingSources);
-                    }
-                });
-            }
-            ((ServerLevel) event.world).getAllEntities().forEach(entity -> {
-                entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
-                    final List<Vec3> newPlayingSources = this.getPlayingLightSources(event.world, feasibleConnections, fastener);
-                    if (!newPlayingSources.isEmpty()) {
-                        playingSources.addAll(newPlayingSources);
-                    }
-                });
-            });
-            final Iterator<Fastener<?>> feasibleFasteners = feasibleConnections.keySet().iterator();
-            while (feasibleFasteners.hasNext()) {
-                final Fastener<?> fastener = feasibleFasteners.next();
-                final List<HangingLightsConnection> connections = feasibleConnections.get(fastener);
-                connections.removeIf(connection -> this.isTooCloseTo(fastener, connection.getFeatures(), playingSources));
-                if (connections.size() == 0) {
-                    feasibleFasteners.remove();
-                }
-            }
-            if (feasibleConnections.size() == 0) {
-                return;
-            }
-            final Fastener<?> fastener = feasibleConnections.keySet().toArray(new Fastener[0])[this.rng.nextInt(feasibleConnections.size())];
-            final List<HangingLightsConnection> connections = feasibleConnections.get(fastener);
-            final HangingLightsConnection connection = connections.get(this.rng.nextInt(connections.size()));
-            tryJingle(event.world, connection, FairyLights.CHRISTMAS.isOccurringNow() ? JingleLibrary.CHRISTMAS : JingleLibrary.HALLOWEEN);
-        }
-    }
-
-    private List<Vec3> getPlayingLightSources(final Level world, final Map<Fastener<?>, List<HangingLightsConnection>> feasibleConnections, final Fastener<?> fastener) {
-        final List<Vec3> points = new ArrayList<>();
-        final double expandAmount = FLConfig.getJingleAmplitude();
-        final AABB listenerRegion = fastener.getBounds().inflate(expandAmount, expandAmount, expandAmount);
-        final List<Player> nearPlayers = world.getEntitiesOfClass(Player.class, listenerRegion);
-        final boolean arePlayersNear = nearPlayers.size() > 0;
-        for (final Connection connection : fastener.getOwnConnections()) {
-            if (connection.getDestination().get(world, false).isPresent() && connection instanceof final HangingLightsConnection connectionLogic) {
-                final Light<?>[] lightPoints = connectionLogic.getFeatures();
-                if (connectionLogic.canCurrentlyPlayAJingle()) {
-                    if (arePlayersNear) {
-                        if (feasibleConnections.containsKey(fastener)) {
-                            feasibleConnections.get(fastener).add((HangingLightsConnection) connection);
-                        } else {
-                            final List<HangingLightsConnection> connections = new ArrayList<>();
-                            connections.add((HangingLightsConnection) connection);
-                            feasibleConnections.put(fastener, connections);
-                        }
-                    }
-                } else {
-                    for (final Light<?> light : lightPoints) {
-                        points.add(light.getAbsolutePoint(fastener));
-                    }
-                }
-            }
-        }
-        return points;
-    }
-
-    public boolean isTooCloseTo(final Fastener<?> fastener, final Light<?>[] lights, final List<Vec3> playingSources) {
-        for (final Light<?> light : lights) {
-            for (final Vec3 point : playingSources) {
-                if (light.getAbsolutePoint(fastener).distanceTo(point) <= FLConfig.getJingleAmplitude()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return tryJingle(world, hangingLights, lib);
     }
 
     public static boolean tryJingle(final Level world, final HangingLightsConnection hangingLights, final String lib) {

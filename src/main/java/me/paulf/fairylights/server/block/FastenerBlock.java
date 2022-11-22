@@ -202,7 +202,7 @@ public final class FastenerBlock extends DirectionalBlock implements EntityBlock
             .filter(HangingLightsConnection.class::isInstance)
             .map(HangingLightsConnection.class::cast)
             .filter(conn -> conn.canCurrentlyPlayAJingle() && conn.isDestination(new BlockFastenerAccessor(fastener.getPos())) && world.getBlockState(fastener.getPos()).getValue(TRIGGERED))
-            .findFirst().ifPresent(conn -> ServerEventHandler.tryJingle(world, conn, JingleLibrary.RANDOM))
+            .findFirst().ifPresent(conn -> ServerEventHandler.tryJingle(world, conn))
         );
     }
 
