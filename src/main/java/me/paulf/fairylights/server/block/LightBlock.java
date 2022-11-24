@@ -5,6 +5,7 @@ import me.paulf.fairylights.server.item.DyeableItem;
 import me.paulf.fairylights.server.item.LightVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -98,12 +99,20 @@ public class LightBlock extends FaceAttachedHorizontalDirectionalBlock implement
         if (value == AttachFace.WALL) {
             final Direction facing = state.getValue(FACING);
             final BlockPos anchorPos = pos.relative(facing.getOpposite());
-            final VoxelShape shape = world.getBlockState(anchorPos).getBlockSupportShape(world, anchorPos);
+            BlockState anchorState = world.getBlockState(anchorPos);
+            if (anchorState.is(BlockTags.LEAVES)) {
+                return true;
+            }
+            final VoxelShape shape = anchorState.getBlockSupportShape(world, anchorPos);
             return Block.isFaceFull(shape, facing);
         }
         final Direction facing = value == AttachFace.FLOOR ? Direction.DOWN : Direction.UP;
         final BlockPos anchorPos = pos.relative(facing);
-        final VoxelShape shape = world.getBlockState(anchorPos).getBlockSupportShape(world, anchorPos);
+        BlockState anchorState = world.getBlockState(anchorPos);
+        if (anchorState.is(BlockTags.LEAVES)) {
+            return true;
+        }
+        final VoxelShape shape = anchorState.getBlockSupportShape(world, anchorPos);
         return !Shapes.joinIsNotEmpty(shape.getFaceShape(facing.getOpposite()), MIN_ANCHOR_SHAPE, BooleanOp.ONLY_SECOND);
     }
 
