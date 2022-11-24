@@ -862,7 +862,7 @@ public final class StyledTextFieldWidget extends AbstractWidget {
         if (drawCaret) {
             final int rgb = StyledString.getColor(this.currentStyle.getColor());
             if (this.currentStyle.isItalic()) {
-                GuiComponent.fill(stack, caretX - 1, caretX + 1, offsetY - 2, offsetY + 1 + this.font.lineHeight, rgb);
+                fill(stack, caretX - 1, caretX + 1, offsetY - 2, offsetY + 1 + this.font.lineHeight, rgb);
             } else {
                 fill(stack, caretX, offsetY - 2, caretX + 1, offsetY + 1 + this.font.lineHeight, 0xFF000000 | rgb);
             }
@@ -898,23 +898,16 @@ public final class StyledTextFieldWidget extends AbstractWidget {
     }
 
     private void drawSelectionHighlight(final PoseStack stack, int startX, int startY, int endX, int endY) {
-        if (startX < endX) {
-            final int t = startX;
-            startX = endX;
-            endX = t;
-        }
-        if (startY < endY) {
-            final int j = startY;
-            startY = endY;
-            endY = j;
-        }
         if (endX > this.x + this.width) {
             endX = this.x + this.width;
         }
         if (startX > this.x + this.width) {
             startX = this.x + this.width;
         }
-        GuiComponent.fill(stack, startX, endX, startY, endY, 0xffffff);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        fill(stack, startX, startY, endX, endY, 0x33FFFFFF);
+        RenderSystem.disableBlend();
     }
 
     public StyledString getClipboardString() {
