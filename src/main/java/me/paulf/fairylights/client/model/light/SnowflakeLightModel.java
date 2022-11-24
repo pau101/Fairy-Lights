@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
@@ -24,11 +24,11 @@ public class SnowflakeLightModel extends ColorLightModel {
             final BulbBuilder branch = bulb.createChild("branch_" + n, 10, 37);
             branch.addBox(-0.5F, 0.0F, -0.5F, 1.0F, size, 1.0F, rng.nextFloat() * 0.01F + 0.1F);
             branch.setPosition(0.0F, -size, 0.0F);
-            branch.setAngles(0.0F, 0.0F, n * Mth.TAU / branches);
+            branch.setAngles(0.0F, 0.0F, n * FLMth.TAU / branches);
             for (int side = -1; side <= 1; side += 2) {
                 final BulbBuilder sub = branch.createChild("side_" + (side == 1), 10, 39);
                 sub.addBox(-0.5F, 0.0F, -0.5F, 1.0F, size * 0.4F, 1.0F, rng.nextFloat() * 0.01F - 0.05F);
-                sub.setAngles(0.0F, 0.0F, Mth.PI * 0.75F * side);
+                sub.setAngles(0.0F, 0.0F, FLMth.PI * 0.75F * side);
                 sub.setPosition(-0.2F * side, -size * 0.55F, 0.0F);
             }
         }

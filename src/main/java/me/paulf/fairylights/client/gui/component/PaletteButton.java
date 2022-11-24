@@ -4,11 +4,12 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import org.apache.commons.lang3.ArrayUtils;
 
 import static net.minecraft.ChatFormatting.*;
@@ -32,7 +33,7 @@ public class PaletteButton extends Button {
 
     private static final ChatFormatting[] IDX_COLOR = {WHITE, GRAY, DARK_GRAY, BLACK, RED, DARK_RED, YELLOW, GOLD, LIGHT_PURPLE, DARK_PURPLE, GREEN, DARK_GREEN, BLUE, DARK_BLUE, AQUA, DARK_AQUA};
 
-    private static final int[] COLOR_IDX = Mth.invertMap(IDX_COLOR, ChatFormatting::ordinal);
+    private static final int[] COLOR_IDX = FLMth.invertMap(IDX_COLOR, ChatFormatting::ordinal);
 
     private final ColorButton colorBtn;
 
@@ -92,8 +93,8 @@ public class PaletteButton extends Button {
     }
 
     private int getMouseOverIndex(final double mouseX, final double mouseY) {
-        final int relX = net.minecraft.util.Mth.floor(mouseX - this.x - 3);
-        final int relY = net.minecraft.util.Mth.floor(mouseY - this.y - 3);
+        final int relX = Mth.floor(mouseX - this.x - 3);
+        final int relY = Mth.floor(mouseY - this.y - 3);
         if (relX < 0 || relY < 0 || relX > 22 || relY > 22) {
             return -1;
         }

@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.integration.jei;
 
 import com.google.common.collect.ImmutableList;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import me.paulf.fairylights.util.crafting.GenericRecipe;
 import me.paulf.fairylights.util.crafting.ingredient.AuxiliaryIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
@@ -242,7 +242,7 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
         int size = 1;
         for (final List<ItemStack> stack : inputs) {
             if (stack.size() > 0) {
-                size = Mth.lcm(stack.size(), size);
+                size = FLMth.lcm(stack.size(), size);
             }
         }
         final List<ItemStack> outputs = new ArrayList<>(size);

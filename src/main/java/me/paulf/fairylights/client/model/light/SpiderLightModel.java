@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
@@ -15,7 +15,7 @@ public class SpiderLightModel extends ColorLightModel {
         string.addBox(-1, 0, -1, 2, 2, 2, -0.05F);
         helper.unlit().addChild(string);
         final BulbBuilder bulb = helper.createBulb();
-        bulb.setAngles(0.0F, -Mth.PI / 2.0F, 0.0F);
+        bulb.setAngles(0.0F, -FLMth.PI / 2.0F, 0.0F);
         final BulbBuilder abdomen = bulb.createChild("abdomen", 20, 54);
         abdomen.addBox(-2.5F, -5.0F, -2.5F, 5, 5, 5, 0);
         final BulbBuilder pedicel = abdomen.createChild("pedicel", 6, 0);
@@ -39,7 +39,7 @@ public class SpiderLightModel extends ColorLightModel {
 
     private static void createLegs(final LightMeshHelper helper, final BulbBuilder bulb, final int side) {
         final BulbBuilder legs = bulb.createChild("legs_" + side, 0, 0);
-        legs.setAngles(0.0F, Mth.PI * side, 0.0F);
+        legs.setAngles(0.0F, FLMth.PI * side, 0.0F);
         final BulbBuilder leg1 = legs.createChild("leg1_" + side, 21, 45);
         leg1.setPosition(0, 0.6F, 1.1F);
         leg1.addBox(0, -0.5F, -0.5F, 5, 1, 1, 0);

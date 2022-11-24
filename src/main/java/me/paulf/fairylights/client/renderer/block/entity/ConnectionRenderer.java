@@ -7,7 +7,7 @@ import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.Curve;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -47,7 +47,7 @@ public abstract class ConnectionRenderer<C extends Connection> {
             while (it.next()) {
                 matrix.pushPose();
                 matrix.translate(it.getX(0.0F), it.getY(0.0F),  it.getZ(0.0F));
-                matrix.mulPose(Vector3f.YP.rotation(Mth.PI / 2.0F - it.getYaw()));
+                matrix.mulPose(Vector3f.YP.rotation(FLMth.PI / 2.0F - it.getYaw()));
                 matrix.mulPose(Vector3f.XP.rotation(-it.getPitch()));
                 matrix.scale(1.0F + this.wireInflate, 1.0F, it.getLength() * 16.0F);
                 this.model.renderToBuffer(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);

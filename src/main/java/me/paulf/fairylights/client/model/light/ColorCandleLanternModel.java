@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
@@ -25,8 +25,8 @@ public class ColorCandleLanternModel extends ColorLightModel {
             final EasyMeshBuilder frame = new EasyMeshBuilder("frame_" + i, 4 * i + 47, 27);
             frame.addBox(-0.5F, 0, -0.5F, 1, 6, 1);
             frame.setRotationPoint(2.1F * ((i & 2) == 0 ? 1 : -1), -8F, 2.1F * ((i + 1 & 2) == 0 ? 1 : -1));
-            frame.xRot = 5 * Mth.DEG_TO_RAD;
-            frame.yRot = (90 * i + 45) * Mth.DEG_TO_RAD;
+            frame.xRot = 5 * FLMth.DEG_TO_RAD;
+            frame.yRot = (90 * i + 45) * FLMth.DEG_TO_RAD;
             helper.unlit().addChild(frame);
         }
         final BulbBuilder bulb = helper.createBulb();

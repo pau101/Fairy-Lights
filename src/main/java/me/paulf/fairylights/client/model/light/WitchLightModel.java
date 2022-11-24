@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
@@ -29,7 +29,7 @@ public class WitchLightModel extends ColorLightModel {
         helper.unlit().addChild(belt);
         final EasyMeshBuilder buckle = new EasyMeshBuilder("buckle", 0, 27);
         buckle.setRotationPoint(0, -0.6F, -2.9F);
-        buckle.yRot = -Mth.HALF_PI;
+        buckle.yRot = -FLMth.HALF_PI;
         buckle.addBox(0, 0, -1, 1, 2, 2, 0);
         belt.addChild(buckle);
         final EasyMeshBuilder beltPoke = new EasyMeshBuilder("beltPoke", 66, 4);

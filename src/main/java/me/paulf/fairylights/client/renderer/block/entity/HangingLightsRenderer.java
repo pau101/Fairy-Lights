@@ -6,7 +6,7 @@ import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.item.SimpleLightVariant;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -47,7 +47,7 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
             }
             matrix.mulPose(Vector3f.XP.rotation(light.getRoll(delta)));
             if (light.getVariant() != SimpleLightVariant.FAIRY_LIGHT) { // FIXME
-                matrix.mulPose(Vector3f.YP.rotation(Mth.mod(Mth.hash(i) * Mth.DEG_TO_RAD, Mth.TAU) + Mth.PI / 4.0F));
+                matrix.mulPose(Vector3f.YP.rotation(FLMth.mod(FLMth.hash(i) * FLMth.DEG_TO_RAD, FLMth.TAU) + FLMth.PI / 4.0F));
             }
             matrix.translate(0.0D, -light.getDescent(), 0.0D);
             this.lights.render(matrix, data, light, i, delta, packedLight, packedOverlay);

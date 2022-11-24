@@ -7,7 +7,7 @@ import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.GarlandVineConnection;
 import me.paulf.fairylights.util.Curve;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import me.paulf.fairylights.util.RandomArray;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -73,7 +73,7 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
             CubeListBuilder root = CubeListBuilder.create()
                 .texOffs(14, 91)
                 .addBox(-size / 2.0F, -size / 2.0F, -size / 2.0F, size, size, size);
-            PartPose crossPose = PartPose.rotation(0.0F, 0.0F, Mth.HALF_PI);
+            PartPose crossPose = PartPose.rotation(0.0F, 0.0F, FLMth.HALF_PI);
             MeshDefinition mesh = new MeshDefinition();
             for (int i = 0; i < RING_COUNT; i++) {
                 mesh.getRoot().addOrReplaceChild(Integer.toString(i), root, PartPose.ZERO)

@@ -49,7 +49,7 @@ public final class Curve3d implements Curve {
 
     @Override
     public float getX(int i, float lerp) {
-        return net.minecraft.util.Mth.lerp(lerp, this.x[i], this.x[i + 1]);
+        return Mth.lerp(lerp, this.x[i], this.x[i + 1]);
     }
 
     @Override
@@ -59,7 +59,7 @@ public final class Curve3d implements Curve {
 
     @Override
     public float getY(int i, float lerp) {
-        return net.minecraft.util.Mth.lerp(lerp, this.y[i], this.y[i + 1]);
+        return Mth.lerp(lerp, this.y[i], this.y[i + 1]);
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class Curve3d implements Curve {
 
     @Override
     public float getZ(int i, float lerp) {
-        return net.minecraft.util.Mth.lerp(lerp, this.z[i], this.z[i + 1]);
+        return Mth.lerp(lerp, this.z[i], this.z[i + 1]);
     }
 
     @Override

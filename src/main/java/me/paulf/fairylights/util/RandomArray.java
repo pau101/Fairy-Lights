@@ -1,6 +1,7 @@
 package me.paulf.fairylights.util;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.util.Mth;
 
 import java.util.Random;
 
@@ -22,12 +23,12 @@ public final class RandomArray {
     }
 
     public float get(final int index) {
-        return this.values[Mth.mod(index, this.values.length)];
+        return this.values[FLMth.mod(index, this.values.length)];
     }
 
     public float get(final float t) {
-        final int t0 = net.minecraft.util.Mth.floor(Mth.mod(t, this.values.length));
-        final int t1 = Mth.mod(t0 + 1, this.values.length);
+        final int t0 = Mth.floor(FLMth.mod(t, this.values.length));
+        final int t1 = FLMth.mod(t0 + 1, this.values.length);
         return this.values[t0] * (1 - t % 1) + this.values[t1] * (t % 1);
     }
 }

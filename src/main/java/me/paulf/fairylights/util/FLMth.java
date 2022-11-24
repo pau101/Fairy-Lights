@@ -5,8 +5,8 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Objects;
 import java.util.function.ToIntFunction;
 
-public final class Mth {
-    private Mth() {}
+public final class FLMth {
+    private FLMth() {}
 
     public static final float PI = (float) Math.PI;
 
@@ -79,7 +79,7 @@ public final class Mth {
     }
 
     public static float angleDifference(final float a, final float b) {
-        return mod(b - a + Mth.PI, Mth.TAU) - Mth.PI;
+        return mod(b - a + FLMth.PI, FLMth.TAU) - FLMth.PI;
     }
 
     public static int floorInterval(final int x, final int n) {

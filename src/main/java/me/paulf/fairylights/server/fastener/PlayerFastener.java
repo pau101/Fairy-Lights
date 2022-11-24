@@ -2,9 +2,10 @@ package me.paulf.fairylights.server.fastener;
 
 import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.server.fastener.accessor.PlayerFastenerAccessor;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -20,7 +21,7 @@ public final class PlayerFastener extends EntityFastener<Player> {
         if (this.entity.isFallFlying()) {
             return point;
         }
-        final double angle = (this.entity.yBodyRot - 90) * Mth.DEG_TO_RAD;
+        final double angle = (this.entity.yBodyRot - 90) * FLMth.DEG_TO_RAD;
         final double perpAngle = angle - Math.PI / 2;
         final boolean sneaking = this.entity.isCrouching();
         final double perpDist = 0.4 * (this.matchesStack(this.entity.getMainHandItem()) ? 1 : -1);
@@ -71,7 +72,7 @@ public final class PlayerFastener extends EntityFastener<Player> {
             final double vectorZ = dz / dist;
             final double factor = Math.min((dist - Connection.MAX_LENGTH) / Connection.PULL_RANGE, Connection.PULL_RANGE);
             final Vec3 motion = this.entity.getDeltaMovement();
-            final double tangent = Math.cos(net.minecraft.util.Mth.atan2(dy, Math.sqrt(dx * dx + dz * dz))) * Math.signum(motion.y);
+            final double tangent = Math.cos(Mth.atan2(dy, Math.sqrt(dx * dx + dz * dz))) * Math.signum(motion.y);
             final double speed = motion.length();
             final double swing = Math.abs(speed) < 1e-6 ? 0 : (1 - Math.abs(motion.y / speed - tangent)) * 0.1;
             final double mag = Math.sqrt(motion.x * motion.x + tangent * tangent + motion.z * motion.z);

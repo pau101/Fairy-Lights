@@ -4,9 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.MeteorLightBehavior;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.util.Mth;
 
 public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
     private static final int LIGHT_COUNT = 12;
@@ -49,7 +50,7 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
     }
 
     private float computeBrightness(final float t) {
-        return net.minecraft.util.Mth.clamp(t - this.stage > 0.0F ? 1.0F - Math.abs(t - this.stage) * 4.0F : 1.0F - Math.abs(t - this.stage), 0.0F, 1.0F);
+        return Mth.clamp(t - this.stage > 0.0F ? 1.0F - Math.abs(t - this.stage) * 4.0F : 1.0F - Math.abs(t - this.stage), 0.0F, 1.0F);
     }
 
     @Override
@@ -88,7 +89,7 @@ public class MeteorLightModel extends LightModel<MeteorLightBehavior> {
         final BulbBuilder bulb = helper.createBulb();
         for (int i = 0; i < LIGHT_COUNT; i++) {
             final BulbBuilder light = bulb.createChild("light_" + i, 37, 72);
-            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, net.minecraft.util.Mth.sin(i * Mth.PI / LIGHT_COUNT) * 0.1F);
+            light.addBox(-1, -i * 2 - 2.5F + 0.05F, -1, 2, 2, 2, Mth.sin(i * FLMth.PI / LIGHT_COUNT) * 0.1F);
         }
         return helper.build();
     }

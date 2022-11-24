@@ -111,12 +111,12 @@ public final class AABBBuilder {
             maxX = bounds.maxX, maxY = bounds.maxY, maxZ = bounds.maxZ;
         for (int i = 1, size = aabbs.size(); i < size; i++) {
             bounds = Objects.requireNonNull(mapper.apply(aabbs.get(i)), "mapper returned bounds");
-            minX = Mth.min(minX, bounds.minX, bounds.maxX);
-            minY = Mth.min(minY, bounds.minY, bounds.maxY);
-            minZ = Mth.min(minZ, bounds.minZ, bounds.maxZ);
-            maxX = Mth.max(maxX, bounds.minX, bounds.maxX);
-            maxY = Mth.max(maxY, bounds.minY, bounds.maxY);
-            maxZ = Mth.max(maxZ, bounds.minZ, bounds.maxZ);
+            minX = FLMth.min(minX, bounds.minX, bounds.maxX);
+            minY = FLMth.min(minY, bounds.minY, bounds.maxY);
+            minZ = FLMth.min(minZ, bounds.minZ, bounds.maxZ);
+            maxX = FLMth.max(maxX, bounds.minX, bounds.maxX);
+            maxY = FLMth.max(maxY, bounds.minY, bounds.maxY);
+            maxZ = FLMth.max(maxZ, bounds.minZ, bounds.maxZ);
         }
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }

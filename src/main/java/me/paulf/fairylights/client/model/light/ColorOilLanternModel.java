@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
@@ -11,7 +11,7 @@ public class ColorOilLanternModel extends ColorLightModel {
 
     public static LayerDefinition createLayer() {
         final LightMeshHelper helper = LightMeshHelper.create();
-        helper.unlit().yRot = -Mth.PI / 2.0F;
+        helper.unlit().yRot = -FLMth.PI / 2.0F;
         helper.unlit().setTextureOffset(10, 6);
         helper.unlit().addBox(-1, -0.5F, -1, 2, 2, 2, -0.05F);
         helper.unlit().setTextureOffset(0, 8);

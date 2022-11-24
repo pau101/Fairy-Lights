@@ -1,7 +1,7 @@
 package me.paulf.fairylights.server.feature.light;
 
 import me.paulf.fairylights.util.CubicBezier;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -22,7 +22,7 @@ public class TwinkleBehavior implements BrightnessLightBehavior {
     public float getBrightness(final float delta) {
         if (this.powered) {
             final float x = this.logic.get(delta);
-            return x < 0.25F ? 1.0F - EASE_IN_OUT.eval(x / 0.25F) : EASE_IN_OUT.eval(Mth.transform(x, 0.25F, 1.0F, 0.0F, 1.0F));
+            return x < 0.25F ? 1.0F - EASE_IN_OUT.eval(x / 0.25F) : EASE_IN_OUT.eval(FLMth.transform(x, 0.25F, 1.0F, 0.0F, 1.0F));
         }
         return 0.0F;
     }

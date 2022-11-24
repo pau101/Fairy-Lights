@@ -1,10 +1,11 @@
 package me.paulf.fairylights.server.feature.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -43,9 +44,9 @@ public class ColorChangingBehavior implements ColorLightBehavior {
     }
 
     private float get(final float[] values, final float delta) {
-        final float p = this.powered ? Mth.mod(Util.getMillis() * (20.0F / 1000.0F) * this.rate, values.length) : 0.0F;
+        final float p = this.powered ? FLMth.mod(Util.getMillis() * (20.0F / 1000.0F) * this.rate, values.length) : 0.0F;
         final int i = (int) p;
-        return net.minecraft.util.Mth.lerp(p - i, values[i % values.length], values[(i + 1) % values.length]);
+        return Mth.lerp(p - i, values[i % values.length], values[(i + 1) % values.length]);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class ColorChangingBehavior implements ColorLightBehavior {
         if (list.size() == 1) {
             return list.getInt(0);
         }
-        final float p = Mth.mod(Util.getMillis() * (20.0F / 1000.0F) * (list.size() / 960.0F), list.size());
+        final float p = FLMth.mod(Util.getMillis() * (20.0F / 1000.0F) * (list.size() / 960.0F), list.size());
         final int i = (int) p;
         final int c0 = list.getInt(i % list.size());
         final float r0 = (c0 >> 16 & 0xFF) / 255.0F;
@@ -97,9 +98,9 @@ public class ColorChangingBehavior implements ColorLightBehavior {
         final float r1 = (c1 >> 16 & 0xFF) / 255.0F;
         final float g1 = (c1 >> 8 & 0xFF) / 255.0F;
         final float b1 = (c1 & 0xFF) / 255.0F;
-        return (int) (net.minecraft.util.Mth.lerp(p - i, r0, r1) * 255.0F) << 16 |
-            (int) (net.minecraft.util.Mth.lerp(p - i, g0, g1) * 255.0F) << 8 |
-            (int) (net.minecraft.util.Mth.lerp(p - i, b0, b1) * 255.0F);
+        return (int) (Mth.lerp(p - i, r0, r1) * 255.0F) << 16 |
+            (int) (Mth.lerp(p - i, g0, g1) * 255.0F) << 8 |
+            (int) (Mth.lerp(p - i, b0, b1) * 255.0F);
     }
 
     public static boolean exists(final ItemStack stack) {

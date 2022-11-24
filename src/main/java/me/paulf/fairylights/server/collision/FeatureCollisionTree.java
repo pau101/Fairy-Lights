@@ -2,7 +2,7 @@ package me.paulf.fairylights.server.collision;
 
 import me.paulf.fairylights.server.feature.Feature;
 import me.paulf.fairylights.server.feature.FeatureType;
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -66,7 +66,7 @@ public final class FeatureCollisionTree implements Collidable {
     }
 
     public static <T extends Feature> FeatureCollisionTree build(final FeatureType type, final IntFunction<T> features, final IntFunction<AABB> mapper, final int start, final int end) {
-        final AABB[] tree = new AABB[end == 0 ? 1 : (1 << (Mth.log2(end - start) + 2)) - 1];
+        final AABB[] tree = new AABB[end == 0 ? 1 : (1 << (FLMth.log2(end - start) + 2)) - 1];
         final Feature[] treeFeatures = new Feature[tree.length];
         tree[0] = build(features, mapper, tree, treeFeatures, start, end, 0);
         return new FeatureCollisionTree(type, tree, treeFeatures);

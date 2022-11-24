@@ -1,6 +1,6 @@
 package me.paulf.fairylights.client.model.light;
 
-import me.paulf.fairylights.util.Mth;
+import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 
@@ -21,7 +21,7 @@ public class PaperLanternModel extends ColorLightModel {
             final boolean straight = (i & 1) == 0;
             final EasyMeshBuilder hSupport = new EasyMeshBuilder("hSupport_" + i, 28, 34);
             hSupport.addBox(0, 0, -0.5F, straight ? 4 : 5, 7, 1);
-            hSupport.yRot = 45 * i * Mth.DEG_TO_RAD;
+            hSupport.yRot = 45 * i * FLMth.DEG_TO_RAD;
             hSupport.y = -7;
             helper.unlit().addChild(hSupport);
         }
