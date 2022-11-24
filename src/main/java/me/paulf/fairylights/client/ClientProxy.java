@@ -2,6 +2,7 @@ package me.paulf.fairylights.client;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.command.JinglerCommand;
@@ -106,37 +107,50 @@ public final class ClientProxy extends ServerProxy {
         });
         // Undo sprite uv shrink
         modBus.<ModelBakeEvent>addListener(e -> {
-            this.entityModels.forEach(path -> {
-                final BakedModel model = Minecraft.getInstance().getModelManager().getModel(path);
-                if (model == Minecraft.getInstance().getModelManager().getMissingModel()) {
-                    return;
-                }
-                final TextureAtlasSprite sprite = model.getParticleIcon(EmptyModelData.INSTANCE);
-                final int w = (int) (sprite.getWidth() / (sprite.getU1() - sprite.getU0()));
-                final int h = (int) (sprite.getHeight() / (sprite.getV1() - sprite.getV0()));
-                final int size = DefaultVertexFormat.BLOCK.getIntegerSize();
-                int uvOffset = 0;
-                for (final VertexFormatElement ee : DefaultVertexFormat.BLOCK.getElements()) {
-                    if (ee.getUsage() == VertexFormatElement.Usage.UV) {
-                        break;
+            final VertexFormat vertexFormat = DefaultVertexFormat.BLOCK;
+            final int size = vertexFormat.getIntegerSize();
+            final int index = this.getUvIndex(vertexFormat);
+            if (index != -1) {
+                this.entityModels.forEach(path -> {
+                    final BakedModel model = Minecraft.getInstance().getModelManager().getModel(path);
+                    if (model != Minecraft.getInstance().getModelManager().getMissingModel()) {
+                        this.recomputeUv(size, index, model);
                     }
-                    uvOffset += ee.getByteSize();
-                }
-                uvOffset /= 4;
-                for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
-                    final int[] data = quad.getVertices();
-                    for (int n = 0; n < 4; n++) {
-                        int iu = n * size + uvOffset;
-                        int iv = n * size + uvOffset + 1;
-                        data[iu] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[iu]) * w) / w);
-                        data[iv] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[iv]) * h) / h);
-                    }
-                }
-            });
+                });
+            }
         });
         modBus.addListener(this::setup);
         modBus.addListener(this::setupColors);
         modBus.addListener(this::setupModels);
+    }
+
+    private int getUvIndex(VertexFormat vertexFormat) {
+        int position = 0;
+        for (final VertexFormatElement ee : vertexFormat.getElements()) {
+            if (ee.getUsage() == VertexFormatElement.Usage.UV) {
+                if (position % 4 == 0) {
+                    return position / 4;
+                }
+                break;
+            }
+            position += ee.getByteSize();
+        }
+        return -1;
+    }
+
+    private void recomputeUv(final int stride, final int finalUvOffset, final BakedModel model) {
+        final TextureAtlasSprite sprite = model.getParticleIcon(EmptyModelData.INSTANCE);
+        final int w = (int) (sprite.getWidth() / (sprite.getU1() - sprite.getU0()));
+        final int h = (int) (sprite.getHeight() / (sprite.getV1() - sprite.getV0()));
+        for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
+            final int[] data = quad.getVertices();
+            for (int n = 0; n < 4; n++) {
+                int iu = n * stride + finalUvOffset;
+                int iv = n * stride + finalUvOffset + 1;
+                data[iu] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[iu]) * w) / w);
+                data[iv] = Float.floatToIntBits((float) Math.round(Float.intBitsToFloat(data[iv]) * h) / h);
+            }
+        }
     }
 
     private void setup(final FMLClientSetupEvent event) {
