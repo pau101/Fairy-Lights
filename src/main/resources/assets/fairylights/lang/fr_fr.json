@@ -1,0 +1,101 @@
+{
+    "itemGroup.fairylights": "Lumières Féériques",
+
+    "fairylights.config": "Configuration des Lumières Féériques",
+
+    "block.fairylights.fastener": "Attache de connexion",
+
+    "item.fairylights.hanging_lights": "Lumières suspendues",
+    "item.fairylights.garland": "Guirlande de vigne",
+    "item.fairylights.tinsel": "Guirlande de clinquant",
+
+    "item.fairylights.black_string": "Ficelle Noire",
+    "item.fairylights.white_string": "Ficelle blanche",
+    "item.fairyLights.twinkle": "Scintillements",
+
+    "item.fairylights.pennant_bunting": "Guirlande de fanion",
+
+    "item.fairylights.letter_bunting": "Guirlande de lettres",
+
+    "item.fairylights.triangle_pennant": "Fanion triangulaire",
+    "item.fairylights.spearhead_pennant": "Fanion Fer de lance",
+    "item.fairylights.swallowtail_pennant": "Fanion machaon",
+    "item.fairylights.square_pennant": "Fanion carré",
+
+    "block.fairylights.fairy_light": "Lumière féerique",
+    "block.fairylights.paper_lantern": "Lanterne de papier",
+    "block.fairylights.orb_lantern": "Lanterne orbe",
+    "block.fairylights.flower_light": "Lumière Fleur",
+    "block.fairylights.candle_lantern_light": "Lumière Bougie Lanterne",
+    "block.fairylights.oil_lantern_light": "Lanterne à huile",
+    "block.fairylights.jack_o_lantern": "Citrouille d'Halloween",
+    "block.fairylights.skull_light": "Crâne Lumière",
+    "block.fairylights.ghost_light": "Lumière fantôme",
+    "block.fairylights.spider_light": "Lumière araignée",
+    "block.fairylights.witch_light": "Lumière de sorcière",
+    "block.fairylights.snowflake_light": "Lumière flocon de neige",
+    "block.fairylights.heart_light": "Lumière coeur",
+    "block.fairylights.moon_light": "Lumière lune",
+    "block.fairylights.star_light": "Lumière étoile",
+    "block.fairylights.icicle_lights": "Lumières de glace",
+    "block.fairylights.meteor_light": "Lumière météore",
+    "block.fairylights.oil_lantern": "Lanterne à huile",
+    "block.fairylights.candle_lantern": "Bougie Lanterne",
+    "block.fairylights.incandescent_light": "Lumière incandescente",
+
+    "entity.fairylights.fastener": "Attache",
+
+    "fairylights.editLetteredConnection": "Définir le texte des banderoles",
+    "fairylights.editLetteredConnection.allowed_characters": "Caractères autorisés : %1$s",
+
+    "recipe.ingredient.tooltip": "§7%s",
+    "recipe.fairylights.ingredient.auxiliary.optional": "(Optionnel)",
+    "recipe.fairylights.twinkling_lights.glowstone": "Fait scintiller les lumières",
+    "recipe.fairylights.hangingLights.light": "Ajoutez plusieurs lumières pour personnaliser le motif",
+    "recipe.fairylights.pennantBunting.pennant": "Ajoutez plusieurs fanions pour personnaliser le motif",
+    "recipe.fairylights.hangingLights.string": "Ajouter un colorant blanc pour créer une ficelle blanche",
+
+    "format.fairylights.colored": "%2$s %1$s",
+    "format.fairylights.dyed_colored": "Teint en %1$s",
+    "format.fairylights.color_changing": "Changement de couleur : %1$s",
+    "format.fairylights.text": "Texte : %1$s",
+
+    "color.fairylights.black": "Noir",
+    "color.fairylights.red": "Rouge",
+    "color.fairylights.green": "Vert",
+    "color.fairylights.brown": "Marron",
+    "color.fairylights.blue": "Bleu",
+    "color.fairylights.purple": "Violet",
+    "color.fairylights.cyan": "Cyan",
+    "color.fairylights.light_gray": "Gris clair",
+    "color.fairylights.gray": "Gris",
+    "color.fairylights.pink": "Rose",
+    "color.fairylights.lime": "Vert clair",
+    "color.fairylights.yellow": "Jaune",
+    "color.fairylights.light_blue": "Bleu clair",
+    "color.fairylights.magenta": "Magenta",
+    "color.fairylights.orange": "Orange",
+    "color.fairylights.white": "Blanc",
+
+    "subtitles.block.fairylights.jingleBell": "Tintements de cloche",
+    "subtitles.block.fairylights.cord.connect": "Connection de cordon",
+    "subtitles.block.fairylights.cord.disconnect": "Déconnecter de cordon",
+    "subtitles.block.fairylights.cord.stretch": "Étirements de cordon",
+    "subtitles.block.fairylights.cord.snap": "Cordon qui lâche",
+    "subtitles.block.fairylights.feature.lightTurnOn": "Lumière allumée",
+    "subtitles.block.fairylights.feature.lightTurnOff": "Lumière éteinte",
+    "subtitles.block.fairylights.feature.colorChange": "Plocs de couleur",
+
+    "commands.jingler.open.success": "Ouvert avec succès %1$s",
+    "commands.jingler.open.failure.no_hanging_lights": "Aucune suspension sélectionnée",
+    "commands.jingler.open.failure.device_unavailable": "L'appareil %1$s n'est pas disponible, probablement utilisé par un autre programme",
+    "commands.jingler.open.failure.not_found": "Aucun appareil nommé %1$s",
+    "commands.jingler.close.success.single": "Connexion %1$s fermée avec succès",
+    "commands.jingler.close.success.multiple": "Connexions %1$s fermées avec succès",
+    "commands.jingler.close.failure": "Aucun appareil à fermer",
+    "commands.jingler.device.vendor": "Vendeur : %1$s",
+    "commands.jingler.device.description": "Description : %1$s",
+
+    "tutorial.fairylights.craft_hanging_lights.title": "Artisat luminaires suspendus",
+    "tutorial.fairylights.craft_hanging_lights.description": "Le livre de recettes peut aider"
+}
