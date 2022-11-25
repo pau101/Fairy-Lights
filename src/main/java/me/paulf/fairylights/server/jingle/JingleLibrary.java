@@ -10,9 +10,9 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class JingleLibrary {
     public static final String CHRISTMAS = "christmas";
@@ -45,7 +45,7 @@ public class JingleLibrary {
     }
 
     @Nullable
-    public Jingle getRandom(final Random rng, final int range) {
+    public Jingle getRandom(final RandomSource rng, final int range) {
         final RangeSet jingles = this.ranges.get(Math.min(range, MAX_RANGE));
         return jingles == null ? null : jingles.get(rng);
     }
@@ -64,7 +64,7 @@ public class JingleLibrary {
         }
 
         @Nullable
-        public Jingle get(final Random rng) {
+        public Jingle get(final RandomSource rng) {
             if (this.jingles.isEmpty()) {
                 return null;
             }

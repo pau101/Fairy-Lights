@@ -5,7 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -528,7 +527,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
     public Component toTextComponent() {
         final String value = this.value;
         if (value.length() == 0) {
-            return TextComponent.EMPTY;
+            return Component.empty();
         }
         MutableComponent text = null;
         final Style[] styling = this.styling;
@@ -537,7 +536,7 @@ public final class StyledString implements Comparable<StyledString>, CharSequenc
         for (int i = 0; ; ) {
             final Style style = i < value.length() ? styling[i] : null;
             if (!currentStyle.equals(style)) {
-                final MutableComponent t = new TextComponent(bob.toString());
+                final MutableComponent t = Component.literal(bob.toString());
                 t.withStyle(currentStyle.getColor());
                 if (currentStyle.isObfuscated()) t.withStyle(ChatFormatting.OBFUSCATED);
                 if (currentStyle.isBold()) t.withStyle(ChatFormatting.BOLD);

@@ -1,5 +1,6 @@
 package me.paulf.fairylights.client;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,9 +15,9 @@ import me.paulf.fairylights.server.fastener.CollectFastenersEvent;
 import me.paulf.fairylights.server.fastener.Fastener;
 import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.jingle.Jingle;
-import me.paulf.fairylights.util.Catenary;
 import me.paulf.fairylights.util.Curve;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -38,8 +39,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.DrawSelectionEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -62,20 +63,27 @@ public final class ClientEventHandler {
         return null;
     }
 
-    @SubscribeEvent
-    public void gatherOverlayText(final RenderGameOverlayEvent.Text event) {
+    public void renderOverlay(final ForgeGui gui, final PoseStack poseStack, final float partialTick, final int screenWidth, final int screenHeight) {
         final Connection conn = getHitConnection();
         if (!(conn instanceof HangingLightsConnection)) {
             return;
         }
         final Jingle jingle = ((HangingLightsConnection) conn).getPlayingJingle();
-        if (jingle != null) {
-            final List<String> lines = event.getRight();
-            if (lines.size() > 0) {
-                lines.add("");
+        if (jingle == null) {
+            return;
+        }
+        final List<String> lines = List.of(
+            "Song: " + jingle.getTitle(),
+            "Artist: " + jingle.getArtist());
+        for (int i = 0; i < lines.size(); i++) {
+            final String line = lines.get(i);
+            if (!Strings.isNullOrEmpty(line)) {
+                final int lineHeight = gui.getFont().lineHeight;
+                final int textWidth = gui.getFont().width(line);
+                final int y = 2 + lineHeight * i;
+                GuiComponent.fill(poseStack, 1, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x90505050);
+                gui.getFont().draw(poseStack, line, 2, y, 0xe0e0e0);
             }
-            lines.add("Song: " + jingle.getTitle());
-            lines.add("Artist: " + jingle.getArtist());
         }
     }
 
@@ -159,12 +167,12 @@ public final class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void drawBlockHighlight(final DrawSelectionEvent.HighlightEntity event) {
+    public void drawBlockHighlight(final RenderHighlightEvent.Entity event) {
         final Entity entity = event.getTarget().getEntity();
         final Vec3 pos = event.getCamera().getPosition();
         final MultiBufferSource buf = event.getMultiBufferSource();
         if (entity instanceof FenceFastenerEntity) {
-            this.drawFenceFastenerHighlight((FenceFastenerEntity) entity, event.getPoseStack(), buf.getBuffer(RenderType.lines()), event.getPartialTicks(), pos.x, pos.y, pos.z);
+            this.drawFenceFastenerHighlight((FenceFastenerEntity) entity, event.getPoseStack(), buf.getBuffer(RenderType.lines()), event.getPartialTick(), pos.x, pos.y, pos.z);
         } else if (entity instanceof final HitConnection hit) {
             if (hit.result.intersection.getFeatureType() == Connection.CORD_FEATURE) {
                 final PoseStack matrix = event.getPoseStack();

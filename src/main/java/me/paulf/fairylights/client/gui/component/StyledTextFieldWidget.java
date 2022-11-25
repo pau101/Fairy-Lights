@@ -12,14 +12,12 @@ import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
@@ -929,12 +927,12 @@ public final class StyledTextFieldWidget extends AbstractWidget {
 
     @Override
     protected MutableComponent createNarrationMessage() {
-        return new TranslatableComponent("gui.narrate.editBox", this.getMessage(), this.value.toUnstyledString());
+        return Component.translatable("gui.narrate.editBox", this.getMessage(), this.value.toUnstyledString());
     }
 
     @Override
     public void updateNarration(NarrationElementOutput output) {
-        output.add(NarratedElementType.TITLE, new TranslatableComponent("narration.edit_box", this.value.toUnstyledString()));
+        output.add(NarratedElementType.TITLE, Component.translatable("narration.edit_box", this.value.toUnstyledString()));
     }
 
     @FunctionalInterface

@@ -13,14 +13,13 @@ import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
@@ -39,8 +38,8 @@ public class ClippyController {
     private State state = new NoProgressState();
 
     public void init(final IEventBus modBus) {
-        MinecraftForge.EVENT_BUS.addListener((final WorldEvent.Load event) -> {
-            if (event.getWorld() instanceof ClientLevel) {
+        MinecraftForge.EVENT_BUS.addListener((final LevelEvent.Load event) -> {
+            if (event.getLevel() instanceof ClientLevel) {
                 this.reload();
             }
         });
@@ -55,7 +54,7 @@ public class ClippyController {
                 this.reload();
             }
         });
-        MinecraftForge.EVENT_BUS.<ClientPlayerNetworkEvent.LoggedInEvent>addListener(e -> {
+        MinecraftForge.EVENT_BUS.<ClientPlayerNetworkEvent.LoggingIn>addListener(e -> {
             this.reload();
             this.state.tick(e.getPlayer(), this);
         });
@@ -102,8 +101,8 @@ public class ClippyController {
 
         CraftHangingLightsState() {
             this.balloon = new Balloon(new LazyItemStack(FLItems.HANGING_LIGHTS, Item::getDefaultInstance),
-                new TranslatableComponent("tutorial.fairylights.craft_hanging_lights.title"),
-                new TranslatableComponent("tutorial.fairylights.craft_hanging_lights.description")
+                Component.translatable("tutorial.fairylights.craft_hanging_lights.title"),
+                Component.translatable("tutorial.fairylights.craft_hanging_lights.description")
             );
         }
 

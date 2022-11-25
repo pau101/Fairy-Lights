@@ -1,8 +1,6 @@
 package me.paulf.fairylights.server.string;
 
-import net.minecraftforge.registries.ForgeRegistryEntry;
-
-public class StringType extends ForgeRegistryEntry<StringType> {
+public class StringType {
     private final int color;
 
     public StringType(final int color) {

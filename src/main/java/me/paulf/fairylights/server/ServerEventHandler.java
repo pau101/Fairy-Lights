@@ -41,9 +41,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.NoteBlockEvent;
+import net.minecraftforge.event.level.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,10 +51,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public final class ServerEventHandler {
 
     @SubscribeEvent
-    public void onEntityJoinWorld(final EntityJoinWorldEvent event) {
+    public void onEntityJoinWorld(final EntityJoinLevelEvent event) {
         final Entity entity = event.getEntity();
         if (entity instanceof Player || entity instanceof FenceFastenerEntity) {
-            entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.setWorld(event.getWorld()));
+            entity.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(f -> f.setWorld(event.getLevel()));
         }
     }
 
@@ -89,7 +89,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onNoteBlockPlay(final NoteBlockEvent.Play event) {
-        final Level world = (Level) event.getWorld();
+        final Level world = (Level) event.getLevel();
         final BlockPos pos = event.getPos();
         final Block noteBlock = world.getBlockState(pos).getBlock();
         final BlockState below = world.getBlockState(pos.below());
@@ -109,14 +109,14 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onRightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
-        final Level world = event.getWorld();
+        final Level world = event.getLevel();
         final BlockPos pos = event.getPos();
         if (!(world.getBlockState(pos).getBlock() instanceof FenceBlock)) {
             return;
         }
         final ItemStack stack = event.getItemStack();
         boolean checkHanging = stack.getItem() == Items.LEAD;
-        final Player player = event.getPlayer();
+        final Player player = event.getEntity();
         if (event.getHand() == InteractionHand.MAIN_HAND) {
             final ItemStack offhandStack = player.getOffhandItem();
             if (offhandStack.getItem() instanceof ConnectionItem) {

@@ -14,9 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,13 +32,13 @@ public final class JinglerCommand {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(new TranslatableComponent("commands.jingler.open.failure.no_hanging_lights"));
+    private static final SimpleCommandExceptionType NO_HANGING_LIGHTS = new SimpleCommandExceptionType(Component.translatable("commands.jingler.open.failure.no_hanging_lights"));
 
-    private static final DynamicCommandExceptionType DEVICE_UNAVAILABLE = new DynamicCommandExceptionType(name -> new TranslatableComponent("commands.jingler.open.failure.device_unavailable", name));
+    private static final DynamicCommandExceptionType DEVICE_UNAVAILABLE = new DynamicCommandExceptionType(name -> Component.translatable("commands.jingler.open.failure.device_unavailable", name));
 
-    private static final DynamicCommandExceptionType DEVICE_NOT_FOUND = new DynamicCommandExceptionType(name -> new TranslatableComponent("commands.jingler.open.failure.not_found", name));
+    private static final DynamicCommandExceptionType DEVICE_NOT_FOUND = new DynamicCommandExceptionType(name -> Component.translatable("commands.jingler.open.failure.not_found", name));
 
-    private static final SimpleCommandExceptionType CLOSE_FAILURE = new SimpleCommandExceptionType(new TranslatableComponent("commands.jingler.close.failure"));
+    private static final SimpleCommandExceptionType CLOSE_FAILURE = new SimpleCommandExceptionType(Component.translatable("commands.jingler.close.failure"));
 
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("jingler")
@@ -69,7 +67,7 @@ public final class JinglerCommand {
                         }
                     }
                     transmitter.setReceiver(new MidiJingler((HangingLightsConnection) conn));
-                    ctx.getSource().sendSuccess(new TranslatableComponent("commands.jingler.open.success", name), false);
+                    ctx.getSource().sendSuccess(Component.translatable("commands.jingler.open.success", name), false);
                     USED_COMMAND.compareAndSet(false, true);
                     return 1;
                 })))
@@ -85,7 +83,7 @@ public final class JinglerCommand {
                     if (closed == 0) {
                         throw CLOSE_FAILURE.create();
                     }
-                    ctx.getSource().sendSuccess(new TranslatableComponent(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
+                    ctx.getSource().sendSuccess(Component.translatable(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
                     return closed;
                 })
             )));
@@ -138,10 +136,9 @@ public final class JinglerCommand {
 
     private static Component createDeviceText(final MidiDevice device) {
         final MidiDevice.Info info = device.getDeviceInfo();
-        return new TextComponent("")
-            .append(new TranslatableComponent("commands.jingler.device.vendor", new TextComponent(info.getVendor()).withStyle(ChatFormatting.GOLD)))
+        return Component.translatable("commands.jingler.device.vendor", Component.literal(info.getVendor()).withStyle(ChatFormatting.GOLD))
             .append("\n")
-            .append(new TranslatableComponent("commands.jingler.device.description", new TextComponent(info.getDescription()).withStyle(ChatFormatting.GOLD)));
+            .append(Component.translatable("commands.jingler.device.description", Component.literal(info.getDescription()).withStyle(ChatFormatting.GOLD)));
     }
 
     public static void register(final IEventBus bus) {
@@ -164,8 +161,8 @@ public final class JinglerCommand {
                 e.getFontRenderer()
             );
         });*/
-        bus.<WorldEvent.Unload>addListener(e -> {
-            if (e.getWorld().isClientSide() && USED_COMMAND.compareAndSet(true, false)) {
+        bus.<LevelEvent.Unload>addListener(e -> {
+            if (e.getLevel().isClientSide() && USED_COMMAND.compareAndSet(true, false)) {
                 getDevices().forEach(JinglerCommand::close);
             }
         });

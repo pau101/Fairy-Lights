@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -40,7 +39,7 @@ public class LightItem extends BlockItem {
         final CompoundTag tag = stack.getTag();
         if (tag != null) {
             if (tag.getBoolean("twinkle")) {
-                tooltip.add(new TranslatableComponent("item.fairyLights.twinkle").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+                tooltip.add(Component.translatable("item.fairyLights.twinkle").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             }
             if (tag.contains("colors", Tag.TAG_LIST)) {
                 final ListTag colors = tag.getList("colors", Tag.TAG_INT);

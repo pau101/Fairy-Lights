@@ -264,7 +264,7 @@ public abstract class AbstractFastener<F extends FastenerAccessor> implements Fa
             final Connection connection = connectionEntry.getValue();
             final CompoundTag connectionCompound = new CompoundTag();
             connectionCompound.put("connection", connection.serialize());
-            connectionCompound.putString("type", RegistryObjects.getName(connection.getType()).toString());
+            connectionCompound.putString("type", RegistryObjects.getName(FairyLights.CONNECTION_TYPES.get(), connection.getType()).toString());
             connectionCompound.putUUID("uuid", uuid);
             outgoing.add(connectionCompound);
         }

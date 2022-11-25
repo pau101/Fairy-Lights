@@ -11,8 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
@@ -34,14 +32,14 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
     public void appendHoverText(final ItemStack stack, @Nullable final Level world, final List<Component> tooltip, final TooltipFlag flag) {
         final CompoundTag compound = stack.getTag();
         if (compound != null) {
-            final ResourceLocation name = RegistryObjects.getName(getString(compound));
-            tooltip.add(new TranslatableComponent("item." + name.getNamespace() + "." + name.getPath()).withStyle(ChatFormatting.GRAY));
+            final ResourceLocation name = RegistryObjects.getName(FairyLights.STRING_TYPES.get(), getString(compound));
+            tooltip.add(Component.translatable("item." + name.getNamespace() + "." + name.getPath()).withStyle(ChatFormatting.GRAY));
         }
         if (compound != null && compound.contains("pattern", Tag.TAG_LIST)) {
             final ListTag tagList = compound.getList("pattern", Tag.TAG_COMPOUND);
             final int tagCount = tagList.size();
             if (tagCount > 0) {
-                tooltip.add(TextComponent.EMPTY);
+                tooltip.add(Component.empty());
             }
             for (int i = 0; i < tagCount; i++) {
                 final ItemStack lightStack = ItemStack.of(tagList.getCompound(i));
@@ -53,7 +51,7 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
 
     @Override
     public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> subItems) {
-        if (this.allowdedIn(tab)) {
+        if (this.allowedIn(tab)) {
             for (final DyeColor color : DyeColor.values()) {
                 subItems.add(FLCraftingRecipes.makeHangingLights(new ItemStack(this), color));
             }
@@ -65,6 +63,6 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
     }
 
     public static void setString(final CompoundTag tag, final StringType string) {
-        tag.putString("string", RegistryObjects.getName(string).toString());
+        tag.putString("string", RegistryObjects.getName(FairyLights.STRING_TYPES.get(), string).toString());
     }
 }

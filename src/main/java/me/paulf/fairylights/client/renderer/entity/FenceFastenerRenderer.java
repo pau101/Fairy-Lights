@@ -26,7 +26,6 @@ public final class FenceFastenerRenderer extends EntityRenderer<FenceFastenerEnt
         this.renderer = new FastenerRenderer(context::bakeLayer);
     }
 
-
     @Override
     protected int getBlockLightLevel(final FenceFastenerEntity entity, final BlockPos delta) {
         return entity.level.getBrightness(LightLayer.BLOCK, entity.blockPosition());

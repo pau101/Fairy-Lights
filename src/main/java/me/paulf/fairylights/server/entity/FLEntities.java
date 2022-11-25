@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 public final class FLEntities {
     private FLEntities() {}
 
-    public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITIES, FairyLights.ID);
+    public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, FairyLights.ID);
 
     public static final RegistryObject<EntityType<FenceFastenerEntity>> FASTENER = REG.register("fastener", () ->
         EntityType.Builder.<FenceFastenerEntity>of(FenceFastenerEntity::new, MobCategory.MISC)

@@ -3,7 +3,6 @@ package me.paulf.fairylights.server.item;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -36,12 +35,12 @@ public final class DyeableItem {
                 closestDist = dist;
             }
         }
-        final Component colorName = new TranslatableComponent("color.fairylights." + closest.getName());
-        return closestDist == 0 ? colorName : new TranslatableComponent("format.fairylights.dyed_colored", colorName);
+        final Component colorName = Component.translatable("color.fairylights." + closest.getName());
+        return closestDist == 0 ? colorName : Component.translatable("format.fairylights.dyed_colored", colorName);
     }
 
     public static Component getDisplayName(final ItemStack stack, final Component name) {
-        return new TranslatableComponent("format.fairylights.colored", getColorName(getColor(stack)), name);
+        return Component.translatable("format.fairylights.colored", getColorName(getColor(stack)), name);
     }
 
     public static int getColor(final DyeColor color) {

@@ -25,9 +25,9 @@ import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -43,8 +43,8 @@ public final class DataGatherer {
     @SubscribeEvent
     public static void onGatherData(final GatherDataEvent event) {
         final DataGenerator gen = event.getGenerator();
-        gen.addProvider(new RecipeGenerator(gen));
-        gen.addProvider(new LootTableGenerator(gen));
+        gen.addProvider(event.includeServer(), new RecipeGenerator(gen));
+        gen.addProvider(event.includeServer(), new LootTableGenerator(gen));
     }
 
     static class RecipeGenerator extends RecipeProvider {

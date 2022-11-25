@@ -19,7 +19,7 @@ public class PennantItem extends Item {
 
     @Override
     public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> subItems) {
-        if (this.allowdedIn(tab)) {
+        if (this.allowedIn(tab)) {
             for (final DyeColor dye : DyeColor.values()) {
                 subItems.add(DyeableItem.setColor(new ItemStack(this), dye));
             }

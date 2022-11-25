@@ -25,9 +25,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.pipeline.LightUtil;
 
 import java.util.function.Function;
 
@@ -112,7 +112,7 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         final Vector3f v = new Vector3f(0.0F, 0.0F, side);
         v.transform(m);
         // TODO: correct entity diffuse
-        final float brightness = LightUtil.diffuseLight(v.x(), v.y(), v.z());
+        final float brightness = Mth.diffuseLight(v.x(), v.y(), v.z());
         final int styleColor = MoreObjects.firstNonNull(style.getColor().getColor(), 0xFFFFFF);
         final int r = (int) ((styleColor >> 16 & 0xFF) * brightness);
         final int g = (int) ((styleColor >> 8 & 0xFF) * brightness);

@@ -4,7 +4,6 @@ import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -22,7 +21,7 @@ public final class Utils {
     }
 
     private static Component formatRecipeTooltipValue(final String value) {
-        return new TranslatableComponent("recipe.ingredient.tooltip", value);
+        return Component.translatable("recipe.ingredient.tooltip", value);
     }
 
     public static boolean impliesNbt(@Nullable Tag antecedent, @Nullable Tag consequent) {

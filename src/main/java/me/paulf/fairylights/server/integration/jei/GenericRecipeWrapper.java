@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
@@ -104,6 +105,11 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
 
     private void forOutputMatches(final BiConsumer<ItemStack, ItemStack> outputConsumer) {
         final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
+            @Override
+            public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+                return ItemStack.EMPTY;
+            }
+
             @Override
             public boolean stillValid(Player player) {
                 return true;
@@ -198,6 +204,11 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
     private Input getInputsForIngredient(final ItemStack ingredient) {
         final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
+            public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+                return ItemStack.EMPTY;
+            }
+
+            @Override
             public boolean stillValid(Player player) {
                 return true;
             }
@@ -235,6 +246,11 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
     public List<ItemStack> getOutput(final List<List<ItemStack>> inputs) {
         final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
+            public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+                return ItemStack.EMPTY;
+            }
+
+            @Override
             public boolean stillValid(Player player) {
                 return true;
             }
@@ -255,10 +271,10 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
                 outputs.add(this.recipe.assemble(crafting));
             } else {
                 LogManager.getLogger().debug("No recipe match for {} using inputs {}",
-                    this.recipe.getOutput().getItem().getRegistryName(),
+                    ForgeRegistries.ITEMS.getKey(this.recipe.getOutput().getItem()),
                     IntStream.range(0, crafting.getWidth() * crafting.getHeight())
                         .mapToObj(crafting::getItem)
-                        .map(s -> Objects.toString(s.getItem().getRegistryName()))
+                        .map(s -> Objects.toString(ForgeRegistries.ITEMS.getKey(s.getItem())))
                         .collect(Collectors.joining(", "))
                 );
             }

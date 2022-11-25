@@ -55,8 +55,8 @@ public class CopyColorRecipe extends CustomRecipe {
         final NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
         for (int i = 0; i < remaining.size(); i++) {
             final ItemStack stack = inv.getItem(i);
-            if (stack.hasContainerItem()) {
-                remaining.set(i, stack.getContainerItem());
+            if (stack.hasCraftingRemainingItem()) {
+                remaining.set(i, stack.getCraftingRemainingItem());
             } else if (original.isEmpty() && !stack.isEmpty() && stack.is(FLCraftingRecipes.DYEABLE)) {
                 final ItemStack rem = stack.copy();
                 rem.setCount(1);

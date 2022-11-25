@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,7 +42,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class LightBlock extends FaceAttachedHorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -53,7 +53,7 @@ public class LightBlock extends FaceAttachedHorizontalDirectionalBlock implement
     private final LightVariant<?> variant;
 
     public LightBlock(final Properties properties, final LightVariant<?> variant) {
-        super(properties.noDrops());
+        super(properties);
         this.variant = variant;
         final AABB bb = this.variant.getBounds();
         final double w = Math.max(bb.getXsize(), bb.getZsize());
@@ -170,7 +170,7 @@ public class LightBlock extends FaceAttachedHorizontalDirectionalBlock implement
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(final BlockState state, final Level world, final BlockPos pos, final Random rng) {
+    public void animateTick(final BlockState state, final Level world, final BlockPos pos, final RandomSource rng) {
         super.animateTick(state, world, pos, rng);
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof LightBlockEntity) {

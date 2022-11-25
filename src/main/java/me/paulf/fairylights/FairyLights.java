@@ -66,11 +66,9 @@ public final class FairyLights {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener((NewRegistryEvent event) -> {
             CONNECTION_TYPES = event.create(new RegistryBuilder<ConnectionType<?>>()
-                .setType((Class<ConnectionType<?>>) (Class<?>) ConnectionType.class)
                 .setName(CONNECTION_TYPE)
                 .disableSaving());
             STRING_TYPES = event.create(new RegistryBuilder<StringType>()
-                .setType(StringType.class)
                 .setName(STRING_TYPE)
                 .setDefaultKey(new ResourceLocation(ID, "black_string"))
                 .disableSaving());

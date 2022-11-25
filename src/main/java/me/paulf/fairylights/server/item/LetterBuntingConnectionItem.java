@@ -7,7 +7,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,14 +30,14 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
             final CompoundTag text = compound.getCompound("text");
             final StyledString s = StyledString.deserialize(text);
             if (s.length() > 0) {
-                tooltip.add(new TranslatableComponent("format.fairylights.text", s.toTextComponent()).withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("format.fairylights.text", s.toTextComponent()).withStyle(ChatFormatting.GRAY));
             }
         }
     }
 
     @Override
     public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> items) {
-        if (this.allowdedIn(tab)) {
+        if (this.allowedIn(tab)) {
             final ItemStack bunting = new ItemStack(this, 1);
             bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
             items.add(bunting);

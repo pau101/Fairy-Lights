@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 public final class FLBlockEntities {
     private FLBlockEntities() {}
 
-    public static final DeferredRegister<BlockEntityType<?>> REG = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, FairyLights.ID);
+    public static final DeferredRegister<BlockEntityType<?>> REG = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, FairyLights.ID);
 
     public static final RegistryObject<BlockEntityType<FastenerBlockEntity>> FASTENER = REG.register("fastener", () -> BlockEntityType.Builder.of(FastenerBlockEntity::new, FLBlocks.FASTENER.get()).build(null));
 

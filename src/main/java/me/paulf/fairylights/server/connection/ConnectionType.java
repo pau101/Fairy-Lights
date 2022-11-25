@@ -4,12 +4,11 @@ import me.paulf.fairylights.server.fastener.Fastener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class ConnectionType<T extends Connection> extends ForgeRegistryEntry<ConnectionType<?>> {
+public class ConnectionType<T extends Connection> {
     private final Factory<T> factory;
 
     private final Supplier<? extends Item> item;

@@ -85,16 +85,6 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
         return 1;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public float getBrightness() {
-        final BlockPos pos = this.getPos();
-        if (this.level.isLoaded(pos)) {
-            return this.level.getBrightness(pos);
-        }
-        return 0;
-    }
-
     @Override
     public boolean shouldRenderAtSqrDistance(final double distance) {
         return distance < 4096;

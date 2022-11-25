@@ -37,7 +37,6 @@ import me.paulf.fairylights.client.renderer.block.entity.PennantBuntingRenderer;
 import me.paulf.fairylights.client.renderer.entity.FenceFastenerRenderer;
 import me.paulf.fairylights.client.tutorial.ClippyController;
 import me.paulf.fairylights.server.ServerProxy;
-import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.block.entity.FLBlockEntities;
 import me.paulf.fairylights.server.entity.FLEntities;
 import me.paulf.fairylights.server.feature.light.ColorChangingBehavior;
@@ -49,8 +48,6 @@ import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -63,22 +60,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import java.util.Random;
 
 public final class ClientProxy extends ServerProxy {
     @SuppressWarnings("deprecation")
@@ -97,7 +92,11 @@ public final class ClientProxy extends ServerProxy {
         super.init(modBus);
         new ClippyController().init(modBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, FLClientConfig.SPEC);
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        ClientEventHandler clientEventHandler = new ClientEventHandler();
+        MinecraftForge.EVENT_BUS.register(clientEventHandler);
+        modBus.<RegisterGuiOverlaysEvent>addListener(e -> {
+            e.registerBelowAll("overlay", clientEventHandler::renderOverlay);
+        });
         MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) -> JinglerCommand.register(e.getDispatcher()));
         JinglerCommand.register(MinecraftForge.EVENT_BUS);
         modBus.<TextureStitchEvent.Pre>addListener(e -> {
@@ -106,7 +105,7 @@ public final class ClientProxy extends ServerProxy {
             }
         });
         // Undo sprite uv shrink
-        modBus.<ModelBakeEvent>addListener(e -> {
+        modBus.<ModelEvent.BakingCompleted>addListener(e -> {
             final VertexFormat vertexFormat = DefaultVertexFormat.BLOCK;
             final int size = vertexFormat.getIntegerSize();
             final int index = this.getUvIndex(vertexFormat);
@@ -120,6 +119,7 @@ public final class ClientProxy extends ServerProxy {
             }
         });
         modBus.addListener(this::setup);
+        modBus.addListener(this::setupLayerDefinitions);
         modBus.addListener(this::setupColors);
         modBus.addListener(this::setupModels);
     }
@@ -139,10 +139,10 @@ public final class ClientProxy extends ServerProxy {
     }
 
     private void recomputeUv(final int stride, final int finalUvOffset, final BakedModel model) {
-        final TextureAtlasSprite sprite = model.getParticleIcon(EmptyModelData.INSTANCE);
+        final TextureAtlasSprite sprite = model.getParticleIcon(ModelData.EMPTY);
         final int w = (int) (sprite.getWidth() / (sprite.getU1() - sprite.getU0()));
         final int h = (int) (sprite.getHeight() / (sprite.getV1() - sprite.getV0()));
-        for (final BakedQuad quad : model.getQuads(null, null, new Random(42L), EmptyModelData.INSTANCE)) {
+        for (final BakedQuad quad : model.getQuads(null, null, RandomSource.create(42L), ModelData.EMPTY, RenderType.cutoutMipped())) {
             final int[] data = quad.getVertices();
             for (int n = 0; n < 4; n++) {
                 int iu = n * stride + finalUvOffset;
@@ -157,38 +157,6 @@ public final class ClientProxy extends ServerProxy {
         BlockEntityRenderers.register(FLBlockEntities.FASTENER.get(), context -> new FastenerBlockEntityRenderer(context, ServerProxy.buildBlockView()));
         BlockEntityRenderers.register(FLBlockEntities.LIGHT.get(), LightBlockEntityRenderer::new);
         EntityRenderers.register(FLEntities.FASTENER.get(), FenceFastenerRenderer::new);
-        ItemBlockRenderTypes.setRenderLayer(FLBlocks.FASTENER.get(), RenderType.cutoutMipped());
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.BOW, BowModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.GARLAND_RINGS, GarlandVineRenderer.RingsModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.TINSEL_STRIP, GarlandTinselRenderer.StripModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.FAIRY_LIGHT, FairyLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.PAPER_LANTERN, PaperLanternModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.ORB_LANTERN, OrbLanternModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.FLOWER_LIGHT, FlowerLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.CANDLE_LANTERN_LIGHT, ColorCandleLanternModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.OIL_LANTERN_LIGHT, ColorOilLanternModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.JACK_O_LANTERN, JackOLanternLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.SKULL_LIGHT, SkullLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.GHOST_LIGHT, GhostLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.SPIDER_LIGHT, SpiderLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.WITCH_LIGHT, WitchLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.SNOWFLAKE_LIGHT, SnowflakeLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.HEART_LIGHT, HeartLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.MOON_LIGHT, MoonLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.STAR_LIGHT, StarLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_1, () -> IcicleLightsModel.createLayer(1));
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_2, () -> IcicleLightsModel.createLayer(2));
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_3, () -> IcicleLightsModel.createLayer(3));
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_4, () -> IcicleLightsModel.createLayer(4));
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.METEOR_LIGHT, MeteorLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.OIL_LANTERN, OilLanternModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.CANDLE_LANTERN, CandleLanternModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.INCANDESCENT_LIGHT, IncandescentLightModel::createLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.LETTER_WIRE, LetterBuntingRenderer::wireLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.PENNANT_WIRE, PennantBuntingRenderer::wireLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.TINSEL_WIRE, GarlandTinselRenderer::wireLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.VINE_WIRE, GarlandVineRenderer::wireLayer);
-        ForgeHooksClient.registerLayerDefinition(FLModelLayers.LIGHTS_WIRE, HangingLightsRenderer::wireLayer);
         /*final LightRenderer r = new LightRenderer();
         final StringBuilder bob = new StringBuilder();
         FLItems.lights().forEach(l -> {
@@ -199,14 +167,47 @@ public final class ClientProxy extends ServerProxy {
         LogManager.getLogger().debug("waldo {}", bob);*/
     }
 
-    private void setupModels(final ModelRegistryEvent event) {
-        ForgeModelBakery.addSpecialModel(FenceFastenerRenderer.MODEL);
-        this.entityModels.forEach(ForgeModelBakery::addSpecialModel);
+    private void setupLayerDefinitions(final EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(FLModelLayers.BOW, BowModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.GARLAND_RINGS, GarlandVineRenderer.RingsModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.TINSEL_STRIP, GarlandTinselRenderer.StripModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.FAIRY_LIGHT, FairyLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.PAPER_LANTERN, PaperLanternModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.ORB_LANTERN, OrbLanternModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.FLOWER_LIGHT, FlowerLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.CANDLE_LANTERN_LIGHT, ColorCandleLanternModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.OIL_LANTERN_LIGHT, ColorOilLanternModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.JACK_O_LANTERN, JackOLanternLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.SKULL_LIGHT, SkullLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.GHOST_LIGHT, GhostLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.SPIDER_LIGHT, SpiderLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.WITCH_LIGHT, WitchLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.SNOWFLAKE_LIGHT, SnowflakeLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.HEART_LIGHT, HeartLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.MOON_LIGHT, MoonLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.STAR_LIGHT, StarLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_1, () -> IcicleLightsModel.createLayer(1));
+        event.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_2, () -> IcicleLightsModel.createLayer(2));
+        event.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_3, () -> IcicleLightsModel.createLayer(3));
+        event.registerLayerDefinition(FLModelLayers.ICICLE_LIGHTS_4, () -> IcicleLightsModel.createLayer(4));
+        event.registerLayerDefinition(FLModelLayers.METEOR_LIGHT, MeteorLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.OIL_LANTERN, OilLanternModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.CANDLE_LANTERN, CandleLanternModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.INCANDESCENT_LIGHT, IncandescentLightModel::createLayer);
+        event.registerLayerDefinition(FLModelLayers.LETTER_WIRE, LetterBuntingRenderer::wireLayer);
+        event.registerLayerDefinition(FLModelLayers.PENNANT_WIRE, PennantBuntingRenderer::wireLayer);
+        event.registerLayerDefinition(FLModelLayers.TINSEL_WIRE, GarlandTinselRenderer::wireLayer);
+        event.registerLayerDefinition(FLModelLayers.VINE_WIRE, GarlandVineRenderer::wireLayer);
+        event.registerLayerDefinition(FLModelLayers.LIGHTS_WIRE, HangingLightsRenderer::wireLayer);
     }
 
-    private void setupColors(final ColorHandlerEvent.Item event) {
-        final ItemColors colors = event.getItemColors();
-        colors.register((stack, index) -> {
+    private void setupModels(final ModelEvent.RegisterAdditional event) {
+        event.register(FenceFastenerRenderer.MODEL);
+        this.entityModels.forEach(event::register);
+    }
+
+    private void setupColors(final RegisterColorHandlersEvent.Item event) {
+        event.register((stack, index) -> {
             if (index == 1) {
                 if (ColorChangingBehavior.exists(stack)) {
                     return ColorChangingBehavior.animate(stack);
@@ -233,7 +234,7 @@ public final class ClientProxy extends ServerProxy {
             FLItems.ICICLE_LIGHTS.get(),
             FLItems.METEOR_LIGHT.get()
         );
-        colors.register((stack, index) -> {
+        event.register((stack, index) -> {
             final CompoundTag tag = stack.getTag();
             if (index == 0) {
                 if (tag != null) {
@@ -259,8 +260,8 @@ public final class ClientProxy extends ServerProxy {
             }
             return 0xFFD584;
         }, FLItems.HANGING_LIGHTS.get());
-        colors.register((stack, index) -> index == 0 ? DyeableItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());
-        colors.register((stack, index) -> {
+        event.register((stack, index) -> index == 0 ? DyeableItem.getColor(stack) : 0xFFFFFFFF, FLItems.TINSEL.get());
+        event.register((stack, index) -> {
             if (index == 0) {
                 return 0xFFFFFFFF;
             }
@@ -274,11 +275,11 @@ public final class ClientProxy extends ServerProxy {
             }
             return 0xFFFFFFFF;
         }, FLItems.PENNANT_BUNTING.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.TRIANGLE_PENNANT.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.SPEARHEAD_PENNANT.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.get());
-        colors.register(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.get());
-        colors.register((stack, index) -> {
+        event.register(ClientProxy::secondLayerColor, FLItems.TRIANGLE_PENNANT.get());
+        event.register(ClientProxy::secondLayerColor, FLItems.SPEARHEAD_PENNANT.get());
+        event.register(ClientProxy::secondLayerColor, FLItems.SWALLOWTAIL_PENNANT.get());
+        event.register(ClientProxy::secondLayerColor, FLItems.SQUARE_PENNANT.get());
+        event.register((stack, index) -> {
             final CompoundTag tag = stack.getTag();
             if (index > 0 && tag != null) {
                 final StyledString str = StyledString.deserialize(tag.getCompound("text"));

@@ -19,7 +19,7 @@ public final class TinselConnectionItem extends ConnectionItem {
 
     @Override
     public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> items) {
-        if (this.allowdedIn(tab)) {
+        if (this.allowedIn(tab)) {
             for (final DyeColor color : DyeColor.values()) {
                 items.add(DyeableItem.setColor(new ItemStack(this), color));
             }
