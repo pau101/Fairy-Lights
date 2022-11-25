@@ -212,6 +212,27 @@ public final class DataGatherer {
 
         @Override
         protected void addTables() {
+            this.add(FLBlocks.FASTENER.get(), noDrop());
+            this.add(FLBlocks.FAIRY_LIGHT.get(), noDrop());
+            this.add(FLBlocks.PAPER_LANTERN.get(), noDrop());
+            this.add(FLBlocks.ORB_LANTERN.get(), noDrop());
+            this.add(FLBlocks.FLOWER_LIGHT.get(), noDrop());
+            this.add(FLBlocks.CANDLE_LANTERN_LIGHT.get(), noDrop());
+            this.add(FLBlocks.OIL_LANTERN_LIGHT.get(), noDrop());
+            this.add(FLBlocks.JACK_O_LANTERN.get(), noDrop());
+            this.add(FLBlocks.SKULL_LIGHT.get(), noDrop());
+            this.add(FLBlocks.GHOST_LIGHT.get(), noDrop());
+            this.add(FLBlocks.SPIDER_LIGHT.get(), noDrop());
+            this.add(FLBlocks.WITCH_LIGHT.get(), noDrop());
+            this.add(FLBlocks.SNOWFLAKE_LIGHT.get(), noDrop());
+            this.add(FLBlocks.HEART_LIGHT.get(), noDrop());
+            this.add(FLBlocks.MOON_LIGHT.get(), noDrop());
+            this.add(FLBlocks.STAR_LIGHT.get(), noDrop());
+            this.add(FLBlocks.ICICLE_LIGHTS.get(), noDrop());
+            this.add(FLBlocks.METEOR_LIGHT.get(), noDrop());
+            this.add(FLBlocks.OIL_LANTERN.get(), noDrop());
+            this.add(FLBlocks.CANDLE_LANTERN.get(), noDrop());
+            this.add(FLBlocks.INCANDESCENT_LIGHT.get(), noDrop());
         }
     }
 
