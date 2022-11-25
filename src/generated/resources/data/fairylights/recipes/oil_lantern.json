@@ -1,11 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " I ",
-    "STS",
-    "IGI"
-  ],
   "key": {
+    "G": {
+      "tag": "forge:glass_panes/colorless"
+    },
     "I": {
       "tag": "forge:ingots/iron"
     },
@@ -14,13 +12,15 @@
     },
     "T": {
       "item": "minecraft:torch"
-    },
-    "G": {
-      "tag": "forge:glass_panes/colorless"
     }
   },
+  "pattern": [
+    " I ",
+    "STS",
+    "IGI"
+  ],
   "result": {
-    "item": "fairylights:oil_lantern",
-    "count": 4
+    "count": 4,
+    "item": "fairylights:oil_lantern"
   }
 }

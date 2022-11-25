@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " I ",
-    "ITI",
-    " G "
-  ],
   "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
     "G": {
       "tag": "forge:glass_panes/colorless"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
     },
     "T": {
       "item": "minecraft:torch"
     }
   },
+  "pattern": [
+    " I ",
+    "ITI",
+    " G "
+  ],
   "result": {
-    "item": "fairylights:incandescent_light",
-    "count": 4
+    "count": 4,
+    "item": "fairylights:incandescent_light"
   }
 }

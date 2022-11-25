@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "-": {
+      "item": "minecraft:vine"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  },
   "pattern": [
     "I-I"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
-    "-": {
-      "item": "minecraft:vine"
-    }
-  },
   "result": {
-    "item": "fairylights:garland",
-    "count": 2
+    "count": 2,
+    "item": "fairylights:garland"
   }
 }

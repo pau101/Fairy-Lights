@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " I ",
-    "GTG",
-    "IGI"
-  ],
   "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
     "G": {
       "tag": "forge:nuggets/gold"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
     },
     "T": {
       "item": "minecraft:torch"
     }
   },
+  "pattern": [
+    " I ",
+    "GTG",
+    "IGI"
+  ],
   "result": {
-    "item": "fairylights:candle_lantern",
-    "count": 4
+    "count": 4,
+    "item": "fairylights:candle_lantern"
   }
 }
