@@ -1,0 +1,101 @@
+{
+    "itemGroup.fairylights": "Fairy Lights",
+
+    "fairylights.config": "Configurações Fairy Lights",
+
+    "block.fairylights.fastener": "Fixador",
+
+    "item.fairylights.hanging_lights": "Luzes penduradas",
+    "item.fairylights.garland": "Coroa de vinhas",
+    "item.fairylights.tinsel": "Coroa de ouropel",
+
+    "item.fairylights.black_string": "Linha Preta",
+    "item.fairylights.white_string": "Linha Branca",
+    "item.fairyLights.twinkle": "Pisca-piscas",
+
+    "item.fairylights.pennant_bunting": "Flâmula de tecido",
+
+    "item.fairylights.letter_bunting": "Flâmula de papel",
+
+    "item.fairylights.triangle_pennant": "Flâmula triangular",
+    "item.fairylights.spearhead_pennant": "Flâmula ponta de lança",
+    "item.fairylights.swallowtail_pennant": "Flâmula calda de andorinha",
+    "item.fairylights.square_pennant": "Flâmula quadrada",
+
+    "block.fairylights.fairy_light": "Luz de Fada",
+    "block.fairylights.paper_lantern": "Lanterna de papel",
+    "block.fairylights.orb_lantern": "Lanterna Orb",
+    "block.fairylights.flower_light": "Lanterna flor",
+    "block.fairylights.candle_lantern_light": "Luz de Lampião a Vela",
+    "block.fairylights.oil_lantern_light": "Luz de Lampião a Óleo",
+    "block.fairylights.jack_o_lantern": "Lanterna de abóbora",
+    "block.fairylights.skull_light": "Luz de Caveira",
+    "block.fairylights.ghost_light": "Luz de Fantasma",
+    "block.fairylights.spider_light": "Luz de Aranha",
+    "block.fairylights.witch_light": "Luz de Bruxa",
+    "block.fairylights.snowflake_light": "Luz de Floco de Neve",
+    "block.fairylights.heart_light": "Luz de Coração",
+    "block.fairylights.moon_light": "Luz de Lua",
+    "block.fairylights.star_light": "Luz de Estrela",
+    "block.fairylights.icicle_lights": "Luz de Gelo",
+    "block.fairylights.meteor_light": "Luz de Meteoro",
+    "block.fairylights.oil_lantern": "Lampião á Óleo",
+    "block.fairylights.candle_lantern": "Lampião a Vela",
+    "block.fairylights.incandescent_light": "Luz Incandescente",
+
+    "entity.fairylights.fastener": "Fixador",
+
+    "fairylights.editLetteredConnection": "Colocar texto na Flâmula",
+    "fairylights.editLetteredConnection.allowed_characters": "Caracteres permitidos: %1$s",
+
+    "recipe.ingredient.tooltip": "§7%s",
+    "recipe.fairylights.ingredient.auxiliary.optional": "(Opicional)",
+    "recipe.fairylights.twinkling_lights.glowstone": "Faz as luzes piscarem",
+    "recipe.fairylights.hangingLights.light": "Adicione multiplas luzes para customizar o padrão",
+    "recipe.fairylights.pennantBunting.pennant": "Adicione multiplas Flâmulas Para customizar o padrão",
+    "recipe.fairylights.hangingLights.string": "Add white dye to create white string",
+
+    "format.fairylights.colored": "%1$s %2$s",
+    "format.fairylights.dyed_colored": "Tingido %1$s",
+    "format.fairylights.color_changing": "Mudança de Cores %1$s",
+    "format.fairylights.text": "Texto: %1$s",
+
+    "color.fairylights.black": "Preta",
+    "color.fairylights.red": "Vermelha",
+    "color.fairylights.green": "Verde",
+    "color.fairylights.brown": "Marrom",
+    "color.fairylights.blue": "Azul",
+    "color.fairylights.purple": "Roxa",
+    "color.fairylights.cyan": "Ciano",
+    "color.fairylights.light_gray": "Cinza Claro",
+    "color.fairylights.gray": "Cinza",
+    "color.fairylights.pink": "Roza",
+    "color.fairylights.lime": "Limão",
+    "color.fairylights.yellow": "Amarela",
+    "color.fairylights.light_blue": "Azul claro",
+    "color.fairylights.magenta": "Magenta",
+    "color.fairylights.orange": "Laranja",
+    "color.fairylights.white": "Branca",
+
+    "subtitles.block.fairylights.jingleBell": "Sino Badala",
+    "subtitles.block.fairylights.cord.connect": "Linha conecta",
+    "subtitles.block.fairylights.cord.disconnect": "Linha desconecta",
+    "subtitles.block.fairylights.cord.stretch": "Linha estica",
+    "subtitles.block.fairylights.cord.snap": "Linha se rompe",
+    "subtitles.block.fairylights.feature.lightTurnOn": "Luzes se ligam",
+    "subtitles.block.fairylights.feature.lightTurnOff": "Luzes se desligam",
+    "subtitles.block.fairylights.feature.colorChange": "Cor muda",
+
+    "commands.jingler.open.success": "Aberto com sucesso %1$s",
+    "commands.jingler.open.failure.no_hanging_lights": "Nenhuma luz pendurável selecionada",
+    "commands.jingler.open.failure.device_unavailable": "Dispositivo %1$s não está disponível, possívelmente sendo usado por outro programa",
+    "commands.jingler.open.failure.not_found": "Não há dispositivo chamado %1$s",
+    "commands.jingler.close.success.single": "Conexão com %1$s Fechada com sucesso",
+    "commands.jingler.close.success.multiple": " %1$s conexões fechadas com sucesso",
+    "commands.jingler.close.failure": "Não há dispositivos para fechar",
+    "commands.jingler.device.vendor": "Vendedor: %1$s",
+    "commands.jingler.device.description": "Descrição: %1$s",
+
+    "tutorial.fairylights.craft_hanging_lights.title": "Fazer luzes penduráveis",
+    "tutorial.fairylights.craft_hanging_lights.description": "O livro de receitas pode ajudar"
+}
