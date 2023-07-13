@@ -1,0 +1,101 @@
+{
+    "itemGroup.fairylights": "Fairy Lights",
+
+    "fairylights.config": "Fairy Lights Configuration",
+
+    "block.fairylights.fastener": "接続留め具",
+
+    "item.fairylights.hanging_lights": "吊り下げライト",
+    "item.fairylights.garland": "ツタのガーランド",
+    "item.fairylights.tinsel": "飾り付けられたガーランド",
+
+    "item.fairylights.black_string": "黒い紐",
+    "item.fairylights.white_string": "白い紐",
+    "item.fairyLights.twinkle": "きらめき",
+
+    "item.fairylights.pennant_bunting": "ペナント付きの旗布",
+
+    "item.fairylights.letter_bunting": "文字入りの旗布",
+
+    "item.fairylights.triangle_pennant": "三角形のペナント",
+    "item.fairylights.spearhead_pennant": "先の尖ったペナント",
+    "item.fairylights.swallowtail_pennant": "燕尾形のペナント",
+    "item.fairylights.square_pennant": "四角形のペナント",
+
+    "block.fairylights.fairy_light": "フェアリーライト",
+    "block.fairylights.paper_lantern": "中華提灯",
+    "block.fairylights.orb_lantern": "オーブランタン",
+    "block.fairylights.flower_light": "花のライト",
+    "block.fairylights.candle_lantern_light": "ろうそくランタンライト",
+    "block.fairylights.oil_lantern_light": "オイルランタンライト",
+    "block.fairylights.jack_o_lantern": "ジャック・オ・ランタン",
+    "block.fairylights.skull_light": "ドクロライト",
+    "block.fairylights.ghost_light": "おばけライト",
+    "block.fairylights.spider_light": "蜘蛛ライト",
+    "block.fairylights.witch_light": "魔女ライト",
+    "block.fairylights.snowflake_light": "雪の結晶形ライト",
+    "block.fairylights.heart_light": "ハート形ライト",
+    "block.fairylights.moon_light": "月形ライト",
+    "block.fairylights.star_light": "星形ライト",
+    "block.fairylights.icicle_lights": "つららライト",
+    "block.fairylights.meteor_light": "隕石ライト",
+    "block.fairylights.oil_lantern": "オイルランタン",
+    "block.fairylights.candle_lantern": "ろうそくランタン",
+    "block.fairylights.incandescent_light": "白熱電球",
+
+    "entity.fairylights.fastener": "留め具",
+
+    "fairylights.editLetteredConnection": "吊り下げる文字を入力",
+    "fairylights.editLetteredConnection.allowed_characters": "使用可能な文字: %1$s",
+
+    "recipe.ingredient.tooltip": "§7%s",
+    "recipe.fairylights.ingredient.auxiliary.optional": "(オプション)",
+    "recipe.fairylights.twinkling_lights.glowstone": "照明がきらめくようになる",
+    "recipe.fairylights.hangingLights.light": "複数のライトを追加してパターンをカスタマイズ",
+    "recipe.fairylights.pennantBunting.pennant": "複数のペナントを加えてパターンをカスタマイズ",
+    "recipe.fairylights.hangingLights.string": "白色の染料を加えて紐を白くする",
+
+    "format.fairylights.colored": "%1$s %2$s",
+    "format.fairylights.dyed_colored": "染色済みの%1$s",
+    "format.fairylights.color_changing": "色が変化する%1$s",
+    "format.fairylights.text": "文字: %1$s",
+
+    "color.fairylights.black": "黒色の",
+    "color.fairylights.red": "赤色の",
+    "color.fairylights.green": "緑色の",
+    "color.fairylights.brown": "茶色の",
+    "color.fairylights.blue": "青色の",
+    "color.fairylights.purple": "紫色の",
+    "color.fairylights.cyan": "水色の",
+    "color.fairylights.light_gray": "薄灰色の",
+    "color.fairylights.gray": "灰色の",
+    "color.fairylights.pink": "桃色の",
+    "color.fairylights.lime": "黄緑色の",
+    "color.fairylights.yellow": "黄色の",
+    "color.fairylights.light_blue": "空色の",
+    "color.fairylights.magenta": "赤紫色の",
+    "color.fairylights.orange": "橙色の",
+    "color.fairylights.white": "白色の",
+
+    "subtitles.block.fairylights.jingleBell": "ベルが鳴る",
+    "subtitles.block.fairylights.cord.connect": "コードを接続する",
+    "subtitles.block.fairylights.cord.disconnect": "コードを接続解除する",
+    "subtitles.block.fairylights.cord.stretch": "コードを伸ばす",
+    "subtitles.block.fairylights.cord.snap": "コードをスナップする",
+    "subtitles.block.fairylights.feature.lightTurnOn": "ライトがオンになる",
+    "subtitles.block.fairylights.feature.lightTurnOff": "ライトがオフになる",
+    "subtitles.block.fairylights.feature.colorChange": "色が変化する",
+
+    "commands.jingler.open.success": "Successfully opened %1$s",
+    "commands.jingler.open.failure.no_hanging_lights": "No hanging lights selected",
+    "commands.jingler.open.failure.device_unavailable": "Device %1$s is unavailable, likely in use by another program",
+    "commands.jingler.open.failure.not_found": "No device named %1$s",
+    "commands.jingler.close.success.single": "Successfully closed %1$s connection",
+    "commands.jingler.close.success.multiple": "Successfully closed %1$s connections",
+    "commands.jingler.close.failure": "No devices to close",
+    "commands.jingler.device.vendor": "Vendor: %1$s",
+    "commands.jingler.device.description": "Description: %1$s",
+
+    "tutorial.fairylights.craft_hanging_lights.title": "吊り下げライトを作る",
+    "tutorial.fairylights.craft_hanging_lights.description": "レシピブックが助けになります"
+}
