@@ -99,20 +99,7 @@ public final class ClientProxy extends ServerProxy {
         });
         MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) -> JinglerCommand.register(e.getDispatcher()));
         JinglerCommand.register(MinecraftForge.EVENT_BUS);
-        // Undo sprite uv shrink
-        modBus.<ModelEvent.BakingCompleted>addListener(e -> {
-            final VertexFormat vertexFormat = DefaultVertexFormat.BLOCK;
-            final int size = vertexFormat.getIntegerSize();
-            final int index = this.getUvIndex(vertexFormat);
-            if (index != -1) {
-                this.entityModels.forEach(path -> {
-                    final BakedModel model = Minecraft.getInstance().getModelManager().getModel(path);
-                    if (model != Minecraft.getInstance().getModelManager().getMissingModel()) {
-                        this.recomputeUv(size, index, model);
-                    }
-                });
-            }
-        });
+
         modBus.addListener(this::setup);
         modBus.addListener(this::setupLayerDefinitions);
         modBus.addListener(this::setupColors);

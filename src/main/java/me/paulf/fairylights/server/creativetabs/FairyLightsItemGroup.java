@@ -40,7 +40,6 @@ public final class FairyLightsItemGroup
               output.accept(FLCraftingRecipes.makeHangingLights(new ItemStack(FLItems.HANGING_LIGHTS.get()), color));
           }
 
-
           for (final DyeColor color : DyeColor.values())
           {
               final ItemStack stack = new ItemStack(FLItems.PENNANT_BUNTING.get());
@@ -76,9 +75,10 @@ public final class FairyLightsItemGroup
           output.acceptAll(generateCollection(FLItems.STAR_LIGHT.get()));
           output.acceptAll(generateCollection(FLItems.ICICLE_LIGHTS.get()));
           output.acceptAll(generateCollection(FLItems.METEOR_LIGHT.get()));
-          output.acceptAll(generateCollection(FLItems.OIL_LANTERN.get()));
-          output.acceptAll(generateCollection(FLItems.CANDLE_LANTERN.get()));
-          output.acceptAll(generateCollection(FLItems.INCANDESCENT_LIGHT.get()));
+
+          output.accept(new ItemStack(FLItems.OIL_LANTERN.get()));
+          output.accept(new ItemStack(FLItems.CANDLE_LANTERN.get()));
+          output.accept(new ItemStack(FLItems.INCANDESCENT_LIGHT.get()));
       }).build());
 
     private static Collection<ItemStack> generateCollection(final @NotNull Item item)
