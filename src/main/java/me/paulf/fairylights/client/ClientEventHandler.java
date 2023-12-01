@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import me.paulf.fairylights.server.collision.Collidable;
 import me.paulf.fairylights.server.collision.Intersection;
 import me.paulf.fairylights.server.connection.Connection;
@@ -17,7 +16,7 @@ import me.paulf.fairylights.server.fastener.FastenerType;
 import me.paulf.fairylights.server.jingle.Jingle;
 import me.paulf.fairylights.util.Curve;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -25,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -43,6 +43,7 @@ import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -63,7 +64,7 @@ public final class ClientEventHandler {
         return null;
     }
 
-    public void renderOverlay(final ForgeGui gui, final PoseStack poseStack, final float partialTick, final int screenWidth, final int screenHeight) {
+    public void renderOverlay(final ForgeGui gui, final GuiGraphics poseStack, final float partialTick, final int screenWidth, final int screenHeight) {
         final Connection conn = getHitConnection();
         if (!(conn instanceof HangingLightsConnection)) {
             return;
@@ -81,8 +82,8 @@ public final class ClientEventHandler {
                 final int lineHeight = gui.getFont().lineHeight;
                 final int textWidth = gui.getFont().width(line);
                 final int y = 2 + lineHeight * i;
-                GuiComponent.fill(poseStack, 1, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x90505050);
-                gui.getFont().draw(poseStack, line, 2, y, 0xe0e0e0);
+                poseStack.fill(1, y - 1, 2 + textWidth + 1, y + lineHeight - 1, 0x90505050);
+                poseStack.drawString(gui.getFont(), line, 2, y, 0xe0e0e0);
             }
         }
     }
@@ -247,10 +248,10 @@ public final class ClientEventHandler {
             if (this.last == null) {
                 this.last = pos;
             } else {
-                Vector3f n = pos.copy();
+                Vector3f n = new Vector3f(pos);
                 n.sub(this.last);
                 n.normalize();
-                n.transform(this.matrix.last().normal());
+                n = this.matrix.last().normal().transform(n);
                 this.buf.vertex(this.matrix.last().pose(), this.last.x(), this.last.y(), this.last.z())
                     .color(0.0F, 0.0F, 0.0F, HIGHLIGHT_ALPHA)
                     .normal(n.x(), n.y(), n.z())
@@ -345,7 +346,7 @@ public final class ClientEventHandler {
         }
 
         @Override
-        public Packet<?> getAddEntityPacket() {
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
             return new Packet<>() {
                 @Override
                 public void write(final FriendlyByteBuf buf) {
@@ -353,8 +354,9 @@ public final class ClientEventHandler {
                 }
 
                 @Override
-                public void handle(final PacketListener listener) {
-                    
+                public void handle(final ClientGamePacketListener p_131342_)
+                {
+
                 }
             };
         }

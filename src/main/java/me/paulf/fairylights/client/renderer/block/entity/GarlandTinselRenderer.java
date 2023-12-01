@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.GarlandTinselConnection;
@@ -45,8 +45,8 @@ public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConne
         final float b = (color & 0xFF) / 255.0F;
         matrix.pushPose();
         matrix.translate(it.getX(0.0F), it.getY(0.0F), it.getZ(0.0F));
-        matrix.mulPose(Vector3f.YP.rotation(-it.getYaw()));
-        matrix.mulPose(Vector3f.ZP.rotation(it.getPitch()));
+        matrix.mulPose(Axis.YP.rotation(-it.getYaw()));
+        matrix.mulPose(Axis.ZP.rotation(it.getPitch()));
         final float length = it.getLength();
         final int rings = Mth.ceil(length * 64);
         final int hash = connection.getUUID().hashCode();
@@ -59,13 +59,14 @@ public class GarlandTinselRenderer extends ConnectionRenderer<GarlandTinselConne
             final float rotX = RAND.get(31 * (index + 31 * i) + hash) * 22;
             final float rotY = RAND.get(31 * (index + 3 + 31 * i) + hash) * 180;
             final float rotZ = RAND.get(31 * (index + 7 + 31 * i) + hash) * 180;
-            matrix.mulPose(Vector3f.XP.rotationDegrees(rotZ));
-            matrix.mulPose(Vector3f.YP.rotationDegrees(rotY));
-            matrix.mulPose(Vector3f.ZP.rotationDegrees(rotX));
+            matrix.mulPose(Axis.XP.rotationDegrees(rotZ));
+            matrix.mulPose(Axis.YP.rotationDegrees(rotY));
+            matrix.mulPose(Axis.ZP.rotationDegrees(rotX));
             matrix.scale(1.0F, RAND.get(i * 63) * 0.1F + 1.0F, 0.5F);
             this.strip.renderToBuffer(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
             matrix.popPose();
         }
+        
         matrix.popPose();
     }
 

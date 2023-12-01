@@ -76,7 +76,7 @@ public final class FLItems {
     public static final RegistryObject<Item> SQUARE_PENNANT = REG.register("square_pennant", () -> new PennantItem(defaultProperties()));
 
     private static Item.Properties defaultProperties() {
-        return new Item.Properties().tab(FairyLights.ITEM_GROUP);
+        return new Item.Properties();
     }
 
     private static Supplier<LightItem> createLight(final RegistryObject<LightBlock> block, final BiFunction<LightBlock, Item.Properties, LightItem> factory) {

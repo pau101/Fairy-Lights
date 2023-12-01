@@ -49,15 +49,6 @@ public final class HangingLightsConnectionItem extends ConnectionItem {
         }
     }
 
-    @Override
-    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> subItems) {
-        if (this.allowedIn(tab)) {
-            for (final DyeColor color : DyeColor.values()) {
-                subItems.add(FLCraftingRecipes.makeHangingLights(new ItemStack(this), color));
-            }
-        }
-    }
-
     public static StringType getString(final CompoundTag tag) {
         return Objects.requireNonNull(FairyLights.STRING_TYPES.get().getValue(ResourceLocation.tryParse(tag.getString("string"))));
     }

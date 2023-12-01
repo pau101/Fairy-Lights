@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[43,)"
+loaderVersion="[47,)"
 issueTrackerURL="https://github.com/pau101/Fairy-Lights/issues"
 license="MIT"
 [[mods]]
@@ -13,12 +13,12 @@ license="MIT"
 [[dependencies.fairylights]]
 	modId="forge"
 	mandatory=true
-	versionRange="[43,)"
+	versionRange="[47,)"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.fairylights]]
 	modId="minecraft"
 	mandatory=true
-	versionRange="[1.19.2,1.20)"
+	versionRange="[1.20.1,1.20.2)"
 	ordering="NONE"
 	side="BOTH"

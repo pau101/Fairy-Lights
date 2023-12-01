@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -49,7 +50,7 @@ public final class OreDictUtils {
     private static ImmutableMultimap<DyeColor, ItemStack> getDyeItemStacks() {
         final ImmutableMultimap.Builder<DyeColor, ItemStack> bob = ImmutableMultimap.builder();
         for (final Dye dye : Dye.values()) {
-            for (final Holder<Item> holder : Registry.ITEM.getTagOrEmpty(dye.getName())) {
+            for (final Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(dye.getName())) {
                 bob.put(dye.getColor(), new ItemStack(holder));
             }
         }

@@ -21,7 +21,6 @@ import me.paulf.fairylights.server.string.StringType;
 import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.CalendarEvent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -52,8 +51,6 @@ public final class FairyLights {
         .serverbound(EditLetteredConnectionMessage::new).consumer(() -> new EditLetteredConnectionMessage.Handler())
         .build();
 
-    public static final CreativeModeTab ITEM_GROUP = new FairyLightsItemGroup();
-
     public static final CalendarEvent CHRISTMAS = new CalendarEvent(Month.DECEMBER, 24, 26);
 
     public static final CalendarEvent HALLOWEEN = new CalendarEvent(Month.OCTOBER, 31, 31);
@@ -83,5 +80,9 @@ public final class FairyLights {
         StringTypes.REG.register(bus);
         final ServerProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         proxy.init(bus);
+        FairyLightsItemGroup.TAB_REG.register(FMLJavaModLoadingContext.get().getModEventBus());
+
     }
+
+
 }

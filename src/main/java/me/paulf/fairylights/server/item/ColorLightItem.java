@@ -23,13 +23,4 @@ public class ColorLightItem extends LightItem {
         }
         return DyeableItem.getDisplayName(stack, super.getName(stack));
     }
-
-    @Override
-    public void fillItemCategory(final CreativeModeTab group, final NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            for (final DyeColor dye : DyeColor.values()) {
-                items.add(DyeableItem.setColor(new ItemStack(this), dye));
-            }
-        }
-    }
 }

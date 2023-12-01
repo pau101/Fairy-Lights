@@ -2,11 +2,11 @@ package me.paulf.fairylights.client.gui.component;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import me.paulf.fairylights.client.gui.EditLetteredConnectionScreen;
 import me.paulf.fairylights.util.FLMth;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -38,7 +38,7 @@ public class PaletteButton extends Button {
     private final ColorButton colorBtn;
 
     public PaletteButton(final int x, final int y, final ColorButton colorBtn, final Component msg, final Button.OnPress pressable) {
-        super(x, y, 28, 28, msg, pressable);
+        super(x, y, 28, 28, msg, pressable, DEFAULT_NARRATION);
         this.colorBtn = colorBtn;
     }
 
@@ -58,16 +58,15 @@ public class PaletteButton extends Button {
     }
 
     @Override
-    public void renderButton(final PoseStack stack, final int mouseX, final int mouseY, final float delta) {
+    public void renderWidget(final GuiGraphics stack, final int mouseX, final int mouseY, final float delta) {
         if (this.visible) {
-            RenderSystem.setShaderTexture(0, EditLetteredConnectionScreen.WIDGETS_TEXTURE);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            this.blit(stack, this.x, this.y, TEX_U, TEX_V, this.width, this.height);
+            stack.blit(EditLetteredConnectionScreen.WIDGETS_TEXTURE, this.getX(), this.getY(), TEX_U, TEX_V, this.width, this.height);
             if (this.colorBtn.hasDisplayColor()) {
                 final int idx = COLOR_IDX[this.colorBtn.getDisplayColor().ordinal()];
-                final int selectX = this.x + 2 + (idx % 4) * 6;
-                final int selectY = this.y + 2 + (idx / 4) * 6;
-                this.blit(stack, selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+                final int selectX = this.getX() + 2 + (idx % 4) * 6;
+                final int selectY = this.getY() + 2 + (idx / 4) * 6;
+                stack.blit(EditLetteredConnectionScreen.WIDGETS_TEXTURE, selectX, selectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             for (int i = 0; i < IDX_COLOR.length; i++) {
                 final ChatFormatting color = IDX_COLOR[i];
@@ -76,16 +75,16 @@ public class PaletteButton extends Button {
                 final float g = (rgb >> 8 & 0xFF) / 255F;
                 final float b = (rgb & 0xFF) / 255F;
                 RenderSystem.setShaderColor(r, g, b, 1.0F);
-                this.blit(stack, this.x + 2 + (i % 4) * 6, this.y + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
+                stack.blit(EditLetteredConnectionScreen.WIDGETS_TEXTURE, this.getX() + 2 + (i % 4) * 6, this.getY() + 2 + i / 4 * 6, COLOR_U, COLOR_V, COLOR_WIDTH, COLOR_HEIGHT);
             }
             final int selectIndex = this.getMouseOverIndex(mouseX, mouseY);
             if (selectIndex > -1) {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 RenderSystem.setShaderColor(1, 1, 1, 0.5F);
-                final int hoverSelectX = this.x + 2 + selectIndex % 4 * 6;
-                final int hoverSelectY = this.y + 2 + selectIndex / 4 * 6;
-                this.blit(stack, hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
+                final int hoverSelectX = this.getX() + 2 + selectIndex % 4 * 6;
+                final int hoverSelectY = this.getY() + 2 + selectIndex / 4 * 6;
+                stack.blit(EditLetteredConnectionScreen.WIDGETS_TEXTURE, hoverSelectX, hoverSelectY, SELECT_U, SELECT_V, COLOR_WIDTH, COLOR_HEIGHT);
                 RenderSystem.disableBlend();
             }
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -93,8 +92,8 @@ public class PaletteButton extends Button {
     }
 
     private int getMouseOverIndex(final double mouseX, final double mouseY) {
-        final int relX = Mth.floor(mouseX - this.x - 3);
-        final int relY = Mth.floor(mouseY - this.y - 3);
+        final int relX = Mth.floor(mouseX - this.getX() - 3);
+        final int relY = Mth.floor(mouseY - this.getY() - 3);
         if (relX < 0 || relY < 0 || relX > 22 || relY > 22) {
             return -1;
         }

@@ -5,8 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.PennantBuntingConnection;
@@ -28,6 +27,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Vector3f;
 
 import java.util.function.Function;
 
@@ -79,9 +80,9 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
                 final Vec3 pos = currPennant.getPoint(delta);
                 matrix.pushPose();
                 matrix.translate(pos.x, pos.y, pos.z);
-                matrix.mulPose(Vector3f.YP.rotation(-currPennant.getYaw(delta)));
-                matrix.mulPose(Vector3f.ZP.rotation(currPennant.getPitch(delta)));
-                matrix.mulPose(Vector3f.XP.rotation(currPennant.getRoll(delta)));
+                matrix.mulPose(Axis.YP.rotation(-currPennant.getYaw(delta)));
+                matrix.mulPose(Axis.ZP.rotation(currPennant.getPitch(delta)));
+                matrix.mulPose(Axis.XP.rotation(currPennant.getRoll(delta)));
                 matrix.pushPose();
                 FastenerRenderer.renderBakedModel(model, matrix, buf, r, g, b, packedLight, packedOverlay);
                 matrix.popPose();
@@ -105,14 +106,13 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         bob.append(text.charAt(index));
         final String chr = bob.toString();
         final Matrix3f m = new Matrix3f();
-        m.setIdentity();
-        m.mul(Vector3f.YP.rotation(pennant.getYaw(delta)));
-        m.mul(Vector3f.ZP.rotation(pennant.getPitch(delta)));
-        m.mul(Vector3f.XP.rotation(pennant.getRoll(delta)));
+        m.rotate(Axis.YP.rotation(pennant.getYaw(delta)));
+        m.rotate(Axis.ZP.rotation(pennant.getPitch(delta)));
+        m.rotate(Axis.XP.rotation(pennant.getRoll(delta)));
         final Vector3f v = new Vector3f(0.0F, 0.0F, side);
-        v.transform(m);
+        m.transform(v);
         // TODO: correct entity diffuse
-        final float brightness = Mth.diffuseLight(v.x(), v.y(), v.z());
+        final float brightness = diffuseLight(v.x(), v.y(), v.z());
         final int styleColor = MoreObjects.firstNonNull(style.getColor().getColor(), 0xFFFFFF);
         final int r = (int) ((styleColor >> 16 & 0xFF) * brightness);
         final int g = (int) ((styleColor >> 8 & 0xFF) * brightness);
@@ -123,9 +123,14 @@ public class PennantBuntingRenderer extends ConnectionRenderer<PennantBuntingCon
         final float s = 0.03075F;
         matrix.scale(s * side, -s, s);
         final float w = font.width(chr);
-        font.drawInBatch(chr, -(w - 1.0F) / 2.0F, -4.0F, argb, false, matrix.last().pose(), source, false, 0, packedLight);
+        font.drawInBatch(chr, -(w - 1.0F) / 2.0F, -4.0F, argb, false, matrix.last().pose(), source, Font.DisplayMode.NORMAL, 0, packedLight);
         matrix.popPose();
     }
+
+    public static float diffuseLight(float p_144949_, float p_144950_, float p_144951_) {
+        return Math.min(p_144949_ * p_144949_ * 0.6F + p_144950_ * p_144950_ * ((3.0F + p_144950_) / 4.0F) + p_144951_ * p_144951_ * 0.8F, 1.0F);
+    }
+
 
     public static LayerDefinition wireLayer() {
         return WireModel.createLayer(0, 17, 1);

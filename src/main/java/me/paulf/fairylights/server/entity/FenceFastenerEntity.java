@@ -16,6 +16,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -97,7 +98,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 
     @Override
     public boolean survives() {
-        return !this.level.isLoaded(this.pos) || ConnectionItem.isFence(this.level.getBlockState(this.pos));
+        return !this.level().isLoaded(this.pos) || ConnectionItem.isFence(this.level().getBlockState(this.pos));
     }
 
     @Override
@@ -112,7 +113,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
         if (this.isInvulnerableTo(source)) {
             return false;
         }
-        if (!this.level.isClientSide() && this.isAlive()) {
+        if (!this.level().isClientSide() && this.isAlive()) {
             this.markHurt();
             this.dropItem(source.getEntity());
             this.remove(RemovalReason.KILLED);
@@ -127,15 +128,15 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
 
     @Override
     public void dropItem(@Nullable final Entity breaker) {
-        this.getFastener().ifPresent(fastener -> fastener.dropItems(this.level, this.pos));
+        this.getFastener().ifPresent(fastener -> fastener.dropItems(this.level(), this.pos));
         if (breaker != null) {
-            this.level.levelEvent(2001, this.pos, Block.getId(FLBlocks.FASTENER.get().defaultBlockState()));
+            this.level().levelEvent(2001, this.pos, Block.getId(FLBlocks.FASTENER.get().defaultBlockState()));
         }
     }
 
     @Override
     public void playPlacementSound() {
-        final SoundType sound = FLBlocks.FASTENER.get().getSoundType(FLBlocks.FASTENER.get().defaultBlockState(), this.level, this.getPos(), null);
+        final SoundType sound = FLBlocks.FASTENER.get().getSoundType(FLBlocks.FASTENER.get().defaultBlockState(), this.level(), this.getPos(), null);
         this.playSound(sound.getPlaceSound(), (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8F);
     }
 
@@ -171,10 +172,10 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     @Override
     public void tick() {
         this.getFastener().ifPresent(fastener -> {
-            if (!this.level.isClientSide() && (fastener.hasNoConnections() || this.checkSurface())) {
+            if (!this.level().isClientSide() && (fastener.hasNoConnections() || this.checkSurface())) {
                 this.dropItem(null);
                 this.remove(RemovalReason.DISCARDED);
-            } else if (fastener.update() && !this.level.isClientSide()) {
+            } else if (fastener.update() && !this.level().isClientSide()) {
                 final UpdateEntityFastenerMessage msg = new UpdateEntityFastenerMessage(this, fastener.serializeNBT());
                 ServerProxy.sendToPlayersWatchingEntity(msg, this);
             }
@@ -193,10 +194,10 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     public InteractionResult interact(final Player player, final InteractionHand hand) {
         final ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof ConnectionItem) {
-            if (this.level.isClientSide()) {
+            if (this.level().isClientSide()) {
                 player.swing(hand);
             } else {
-                this.getFastener().ifPresent(fastener -> ((ConnectionItem) stack.getItem()).connect(stack, player, this.level, fastener));
+                this.getFastener().ifPresent(fastener -> ((ConnectionItem) stack.getItem()).connect(stack, player, this.level(), fastener));
             }
             return InteractionResult.SUCCESS;
         }
@@ -236,7 +237,7 @@ public final class FenceFastenerEntity extends HangingEntity implements IEntityA
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

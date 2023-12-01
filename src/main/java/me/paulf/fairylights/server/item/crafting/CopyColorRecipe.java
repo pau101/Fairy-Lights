@@ -2,16 +2,18 @@ package me.paulf.fairylights.server.item.crafting;
 
 import me.paulf.fairylights.server.item.DyeableItem;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class CopyColorRecipe extends CustomRecipe {
-    public CopyColorRecipe(final ResourceLocation id) {
-        super(id);
+    public CopyColorRecipe(final ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     @Override
@@ -27,7 +29,7 @@ public class CopyColorRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(final CraftingContainer inv) {
+    public ItemStack assemble(final CraftingContainer inv, final RegistryAccess registryAccess) {
         ItemStack original = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); i++) {
             final ItemStack stack = inv.getItem(i);

@@ -12,6 +12,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -359,16 +360,16 @@ public final class StyledTextFieldWidget extends AbstractWidget {
             final int lower;
             final int upper;
             if (this.hasBackground) {
-                lower = this.x + 15;
-                upper = this.x + this.width - 16;
+                lower = this.getX() + 15;
+                upper = this.getX() + this.width - 16;
             } else {
-                lower = this.x + 11;
-                upper = this.x + this.width - 12;
+                lower = this.getX() + 11;
+                upper = this.getX() + this.width - 12;
             }
             boolean scrolled = false;
             if (mouseX < lower) {
                 if (this.lineScrollOffset > 0) {
-                    final int rate = (2 - (mouseX - this.x) / 5) * 2 + 2;
+                    final int rate = (2 - (mouseX - this.getX()) / 5) * 2 + 2;
                     this.lineScrollOffset -= rate;
                     if (this.lineScrollOffset < 0) {
                         this.lineScrollOffset = 0;
@@ -378,7 +379,7 @@ public final class StyledTextFieldWidget extends AbstractWidget {
             } else if (mouseX > upper) {
                 final int max = this.value.length() - trimToWidth(this.value, this.font, this.getInnerWidth(), true).length();
                 if (this.lineScrollOffset < max) {
-                    final int rate = (2 + (mouseX - this.x - this.width + 1) / 5) * 2 + 2;
+                    final int rate = (2 + (mouseX - this.getX() - this.width + 1) / 5) * 2 + 2;
                     this.lineScrollOffset += rate;
                     if (this.lineScrollOffset > max) {
                         this.lineScrollOffset = max;
@@ -387,7 +388,7 @@ public final class StyledTextFieldWidget extends AbstractWidget {
                 }
             }
             if (scrolled && !this.hasDraggedSelecton) {
-                int relativeX = mouseX - this.x;
+                int relativeX = mouseX - this.getX();
                 if (this.hasBackground) {
                     relativeX -= 2;
                 }
@@ -518,14 +519,14 @@ public final class StyledTextFieldWidget extends AbstractWidget {
 
     @Override
     public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
-        final boolean hovered = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+        final boolean hovered = mouseX >= this.getX() && mouseX < this.getX() + this.width && mouseY >= this.getY() && mouseY < this.getY() + this.height;
         if (this.isBlurable) {
             this.setFocused(hovered);
         } else if (!hovered) {
             this.setCaret(Math.min(this.caret, this.selectionEnd));
         }
         if (this.isFocused && hovered && button == 0) {
-            int relativeX = Mth.floor(mouseX - this.x);
+            int relativeX = Mth.floor(mouseX - this.getX());
             if (this.hasBackground) {
                 relativeX -= 2;
             }
@@ -614,9 +615,9 @@ public final class StyledTextFieldWidget extends AbstractWidget {
         if (button == 0) {
             this.isPressed = false;
             if (this.isDraggingSelection) {
-                final boolean hovered = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+                final boolean hovered = mouseX >= this.getX() && mouseX < this.getX() + this.width && mouseY >= this.getY() && mouseY < this.getY() + this.height;
                 if (hovered) {
-                    int relativeX = Mth.floor(mouseX - this.x);
+                    int relativeX = Mth.floor(mouseX - this.getX());
                     if (this.hasBackground) {
                         relativeX -= 2;
                     }
@@ -649,7 +650,7 @@ public final class StyledTextFieldWidget extends AbstractWidget {
     @Override
     public boolean mouseDragged(final double mouseX, final double mouseY, final int button, final double dx, final double dy) {
         if (this.isFocused && this.isPressed && button == 0) {
-            int relativeX = Mth.floor(mouseX - this.x);
+            int relativeX = Mth.floor(mouseX - this.getX());
             if (this.hasBackground) {
                 relativeX -= 2;
             }
@@ -823,13 +824,13 @@ public final class StyledTextFieldWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderButton(final PoseStack stack, final int mouseX, final int mouseY, final float delta) {
+    public void renderWidget(final GuiGraphics stack, final int mouseX, final int mouseY, final float delta) {
         if (!this.isVisible) {
             return;
         }
         if (this.hasBackground) {
-            fill(stack, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, 0xAAA0A0A0);
-            fill(stack, this.x, this.y, this.x + this.width, this.y + this.height, 0xFF000000);
+            stack.fill(this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY() + this.height + 1, 0xAAA0A0A0);
+            stack.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFF000000);
         }
         final int textColor = this.isWritable ? this.writableTextColor : this.readonlyTextColor;
         final int visibleCaret = this.caret - this.lineScrollOffset;
@@ -838,15 +839,15 @@ public final class StyledTextFieldWidget extends AbstractWidget {
         final boolean isCaretVisible = visibleCaret >= 0 && visibleCaret <= visibleText.length();
         final boolean drawSelection = visibleSelectionEnd != visibleCaret;
         final boolean drawCaret = !drawSelection && this.isFocused && this.tick / 6 % 2 == 0 && isCaretVisible;
-        final int offsetX = this.hasBackground ? this.x + 4 : this.x;
-        final int offsetY = this.hasBackground ? this.y + (this.height - 8) / 2 : this.y;
+        final int offsetX = this.hasBackground ? this.getX() + 4 : this.getX();
+        final int offsetY = this.hasBackground ? this.getY() + (this.height - 8) / 2 : this.getY();
         int textX = offsetX;
         if (visibleSelectionEnd > visibleText.length()) {
             visibleSelectionEnd = visibleText.length();
         }
         if (visibleText.length() > 0) {
             final Component beforeCaret = (isCaretVisible ? visibleText.substring(0, visibleCaret) : visibleText).toTextComponent();
-            textX = this.font.drawShadow(stack, beforeCaret, offsetX, offsetY, textColor);
+            textX = stack.drawString(this.font, beforeCaret, offsetX, offsetY, textColor, true);
         }
         final int caretX;
         if (isCaretVisible) {
@@ -855,14 +856,14 @@ public final class StyledTextFieldWidget extends AbstractWidget {
             caretX = visibleCaret > 0 ? offsetX + this.width - 6 : offsetX;
         }
         if (visibleText.length() > 0 && isCaretVisible && visibleCaret < visibleText.length()) {
-            textX = this.font.drawShadow(stack, visibleText.substring(visibleCaret).toTextComponent(), textX, offsetY, textColor);
+            textX = stack.drawString(this.font, visibleText.substring(visibleCaret).toTextComponent(), textX, offsetY, textColor, true);
         }
         if (drawCaret) {
             final int rgb = StyledString.getColor(this.currentStyle.getColor());
             if (this.currentStyle.isItalic()) {
-                fill(stack, caretX - 1, caretX + 1, offsetY - 2, offsetY + 1 + this.font.lineHeight, rgb);
+                stack.fill(caretX - 1, caretX + 1, offsetY - 2, offsetY + 1 + this.font.lineHeight, rgb);
             } else {
-                fill(stack, caretX, offsetY - 2, caretX + 1, offsetY + 1 + this.font.lineHeight, 0xFF000000 | rgb);
+                stack.fill(caretX, offsetY - 2, caretX + 1, offsetY + 1 + this.font.lineHeight, 0xFF000000 | rgb);
             }
         }
         if (drawSelection) {
@@ -877,7 +878,7 @@ public final class StyledTextFieldWidget extends AbstractWidget {
         }
         if (this.hasDraggedSelecton) {
             if (this.isHovered) {
-                int relativeX = mouseX - this.x;
+                int relativeX = mouseX - this.getX();
                 if (this.hasBackground) {
                     relativeX -= 2;
                 }
@@ -885,26 +886,26 @@ public final class StyledTextFieldWidget extends AbstractWidget {
                 if (pos >= 0 && pos <= visibleText.length()) {
                     final int x = getWidth(visibleText.substring(0, pos), this.font);
                     final int rgb = StyledString.getColor(this.currentStyle.getColor());
-                    fill(stack, offsetX + x, offsetY - 2, offsetX + x + 1, offsetY + 1 + this.font.lineHeight, 0xFF000000 | rgb);
+                    stack.fill(offsetX + x, offsetY - 2, offsetX + x + 1, offsetY + 1 + this.font.lineHeight, 0xFF000000 | rgb);
                 }
             }
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            this.font.drawShadow(stack, this.getSelectedText().toTextComponent(), mouseX + 5, mouseY + 5, textColor | 0xBF000000);
+            stack.drawString(this.font, this.getSelectedText().toTextComponent(), mouseX + 5, mouseY + 5, textColor | 0xBF000000, true);
             RenderSystem.disableBlend();
         }
     }
 
-    private void drawSelectionHighlight(final PoseStack stack, int startX, int startY, int endX, int endY) {
-        if (endX > this.x + this.width) {
-            endX = this.x + this.width;
+    private void drawSelectionHighlight(final GuiGraphics stack, int startX, int startY, int endX, int endY) {
+        if (endX > this.getX() + this.width) {
+            endX = this.getX() + this.width;
         }
-        if (startX > this.x + this.width) {
-            startX = this.x + this.width;
+        if (startX > this.getX() + this.width) {
+            startX = this.getX() + this.width;
         }
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        fill(stack, startX, startY, endX, endY, 0x33FFFFFF);
+        stack.fill(startX, startY, endX, endY, 0x33FFFFFF);
         RenderSystem.disableBlend();
     }
 
@@ -931,7 +932,8 @@ public final class StyledTextFieldWidget extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput output) {
+    protected void updateWidgetNarration(final NarrationElementOutput output)
+    {
         output.add(NarratedElementType.TITLE, Component.translatable("narration.edit_box", this.value.toUnstyledString()));
     }
 

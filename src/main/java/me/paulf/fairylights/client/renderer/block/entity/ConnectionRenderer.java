@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.server.connection.Connection;
 import me.paulf.fairylights.util.Catenary;
@@ -47,8 +47,8 @@ public abstract class ConnectionRenderer<C extends Connection> {
             while (it.next()) {
                 matrix.pushPose();
                 matrix.translate(it.getX(0.0F), it.getY(0.0F),  it.getZ(0.0F));
-                matrix.mulPose(Vector3f.YP.rotation(FLMth.PI / 2.0F - it.getYaw()));
-                matrix.mulPose(Vector3f.XP.rotation(-it.getPitch()));
+                matrix.mulPose(Axis.YP.rotation(FLMth.PI / 2.0F - it.getYaw()));
+                matrix.mulPose(Axis.XP.rotation(-it.getPitch()));
                 matrix.scale(1.0F + this.wireInflate, 1.0F, it.getLength() * 16.0F);
                 this.model.renderToBuffer(matrix, buf, packedLight, packedOverlay, r, g, b, 1.0F);
                 matrix.popPose();

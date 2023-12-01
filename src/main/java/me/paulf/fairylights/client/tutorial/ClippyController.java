@@ -8,6 +8,7 @@ import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.LazyItemStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -161,16 +162,14 @@ public class ClippyController {
         }
 
         @Override
-        public Visibility render(final PoseStack stack, final ToastComponent toastGui, final long delta) {
-            RenderSystem.setShaderTexture(0, TEXTURE);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            toastGui.blit(stack, 0, 0, 0, 96, 160, 32);
-            toastGui.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(this.stack.get(), 6 + 2, 6 + 2);
+        public Visibility render(final GuiGraphics stack, final ToastComponent toastGui, final long delta) {
+            stack.blit(TEXTURE, 0, 0, 0, 96, 160, 32);
+            stack.renderFakeItem(this.stack.get(), 6 + 2, 6 + 2);
             if (this.subtitle == null) {
-                toastGui.getMinecraft().font.draw(stack, this.title, 30.0F, 12.0F, 0xFF500050);
+                stack.drawString(toastGui.getMinecraft().font, this.title, 30, 12, 0xFF500050);
             } else {
-                toastGui.getMinecraft().font.draw(stack, this.title, 30.0F, 7.0F, 0xFF500050);
-                toastGui.getMinecraft().font.draw(stack, this.subtitle, 30.0F, 18.0F, 0xFF000000);
+                stack.drawString(toastGui.getMinecraft().font, this.title, 30, 7, 0xFF500050);
+                stack.drawString(toastGui.getMinecraft().font, this.subtitle, 30, 18, 0xFF000000);
             }
             return this.visibility;
         }

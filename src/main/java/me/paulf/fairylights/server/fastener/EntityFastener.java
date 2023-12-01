@@ -11,7 +11,7 @@ public abstract class EntityFastener<E extends Entity> extends AbstractFastener<
 
     public EntityFastener(final E entity) {
         this.entity = entity;
-        this.setWorld(entity.level);
+        this.setWorld(entity.level());
     }
 
     @Override

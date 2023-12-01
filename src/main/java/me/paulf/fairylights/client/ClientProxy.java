@@ -99,11 +99,6 @@ public final class ClientProxy extends ServerProxy {
         });
         MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) -> JinglerCommand.register(e.getDispatcher()));
         JinglerCommand.register(MinecraftForge.EVENT_BUS);
-        modBus.<TextureStitchEvent.Pre>addListener(e -> {
-            if (SOLID_TEXTURE.atlasLocation().equals(e.getAtlas().location())) {
-                e.addSprite(SOLID_TEXTURE.texture());
-            }
-        });
         // Undo sprite uv shrink
         modBus.<ModelEvent.BakingCompleted>addListener(e -> {
             final VertexFormat vertexFormat = DefaultVertexFormat.BLOCK;
@@ -140,8 +135,15 @@ public final class ClientProxy extends ServerProxy {
 
     private void recomputeUv(final int stride, final int finalUvOffset, final BakedModel model) {
         final TextureAtlasSprite sprite = model.getParticleIcon(ModelData.EMPTY);
-        final int w = (int) (sprite.getWidth() / (sprite.getU1() - sprite.getU0()));
-        final int h = (int) (sprite.getHeight() / (sprite.getV1() - sprite.getV0()));
+        float uMin = sprite.getU0();
+        float uMax = sprite.getU1();
+        float vMin = sprite.getV0();
+        float vMax = sprite.getV1();
+        float uSize = uMax - uMin;
+        float vSize = vMax - vMin;
+
+        final int w = (int) (uSize / (sprite.getU1() - sprite.getU0()));
+        final int h = (int) (vSize / (sprite.getV1() - sprite.getV0()));
         for (final BakedQuad quad : model.getQuads(null, null, RandomSource.create(42L), ModelData.EMPTY, RenderType.cutoutMipped())) {
             final int[] data = quad.getVertices();
             for (int n = 0; n < 4; n++) {

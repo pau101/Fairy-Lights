@@ -48,15 +48,4 @@ public class PennantBuntingConnectionItem extends ConnectionItem {
             }
         }
     }
-
-    @Override
-    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> subItems) {
-        if (this.allowedIn(tab)) {
-            for (final DyeColor color : DyeColor.values()) {
-                final ItemStack stack = new ItemStack(this);
-                DyeableItem.setColor(stack, color);
-                subItems.add(FLCraftingRecipes.makePennant(stack, color));
-            }
-        }
-    }
 }
