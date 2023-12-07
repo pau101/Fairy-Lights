@@ -13,7 +13,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '6.0.0'
+version = '6.0.1'
 group = 'me.paulf.fairylights'
 archivesBaseName = 'fairylights'
 
