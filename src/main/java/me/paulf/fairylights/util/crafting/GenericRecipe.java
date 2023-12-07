@@ -48,7 +48,7 @@ public final class GenericRecipe extends CustomRecipe {
 
     private final int outputIngredient;
 
-    private final ThreadLocal<ItemStack> result = ThreadLocal.withInitial(() -> ItemStack.EMPTY);
+    private ItemStack result = ItemStack.EMPTY;
 
     private final ImmutableList<IntUnaryOperator> xFunctions = ImmutableList.of(IntUnaryOperator.identity(), i -> this.getWidth() - 1 - i);
 
@@ -163,12 +163,12 @@ public final class GenericRecipe extends CustomRecipe {
             for (final IntUnaryOperator func : this.xFunctions) {
                 final ItemStack result = this.getResult(inventory, x, y, func);
                 if (!result.isEmpty()) {
-                    this.result.set(result);
+                    this.result = result;
                     return true;
                 }
             }
         }
-        this.result.set(ItemStack.EMPTY);
+        this.result = ItemStack.EMPTY;
         return false;
     }
 
@@ -253,7 +253,7 @@ public final class GenericRecipe extends CustomRecipe {
 
     @Override
     public ItemStack assemble(final CraftingContainer inventory) {
-        final ItemStack result = this.result.get();
+        final ItemStack result = this.result;
         return result.isEmpty() ? result : result.copy();
     }
 
