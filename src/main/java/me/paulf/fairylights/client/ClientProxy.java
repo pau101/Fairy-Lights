@@ -1,7 +1,6 @@
 package me.paulf.fairylights.client;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import me.paulf.fairylights.FairyLights;
@@ -47,7 +46,6 @@ import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -67,7 +65,6 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;

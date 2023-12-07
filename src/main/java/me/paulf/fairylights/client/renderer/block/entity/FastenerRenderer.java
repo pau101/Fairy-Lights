@@ -157,13 +157,13 @@ public class FastenerRenderer {
         for (final Direction side : Direction.values()) {
             randSource.setSeed(42L);
             for (final BakedQuad quad : model.getQuads(null, side, randSource)) {
-                buf.putBulkData(lastStack, quad, r, g, b, 1.0f, packedLight, packedOverlay, true);
+                buf.putBulkData(lastStack, quad, r, g, b, packedLight, packedOverlay);
             }
         }
 
         randSource.setSeed(42L);
         for (final BakedQuad quad : model.getQuads(null, null, randSource)) {
-            buf.putBulkData(lastStack, quad, r, g, b, 1.0f, packedLight, packedOverlay, true);
+            buf.putBulkData(lastStack, quad, r, g, b, packedLight, packedOverlay);
         }
     }
 }
