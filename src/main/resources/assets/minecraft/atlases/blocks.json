@@ -1,0 +1,37 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "fairylights:entity/connections"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "fairylights:entity/letters"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "fairylights:entity/fastener"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "fairylights:entity/spearhead_pennant"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "fairylights:entity/square_pennant"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "fairylights:entity/swallowtail_pennant"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "fairylights:entity/triangle_pennant"
+    },
+    {
+      "type": "directory",
+      "source": "entity/letter",
+      "prefix": "entity/letter/"
+    }
+  ]
+}

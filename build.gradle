@@ -20,7 +20,7 @@ archivesBaseName = 'fairylights'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.19.2'
+    mappings channel: 'official', version: '1.20.1'
     runs {
         client {
             workingDirectory project.file('run')
@@ -85,13 +85,13 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.57'
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    compileOnly fg.deobf('mezz.jei:jei-1.19.2-common-api:11.4.0.286')
-    compileOnly fg.deobf('mezz.jei:jei-1.19.2-forge-api:11.4.0.286')
-    runtimeOnly fg.deobf('mezz.jei:jei-1.19.2-forge:11.4.0.286')
+    compileOnly fg.deobf('mezz.jei:jei-1.20.1-common-api:15.1.0.19')
+    compileOnly fg.deobf('mezz.jei:jei-1.20.1-forge-api:15.1.0.19')
+    runtimeOnly fg.deobf('mezz.jei:jei-1.20.1-forge:15.1.0.19')
 }
 
 mixin {
@@ -100,7 +100,7 @@ mixin {
 }
 
 jar {
-    classifier '1.19.2'
+    classifier '1.20.1'
     exclude '.cache'
     manifest {
         attributes([

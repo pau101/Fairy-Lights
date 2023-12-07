@@ -16,6 +16,7 @@ import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategor
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
@@ -104,7 +105,7 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
     }
 
     private void forOutputMatches(final BiConsumer<ItemStack, ItemStack> outputConsumer) {
-        final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
+        final CraftingContainer crafting = new TransientCraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
             public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
                 return ItemStack.EMPTY;
@@ -121,7 +122,7 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
                 crafting.setItem(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(0));
             }
             if (this.recipe.matches(crafting, null)) {
-                outputConsumer.accept(ItemStack.EMPTY, this.recipe.assemble(crafting));
+                outputConsumer.accept(ItemStack.EMPTY, this.recipe.assemble(crafting, null));
             }
         } else {
             final List<ItemStack> dictators = this.minimalInputStacks.get(this.subtypeIndex);
@@ -136,7 +137,7 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
                     }
                 }
                 if (this.recipe.matches(crafting, null)) {
-                    outputConsumer.accept(subtype, this.recipe.assemble(crafting));
+                    outputConsumer.accept(subtype, this.recipe.assemble(crafting, null));
                 }
             }
         }
@@ -202,7 +203,7 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
     }
 
     private Input getInputsForIngredient(final ItemStack ingredient) {
-        final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
+        final CraftingContainer crafting = new TransientCraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
             public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
                 return ItemStack.EMPTY;
@@ -244,7 +245,7 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
     }
 
     public List<ItemStack> getOutput(final List<List<ItemStack>> inputs) {
-        final CraftingContainer crafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
+        final CraftingContainer crafting = new TransientCraftingContainer(new AbstractContainerMenu(null, 0) {
             @Override
             public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
                 return ItemStack.EMPTY;
@@ -268,7 +269,7 @@ public final class GenericRecipeWrapper implements ICraftingCategoryExtension {
                 crafting.setItem(i, stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(n % stacks.size()));
             }
             if (this.recipe.matches(crafting, null)) {
-                outputs.add(this.recipe.assemble(crafting));
+                outputs.add(this.recipe.assemble(crafting, null));
             } else {
                 LogManager.getLogger().debug("No recipe match for {} using inputs {}",
                     ForgeRegistries.ITEMS.getKey(this.recipe.getOutput().getItem()),

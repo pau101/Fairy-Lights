@@ -1,11 +1,12 @@
 package me.paulf.fairylights.client.model.light;
 
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.util.Mth;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class GhostLightModel extends ColorLightModel {
     public GhostLightModel(final ModelPart root) {
@@ -31,11 +32,11 @@ public class GhostLightModel extends ColorLightModel {
         body.setAngles(FLMth.PI, 0.0F, 0.0F);
         final Vector3f vec = new Vector3f(-1.0F, 0.0F, 1.0F);
         vec.normalize();
-        final Quaternion droop = vec.rotation(-FLMth.PI / 3.0F);
+        final Quaternionf droop = Axis.of(vec).rotation(-FLMth.PI / 3.0F);
         final int finCount = 8;
         for (int i = 0; i < finCount; i++) {
             final BulbBuilder fin = bulb.createChild("fin_" + i, 40, 21);
-            final Quaternion q = Vector3f.YP.rotation(i * FLMth.TAU / finCount);
+            final Quaternionf q = Axis.YP.rotation(i * FLMth.TAU / finCount);
             q.mul(droop);
             final float[] magicAngles = toEuler(q);
             final float theta = i * FLMth.TAU / finCount;

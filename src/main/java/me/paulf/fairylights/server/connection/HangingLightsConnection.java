@@ -135,7 +135,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
                     this.lightUpdateIndex = 0;
                     this.lightUpdateTime = this.world.random.nextInt(LIGHT_UPDATE_WAIT / 2);
                 } else {
-                    this.setLight(new BlockPos(this.features[this.lightUpdateIndex++].getAbsolutePoint(this.fastener)));
+                    this.setLight(BlockPos.containing(this.features[this.lightUpdateIndex++].getAbsolutePoint(this.fastener)));
                 }
             }
         }
@@ -169,7 +169,7 @@ public final class HangingLightsConnection extends HangingFeatureConnection<Ligh
     protected void updateFeature(final Light<?> light) {
         super.updateFeature(light);
         if (!this.isDynamic() && this.isOn) {
-            final BlockPos pos = new BlockPos(light.getAbsolutePoint(this.fastener));
+            final BlockPos pos = BlockPos.containing(light.getAbsolutePoint(this.fastener));
             this.litBlocks.add(pos);
             this.setLight(pos);
         }

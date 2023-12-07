@@ -29,6 +29,6 @@ public final class FLSounds {
     public static final RegistryObject<SoundEvent> FEATURE_LIGHT_TURNOFF = create("feature.light_turnoff");
 
     private static RegistryObject<SoundEvent> create(final String name) {
-        return REG.register(name, () -> new SoundEvent(new ResourceLocation(FairyLights.ID, name)));
+        return REG.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(FairyLights.ID, name)));
     }
 }

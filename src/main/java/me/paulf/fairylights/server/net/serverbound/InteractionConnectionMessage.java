@@ -64,7 +64,7 @@ public final class InteractionConnectionMessage extends ConnectionMessage {
         @Override
         public void accept(final InteractionConnectionMessage message, final ServerMessageContext context) {
             final ServerPlayer player = context.getPlayer();
-            getConnection(message, c -> true, player.level).ifPresent(connection -> {
+            getConnection(message, c -> true, player.level()).ifPresent(connection -> {
                 if (connection.isModifiable(player) &&
                     player.distanceToSqr(Vec3.atLowerCornerOf(connection.getFastener().getPos())) < RANGE &&
                     player.distanceToSqr(message.hit.x, message.hit.y, message.hit.z) < REACH

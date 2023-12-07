@@ -10,11 +10,13 @@ import me.paulf.fairylights.util.crafting.ingredient.EmptyRegularIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.GenericIngredient;
 import me.paulf.fairylights.util.crafting.ingredient.RegularIngredient;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -55,7 +57,7 @@ public final class GenericRecipe extends CustomRecipe {
     private int room;
 
     GenericRecipe(final ResourceLocation id, final Supplier<? extends RecipeSerializer<GenericRecipe>> serializer, final ItemStack output, final RegularIngredient[] ingredients, final AuxiliaryIngredient<?>[] auxiliaryIngredients, final int width, final int height, final int outputIngredient) {
-        super(id);
+        super(id, CraftingBookCategory.MISC);
         Preconditions.checkArgument(width > 0, "width must be greater than zero");
         Preconditions.checkArgument(height > 0, "height must be greater than zero");
         this.serializer = Objects.requireNonNull(serializer, "serializer");
@@ -172,6 +174,7 @@ public final class GenericRecipe extends CustomRecipe {
         return false;
     }
 
+
     private ItemStack getResult(final CraftingContainer inventory, final int originX, final int originY, final IntUnaryOperator funcX) {
         final MatchResultRegular[] match = new MatchResultRegular[this.ingredients.length];
         final Multimap<AuxiliaryIngredient<?>, MatchResultAuxiliary> auxMatchResults = LinkedListMultimap.create();
@@ -252,13 +255,14 @@ public final class GenericRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(final CraftingContainer inventory) {
+    public ItemStack assemble(final CraftingContainer inventory, final RegistryAccess registryAccess) {
         final ItemStack result = this.result;
         return result.isEmpty() ? result : result.copy();
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(final RegistryAccess registryAccess)
+    {
         return this.output;
     }
 

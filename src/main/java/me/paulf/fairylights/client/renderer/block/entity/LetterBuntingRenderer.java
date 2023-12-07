@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import me.paulf.fairylights.FairyLights;
@@ -58,9 +58,9 @@ public class LetterBuntingRenderer extends ConnectionRenderer<LetterBuntingConne
             final Vec3 pos = letter.getPoint(delta);
             matrix.pushPose();
             matrix.translate(pos.x, pos.y, pos.z);
-            matrix.mulPose(Vector3f.YP.rotation(-letter.getYaw(delta)));
-            matrix.mulPose(Vector3f.ZP.rotation(letter.getPitch(delta)));
-            matrix.mulPose(Vector3f.XP.rotation(letter.getRoll(delta)));
+            matrix.mulPose(Axis.YP.rotation(-letter.getYaw(delta)));
+            matrix.mulPose(Axis.ZP.rotation(letter.getPitch(delta)));
+            matrix.mulPose(Axis.XP.rotation(letter.getRoll(delta)));
             matrix.translate(-0.5F, -1.0F - 0.5F / 16.0F, -0.5F);
             FastenerRenderer.renderBakedModel(path, matrix, buf, r, g, b, packedLight, packedOverlay);
             matrix.popPose();

@@ -80,7 +80,7 @@ public final class ServerEventHandler {
     public void onTick(final TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             event.player.getCapability(CapabilityHandler.FASTENER_CAP).ifPresent(fastener -> {
-                if (fastener.update() && !event.player.level.isClientSide()) {
+                if (fastener.update() && !event.player.level().isClientSide()) {
                     ServerProxy.sendToPlayersWatchingEntity(new UpdateEntityFastenerMessage(event.player, fastener.serializeNBT()), event.player);
                 }
             });

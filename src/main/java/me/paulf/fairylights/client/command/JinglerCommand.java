@@ -67,7 +67,7 @@ public final class JinglerCommand {
                         }
                     }
                     transmitter.setReceiver(new MidiJingler((HangingLightsConnection) conn));
-                    ctx.getSource().sendSuccess(Component.translatable("commands.jingler.open.success", name), false);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("commands.jingler.open.success", name), false);
                     USED_COMMAND.compareAndSet(false, true);
                     return 1;
                 })))
@@ -83,7 +83,7 @@ public final class JinglerCommand {
                     if (closed == 0) {
                         throw CLOSE_FAILURE.create();
                     }
-                    ctx.getSource().sendSuccess(Component.translatable(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
+                    ctx.getSource().sendSuccess(() -> Component.translatable(closed == 1 ? "commands.jingler.close.success.single" : "commands.jingler.close.success.multiple", closed), false);
                     return closed;
                 })
             )));

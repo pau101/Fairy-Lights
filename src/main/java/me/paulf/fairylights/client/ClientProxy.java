@@ -1,7 +1,6 @@
 package me.paulf.fairylights.client;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import me.paulf.fairylights.FairyLights;
@@ -47,7 +46,6 @@ import me.paulf.fairylights.server.string.StringTypes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -67,7 +65,6 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -99,25 +96,7 @@ public final class ClientProxy extends ServerProxy {
         });
         MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent e) -> JinglerCommand.register(e.getDispatcher()));
         JinglerCommand.register(MinecraftForge.EVENT_BUS);
-        modBus.<TextureStitchEvent.Pre>addListener(e -> {
-            if (SOLID_TEXTURE.atlasLocation().equals(e.getAtlas().location())) {
-                e.addSprite(SOLID_TEXTURE.texture());
-            }
-        });
-        // Undo sprite uv shrink
-        modBus.<ModelEvent.BakingCompleted>addListener(e -> {
-            final VertexFormat vertexFormat = DefaultVertexFormat.BLOCK;
-            final int size = vertexFormat.getIntegerSize();
-            final int index = this.getUvIndex(vertexFormat);
-            if (index != -1) {
-                this.entityModels.forEach(path -> {
-                    final BakedModel model = Minecraft.getInstance().getModelManager().getModel(path);
-                    if (model != Minecraft.getInstance().getModelManager().getMissingModel()) {
-                        this.recomputeUv(size, index, model);
-                    }
-                });
-            }
-        });
+
         modBus.addListener(this::setup);
         modBus.addListener(this::setupLayerDefinitions);
         modBus.addListener(this::setupColors);
@@ -140,8 +119,15 @@ public final class ClientProxy extends ServerProxy {
 
     private void recomputeUv(final int stride, final int finalUvOffset, final BakedModel model) {
         final TextureAtlasSprite sprite = model.getParticleIcon(ModelData.EMPTY);
-        final int w = (int) (sprite.getWidth() / (sprite.getU1() - sprite.getU0()));
-        final int h = (int) (sprite.getHeight() / (sprite.getV1() - sprite.getV0()));
+        float uMin = sprite.getU0();
+        float uMax = sprite.getU1();
+        float vMin = sprite.getV0();
+        float vMax = sprite.getV1();
+        float uSize = uMax - uMin;
+        float vSize = vMax - vMin;
+
+        final int w = (int) (uSize / (sprite.getU1() - sprite.getU0()));
+        final int h = (int) (vSize / (sprite.getV1() - sprite.getV0()));
         for (final BakedQuad quad : model.getQuads(null, null, RandomSource.create(42L), ModelData.EMPTY, RenderType.cutoutMipped())) {
             final int[] data = quad.getVertices();
             for (int n = 0; n < 4; n++) {

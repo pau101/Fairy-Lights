@@ -154,6 +154,6 @@ public abstract class ConnectionItem extends Item {
     }
 
     public static boolean isFence(final BlockState state) {
-        return state.getMaterial().isSolid() && state.is(BlockTags.FENCES);
+        return state.isSolid() && state.is(BlockTags.FENCES);
     }
 }

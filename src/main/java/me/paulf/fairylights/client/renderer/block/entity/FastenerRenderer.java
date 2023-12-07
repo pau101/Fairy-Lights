@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.client.model.light.BowModel;
@@ -21,10 +21,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -113,7 +116,7 @@ public class FastenerRenderer {
 
     private void bow(PoseStack matrix, Direction dir, float offset, VertexConsumer buf, int packedLight, int packedOverlay) {
         matrix.pushPose();
-        matrix.mulPose(Vector3f.YP.rotationDegrees(180.0F - dir.toYRot()));
+        matrix.mulPose(Axis.YP.rotationDegrees(180.0F - dir.toYRot()));
         if (offset != 0.0F) {
             matrix.translate(0.0D, 0.0D, offset);
         }
@@ -140,20 +143,27 @@ public class FastenerRenderer {
     }
 
     public static void renderBakedModel(final BakedModel model, final PoseStack matrix, final VertexConsumer buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
-        renderBakedModel(model, ItemTransforms.TransformType.FIXED, matrix, buf, r, g, b, packedLight, packedOverlay);
+        renderBakedModel(model, ItemDisplayContext.FIXED, matrix, buf, r, g, b, packedLight, packedOverlay);
     }
 
     @SuppressWarnings("deprecation")
     // (refusing to use handlePerspective due to IForgeTransformationMatrix#push superfluous undocumented MatrixStack#push)
-    public static void renderBakedModel(final BakedModel model, final ItemTransforms.TransformType type, final PoseStack matrix, final VertexConsumer buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
+    public static void renderBakedModel(final BakedModel model, final ItemDisplayContext type, final PoseStack matrix, final VertexConsumer buf, final float r, final float g, final float b, final int packedLight, final int packedOverlay) {
         model.getTransforms().getTransform(type).apply(false, matrix);
+
+        PoseStack.Pose lastStack = matrix.last();
+
+        RandomSource randSource = RandomSource.create();
         for (final Direction side : Direction.values()) {
-            for (final BakedQuad quad : model.getQuads(null, side, RandomSource.create(42L))) {
-                buf.putBulkData(matrix.last(), quad, r, g, b, packedLight, packedOverlay);
+            randSource.setSeed(42L);
+            for (final BakedQuad quad : model.getQuads(null, side, randSource)) {
+                buf.putBulkData(lastStack, quad, r, g, b, packedLight, packedOverlay);
             }
         }
-        for (final BakedQuad quad : model.getQuads(null, null, RandomSource.create(42L))) {
-            buf.putBulkData(matrix.last(), quad, r, g, b, packedLight, packedOverlay);
+
+        randSource.setSeed(42L);
+        for (final BakedQuad quad : model.getQuads(null, null, randSource)) {
+            buf.putBulkData(lastStack, quad, r, g, b, packedLight, packedOverlay);
         }
     }
 }

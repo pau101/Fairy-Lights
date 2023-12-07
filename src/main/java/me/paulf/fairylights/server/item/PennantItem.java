@@ -16,13 +16,4 @@ public class PennantItem extends Item {
     public Component getName(final ItemStack stack) {
         return DyeableItem.getDisplayName(stack, super.getName(stack));
     }
-
-    @Override
-    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> subItems) {
-        if (this.allowedIn(tab)) {
-            for (final DyeColor dye : DyeColor.values()) {
-                subItems.add(DyeableItem.setColor(new ItemStack(this), dye));
-            }
-        }
-    }
 }

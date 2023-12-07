@@ -12,6 +12,7 @@ import me.paulf.fairylights.server.net.serverbound.EditLetteredConnectionMessage
 import me.paulf.fairylights.util.styledstring.StyledString;
 import me.paulf.fairylights.util.styledstring.StylingPresence;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -48,14 +49,13 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
 
     @Override
     public void init() {
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         final int pad = 4;
         final int buttonWidth = 150;
-        this.doneBtn = this.addRenderableWidget(new Button(this.width / 2 - pad - buttonWidth, this.height / 4 + 120 + 12, buttonWidth, 20, Component.translatable("gui.done"), b -> {
+        this.doneBtn = this.addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> {
             FairyLights.NETWORK.sendToServer(new EditLetteredConnectionMessage<>(this.connection, this.textField.getValue()));
             this.onClose();
-        }));
-        this.cancelBtn = this.addRenderableWidget(new Button(this.width / 2 + pad, this.height / 4 + 120 + 12, buttonWidth, 20, Component.translatable("gui.cancel"), b -> this.onClose()));
+        }).pos(this.width / 2 - pad - buttonWidth, this.height / 4 + 120 + 12).size(buttonWidth, 20).build());
+        this.cancelBtn = this.addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), b -> this.onClose()).pos(this.width / 2 + pad, this.height / 4 + 120 + 12).size(buttonWidth, 20).build());
         final int textFieldX = this.width / 2 - 150;
         final int textFieldY = this.height / 2 - 10;
         int buttonX = textFieldX;
@@ -87,11 +87,6 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
 
     private void validateText(final StyledString text) {
         this.doneBtn.active = this.connection.isSupportedText(text) && !this.connection.getText().equals(text);
-    }
-
-    @Override
-    public void removed() {
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -152,18 +147,18 @@ public final class EditLetteredConnectionScreen<C extends Connection & Lettered>
     }
 
     @Override
-    public void render(final PoseStack stack, final int mouseX, final int mouseY, final float delta) {
+    public void render(final GuiGraphics stack, final int mouseX, final int mouseY, final float delta) {
         this.renderBackground(stack);
-        drawCenteredString(stack, this.font, Component.translatable("fairylights.editLetteredConnection"), this.width / 2, 20, 0xFFFFFF);
+        stack.drawCenteredString(this.font, Component.translatable("fairylights.editLetteredConnection"), this.width / 2, 20, 0xFFFFFF);
         super.render(stack, mouseX, mouseY, delta);
         this.textField.render(stack, mouseX, mouseY, delta);
         final String allowed = this.connection.getAllowedDescription();
         if (!allowed.isEmpty()) {
-            drawString(stack, this.font,
+            stack.drawString(this.font,
                 Component.translatable("fairylights.editLetteredConnection.allowed_characters", allowed)
                     .withStyle(ChatFormatting.GRAY),
-                this.textField.x,
-                this.textField.y + 24,
+                this.textField.getX(),
+                this.textField.getY() + 24,
                 0xFFFFFFFF
             );
         }

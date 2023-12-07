@@ -1,7 +1,7 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.HangingLightsConnection;
 import me.paulf.fairylights.server.feature.light.Light;
@@ -41,13 +41,13 @@ public class HangingLightsRenderer extends ConnectionRenderer<HangingLightsConne
             final Vec3 pos = light.getPoint(delta);
             matrix.pushPose();
             matrix.translate(pos.x, pos.y, pos.z);
-            matrix.mulPose(Vector3f.YP.rotation(-light.getYaw(delta)));
+            matrix.mulPose(Axis.YP.rotation(-light.getYaw(delta)));
             if (light.parallelsCord()) {
-                matrix.mulPose(Vector3f.ZP.rotation(light.getPitch(delta)));
+                matrix.mulPose(Axis.ZP.rotation(light.getPitch(delta)));
             }
-            matrix.mulPose(Vector3f.XP.rotation(light.getRoll(delta)));
+            matrix.mulPose(Axis.XP.rotation(light.getRoll(delta)));
             if (light.getVariant() != SimpleLightVariant.FAIRY_LIGHT) { // FIXME
-                matrix.mulPose(Vector3f.YP.rotation(FLMth.mod(FLMth.hash(i) * FLMth.DEG_TO_RAD, FLMth.TAU) + FLMth.PI / 4.0F));
+                matrix.mulPose(Axis.YP.rotation(FLMth.mod(FLMth.hash(i) * FLMth.DEG_TO_RAD, FLMth.TAU) + FLMth.PI / 4.0F));
             }
             matrix.translate(0.0D, -light.getDescent(), 0.0D);
             this.lights.render(matrix, data, light, i, delta, packedLight, packedOverlay);

@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -147,10 +148,10 @@ public class LightBlock extends FaceAttachedHorizontalDirectionalBlock implement
             ((LightBlockEntity) entity).setItemStack(lightItem);
         }
     }
-
     @SuppressWarnings("deprecation")
     @Override
-    public List<ItemStack> getDrops(final BlockState state, final LootContext.Builder builder) {
+    public List<ItemStack> getDrops(final BlockState state, final LootParams.Builder builder)
+    {
         final BlockEntity entity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (entity instanceof LightBlockEntity) {
             return Collections.singletonList(((LightBlockEntity) entity).getLight().getItem().copy());

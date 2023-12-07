@@ -2,27 +2,28 @@ package me.paulf.fairylights.data;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import me.paulf.fairylights.FairyLights;
 import me.paulf.fairylights.server.block.FLBlocks;
 import me.paulf.fairylights.server.item.FLItems;
 import me.paulf.fairylights.server.item.crafting.FLCraftingRecipes;
 import me.paulf.fairylights.util.styledstring.StyledString;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.loot.packs.VanillaLootTableProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -33,9 +34,8 @@ import net.minecraftforge.registries.RegistryObject;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = FairyLights.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -43,20 +43,20 @@ public final class DataGatherer {
     @SubscribeEvent
     public static void onGatherData(final GatherDataEvent event) {
         final DataGenerator gen = event.getGenerator();
-        gen.addProvider(event.includeServer(), new RecipeGenerator(gen));
+        gen.addProvider(event.includeServer(), new RecipeGenerator(gen.getPackOutput()));
         gen.addProvider(event.includeServer(), new LootTableGenerator(gen));
     }
 
     static class RecipeGenerator extends RecipeProvider {
-        RecipeGenerator(final DataGenerator generator) {
+        RecipeGenerator(final PackOutput generator) {
             super(generator);
         }
 
         @Override
-        protected void buildCraftingRecipes(final Consumer<FinishedRecipe> consumer) {
+        protected void buildRecipes(final Consumer<FinishedRecipe> consumer) {
             final CompoundTag nbt = new CompoundTag();
             nbt.put("text", StyledString.serialize(new StyledString()));
-            ShapedRecipeBuilder.shaped(FLItems.LETTER_BUNTING.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, FLItems.LETTER_BUNTING.get())
                 .pattern("I-I")
                 .pattern("PBF")
                 .define('I', Tags.Items.INGOTS_IRON)
@@ -67,14 +67,14 @@ public final class DataGatherer {
                 .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
                 .unlockedBy("has_string", has(Tags.Items.STRING))
                 .save(addNbt(consumer, nbt));
-            ShapedRecipeBuilder.shaped(FLItems.GARLAND.get(), 2)
+            ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,FLItems.GARLAND.get(), 2)
                 .pattern("I-I")
                 .define('I', Tags.Items.INGOTS_IRON)
                 .define('-', Items.VINE)
                 .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
                 .unlockedBy("has_vine", has(Items.VINE))
                 .save(consumer);
-            ShapedRecipeBuilder.shaped(FLItems.OIL_LANTERN.get(), 4)
+            ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,FLItems.OIL_LANTERN.get(), 4)
                 .pattern(" I ")
                 .pattern("STS")
                 .pattern("IGI")
@@ -85,7 +85,7 @@ public final class DataGatherer {
                 .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
                 .unlockedBy("has_torch", has(Items.TORCH))
                 .save(consumer);
-            ShapedRecipeBuilder.shaped(FLItems.CANDLE_LANTERN.get(), 4)
+            ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,FLItems.CANDLE_LANTERN.get(), 4)
                 .pattern(" I ")
                 .pattern("GTG")
                 .pattern("IGI")
@@ -95,7 +95,7 @@ public final class DataGatherer {
                 .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
                 .unlockedBy("has_torch", has(Items.TORCH))
                 .save(consumer);
-            ShapedRecipeBuilder.shaped(FLItems.INCANDESCENT_LIGHT.get(), 4)
+            ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS,FLItems.INCANDESCENT_LIGHT.get(), 4)
                 .pattern(" I ")
                 .pattern("ITI")
                 .pattern(" G ")
@@ -186,12 +186,13 @@ public final class DataGatherer {
 
     static class LootTableGenerator extends LootTableProvider {
         LootTableGenerator(final DataGenerator generator) {
-            super(generator);
+            super(generator.getPackOutput(), Set.of(), VanillaLootTableProvider.create(generator.getPackOutput()).getTables());
         }
 
         @Override
-        protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
-            return ImmutableList.of(Pair.of(BlockLootTableGenerator::new, LootContextParamSets.BLOCK));
+        public List<SubProviderEntry> getTables()
+        {
+            return ImmutableList.of(new SubProviderEntry(BlockLootTableGenerator::new, LootContextParamSets.BLOCK));
         }
 
         @Override
@@ -200,18 +201,25 @@ public final class DataGatherer {
             /*for (final ResourceLocation name : Sets.difference(MyBuiltInLootTables.getAll(), map.defineSet())) {
                 tracker.addProblem("Missing built-in table: " + name);
             }*/
-            map.forEach((name, table) -> LootTables.validate(tracker, name, table));
+            map.forEach((name, table) -> table.validate(tracker));
         }
     }
 
-    static class BlockLootTableGenerator extends BlockLoot {
+    static class BlockLootTableGenerator extends BlockLootSubProvider
+    {
+        protected BlockLootTableGenerator()
+        {
+            super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+        }
+
         @Override
         protected Iterable<Block> getKnownBlocks() {
             return FLBlocks.REG.getEntries().stream().map(RegistryObject::get).collect(Collectors.toList());
         }
 
         @Override
-        protected void addTables() {
+        protected void generate()
+        {
             this.add(FLBlocks.FASTENER.get(), noDrop());
             this.add(FLBlocks.FAIRY_LIGHT.get(), noDrop());
             this.add(FLBlocks.PAPER_LANTERN.get(), noDrop());

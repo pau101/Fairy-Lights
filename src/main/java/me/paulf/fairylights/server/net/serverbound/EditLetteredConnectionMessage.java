@@ -41,7 +41,7 @@ public class EditLetteredConnectionMessage<C extends Connection & Lettered> exte
 
         private <C extends Connection & Lettered> void accept(final EditLetteredConnectionMessage<C> message, final ServerPlayer player) {
             if (player != null) {
-                ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, player.level).ifPresent(connection -> {
+                ConnectionMessage.<C>getConnection(message, c -> c instanceof Lettered, player.level()).ifPresent(connection -> {
                     if (connection.isModifiable(player) && connection.isSupportedText(message.text)) {
                         connection.setText(message.text);
                     }

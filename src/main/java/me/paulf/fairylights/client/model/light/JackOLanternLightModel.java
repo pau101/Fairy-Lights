@@ -1,10 +1,12 @@
 package me.paulf.fairylights.client.model.light;
 
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+
+import com.mojang.math.Axis;
 import me.paulf.fairylights.util.FLMth;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class JackOLanternLightModel extends ColorLightModel {
     public JackOLanternLightModel(final ModelPart root) {
@@ -22,7 +24,7 @@ public class JackOLanternLightModel extends ColorLightModel {
         leaf1.addBox(0, -0.5F, 0, 2, 1, 2, 0);
         final Vector3f vec = new Vector3f(-1.0F, 0.0F, 1.0F);
         vec.normalize();
-        final Quaternion droop = vec.rotation(FLMth.PI / 12.0F);
+        final Quaternionf droop = Axis.of(vec).rotation(FLMth.PI / 12.0F);
         float[] leafAngles = toEuler(droop);
         leaf1.xRot = leafAngles[0];
         leaf1.yRot = leafAngles[1];
@@ -31,7 +33,7 @@ public class JackOLanternLightModel extends ColorLightModel {
         final EasyMeshBuilder leaf2 = new EasyMeshBuilder("leaf2", 12, 18);
         leaf2.setRotationPoint(-0.5F, 0, -0.5F);
         leaf2.addBox(0, -0.5F, 0, 2, 1, 2, 0);
-        final Quaternion q = Vector3f.YP.rotation(FLMth.PI);
+        final Quaternionf q = Axis.YP.rotation(FLMth.PI);
         q.mul(droop);
         leafAngles = toEuler(q);
         leaf2.xRot = leafAngles[0];

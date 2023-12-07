@@ -4,6 +4,8 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.Item;
@@ -24,7 +26,7 @@ public class LazyTagIngredient extends Ingredient {
 
     @Override
     public ItemStack[] getItems() {
-        return StreamSupport.stream(Registry.ITEM.getTagOrEmpty(this.tag).spliterator(), false).map(ItemStack::new).toArray(ItemStack[]::new);
+        return StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(this.tag).spliterator(), false).map(ItemStack::new).toArray(ItemStack[]::new);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class LazyTagIngredient extends Ingredient {
 
     @Override
     public boolean isEmpty() {
-        return !Registry.ITEM.getTagOrEmpty(this.tag).iterator().hasNext();
+        return !BuiltInRegistries.ITEM.getTagOrEmpty(this.tag).iterator().hasNext();
     }
 
     public static LazyTagIngredient of(final TagKey<Item> tag) {

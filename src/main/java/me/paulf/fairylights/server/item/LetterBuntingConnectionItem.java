@@ -34,13 +34,4 @@ public class LetterBuntingConnectionItem extends ConnectionItem {
             }
         }
     }
-
-    @Override
-    public void fillItemCategory(final CreativeModeTab tab, final NonNullList<ItemStack> items) {
-        if (this.allowedIn(tab)) {
-            final ItemStack bunting = new ItemStack(this, 1);
-            bunting.getOrCreateTag().put("text", StyledString.serialize(new StyledString()));
-            items.add(bunting);
-        }
-    }
 }

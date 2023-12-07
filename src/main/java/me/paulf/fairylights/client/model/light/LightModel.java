@@ -2,7 +2,6 @@ package me.paulf.fairylights.client.model.light;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
 import me.paulf.fairylights.server.feature.light.Light;
 import me.paulf.fairylights.server.feature.light.LightBehavior;
 import me.paulf.fairylights.util.AABBBuilder;
@@ -13,6 +12,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -130,12 +130,12 @@ public abstract class LightModel<T extends LightBehavior> extends Model {
     }
 
     // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
-    protected static float[] toEuler(final Quaternion q) {
-        final float r11 = 2.0F * (q.i() * q.j() + q.r() * q.k());
-        final float r12 = q.r() * q.r() + q.i() * q.i() - q.j() * q.j() - q.k() * q.k();
-        final float r21 = -2.0F * (q.i() * q.k() - q.r() * q.j());
-        final float r31 = 2.0F * (q.j() * q.k() + q.r() * q.i());
-        final float r32 = q.r() * q.r() - q.i() * q.i() - q.j() * q.j() + q.k() * q.k();
+    protected static float[] toEuler(final Quaternionf q) {
+        final float r11 = 2.0F * (q.x() * q.y() + q.w() * q.z());
+        final float r12 = q.w() * q.w() + q.x() * q.x() - q.y() * q.y() - q.z() * q.z();
+        final float r21 = -2.0F * (q.x() * q.z() - q.w() * q.y());
+        final float r31 = 2.0F * (q.y() * q.z() + q.w() * q.x());
+        final float r32 = q.w() * q.w() - q.x() * q.x() - q.y() * q.y() + q.z() * q.z();
         return new float[]{
             (float) Mth.atan2(r31, r32),
             (float) Math.asin(r21),

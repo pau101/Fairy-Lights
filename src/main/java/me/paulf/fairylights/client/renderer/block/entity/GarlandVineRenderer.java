@@ -2,7 +2,7 @@ package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.client.ClientProxy;
 import me.paulf.fairylights.client.FLModelLayers;
 import me.paulf.fairylights.server.connection.GarlandVineConnection;
@@ -41,10 +41,10 @@ public class GarlandVineRenderer extends ConnectionRenderer<GarlandVineConnectio
         catenary.visitPoints(0.25F, false, (index, x, y, z, yaw, pitch) -> {
             matrix.pushPose();
             matrix.translate(x, y, z);
-            matrix.mulPose(Vector3f.YP.rotation(-yaw));
-            matrix.mulPose(Vector3f.ZP.rotation(pitch));
-            matrix.mulPose(Vector3f.ZP.rotationDegrees(RAND.get(index + hash) * 45.0F));
-            matrix.mulPose(Vector3f.YP.rotationDegrees(RAND.get(index + 8 + hash) * 60.F + 90.0F));
+            matrix.mulPose(Axis.YP.rotation(-yaw));
+            matrix.mulPose(Axis.ZP.rotation(pitch));
+            matrix.mulPose(Axis.ZP.rotationDegrees(RAND.get(index + hash) * 45.0F));
+            matrix.mulPose(Axis.YP.rotationDegrees(RAND.get(index + 8 + hash) * 60.F + 90.0F));
             this.rings.setWhich(index % RING_COUNT);
             this.rings.renderToBuffer(matrix, buf, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
             matrix.popPose();

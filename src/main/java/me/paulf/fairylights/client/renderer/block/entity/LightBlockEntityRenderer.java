@@ -1,7 +1,7 @@
 package me.paulf.fairylights.client.renderer.block.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import me.paulf.fairylights.client.model.light.LightModel;
 import me.paulf.fairylights.server.block.LightBlock;
 import me.paulf.fairylights.server.block.entity.LightBlockEntity;
@@ -34,12 +34,12 @@ public class LightBlockEntityRenderer implements BlockEntityRenderer<LightBlockE
         final float rotation = state.getValue(LightBlock.FACING).toYRot();
         matrix.pushPose();
         matrix.translate(0.5D, 0.5D, 0.5D);
-        matrix.mulPose(Vector3f.YP.rotationDegrees(180.0F - rotation));
+        matrix.mulPose(Axis.YP.rotationDegrees(180.0F - rotation));
         if (light.getVariant().isOrientable()) {
             if (face == AttachFace.WALL) {
-                matrix.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                matrix.mulPose(Axis.XP.rotationDegrees(90.0F));
             } else if (face == AttachFace.FLOOR) {
-                matrix.mulPose(Vector3f.XP.rotationDegrees(-180.0F));
+                matrix.mulPose(Axis.XP.rotationDegrees(-180.0F));
             }
             matrix.translate(0.0D, 0.5D, 0.0D);
         } else {
