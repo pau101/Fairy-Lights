@@ -1,22 +1,20 @@
 buildscript {
     repositories {
-        maven {
-            url 'http://files.minecraftforge.net/maven'
-        }
-        jcenter()
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '4.0.5'
+version = '4.0.6'
 group = 'me.paulf.fairylights'
 archivesBaseName = 'fairylights'
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     mappings channel: 'snapshot', version: '20201028-1.16.3'
@@ -81,22 +79,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
     compileOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.1.68:api')
     runtimeOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.1.68')
-}
-
-processResources {
-    def vars = [
-        'version': project.version
-    ]
-    inputs.properties(vars)
-    from (sourceSets.main.resources.srcDirs) {
-        include('META-INF/mods.toml')
-        expand(vars)
-    }
-    from (sourceSets.main.resources.srcDirs) {
-        exclude('META-INF/mods.toml')
-        exclude('**/*.xcf')
-    }
 }

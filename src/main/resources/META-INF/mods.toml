@@ -4,7 +4,7 @@ issueTrackerURL="https://github.com/pau101/Fairy-Lights/issues"
 license="MIT"
 [[mods]]
 	modId="fairylights"
-	version="${version}"
+	version="4.0.6"
 	displayName="Fairy Lights"
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/fairy-lights"
 	authors="pau101"
